@@ -1,10 +1,8 @@
-import { injectable } from "inversify";
-
 import { apiService } from "../../api";
-import { IClientsResponse } from "./Clients.types";
+import { IClientsResponse, IClientsService } from "./Clients.types";
 
-@injectable()
-export class ClientsService {
+@IClientsService()
+export class ClientsService implements IClientsService {
   getClients() {
     return apiService.get<IClientsResponse>("/api/wireguard/clients");
   }

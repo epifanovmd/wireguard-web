@@ -1,3 +1,6 @@
+import { ApiResponse, apiService } from "../../api";
+import { iocDecorator } from "../../common";
+
 export interface IClient {
   id: string;
   enabled?: boolean;
@@ -16,3 +19,9 @@ export interface IClient {
 }
 
 export type IClientsResponse = IClient[];
+
+export const IClientsService = iocDecorator<IClientsService>();
+
+export interface IClientsService {
+  getClients(): Promise<ApiResponse<IClientsResponse>>;
+}

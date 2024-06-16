@@ -1,16 +1,15 @@
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 import { Container, Header } from "./components";
-import { iocContainer } from "./modules";
 import { IRoute, RoutePaths, routes } from "./routes";
-import { SessionDataStore } from "./store";
+import { ISessionDataStore } from "./store";
 
 export const App = observer(() => {
   const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
-  const { setToken } = iocContainer.get<SessionDataStore>(SessionDataStore);
+  const { setToken } = useRef(ISessionDataStore.getInstance()).current;
   const navigate = useNavigate();
 
   useEffect(() => {

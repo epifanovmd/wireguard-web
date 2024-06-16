@@ -1,13 +1,19 @@
-import { inject, injectable } from "inversify";
 import { makeAutoObservable } from "mobx";
 
 import { CollectionHolder } from "../../common";
 import { ClientModel } from "../../models";
-import { ClientsService, ClientsSocketService, IClient } from "../../service";
+import {
+  ClientsService,
+  ClientsSocketService,
+  IClient,
+  IClientsService,
+  IClientsSocketService,
+} from "../../service";
+import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
 
-@injectable()
-export class ClientsDataStore {
+@IClientsDataStore()
+export class ClientsDataStore implements IClientsDataStore {
   public holder: CollectionHolder<IClient> = new CollectionHolder([]);
 
   private _intervalDataSource = new ClientsIntervalDataSource(
@@ -15,8 +21,8 @@ export class ClientsDataStore {
   );
 
   constructor(
-    @inject(ClientsService) private _clientsService: ClientsService,
-    @inject(ClientsSocketService)
+    @IClientsService() private _clientsService: ClientsService,
+    @IClientsSocketService()
     private _clientSocketService: ClientsSocketService,
   ) {
     makeAutoObservable(this, {}, { autoBind: true });

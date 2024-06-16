@@ -2,17 +2,14 @@ import React, { ChangeEvent, useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { iocContainer } from "../../modules";
 import { RoutePaths } from "../../routes";
-import { AuthService } from "../../service";
+import { IAuthService } from "../../service";
 
 export const LoginComponent = () => {
   const [username, setLogin] = useState("string");
   const [password, setPassword] = useState("string");
 
-  const authService = useRef<AuthService>(
-    iocContainer.get(AuthService),
-  ).current;
+  const authService = useRef(IAuthService.getInstance()).current;
   const navigate = useNavigate();
 
   const handleChangeLogin = useCallback(

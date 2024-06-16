@@ -1,16 +1,19 @@
-import { inject, injectable } from "inversify";
 import { connect } from "socket.io-client";
 
 import { SOCKET_BASE_URL } from "../../api";
-import { SupportInitialize } from "../../common";
-import { AuthService } from "../auth";
-import { Socket, SocketEmitEvents, SocketEvents } from "./Socket.types";
+import { AuthService, IAuthService } from "../auth";
+import {
+  ISocketService,
+  Socket,
+  SocketEmitEvents,
+  SocketEvents,
+} from "./Socket.types";
 
-@injectable()
-export class SocketService implements SupportInitialize {
+@ISocketService({ inSingleton: true })
+export class SocketService implements ISocketService {
   private _socket: Socket | undefined;
 
-  constructor(@inject(AuthService) private _authService: AuthService) {}
+  constructor(@IAuthService() private _authService: AuthService) {}
 
   get socket() {
     if (this._socket) {

@@ -35,6 +35,7 @@
     }],
 
     // Stylistic
+    "no-redeclare": "off",
     "semi": "error",
     "array-bracket-newline": ["error", "consistent"],
     "array-bracket-spacing": ["error", "never"],

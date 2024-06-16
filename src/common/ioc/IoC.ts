@@ -4,15 +4,18 @@ import {
   Container as InversifyContainer,
   inject as Inject,
   injectable as Injectable,
-  interfaces,
 } from "inversify";
 import getDecorators from "inversify-inject-decorators";
 import { v4 } from "uuid";
 
+export interface IoCDecoratorOptions {
+  inSingleton?: boolean;
+}
+
 export interface IIoCInterface<T> {
   readonly Tid: string;
 
-  (options?: { inSingleton?: boolean; factory?: boolean }): (
+  (options?: IoCDecoratorOptions): (
     target: any,
     targetKey?: string,
     index?: number | undefined,
@@ -30,8 +33,8 @@ const iocContainer = new InversifyContainer();
 
 const { lazyInject } = getDecorators(iocContainer);
 
-function iocDecorator<TInterface>(name?: string): IIoCInterface<TInterface> {
-  const tid = name || v4();
+function iocDecorator<TInterface>(): IIoCInterface<TInterface> {
+  const tid = v4();
 
   function iocDecoratorFactory(options?: DecoratorOptions) {
     return function iocDecorator(
@@ -49,21 +52,8 @@ function iocDecorator<TInterface>(name?: string): IIoCInterface<TInterface> {
         // При использовании на классе
         Injectable()(target);
 
-        console.log("options", options);
         if (options?.inSingleton) {
           iocContainer.bind<TInterface>(tid).to(target).inSingletonScope();
-        }
-        if (options?.factory) {
-          console.log("options?.factory", options?.factory);
-          iocContainer
-            .bind<TInterface>(tid)
-            .toFactory<TInterface>((context: interfaces.Context) => {
-              return (value: any) => {
-                console.log("value", value);
-
-                return context.container.get<TInterface>(tid);
-              };
-            });
         } else {
           iocContainer.bind<TInterface>(tid).to(target);
         }

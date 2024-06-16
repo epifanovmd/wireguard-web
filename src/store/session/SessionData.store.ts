@@ -1,16 +1,20 @@
-import { inject, injectable } from "inversify";
-import Cookie from "js-cookie";
 import { makeAutoObservable, reaction } from "mobx";
 
-import { AuthService, SocketService } from "../../service";
+import {
+  AuthService,
+  IAuthService,
+  ISocketService,
+  SocketService,
+} from "../../service";
+import { ISessionDataStore } from "./SessionData.types";
 
-@injectable()
-export class SessionDataStore {
+@ISessionDataStore({ inSingleton: true })
+export class SessionDataStore implements ISessionDataStore {
   private _token: string;
 
   constructor(
-    @inject(AuthService) private _authService: AuthService,
-    @inject(SocketService) private _socketService: SocketService,
+    @IAuthService() private _authService: AuthService,
+    @ISocketService() private _socketService: SocketService,
   ) {
     this._token = this._authService.getLocalAccessToken();
 

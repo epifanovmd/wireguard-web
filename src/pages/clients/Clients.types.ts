@@ -1,10 +1,13 @@
-import { IBaseViewModel } from "../../common";
+import { IBaseViewModel, iocDecorator } from "../../common";
 import { ClientModel } from "../../models";
-import { IClient, IClientsResponse } from "../../service";
+import { IClientsResponse } from "../../service";
+import { ClientListVM } from "./Clients.vm";
 
 export interface ClientsProps {
   title: string;
 }
+
+export const IClientListVM = iocDecorator<ClientListVM>();
 
 export interface IClientListVM extends IBaseViewModel<ClientsProps> {
   readonly list: ClientModel[];

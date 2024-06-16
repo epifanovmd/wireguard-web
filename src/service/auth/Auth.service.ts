@@ -1,11 +1,10 @@
-import { injectable } from "inversify";
 import Cookie from "js-cookie";
 
 import { apiService } from "../../api";
-import { ILoginRequest, IProfile } from "./Auth.types";
+import { IAuthService, ILoginRequest, IProfile } from "./Auth.types";
 
-@injectable()
-export class AuthService {
+@IAuthService()
+export class AuthService implements IAuthService {
   login(credentials: ILoginRequest) {
     return apiService.post<IProfile, ILoginRequest>(
       "/api/auth/signIn",

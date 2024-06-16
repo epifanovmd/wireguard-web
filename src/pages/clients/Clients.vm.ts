@@ -1,10 +1,9 @@
-import { inject, injectable } from "inversify";
 import { makeAutoObservable } from "mobx";
 
-import { ClientsDataStore } from "../../store";
+import { IClientsDataStore } from "../../store";
 import { ClientsProps, IClientListVM } from "./Clients.types";
 
-@injectable()
+@IClientListVM()
 export class ClientListVM implements IClientListVM {
   private _props?: ClientsProps;
 
@@ -13,7 +12,7 @@ export class ClientListVM implements IClientListVM {
   }
 
   constructor(
-    @inject(ClientsDataStore) private _clientsDataStore: ClientsDataStore,
+    @IClientsDataStore() private _clientsDataStore: IClientsDataStore,
   ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
