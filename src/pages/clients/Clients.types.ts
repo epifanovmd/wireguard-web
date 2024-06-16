@@ -1,7 +1,7 @@
 import { IBaseViewModel, iocDecorator } from "../../common";
 import { ClientModel } from "../../models";
 import { IClientsResponse } from "../../service";
-import { ClientListVM } from "./Clients.vm";
+import { ClientListVM } from "./useClientsVM";
 
 export interface ClientsProps {
   title: string;

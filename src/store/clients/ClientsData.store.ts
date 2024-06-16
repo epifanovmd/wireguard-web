@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-import { CollectionHolder } from "../../common";
+import { CollectionHolder, iocHook } from "../../common";
 import { ClientModel } from "../../models";
 import {
   ClientsService,
@@ -11,6 +11,8 @@ import {
 } from "../../service";
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
+
+export const useClientsDataStore = iocHook(IClientsDataStore);
 
 @IClientsDataStore()
 export class ClientsDataStore implements IClientsDataStore {
