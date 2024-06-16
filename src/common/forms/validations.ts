@@ -1,7 +1,7 @@
-import { isArray, isNumber, isString } from "../../helpers";
+import { isArray, isNumber, isString } from "../helpers";
 
 export const usernameRegex =
-  /^[\d\+][\d\(\)\ -]{4,14}\d$|^(\S+)@([a-z0-9-]+)(\.)([a-z]{2,4})(\.?)([a-z]{0,4})+$/;
+  /^[\d\\+][\d\\(\\)\\ -]{4,14}\d$|^(\S+)@([a-z0-9-]+)(\.)([a-z]{2,4})(\.?)([a-z]{0,4})+$/;
 export const passwordRegex =
   /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
 

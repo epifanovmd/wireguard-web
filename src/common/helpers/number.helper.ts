@@ -1,5 +1,9 @@
 export type DivideOpt = { separator?: string };
 
+export const stringToNumber = (value: string | number = "") => {
+  return parseFloat(String(value).replace(/,/g, "."));
+};
+
 export const toDivide = (num: number, opt?: DivideOpt) => {
   const int = String(Math.trunc(Number(num || 0)));
 

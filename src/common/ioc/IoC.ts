@@ -12,7 +12,7 @@ export interface IoCDecoratorOptions {
   inSingleton?: boolean;
 }
 
-export interface IIoCInterface<T> {
+export interface IoCDecorator<T> {
   readonly Tid: string;
 
   (options?: IoCDecoratorOptions): (
@@ -33,7 +33,7 @@ const iocContainer = new InversifyContainer();
 
 const { lazyInject } = getDecorators(iocContainer);
 
-function iocDecorator<TInterface>(): IIoCInterface<TInterface> {
+function iocDecorator<TInterface>(): IoCDecorator<TInterface> {
   const tid = v4();
 
   function iocDecoratorFactory(options?: DecoratorOptions) {

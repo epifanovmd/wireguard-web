@@ -1,12 +1,7 @@
 import { makeAutoObservable, reaction } from "mobx";
 
 import { iocHook } from "../../common";
-import {
-  AuthService,
-  IAuthService,
-  ISocketService,
-  SocketService,
-} from "../../service";
+import { IAuthService, ISocketService } from "../../service";
 import { ISessionDataStore } from "./SessionData.types";
 
 export const useSessionDataStore = iocHook(ISessionDataStore);
@@ -16,8 +11,8 @@ export class SessionDataStore implements ISessionDataStore {
   private _token: string;
 
   constructor(
-    @IAuthService() private _authService: AuthService,
-    @ISocketService() private _socketService: SocketService,
+    @IAuthService() private _authService: IAuthService,
+    @ISocketService() private _socketService: ISocketService,
   ) {
     this._token = this._authService.getLocalAccessToken();
 

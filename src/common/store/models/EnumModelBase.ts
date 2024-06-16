@@ -8,9 +8,6 @@ import {
 } from "../../helpers";
 import { DataModelBase } from "./DataModelBase";
 
-// Тут создаём интерфейс модели, которая будет иметь проверочный пропс на каждое поле энума
-// https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html
-// https://www.typescriptlang.org/docs/handbook/2/mapped-types.html
 type TEnumProps<TEnum> = {
   [K in keyof TEnum as `is${Capitalize<string & K>}`]: boolean;
 };
@@ -23,16 +20,6 @@ type TEnumModelBase<TEnum> = ModelClassType<
   TEnum
 >;
 
-/**
- * Создаёт класс модели по энуму.
- * @example
- * const BsModelBase = createEnumModelBase<typeof BsEnum>(BsEnum);
- * const bs = new BsModelBase(BsEnum.Buy);
- * bs.isBuy; // true
- * bs.isSell; // false
- *
- * @param enm
- */
 export function createEnumModelBase<TEnum>(enm: any) {
   class EnumModel extends DataModelBase<Maybe<EnumValue<TEnum>>> {}
 
@@ -46,7 +33,6 @@ export function createEnumModelBase<TEnum>(enm: any) {
       },
     });
 
-    // @computed - декоратор
     computed(EnumModel, key);
   });
 

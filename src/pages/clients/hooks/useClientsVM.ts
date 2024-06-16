@@ -1,4 +1,4 @@
-import { useClientsDataStore } from "../../store";
+import { useClientsDataStore } from "../../../store";
 
 export const useClientsVM = () => {
   const { models, onRefresh } = useClientsDataStore();

@@ -2,10 +2,9 @@ import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren, useEffect } from "react";
 
 import { ClientList } from "../../components";
-import { ClientsProps } from "./Clients.types";
-import { useClientsVM } from "./useClientsVM";
+import { useClientsVM } from "./hooks";
 
-interface IProps extends ClientsProps {}
+interface IProps {}
 
 export const ClientsComponent: FC<PropsWithChildren<IProps>> = observer(() => {
   const { list, refresh } = useClientsVM();
