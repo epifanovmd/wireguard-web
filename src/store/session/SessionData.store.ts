@@ -1,5 +1,6 @@
 import { makeAutoObservable, reaction } from "mobx";
 
+import { iocHook } from "../../common";
 import {
   AuthService,
   IAuthService,
@@ -7,6 +8,8 @@ import {
   SocketService,
 } from "../../service";
 import { ISessionDataStore } from "./SessionData.types";
+
+export const useSessionDataStore = iocHook(ISessionDataStore);
 
 @ISessionDataStore({ inSingleton: true })
 export class SessionDataStore implements ISessionDataStore {
