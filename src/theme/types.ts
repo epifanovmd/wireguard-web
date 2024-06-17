@@ -1,11 +1,23 @@
-import { lightTheme } from "./lightTheme";
+import {
+  DEFAULT_DARK_THEME_ID,
+  DEFAULT_LIGHT_COLOR_THEME,
+  DEFAULT_LIGHT_SPACING_THEME,
+  DEFAULT_LIGHT_THEME_ID,
+} from "./variants";
 
-export type AppThemes = "light" | "dark";
+export type ColorTheme = typeof DEFAULT_LIGHT_COLOR_THEME;
 
-export type AppTheme = typeof lightTheme;
+export type SpacingTheme = typeof DEFAULT_LIGHT_SPACING_THEME & {};
 
-export type ThemeStore = {
-  themes: Record<AppThemes, AppTheme>;
+export interface IThemeContext {
+  theme: ITheme;
   toggleTheme: () => void;
-  theme: AppThemes;
-};
+  isDark: boolean;
+  isLight: boolean;
+}
+
+export interface ITheme {
+  id: typeof DEFAULT_LIGHT_THEME_ID | typeof DEFAULT_DARK_THEME_ID;
+  color: ColorTheme;
+  spacing: SpacingTheme;
+}
