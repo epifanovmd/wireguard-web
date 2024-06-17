@@ -6,7 +6,7 @@ import { useClientsVM } from "./hooks";
 
 interface IProps {}
 
-export const ClientsComponent: FC<PropsWithChildren<IProps>> = observer(() => {
+export const Clients: FC<PropsWithChildren<IProps>> = observer(() => {
   const { list, refresh } = useClientsVM();
 
   useEffect(() => {

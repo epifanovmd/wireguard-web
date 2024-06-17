@@ -29,5 +29,4 @@ export const enLocale = {
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CheckLocaleType: Locale = enLocale;

@@ -1,1 +1,1 @@
-export * from "./Speed.component";
+export * from "./Speed";

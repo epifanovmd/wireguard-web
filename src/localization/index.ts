@@ -1,3 +1,3 @@
-export * from './hooks';
-export * from './locales';
-export * from './localization';
+export * from "./hooks";
+export * from "./locales";
+export * from "./localization";

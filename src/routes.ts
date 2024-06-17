@@ -1,4 +1,4 @@
-import { ClientsComponent } from "./pages/clients";
+import { Clients } from "./pages/clients";
 import { Login } from "./pages/login";
 
 export enum RoutePaths {
@@ -21,7 +21,7 @@ export const routes: IRoute[] = [
   {
     path: RoutePaths.ROOT,
     pathName: "clients",
-    component: ClientsComponent,
+    component: Clients,
   },
   {
     path: RoutePaths.AUTH,

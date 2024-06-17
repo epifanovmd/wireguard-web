@@ -1,1 +1,1 @@
-export * from "./ClientList.component";
+export * from "./ClientList";
