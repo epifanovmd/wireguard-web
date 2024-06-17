@@ -1,3 +1,4 @@
+import { BASE_URL } from "./Api.service";
 import { ApiAbortPromise } from "./Api.types";
 
 export class ApiExtractAbort {
@@ -9,3 +10,19 @@ export class ApiExtractAbort {
     return promise;
   };
 }
+
+export const hostname = BASE_URL.replace("api/", "") || "/";
+
+export const toAbsoluteUrl = (url?: string) => {
+  if (!url) {
+    return undefined;
+  }
+
+  const regexp = new RegExp(/(http(s?)|file):\/\//);
+
+  if (regexp.test(url) || url.includes("://")) {
+    return url;
+  }
+
+  return `${hostname}${url}`.replace("///", "//");
+};

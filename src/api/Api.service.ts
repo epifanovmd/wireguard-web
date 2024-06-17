@@ -64,24 +64,6 @@ export class ApiService implements IApiService {
     );
   }
 
-  public get hostname() {
-    return BASE_URL.replace("api/", "") || "/";
-  }
-
-  public toAbsoluteUrl(url?: string) {
-    if (!url) {
-      return undefined;
-    }
-
-    const regexp = new RegExp(/(http(s?)|file):\/\//);
-
-    if (regexp.test(url) || url.includes("://")) {
-      return url;
-    }
-
-    return `${this.hostname}${url}`.replace("///", "//");
-  }
-
   public get<R = any, P = any>(
     endpoint: string,
     params?: P,
