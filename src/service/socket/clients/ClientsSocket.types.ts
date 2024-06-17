@@ -1,6 +1,6 @@
-import { iocDecorator } from "../../../common";
+import { iocDecorator } from "@force-dev/utils";
+
 import { IClient } from "../../clients";
-import { ISocketService } from "../Socket.types";
 
 export interface ClientsSocketEvents {
   all: (...args: [data: IClient[]]) => void;

@@ -1,4 +1,5 @@
-import { CollectionHolder, iocDecorator } from "../../common";
+import { CollectionHolder, iocDecorator } from "@force-dev/utils";
+
 import { ClientModel } from "../../models";
 import { IClient } from "../../service";
 

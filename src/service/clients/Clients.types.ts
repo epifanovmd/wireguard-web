@@ -1,5 +1,6 @@
-import { ApiResponse, apiService } from "../../api";
-import { iocDecorator } from "../../common";
+import { iocDecorator } from "@force-dev/utils";
+
+import { ApiResponse } from "../../api";
 
 export interface IClient {
   id: string;

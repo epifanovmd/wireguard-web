@@ -1,6 +1,7 @@
+import { CollectionHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { CollectionHolder, iocHook } from "../../common";
+import { iocHook } from "../../common";
 import { ClientModel } from "../../models";
 import {
   ClientsService,

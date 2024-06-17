@@ -377,10 +377,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@force-dev/utils@^1.1.55":
-  version "1.1.55"
-  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.1.55.tgz#508501ab007316fcdc5cc0de84599374679ca5ba"
-  integrity sha512-EcGaCUwfMpV1efSZjGnXGBq6JbOLdKs9hgliH/aq8C3i4aKe3gXJLdkL6MIFsHlym8uC02J1bn3xeShktfwv7g==
+"@force-dev/utils@^1.1.56":
+  version "1.1.56"
+  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.1.56.tgz#f0d656ca2fbd83974ee29660a64b8bb0fe03b60e"
+  integrity sha512-LumvDiNayVj3n8h/hArzwj3btRqeJ0tpoELLXcAEwpcMMxoQDKy66IrpRSWs3A0AKMAOttfyxX3/N5L8zzoqlQ==
   dependencies:
     "@types/shortid" "^0.0.32"
     inversify "^6.0.1"

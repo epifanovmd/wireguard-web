@@ -1,6 +1,6 @@
+import { iocDecorator, SupportInitialize } from "@force-dev/utils";
 import { Socket as SocketIO } from "socket.io-client";
 
-import { iocDecorator, SupportInitialize } from "../../common";
 import { ClientSocketEmitEvents, ClientsSocketEvents } from "./clients";
 
 export interface SocketEvents extends ClientsSocketEvents {}

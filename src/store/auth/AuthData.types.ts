@@ -1,4 +1,5 @@
-import { DataHolder, iocDecorator, Maybe } from "../../common";
+import { DataHolder, iocDecorator, Maybe } from "@force-dev/utils";
+
 import { ILoginRequest, IProfile } from "../../service";
 
 export const IAuthDataStore = iocDecorator<IAuthDataStore>();

@@ -28,7 +28,7 @@
     "check-packages-updates": "yarn outdated"
   },
   "dependencies": {
-    "@force-dev/utils": "^1.1.55",
+    "@force-dev/utils": "^1.1.56",
     "axios": "^0.26.1",
     "dayjs": "^1.11.11",
     "express": "^4.18.1",

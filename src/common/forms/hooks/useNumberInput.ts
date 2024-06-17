@@ -1,4 +1,5 @@
-import { stringToNumber } from "../../helpers";
+import { stringToNumber } from "@force-dev/utils";
+
 import { IFieldOptions, useField } from "./useField";
 
 export const useNumberInput = (opts?: IFieldOptions<number>) => {

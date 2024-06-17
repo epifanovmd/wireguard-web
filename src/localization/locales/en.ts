@@ -1,6 +1,6 @@
 import { Locale } from "./types";
 
-export const enLocale = {
+export const enLocale: Locale = {
   navigation: {
     ScreenCars: "Search",
     ScreenFavoriteCars: "Favorite",
@@ -28,5 +28,3 @@ export const enLocale = {
     search: "Search",
   },
 };
-
-const CheckLocaleType: Locale = enLocale;

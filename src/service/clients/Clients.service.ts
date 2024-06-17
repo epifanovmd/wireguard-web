@@ -1,9 +1,11 @@
-import { apiService } from "../../api";
+import { IApiService } from "../../api";
 import { IClientsResponse, IClientsService } from "./Clients.types";
 
 @IClientsService()
 export class ClientsService implements IClientsService {
+  constructor(@IApiService() private _apiService: IApiService) {}
+
   getClients() {
-    return apiService.get<IClientsResponse>("/api/wireguard/clients");
+    return this._apiService.get<IClientsResponse>("/api/wireguard/clients");
   }
 }

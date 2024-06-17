@@ -1,4 +1,4 @@
-import { iocDecorator } from "../../common";
+import { iocDecorator } from "@force-dev/utils";
 
 export const ISessionDataStore = iocDecorator<ISessionDataStore>();
 

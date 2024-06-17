@@ -1,4 +1,4 @@
-import { DataModelBase } from "../../common";
+import { DataModelBase } from "@force-dev/utils";
 
 export class DateModel extends DataModelBase<Date> {
   public get formatted() {

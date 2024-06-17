@@ -1,6 +1,6 @@
 import { Locale } from "./types";
 
-export const ruLocale = {
+export const ruLocale: Locale = {
   navigation: {
     ScreenCars: "Поиск",
     ScreenFavoriteCars: "Избранное",
@@ -28,5 +28,3 @@ export const ruLocale = {
     search: "Найти",
   },
 };
-
-const CheckLocaleType: Locale = ruLocale;

@@ -1,4 +1,5 @@
-import { DataModelBase } from "../../common";
+import { DataModelBase } from "@force-dev/utils";
+
 import { IClient } from "../../service";
 import { DateModel } from "../date";
 

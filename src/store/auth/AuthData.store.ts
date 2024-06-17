@@ -1,6 +1,7 @@
+import { DataHolder, Maybe } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { DataHolder, iocHook, Maybe } from "../../common";
+import { iocHook } from "../../common";
 import { IAuthService, ILoginRequest, IProfile } from "../../service";
 import { IAuthDataStore } from "./AuthData.types";
 

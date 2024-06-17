@@ -1,7 +1,6 @@
-import Cookie from "js-cookie";
+import { iocDecorator } from "@force-dev/utils";
 
-import { ApiResponse, apiService } from "../../api";
-import { iocDecorator } from "../../common";
+import { ApiResponse } from "../../api";
 
 export interface IProfile {
   id: string;
