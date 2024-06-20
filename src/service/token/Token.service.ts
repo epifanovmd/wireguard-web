@@ -13,7 +13,9 @@ export class TokenService implements ITokenService {
 
     makeAutoObservable(this, {}, { autoBind: true });
 
-    reaction(() => this.accessToken, _apiService.setToken);
+    reaction(() => this.accessToken, _apiService.setToken, {
+      fireImmediately: true,
+    });
   }
 
   setTokens(accessToken: string, refreshToken: string) {

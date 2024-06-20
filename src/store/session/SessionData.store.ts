@@ -47,13 +47,9 @@ export class SessionDataStore implements ISessionDataStore {
         },
         { fireImmediately: true },
       ),
-      reaction(
-        () => this._tokenService.accessToken,
-        accessToken => {
-          this.holder.setData(accessToken);
-        },
-        { fireImmediately: true },
-      ),
+      reaction(() => this._tokenService.accessToken, this.holder.setData, {
+        fireImmediately: true,
+      }),
       () => this._interval.stop(),
     ];
   }
