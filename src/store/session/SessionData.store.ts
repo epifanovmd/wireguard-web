@@ -6,7 +6,7 @@ import { ITokenService } from "../../service";
 import { IProfileDataStore } from "../profile";
 import { ISessionDataStore } from "./SessionData.types";
 
-@ISessionDataStore()
+@ISessionDataStore({ inSingleton: true })
 export class SessionDataStore implements ISessionDataStore {
   private _interval = new Interval({ timeout: 60000 });
   private holder: DataHolder<string> = new DataHolder<string>();
