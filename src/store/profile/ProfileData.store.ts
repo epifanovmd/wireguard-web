@@ -26,10 +26,10 @@ export class ProfileDataStore implements IProfileDataStore {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
-  restoreRefreshToken() {
-    return this._tokenService.getRefreshToken().then(async refreshToken => {
+  updateToken() {
+    return this._tokenService.restoreRefreshToken().then(async refreshToken => {
       if (refreshToken) {
-        await this.refresh(refreshToken);
+        await this._refresh(refreshToken);
       }
 
       return {
@@ -55,16 +55,6 @@ export class ProfileDataStore implements IProfileDataStore {
     return this.holder.isEmpty;
   }
 
-  async refresh(refreshToken: string) {
-    const res = await this._profileService.refresh({ refreshToken });
-
-    if (res.error) {
-      this._tokenService.clear();
-    } else if (res.data) {
-      this._tokenService.setTokens(res.data.accessToken, res.data.refreshToken);
-    }
-  }
-
   async signIn(params: ISignInRequest) {
     this.holder.setLoading();
 
@@ -80,6 +70,16 @@ export class ProfileDataStore implements IProfileDataStore {
   //
   //   this._updateProfileHolder(res);
   // }
+
+  private async _refresh(refreshToken: string) {
+    const res = await this._profileService.refresh({ refreshToken });
+
+    if (res.error) {
+      this._tokenService.clear();
+    } else if (res.data) {
+      this._tokenService.setTokens(res.data.accessToken, res.data.refreshToken);
+    }
+  }
 
   private _updateProfileHolder(res: ApiResponse<ISignInResponse>) {
     if (res.error) {

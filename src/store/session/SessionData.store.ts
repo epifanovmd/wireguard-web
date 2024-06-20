@@ -32,7 +32,7 @@ export class SessionDataStore implements ISessionDataStore {
       }
 
       if (status === 403) {
-        await this._profileDataStore.restoreRefreshToken();
+        await this._profileDataStore.updateToken();
       }
     });
 
@@ -42,7 +42,7 @@ export class SessionDataStore implements ISessionDataStore {
         profile => {
           if (profile) {
             this._interval.start(async () => {
-              await this._profileDataStore.restoreRefreshToken();
+              await this._profileDataStore.updateToken();
             });
           } else {
             this._interval.stop();
@@ -72,7 +72,7 @@ export class SessionDataStore implements ISessionDataStore {
   async restore() {
     this.holder.setLoading();
 
-    const { accessToken } = await this._profileDataStore.restoreRefreshToken();
+    const { accessToken } = await this._profileDataStore.updateToken();
 
     this.holder.setData(accessToken);
 

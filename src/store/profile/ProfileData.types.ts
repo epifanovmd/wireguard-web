@@ -11,9 +11,7 @@ export interface IProfileDataStore {
   isError: boolean;
   isEmpty: boolean;
 
-  restoreRefreshToken(): Promise<IRefreshTokenResponse>;
-
-  refresh(refreshToken: string): Promise<void>;
+  updateToken(): Promise<IRefreshTokenResponse>;
 
   signIn(params: ISignInRequest): Promise<void>;
 

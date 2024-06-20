@@ -8,7 +8,7 @@ export interface ITokenService {
 
   setTokens(accessToken: string, refreshToken: string): void;
 
-  getRefreshToken(): Promise<string>;
+  restoreRefreshToken(): Promise<string>;
 
   clear(): void;
 }
