@@ -12,6 +12,16 @@ export interface ApiRequestConfig extends AxiosRequestConfig {
 export const IApiService = iocDecorator<IApiService>();
 
 export interface IApiService {
+  setToken(token: string): void;
+
+  onError(
+    callback: (params: {
+      status: number;
+      error: Error;
+      isCanceled: boolean;
+    }) => void,
+  ): void;
+
   get<R = any, P = any>(
     endpoint: string,
     params?: P,
@@ -44,6 +54,7 @@ export interface IApiService {
 
 export interface ApiResponse<R> {
   data?: R;
+  status: number;
   error?: Error;
 }
 

@@ -28,8 +28,9 @@
     "check-packages-updates": "yarn outdated"
   },
   "dependencies": {
-    "@force-dev/utils": "^1.1.56",
-    "axios": "^0.26.1",
+    "@force-dev/react": "^1.1.2",
+    "@force-dev/utils": "^1.1.60",
+    "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "express": "^4.18.1",
     "i18next": "^23.11.5",
@@ -66,7 +67,7 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.13",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
@@ -80,7 +81,7 @@
     "ts-node": "^10.7.0",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
-    "vite": "^4.5.3",
+    "vite": "^5.3.1",
     "vite-plugin-cjs-interop": "0.0.7"
   },
   "husky": {

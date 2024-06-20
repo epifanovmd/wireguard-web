@@ -1,7 +1,7 @@
 import { connect } from "socket.io-client";
 
 import { SOCKET_BASE_URL } from "../../api";
-import { AuthService, IAuthService } from "../auth";
+import { ITokenService } from "../token";
 import {
   ISocketService,
   Socket,
@@ -13,7 +13,7 @@ import {
 export class SocketService implements ISocketService {
   private _socket: Socket | undefined;
 
-  constructor(@IAuthService() private _authService: AuthService) {}
+  constructor(@ITokenService() private _tokenService: ITokenService) {}
 
   get socket() {
     if (this._socket) {
@@ -57,7 +57,7 @@ export class SocketService implements ISocketService {
     } else {
       this._socket = connect(SOCKET_BASE_URL, {
         withCredentials: true,
-        query: { access_token: this._authService.getLocalAccessToken() },
+        query: { access_token: this._tokenService.accessToken },
         autoConnect: true,
         reconnection: true,
       });

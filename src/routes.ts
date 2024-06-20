@@ -15,6 +15,7 @@ export interface IRoute<
   pathName: T;
   component: any;
   children?: IRoute<P>[];
+  private?: boolean;
 }
 
 export const routes: IRoute[] = [
@@ -22,6 +23,7 @@ export const routes: IRoute[] = [
     path: RoutePaths.ROOT,
     pathName: "clients",
     component: Clients,
+    private: true,
   },
   {
     path: RoutePaths.AUTH,

@@ -1,15 +1,10 @@
+import { iocHook } from "@force-dev/react";
 import { CollectionHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { iocHook } from "../../common";
 import { ClientModel } from "../../models";
-import {
-  ClientsService,
-  ClientsSocketService,
-  IClient,
-  IClientsService,
-  IClientsSocketService,
-} from "../../service";
+import { IClient, IClientsService, IClientsSocketService } from "../../service";
+// import { IClientsSocketService } from "../../service/socket/clients";
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
 
@@ -24,9 +19,9 @@ export class ClientsDataStore implements IClientsDataStore {
   );
 
   constructor(
-    @IClientsService() private _clientsService: ClientsService,
+    @IClientsService() private _clientsService: IClientsService,
     @IClientsSocketService()
-    private _clientSocketService: ClientsSocketService,
+    private _clientSocketService: IClientsSocketService,
   ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }

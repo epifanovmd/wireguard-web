@@ -1,6 +1,6 @@
 import { IntervalDataSource } from "@force-dev/utils";
 
-import { ClientsService, IClient } from "../../service";
+import { IClient, IClientsService } from "../../service";
 
 export class ClientsIntervalDataSource extends IntervalDataSource<
   IClient[],
@@ -8,7 +8,7 @@ export class ClientsIntervalDataSource extends IntervalDataSource<
 > {
   private _params = {};
 
-  constructor(_clientsService: ClientsService) {
+  constructor(_clientsService: IClientsService) {
     super(async req => {
       console.log("req", req);
       const res = await _clientsService.getClients();

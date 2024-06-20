@@ -1,12 +1,12 @@
+import { useTextInput } from "@force-dev/react";
 import { ChangeEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useTextInput } from "../../../../common/forms";
 import { RoutePaths } from "../../../../routes";
-import { useAuthDataStore } from "../../../../store";
+import { useProfileDataStore } from "../../../../store";
 
 export const useLoginVM = () => {
-  const authDataStore = useAuthDataStore();
+  const profileDataStore = useProfileDataStore();
   const navigate = useNavigate();
 
   const username = useTextInput({ initialValue: "string" });
@@ -28,16 +28,16 @@ export const useLoginVM = () => {
 
   const handleLogin = useCallback(async () => {
     if (username.value && password.value) {
-      await authDataStore.login({
+      await profileDataStore.signIn({
         username: username.value,
         password: password.value,
       });
 
-      if (authDataStore.data) {
+      if (profileDataStore.profile) {
         navigate(RoutePaths.ROOT);
       }
     }
-  }, [authDataStore, navigate, password.value, username.value]);
+  }, [navigate, password.value, profileDataStore, username.value]);
 
   return {
     handleLogin,

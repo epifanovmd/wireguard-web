@@ -11,7 +11,7 @@ export class ApiExtractAbort {
   };
 }
 
-export const hostname = BASE_URL.replace("api/", "") || "/";
+export const hostname = (BASE_URL ?? "").replace("api/", "") || "/";
 
 export const toAbsoluteUrl = (url?: string) => {
   if (!url) {
