@@ -4,11 +4,8 @@ import { makeAutoObservable } from "mobx";
 
 import { ClientModel } from "../../models";
 import { IClient, IClientsService, IClientsSocketService } from "../../service";
-// import { IClientsSocketService } from "../../service/socket/clients";
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
-
-export const useClientsDataStore = iocHook(IClientsDataStore);
 
 @IClientsDataStore()
 export class ClientsDataStore implements IClientsDataStore {

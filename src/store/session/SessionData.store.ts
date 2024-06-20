@@ -1,4 +1,3 @@
-import { iocHook } from "@force-dev/react";
 import { DataHolder, Interval } from "@force-dev/utils";
 import { makeAutoObservable, reaction } from "mobx";
 
@@ -6,8 +5,6 @@ import { IApiService } from "../../api";
 import { ITokenService } from "../../service";
 import { IProfileDataStore } from "../profile";
 import { ISessionDataStore } from "./SessionData.types";
-
-export const useSessionDataStore = iocHook(ISessionDataStore);
 
 @ISessionDataStore()
 export class SessionDataStore implements ISessionDataStore {

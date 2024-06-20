@@ -13,8 +13,6 @@ import {
 } from "../../service";
 import { IProfileDataStore } from "./ProfileData.types";
 
-export const useProfileDataStore = iocHook(IProfileDataStore);
-
 @IProfileDataStore({ inSingleton: true })
 export class ProfileDataStore implements IProfileDataStore {
   public holder = new DataHolder<IProfile>();
