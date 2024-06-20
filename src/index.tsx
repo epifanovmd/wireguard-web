@@ -7,7 +7,9 @@ import { App } from "./App";
 import { initLocalization } from "./localization";
 import { ThemeProvider } from "./theme";
 
-initLocalization({ initLang: Cookie.get("i18next") }).finally();
+const lang = localStorage.getItem("i18nextLng");
+
+initLocalization({ initLang: lang ?? undefined }).finally();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>

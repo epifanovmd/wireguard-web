@@ -28,8 +28,6 @@ export const App = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("isAuthorized", isAuthorized);
-
   const renderRoutes = useCallback(
     (_routes: IRoute[]) =>
       _routes.map(route => {

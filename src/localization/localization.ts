@@ -32,7 +32,7 @@ export const initLocalization = ({
   initLang = "ru",
   isServer,
 }: IInitLocalizationParams) => {
-  const LngDetector = new LanguageDetector(null, { caches: ["cookie"] });
+  const LngDetector = new LanguageDetector(null, { caches: ["localStorage"] });
 
   dayjs.locale(initLang);
   if (isServer) {

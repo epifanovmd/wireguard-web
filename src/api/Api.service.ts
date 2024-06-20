@@ -1,6 +1,5 @@
 import { iocHook } from "@force-dev/react";
 import axios, { AxiosInstance } from "axios";
-import Cookie from "js-cookie";
 import { stringify } from "query-string";
 
 import {
