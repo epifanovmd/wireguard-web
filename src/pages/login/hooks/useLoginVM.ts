@@ -2,8 +2,8 @@ import { useTextInput } from "@force-dev/react";
 import { ChangeEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { RoutePaths } from "../../../../routes";
-import { useProfileDataStore } from "../../../../store";
+import { RoutePaths } from "../../../routes";
+import { useProfileDataStore } from "../../../store";
 
 export const useLoginVM = () => {
   const profileDataStore = useProfileDataStore();

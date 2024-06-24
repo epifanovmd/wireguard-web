@@ -1,6 +1,6 @@
 import { disposer } from "@force-dev/utils";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 import { Container, Header } from "./components";

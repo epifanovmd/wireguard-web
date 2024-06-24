@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components";
 
-import { useLoginVM } from "./hooks/hooks";
+import { useLoginVM } from "./hooks";
 
 export const Login = observer(() => {
   const {
@@ -29,7 +29,7 @@ const Wrap = styled.div`
 `;
 
 const Input = styled.input`
-  color: ${({ theme }) => "black" || theme.colors.white};
+  color: ${({ theme }) => "black" || theme.color.text};
 `;
 
 const Button = styled.div`

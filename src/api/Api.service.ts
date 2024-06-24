@@ -1,7 +1,8 @@
-import { iocHook } from "@force-dev/react";
 import axios, { AxiosInstance } from "axios";
 import { stringify } from "query-string";
 
+// не менять путь, иначе появистя циклическая зависимость
+import { ITokenService } from "../service/token";
 import {
   ApiAbortPromise,
   ApiRequestConfig,
@@ -19,9 +20,8 @@ export const SOCKET_BASE_URL = import.meta.env.VITE_SOCKET_BASE_URL;
 export class ApiService implements IApiService {
   private instance: AxiosInstance;
   private raceConditionMap: Map<string, AbortController> = new Map();
-  private token: string = "";
 
-  constructor() {
+  constructor(@ITokenService() private _tokenService: ITokenService) {
     this.instance = axios.create({
       timeout: 2 * 60 * 1000,
       withCredentials: true,
@@ -33,8 +33,11 @@ export class ApiService implements IApiService {
     });
 
     this.instance.interceptors.request.use(async request => {
-      if (this.token) {
-        request.headers.set("Authorization", `Bearer ${this.token}`);
+      if (this._tokenService.accessToken) {
+        request.headers.set(
+          "Authorization",
+          `Bearer ${this._tokenService.accessToken}`,
+        );
       }
 
       // if (import.meta.env.DEV) {
@@ -64,10 +67,6 @@ export class ApiService implements IApiService {
       },
     );
   }
-
-  setToken = (token: string) => {
-    this.token = token;
-  };
 
   public onError = (
     callback: (params: {
