@@ -7,12 +7,7 @@ import { useClientsVM } from "./hooks";
 interface IProps {}
 
 export const Clients: FC<PropsWithChildren<IProps>> = observer(() => {
-  const { list, refresh } = useClientsVM();
-
-  useEffect(() => {
-    refresh().then();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { list } = useClientsVM();
 
   return <ClientList data={list} />;
 });

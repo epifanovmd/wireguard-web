@@ -36,12 +36,14 @@ export class ClientsDataStore implements IClientsDataStore {
       this.holder.setData(res);
       unsubscribe();
     }, 1000);
-
-    this._intervalDataSource.setParams({ name: "string" });
   }
 
   subscribeSocket() {
     this._clientSocketService.subscribeAllClients(this.holder.setData);
+  }
+
+  unSubscribeSocket() {
+    this._clientSocketService.unsubscribeAllClients();
   }
 
   async onRefresh() {

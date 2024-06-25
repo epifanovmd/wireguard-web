@@ -1,6 +1,6 @@
 import { iocDecorator } from "@force-dev/utils";
 
-import { ApiResponse } from "../../api";
+import { ApiAbortPromise, ApiResponse } from "../../api";
 
 export interface IClient {
   id: string;
@@ -24,5 +24,5 @@ export type IClientsResponse = IClient[];
 export const IClientsService = iocDecorator<IClientsService>();
 
 export interface IClientsService {
-  getClients(): Promise<ApiResponse<IClientsResponse>>;
+  getClients(): ApiAbortPromise<ApiResponse<IClientsResponse>>;
 }

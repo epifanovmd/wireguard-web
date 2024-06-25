@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@force-dev/react": "^1.1.2",
-    "@force-dev/utils": "^1.1.60",
+    "@force-dev/utils": "^1.1.62",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "express": "^4.18.1",

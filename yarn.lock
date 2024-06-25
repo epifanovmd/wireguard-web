@@ -513,10 +513,10 @@
     reflect-metadata "^0.1.13"
     shortid "^2.2.16"
 
-"@force-dev/utils@^1.1.60":
-  version "1.1.60"
-  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.1.60.tgz#812562bfd4ce8c40a5bda6c20cdaaf902eea9fac"
-  integrity sha512-abLK15HlgdElNcfHbMvSW5dRzJwDewa6fdsu1nQdJixPn1P/xhi0jkHRR+zbSrR+g9R7lfIB8Uc8wk813iS0pg==
+"@force-dev/utils@^1.1.62":
+  version "1.1.62"
+  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.1.62.tgz#48d1136a6794ad7e3d4df5e58511beef756c04ad"
+  integrity sha512-EFfGMIcnJ0lGHUMhToSx1cilsTl9n717EQ37mJXqf0hxMVy54nRVdEJ1vS7oBGxklCsXmR8NtKs/s+5op73ltQ==
   dependencies:
     "@types/shortid" "^0.0.32"
     inversify "^6.0.1"

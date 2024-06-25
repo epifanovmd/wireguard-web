@@ -13,6 +13,7 @@ export interface IClientsDataStore {
   start(): void;
 
   subscribeSocket(): void;
+  unSubscribeSocket(): void;
 
   onRefresh(): Promise<IClient[]>;
 }
