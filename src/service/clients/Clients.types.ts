@@ -1,6 +1,5 @@
+import { ApiAbortPromise, ApiResponse, IApiService } from "@api";
 import { iocDecorator } from "@force-dev/utils";
-
-import { ApiAbortPromise, ApiResponse } from "../../api";
 
 export interface IClient {
   id: string;
@@ -25,4 +24,13 @@ export const IClientsService = iocDecorator<IClientsService>();
 
 export interface IClientsService {
   getClients(): ApiAbortPromise<ApiResponse<IClientsResponse>>;
+}
+
+@IClientsService()
+class ClientsService implements IClientsService {
+  constructor(@IApiService() private _apiService: IApiService) {}
+
+  getClients() {
+    return this._apiService.get<IClientsResponse>("/api/wireguard/clients");
+  }
 }

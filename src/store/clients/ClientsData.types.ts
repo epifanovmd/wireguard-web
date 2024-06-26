@@ -1,7 +1,6 @@
 import { CollectionHolder, iocDecorator } from "@force-dev/utils";
-
-import { ClientModel } from "../../models";
-import { IClient } from "../../service";
+import { ClientModel } from "@models";
+import { IClient } from "@service";
 
 export const IClientsDataStore = iocDecorator<IClientsDataStore>();
 

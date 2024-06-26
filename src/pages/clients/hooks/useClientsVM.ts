@@ -1,6 +1,5 @@
+import { useClientsDataStore } from "@store";
 import { useEffect } from "react";
-
-import { useClientsDataStore } from "../../../store";
 
 export const useClientsVM = () => {
   const { models, onRefresh, unSubscribeSocket } = useClientsDataStore();

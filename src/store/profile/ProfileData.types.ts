@@ -1,6 +1,5 @@
 import { DataHolder, iocDecorator } from "@force-dev/utils";
-
-import { IProfile, IRefreshTokenResponse, ISignInRequest } from "../../service";
+import { IProfile, IRefreshTokenResponse, ISignInRequest } from "@service";
 
 export const IProfileDataStore = iocDecorator<IProfileDataStore>();
 

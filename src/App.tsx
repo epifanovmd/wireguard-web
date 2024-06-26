@@ -1,11 +1,11 @@
+import { Container, Header } from "@components";
 import { disposer } from "@force-dev/utils";
+import { useSessionDataStore } from "@store";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useLayoutEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
-import { Container, Header } from "./components";
 import { IRoute, RoutePaths, routes } from "./routes";
-import { useSessionDataStore } from "./store";
 
 export const App = observer(() => {
   const { restore, initialize, isAuthorized, isReady } = useSessionDataStore();

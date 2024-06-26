@@ -1,6 +1,5 @@
+import { bytes } from "@common";
 import React, { FC, useEffect, useRef, useState } from "react";
-
-import { bytes } from "../../common";
 
 export const Speed: FC<{ value: number }> = ({ value }) => {
   const timeoutId = useRef<number>();

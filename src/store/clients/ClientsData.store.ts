@@ -1,9 +1,8 @@
-import { iocHook } from "@force-dev/react";
 import { CollectionHolder } from "@force-dev/utils";
+import { ClientModel } from "@models";
+import { IClient, IClientsService, IClientsSocketService } from "@service";
 import { makeAutoObservable } from "mobx";
 
-import { ClientModel } from "../../models";
-import { IClient, IClientsService, IClientsSocketService } from "../../service";
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
 

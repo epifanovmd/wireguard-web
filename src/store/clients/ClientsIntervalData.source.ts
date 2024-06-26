@@ -1,6 +1,5 @@
 import { IntervalDataSource } from "@force-dev/utils";
-
-import { IClient, IClientsService } from "../../service";
+import { IClient, IClientsService } from "@service";
 
 export class ClientsIntervalDataSource extends IntervalDataSource<
   IClient[],

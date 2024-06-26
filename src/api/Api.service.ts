@@ -62,11 +62,14 @@ export class ApiService implements IApiService {
         const error = new Error(e.message ?? e);
 
         if (e.response) {
-          const errorData = e.response.data;
+          const errorData = e.response.data as any;
+
+          const errorStatus = errorData?.error?.status;
+          const errorMessage = errorData?.error?.message;
 
           return Promise.resolve<ApiResponse>({
-            status: e.response.status || 500,
-            error: errorData ? new Error(JSON.stringify(errorData)) : error,
+            status: errorStatus ?? e.response.status ?? 500,
+            error: errorMessage ? new Error(errorMessage) : error,
           });
         } else if (e.request) {
           return Promise.resolve<ApiResponse>({

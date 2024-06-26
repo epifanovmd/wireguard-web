@@ -1,7 +1,7 @@
+import { ClientModel } from "@models";
 import { observer } from "mobx-react-lite";
 import React, { FC } from "react";
 
-import { ClientModel } from "../../models";
 import { Speed } from "../speed";
 
 interface IProps {

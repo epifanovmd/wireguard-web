@@ -1,14 +1,14 @@
+import { ApiResponse } from "@api";
 import { DataHolder } from "@force-dev/utils";
-import { makeAutoObservable } from "mobx";
-
-import { ApiResponse } from "../../api";
 import {
   IProfile,
   IProfileService,
   ISignInRequest,
   ISignInResponse,
   ITokenService,
-} from "../../service";
+} from "@service";
+import { makeAutoObservable } from "mobx";
+
 import { IProfileDataStore } from "./ProfileData.types";
 
 @IProfileDataStore({ inSingleton: true })

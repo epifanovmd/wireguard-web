@@ -1,7 +1,7 @@
+import { ClientList } from "@components";
 import { observer } from "mobx-react-lite";
-import React, { FC, PropsWithChildren, useEffect } from "react";
+import React, { FC, PropsWithChildren } from "react";
 
-import { ClientList } from "../../components";
 import { useClientsVM } from "./hooks";
 
 interface IProps {}

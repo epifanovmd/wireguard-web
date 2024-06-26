@@ -1,9 +1,9 @@
-module.exports = {
-  presets: ["@babel/preset-typescript", "@babel/preset-react"],
+export default {
+  presets: [],
   plugins: [
-    "@loadable/babel-plugin",
-    "@babel/syntax-dynamic-import",
-    "react-hot-loader/babel",
+    ["@babel/plugin-proposal-decorators", { legacy: true }],
+    "babel-plugin-transform-typescript-metadata",
+    "babel-plugin-parameter-decorator",
   ],
   env: {
     development: {
