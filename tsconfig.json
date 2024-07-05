@@ -40,7 +40,8 @@
     "transpileOnly": true,
     "esm": true,
     "compilerOptions": {
-      "moduleResolution": "Node16"
+      "moduleResolution": "Node16",
+      "useDefineForClassFields": true
     }
   },
   "exclude": [
