@@ -1,5 +1,5 @@
-import { BASE_URL } from "./Api.service";
 import { ApiAbortPromise } from "./Api.types";
+import { BASE_URL } from "./axios";
 
 export class ApiExtractAbort {
   public ref: { abort?: () => void } = {};
