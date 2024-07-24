@@ -12,7 +12,7 @@ export const Header: FC = memo(() => {
             <Link href="/">Home</Link>
           </li>
           <li>
-            <Link href="/clients">Clients</Link>
+            <Link href="/about">About</Link>
           </li>
         </Items>
       </menu>

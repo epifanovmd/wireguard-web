@@ -24,6 +24,7 @@ export class ProfileDataStore implements IProfileDataStore {
 
   updateToken() {
     return this._tokenService.restoreRefreshToken().then(async refreshToken => {
+      console.log("refreshToken", refreshToken);
       if (refreshToken) {
         await this._refresh(refreshToken);
       }

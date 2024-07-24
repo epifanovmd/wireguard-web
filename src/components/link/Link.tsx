@@ -1,6 +1,6 @@
-import React, { memo } from "react";
-import { NavLink } from "react-router-dom";
+import { Link as _Link } from "@tanstack/react-router";
+import React, { ComponentProps, FC, memo } from "react";
 
-export const Link = memo((props: { href: string; children: string }) => {
-  return <NavLink to={props.href}>{props.children}</NavLink>;
+export const Link: FC<ComponentProps<typeof _Link>> = memo(props => {
+  return <_Link to={props.href}>{props.children}</_Link>;
 });

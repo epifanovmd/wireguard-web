@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { useLoginVM } from "./hooks";
 
-export const Login = observer(() => {
+export const LoginPage = observer(() => {
   const {
     handleLogin,
     username,
@@ -17,7 +17,6 @@ export const Login = observer(() => {
     <Wrap>
       <Input value={username.value} onChange={handleChangeLogin} />
       <Input value={password.value} onChange={handleChangePassword} />
-
       <Button onClick={handleLogin}>{"Войти"}</Button>
     </Wrap>
   );

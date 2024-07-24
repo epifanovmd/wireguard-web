@@ -1,4 +1,5 @@
 import mdx from "@mdx-js/rollup";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import path from "path";
@@ -13,6 +14,7 @@ const base_url = process.env.VITE_BASE_URL;
 
 const config: UserConfig = {
   plugins: [
+    TanStackRouterVite(),
     react({
       babel: {
         configFile: true,

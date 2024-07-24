@@ -5,7 +5,7 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": [
       "vite/client",
-      "reflect-metadata",
+      "reflect-metadata"
     ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -16,7 +16,7 @@
     "importHelpers": true,
     "isolatedModules": true,
     "jsx": "react",
-    "moduleResolution": "Node",
+    "moduleResolution": "NodeNext",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
