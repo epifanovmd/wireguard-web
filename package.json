@@ -23,7 +23,7 @@
     "dev": "vite",
     "prod": "yarn build && NODE_ENV=production vite preview",
     "build": "vite build",
-    "gen:api": "npx orval --config orval.config.ts",
+    "gen:api": "curl http://77.91.85.77:8181/api-docs/swagger.json >> swagger.json && npx orval --config orval.config.ts",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx",
     "prettier:fix": "prettier --parser typescript --write src/**/*.{ts,tsx}",
     "check-packages-updates": "yarn outdated"
