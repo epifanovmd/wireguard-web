@@ -1,12 +1,16 @@
 import { Header } from "@components";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import React from "react";
+import React, { memo } from "react";
 
-export const Route = createFileRoute("/_public")({
-  component: () => (
+const Component = memo(() => {
+  return (
     <>
       <Header />
       <Outlet />
     </>
-  ),
+  );
+});
+
+export const Route = createFileRoute("/_public")({
+  component: Component,
 });

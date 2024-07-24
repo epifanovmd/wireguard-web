@@ -46,6 +46,7 @@ export const useLoginVM = () => {
       });
 
       if (profileDataStore.profile) {
+        console.log("profileDataStore.profile", profileDataStore.profile);
         navigate({ to: "/" });
       }
     }
