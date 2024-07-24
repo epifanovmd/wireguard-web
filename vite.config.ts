@@ -1,4 +1,5 @@
 import mdx from "@mdx-js/rollup";
+// @ts-ignore
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";

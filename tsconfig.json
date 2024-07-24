@@ -16,7 +16,7 @@
     "importHelpers": true,
     "isolatedModules": true,
     "jsx": "react",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
