@@ -1,5 +1,5 @@
 import { Container } from "@components";
-import { disposer } from "@force-dev/utils";
+import { delayPromise, disposer } from "@force-dev/utils";
 import { ISessionDataStore, useSessionDataStore } from "@store";
 import {
   createRootRoute,
@@ -35,16 +35,20 @@ const Component = observer(() => {
 });
 
 export const Route = createRootRoute({
-  beforeLoad: async () => {
-    const { isReady, restore } = ISessionDataStore.getInstance();
+  beforeLoad: () => {
+    const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
 
     if (!isReady) {
-      return await restore().then(async accessToken => {
+      restore().then(accessToken => {
         if (!accessToken) {
           throw redirect({ to: "/auth" });
         }
       });
+    } else if (!isAuthorized) {
+      throw redirect({ to: "/auth" });
     }
   },
   component: Component,
+  pendingMinMs: 0,
+  pendingMs: 0,
 });

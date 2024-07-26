@@ -14,7 +14,8 @@ initLocalization({ initLang: lang ?? undefined }).finally();
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  defaultPendingMinMs: 500,
+  defaultPendingMinMs: 600,
+  defaultPendingMs: 100,
   defaultPendingComponent: () => (
     <div
       style={{

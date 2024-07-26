@@ -1,5 +1,5 @@
 import { IApiService } from "@api";
-import { DataHolder, Interval } from "@force-dev/utils";
+import { DataHolder, delayPromise, Interval } from "@force-dev/utils";
 import { ITokenService } from "@service";
 import { makeAutoObservable, reaction } from "mobx";
 
@@ -45,11 +45,8 @@ export class SessionDataStore implements ISessionDataStore {
             this._interval.stop();
           }
         },
-        { fireImmediately: true },
       ),
-      reaction(() => this._tokenService.accessToken, this.holder.setData, {
-        fireImmediately: true,
-      }),
+      reaction(() => this._tokenService.accessToken, this.holder.setData),
       () => this._interval.stop(),
     ];
   }
