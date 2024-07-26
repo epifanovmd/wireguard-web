@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  wg-admin:
+    build: .
+    container_name: wireguard-admin
+    volumes:
+      - ./wg-config:/etc/wireguard
+    ports:
+      - "8181:4173"
+    restart: unless-stopped
+
+
+volumes:
+  wireguard:
