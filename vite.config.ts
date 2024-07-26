@@ -45,6 +45,10 @@ const config: UserConfig = {
       "@theme": path.resolve(projectRootDir, "src/theme"),
     },
   },
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+  },
   server: {
     port: DEV_PORT,
     host: DEV_HOST,
