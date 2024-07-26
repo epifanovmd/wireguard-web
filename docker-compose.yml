@@ -3,7 +3,7 @@ version: "3.8"
 services:
   wg-admin:
     build: .
-    container_name: wireguard-admin
+    container_name: wireguard-web
     volumes:
       - ./wg-config:/etc/wireguard
     ports:
