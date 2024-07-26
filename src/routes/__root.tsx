@@ -1,12 +1,7 @@
 import { Container } from "@components";
 import { disposer } from "@force-dev/utils";
 import { ISessionDataStore, useSessionDataStore } from "@store";
-import {
-  createRootRoute,
-  Outlet,
-  redirect,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createRootRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
