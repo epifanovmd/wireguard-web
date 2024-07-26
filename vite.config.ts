@@ -11,7 +11,10 @@ const projectRootDir = path.resolve(__dirname);
 
 dotenv.config({ path: [`.env.${process.env.NODE_ENV}`, ".env"] });
 
-const base_url = process.env.VITE_BASE_URL;
+const { VITE_DEV_HOST, VITE_DEV_PORT, VITE_BASE_URL } = process.env;
+
+const DEV_HOST = VITE_DEV_HOST;
+const DEV_PORT = VITE_DEV_PORT ? Number(VITE_DEV_PORT) : 3000;
 
 const config: UserConfig = {
   plugins: [
@@ -43,10 +46,11 @@ const config: UserConfig = {
     },
   },
   server: {
-    port: 3000,
+    port: DEV_PORT,
+    host: DEV_HOST,
     proxy: {
       "/api": {
-        target: base_url,
+        target: VITE_BASE_URL,
         // rewrite: path => path.replace("/api", ""),
         changeOrigin: true,
       },

@@ -20,10 +20,10 @@ export const Route = createFileRoute("/_private")({
       const accessToken = await restore();
 
       if (!accessToken) {
-        throw redirect({ to: "/auth" });
+        throw redirect({ to: "/auth/login" });
       }
     } else if (!isAuthorized) {
-      throw redirect({ to: "/auth" });
+      throw redirect({ to: "/auth/login" });
     }
   },
   component: Component,

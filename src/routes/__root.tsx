@@ -1,5 +1,5 @@
 import { Container } from "@components";
-import { delayPromise, disposer } from "@force-dev/utils";
+import { disposer } from "@force-dev/utils";
 import { ISessionDataStore, useSessionDataStore } from "@store";
 import {
   createRootRoute,
@@ -17,7 +17,7 @@ const Component = observer(() => {
   useEffect(() => {
     const dispose = initialize(() => {
       navigate({
-        to: "/auth",
+        to: "/auth/login",
       });
     });
 
@@ -35,17 +35,11 @@ const Component = observer(() => {
 });
 
 export const Route = createRootRoute({
-  beforeLoad: () => {
+  beforeLoad: async () => {
     const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
 
     if (!isReady) {
-      restore().then(accessToken => {
-        if (!accessToken) {
-          throw redirect({ to: "/auth" });
-        }
-      });
-    } else if (!isAuthorized) {
-      throw redirect({ to: "/auth" });
+      restore().then();
     }
   },
   component: Component,

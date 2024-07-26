@@ -1,15 +1,15 @@
 import { ApiAbortPromise, ApiRequestConfig, ApiResponse } from "@api";
 import { iocDecorator } from "@force-dev/utils";
-import axios, { AxiosHeaders, AxiosRequestConfig, Canceler } from "axios";
-
 // не менять путь, иначе появистя циклическая зависимость
-import { ITokenService } from "../service/token";
+import { ITokenService } from "@service";
+import axios, { AxiosHeaders, AxiosRequestConfig, Canceler } from "axios";
+const env = import.meta.env;
+
+const devBaseUrl = `${env.VITE_DEV_PROTOCOL}://${env.VITE_DEV_HOST}:${env.VITE_DEV_PORT}`;
 
 export const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? undefined
-    : import.meta.env.VITE_BASE_URL;
-export const SOCKET_BASE_URL = import.meta.env.VITE_SOCKET_BASE_URL;
+  import.meta.env.MODE === "development" ? devBaseUrl : env.VITE_BASE_URL;
+export const SOCKET_BASE_URL = env.VITE_SOCKET_BASE_URL;
 
 export const DEFAULT_AXIOS_HEADERS = new AxiosHeaders({
   Accept: "application/json",
