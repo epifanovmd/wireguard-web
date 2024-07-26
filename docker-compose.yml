@@ -4,8 +4,6 @@ services:
   wg-admin:
     build: .
     container_name: wireguard-web
-    volumes:
-      - ./wg-config:/etc/wireguard
     ports:
       - "8181:4173"
     restart: unless-stopped
