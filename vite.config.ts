@@ -11,10 +11,19 @@ const projectRootDir = path.resolve(__dirname);
 
 dotenv.config({ path: [`.env.${process.env.NODE_ENV}`, ".env"] });
 
-const { VITE_DEV_HOST, VITE_DEV_PORT, VITE_BASE_URL } = process.env;
+const {
+  VITE_DEV_HOST,
+  VITE_DEV_PORT,
+  VITE_BASE_URL,
+  VITE_PROD_HOST,
+  VITE_PROD_PORT,
+} = process.env;
 
 const DEV_HOST = VITE_DEV_HOST;
 const DEV_PORT = VITE_DEV_PORT ? Number(VITE_DEV_PORT) : 3000;
+
+const PROD_HOST = VITE_PROD_HOST;
+const PROD_PORT = VITE_PROD_PORT ? Number(VITE_PROD_PORT) : 3000;
 
 const config: UserConfig = {
   plugins: [
@@ -46,8 +55,8 @@ const config: UserConfig = {
     },
   },
   server: {
-    port: DEV_PORT,
     host: DEV_HOST,
+    port: DEV_PORT,
     proxy: {
       "/api": {
         target: VITE_BASE_URL,
@@ -55,6 +64,10 @@ const config: UserConfig = {
         changeOrigin: true,
       },
     },
+  },
+  preview: {
+    host: PROD_HOST,
+    port: PROD_PORT,
   },
 };
 
