@@ -60,7 +60,6 @@ const config: UserConfig = {
     proxy: {
       "/api": {
         target: VITE_BASE_URL,
-        // rewrite: path => path.replace("/api", ""),
         changeOrigin: true,
       },
     },
@@ -68,6 +67,12 @@ const config: UserConfig = {
   preview: {
     host: PROD_HOST,
     port: PROD_PORT,
+    proxy: {
+      "/api": {
+        target: VITE_BASE_URL,
+        changeOrigin: true,
+      },
+    },
   },
 };
 
