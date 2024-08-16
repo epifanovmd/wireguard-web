@@ -1,6 +1,6 @@
+import { SOCKET_BASE_URL } from "@api";
 import { connect } from "socket.io-client";
 
-import { SOCKET_BASE_URL } from "../../api/axios";
 import { ITokenService } from "../token";
 import {
   ISocketService,

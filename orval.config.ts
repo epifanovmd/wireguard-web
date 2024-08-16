@@ -12,7 +12,7 @@ export default defineConfig({
       mock: false,
       override: {
         mutator: {
-          path: "./src/api/axios.ts",
+          path: "./src/api/Api.service.ts",
           name: "axiosInstancePromise",
         },
       },

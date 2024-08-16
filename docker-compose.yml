@@ -1,11 +1,9 @@
-version: "3.8"
-
 services:
   wg-admin:
     build: .
     container_name: wireguard-web
     ports:
-      - "8080:4173"
+      - "4173:4173"
     restart: unless-stopped
 
 

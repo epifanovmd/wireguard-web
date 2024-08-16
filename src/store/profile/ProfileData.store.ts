@@ -1,5 +1,4 @@
-import { ApiResponse } from "@api";
-import { DataHolder } from "@force-dev/utils";
+import { ApiResponse, DataHolder } from "@force-dev/utils";
 import {
   IProfile,
   IProfileService,

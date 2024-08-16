@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "@force-dev/react": "^1.1.2",
-    "@force-dev/utils": "^1.1.64",
+    "@force-dev/react-web": "^0.0.1",
+    "@force-dev/utils": "^1.1.77",
     "@tanstack/react-router": "^1.45.8",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",

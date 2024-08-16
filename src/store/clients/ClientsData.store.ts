@@ -1,4 +1,4 @@
-import { CollectionHolder } from "@force-dev/utils";
+import { DataHolder } from "@force-dev/utils";
 import { ClientModel } from "@models";
 import { IClient, IClientsService, IClientsSocketService } from "@service";
 import { makeAutoObservable } from "mobx";
@@ -8,7 +8,7 @@ import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
 
 @IClientsDataStore()
 export class ClientsDataStore implements IClientsDataStore {
-  public holder: CollectionHolder<IClient> = new CollectionHolder([]);
+  public holder = new DataHolder<IClient[]>([]);
 
   private _intervalDataSource = new ClientsIntervalDataSource(
     this._clientsService,
@@ -46,7 +46,7 @@ export class ClientsDataStore implements IClientsDataStore {
   }
 
   async onRefresh() {
-    this.holder.setLoading(false);
+    this.holder.setLoading();
     const res = await this._clientsService.getClients();
 
     if (res.error) {

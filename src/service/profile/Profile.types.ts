@@ -1,16 +1,15 @@
-import { ApiAbortPromise, ApiResponse } from "@api";
-import { iocDecorator } from "@force-dev/utils";
+import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 
 export const IProfileService = iocDecorator<IProfileService>();
 
 export interface IProfileService {
   signIn(
     credentials: ISignInRequest,
-  ): ApiAbortPromise<ApiResponse<ISignInResponse>>;
+  ): CancelablePromise<ApiResponse<ISignInResponse>>;
 
   refresh(
     body: IRefreshTokenRequest,
-  ): ApiAbortPromise<ApiResponse<IRefreshTokenResponse>>;
+  ): CancelablePromise<ApiResponse<IRefreshTokenResponse>>;
 }
 
 export interface IRefreshTokenResponse {
