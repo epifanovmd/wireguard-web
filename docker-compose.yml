@@ -3,7 +3,7 @@ services:
     build: .
     container_name: wireguard-web
     ports:
-      - "4173:4173"
+      - "3001:3000"
     restart: unless-stopped
 
 
