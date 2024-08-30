@@ -1,4 +1,4 @@
-import { IApiService } from "@api";
+import { IApiService } from "~@api";
 
 import { IClientsResponse, IClientsService } from "./Clients.types";
 

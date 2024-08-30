@@ -1,9 +1,10 @@
-import { Container } from "@components";
 import { disposer } from "@force-dev/utils";
-import { ISessionDataStore, useSessionDataStore } from "@store";
 import { createRootRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+
+import { Container } from "~@components";
+import { ISessionDataStore, useSessionDataStore } from "~@store";
 
 const Component = observer(() => {
   const { initialize } = useSessionDataStore();
@@ -31,7 +32,7 @@ const Component = observer(() => {
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
-    const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
+    const { isReady, restore } = ISessionDataStore.getInstance();
 
     if (!isReady) {
       restore().then();

@@ -1,8 +1,10 @@
-import { useClientsDataStore } from "@store";
 import { useEffect } from "react";
 
+import { useClientsDataStore } from "~@store";
+
 export const useClientsVM = () => {
-  const { models, onRefresh, unSubscribeSocket } = useClientsDataStore();
+  const { models, onRefresh, unSubscribeSocket, loading } =
+    useClientsDataStore();
 
   useEffect(() => {
     onRefresh().then();
@@ -13,5 +15,5 @@ export const useClientsVM = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { list: models };
+  return { list: models, loading, onRefresh };
 };

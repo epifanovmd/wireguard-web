@@ -1,4 +1,10 @@
 interface EnvVariables {
+  BASE_URL: string;
+  MODE: "development" | "productions";
+  DEV: boolean;
+  PROD: boolean;
+  SSR: boolean;
+
   VITE_DEV_PROTOCOL: string;
   VITE_DEV_HOST: string;
   VITE_DEV_PORT: string;

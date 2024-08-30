@@ -3,9 +3,9 @@ import { makeAutoObservable } from "mobx";
 import { ITokenService } from "./Token.types";
 
 @ITokenService({ inSingleton: true })
-class TokenService implements ITokenService {
-  public accessToken: string = "";
-  public refreshToken: string = "";
+export class TokenService implements ITokenService {
+  public accessToken = "";
+  public refreshToken = "";
 
   constructor() {
     this.restoreRefreshToken().then();

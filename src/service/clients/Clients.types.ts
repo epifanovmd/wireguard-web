@@ -1,5 +1,6 @@
-import { IApiService } from "@api";
 import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
+
+import { IApiService } from "~@api";
 
 export interface IClient {
   id: string;
@@ -27,7 +28,7 @@ export interface IClientsService {
 }
 
 @IClientsService()
-class ClientsService implements IClientsService {
+export class ClientsService implements IClientsService {
   constructor(@IApiService() private _apiService: IApiService) {}
 
   getClients() {

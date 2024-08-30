@@ -1,5 +1,6 @@
-import { SOCKET_BASE_URL } from "@api";
 import { connect } from "socket.io-client";
+
+import { SOCKET_BASE_URL } from "~@api";
 
 import { ITokenService } from "../token";
 import {
@@ -43,10 +44,10 @@ export class SocketService implements ISocketService {
     onEvent: SocketEvents[K],
     unsubscribe?: () => void,
   ) => {
-    const self = this.socket.on(event, onEvent as any);
+    const self = this.socket.on(event, onEvent as never);
 
     return () => {
-      self.removeListener(event, onEvent as any);
+      self.removeListener(event, onEvent as never);
       unsubscribe?.();
     };
   };

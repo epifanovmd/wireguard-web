@@ -20,12 +20,12 @@ export const ThemeProvider = React.memo<PropsWithChildren>(props => {
 
   const toggleThemeCallback = React.useCallback(() => {
     setTheme(currentTheme => {
-      if (currentTheme!.id === DEFAULT_LIGHT_THEME_ID) {
+      if (currentTheme.id === DEFAULT_LIGHT_THEME_ID) {
         localStorage.setItem("themeId", DEFAULT_LIGHT_THEME_ID);
 
         return DEFAULT_DARK_THEME;
       }
-      if (currentTheme!.id === DEFAULT_DARK_THEME_ID) {
+      if (currentTheme.id === DEFAULT_DARK_THEME_ID) {
         localStorage.setItem("themeId", DEFAULT_DARK_THEME_ID);
 
         return DEFAULT_LIGHT_THEME;

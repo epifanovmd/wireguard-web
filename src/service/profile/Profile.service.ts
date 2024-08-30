@@ -1,4 +1,4 @@
-import { IApiService } from "@api";
+import { IApiService } from "~@api";
 
 import {
   IProfileService,

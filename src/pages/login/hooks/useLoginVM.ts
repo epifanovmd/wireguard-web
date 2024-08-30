@@ -1,62 +1,37 @@
-import { useTextInput } from "@force-dev/react";
-import { useProfileDataStore } from "@store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { ChangeEvent, useCallback } from "react";
-import { z } from "zod";
+import { useCallback } from "react";
+import { useForm } from "react-hook-form";
+
+import { useProfileDataStore } from "~@store";
+
+import { loginFormValidation, TLoginForm } from "../validations";
 
 export const useLoginVM = () => {
   const profileDataStore = useProfileDataStore();
   const navigate = useNavigate();
 
-  const username = useTextInput({
-    initialValue: "string",
-    validate: value => {
-      const res = z.string().min(1).safeParse(value);
-
-      console.log("res", res);
-
-      // if (res.error) {
-      //   return res.error.errors[0].message;
-      // }
-
-      return "";
+  const form = useForm<TLoginForm>({
+    defaultValues: {
+      username: "string",
+      password: "string",
     },
+    resolver: zodResolver(loginFormValidation),
   });
-  const password = useTextInput({ initialValue: "string" });
-
-  const handleChangeLogin = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      username.setValue(event.target.value);
-    },
-    [username],
-  );
-
-  const handleChangePassword = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      password.setValue(event.target.value);
-    },
-    [password],
-  );
 
   const handleLogin = useCallback(async () => {
-    if (username.value && password.value) {
-      await profileDataStore.signIn({
-        username: username.value,
-        password: password.value,
-      });
+    return form.handleSubmit(async data => {
+      await profileDataStore.signIn(data);
 
       if (profileDataStore.profile) {
         console.log("profileDataStore.profile", profileDataStore.profile);
-        navigate({ to: "/" });
+        navigate({ to: "/" }).then();
       }
-    }
-  }, [navigate, password.value, profileDataStore, username.value]);
+    })();
+  }, [form, navigate, profileDataStore]);
 
   return {
+    form,
     handleLogin,
-    username,
-    password,
-    handleChangeLogin,
-    handleChangePassword,
   };
 };

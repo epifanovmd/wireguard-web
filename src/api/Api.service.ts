@@ -3,7 +3,8 @@ import {
   IApiService as IIIApiService,
   iocDecorator,
 } from "@force-dev/utils";
-import { ITokenService } from "@service";
+
+import { ITokenService } from "~@service";
 
 const env = import.meta.env;
 const isDev = env.MODE === "development";

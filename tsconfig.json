@@ -27,13 +27,13 @@
     "sourceMap": true,
     "strict": true,
     "paths": {
-      "@api": ["./src/api"],
-      "@common": ["./src/common"],
-      "@components": ["./src/components"],
-      "@models": ["./src/models"],
-      "@service": ["./src/service"],
-      "@store": ["./src/store"],
-      "@theme": ["./src/theme"],
+      "~@api": ["./src/api"],
+      "~@common": ["./src/common"],
+      "~@components": ["./src/components"],
+      "~@models": ["./src/models"],
+      "~@service": ["./src/service"],
+      "~@store": ["./src/store"],
+      "~@theme": ["./src/theme"],
     }
   },
   "ts-node": {

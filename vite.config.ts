@@ -1,4 +1,5 @@
 import mdx from "@mdx-js/rollup";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
@@ -45,13 +46,13 @@ const config: UserConfig = {
   ],
   resolve: {
     alias: {
-      "@api": path.resolve(projectRootDir, "src/api"),
-      "@common": path.resolve(projectRootDir, "src/common"),
-      "@components": path.resolve(projectRootDir, "src/components"),
-      "@models": path.resolve(projectRootDir, "src/models"),
-      "@service": path.resolve(projectRootDir, "src/service"),
-      "@store": path.resolve(projectRootDir, "src/store"),
-      "@theme": path.resolve(projectRootDir, "src/theme"),
+      "~@api": path.resolve(projectRootDir, "src/api"),
+      "~@common": path.resolve(projectRootDir, "src/common"),
+      "~@components": path.resolve(projectRootDir, "src/components"),
+      "~@models": path.resolve(projectRootDir, "src/models"),
+      "~@service": path.resolve(projectRootDir, "src/service"),
+      "~@store": path.resolve(projectRootDir, "src/store"),
+      "~@theme": path.resolve(projectRootDir, "src/theme"),
     },
   },
   server: {

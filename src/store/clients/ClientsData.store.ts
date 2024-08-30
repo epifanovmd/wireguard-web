@@ -1,7 +1,8 @@
 import { DataHolder } from "@force-dev/utils";
-import { ClientModel } from "@models";
-import { IClient, IClientsService, IClientsSocketService } from "@service";
 import { makeAutoObservable } from "mobx";
+
+import { ClientModel } from "~@models";
+import { IClient, IClientsService, IClientsSocketService } from "~@service";
 
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
@@ -30,6 +31,10 @@ export class ClientsDataStore implements IClientsDataStore {
     return this.data.map(item => new ClientModel(item));
   }
 
+  get loading() {
+    return this.holder.isLoading;
+  }
+
   start() {
     const { unsubscribe } = this._intervalDataSource.subscribe(res => {
       this.holder.setData(res);
@@ -46,11 +51,14 @@ export class ClientsDataStore implements IClientsDataStore {
   }
 
   async onRefresh() {
+    this._clientSocketService.unsubscribeAllClients();
     this.holder.setLoading();
     const res = await this._clientsService.getClients();
 
-    if (res.error) {
-      this.holder.setError({ msg: res.error.toString() });
+    if (res.axiosError) {
+      if (!res.isCanceled) {
+        this.holder.setError({ msg: res.axiosError.toString() });
+      }
     } else if (res.data) {
       this.holder.setData(res.data);
 

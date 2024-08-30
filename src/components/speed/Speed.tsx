@@ -1,5 +1,6 @@
-import { bytes } from "@common";
 import React, { FC, useEffect, useRef, useState } from "react";
+
+import { bytes } from "~@common";
 
 export const Speed: FC<{ value: number }> = ({ value }) => {
   const timeoutId = useRef<number>();
@@ -16,7 +17,7 @@ export const Speed: FC<{ value: number }> = ({ value }) => {
 
       timeoutId.current = setTimeout(() => {
         setCurrent("0");
-      }, 2000) as any;
+      }, 2000) as never;
     }
 
     setPrev(value);

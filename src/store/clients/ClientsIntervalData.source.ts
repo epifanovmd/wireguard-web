@@ -1,4 +1,4 @@
-import { IClient, IClientsService } from "@service";
+import { IClient, IClientsService } from "~@service";
 
 import { IntervalDataSource } from "./IntervalDataSource";
 
@@ -21,13 +21,14 @@ export class ClientsIntervalDataSource extends IntervalDataSource<
     return super.subscribe(onData, timerInterval);
   };
 
-  protected afterFetch(v: IClient[]) {
+  afterFetch(v: IClient[]) {
     return v;
   }
 
-  protected beforeFetch() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  beforeFetch() {}
 
-  protected getParams(): {} {
+  getParams(): {} {
     return this._params;
   }
 
