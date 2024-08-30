@@ -8,7 +8,7 @@ COPY . ./wireguard-web
 WORKDIR ./wireguard-web
 
 RUN yarn
-RUN yarn build
+RUN npm build
 
 EXPOSE 4173
 CMD ["npm", "run", "prod"]
