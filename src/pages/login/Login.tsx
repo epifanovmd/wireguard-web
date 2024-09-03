@@ -36,7 +36,7 @@ export const LoginPage = observer(() => {
             />
 
             <Field
-              name={"username"}
+              name={"password"}
               render={({
                 field: { onChange, value },
                 fieldState: { invalid },

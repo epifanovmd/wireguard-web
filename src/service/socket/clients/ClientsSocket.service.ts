@@ -1,4 +1,4 @@
-import { IClient } from "../../clients";
+import { IClient } from "../../client";
 import { ISocketService } from "../Socket.types";
 import { IClientsSocketService } from "./ClientsSocket.types";
 

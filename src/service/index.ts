@@ -1,4 +1,4 @@
-export * from "./clients";
+export * from "./client";
 export * from "./profile";
 export * from "./socket";
 export * from "./token";

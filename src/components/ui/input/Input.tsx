@@ -1,10 +1,12 @@
-import { Input as AntdInput } from "antd";
-import React, { ComponentProps, FC, memo, PropsWithChildren } from "react";
+import { Input as AntdInput, InputRef } from "antd";
+import React, { ComponentProps, forwardRef, memo } from "react";
 
-export interface IInputProps extends ComponentProps<typeof AntdInput> {}
+export interface IInputProps extends ComponentProps<typeof AntdInput> {
+  ref?: React.Ref<InputRef>;
+}
 
-const _Input: FC<PropsWithChildren<IInputProps>> = props => {
-  return <AntdInput {...props} />;
-};
+const _Input = forwardRef<InputRef, IInputProps>((props, ref) => {
+  return <AntdInput ref={ref} {...props} />;
+});
 
 export const Input = memo(_Input);

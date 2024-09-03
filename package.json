@@ -23,7 +23,6 @@
     "dev": "vite",
     "prod": "yarn build && NODE_ENV=production vite preview",
     "build": "vite build",
-    "gen:api": "curl http://77.91.85.77:8181/api-docs/swagger.json >> swagger.json && npx orval --config orval.config.ts",
     "lint:fix": "eslint --fix \"**/*{.ts,.tsx}\"",
     "prettier:fix": "prettier --parser typescript --write src/**/*.{ts,tsx}",
     "check-packages-updates": "yarn outdated"
@@ -31,7 +30,7 @@
   "dependencies": {
     "@force-dev/react": "^1.1.2",
     "@force-dev/react-web": "^0.0.1",
-    "@force-dev/utils": "^1.1.77",
+    "@force-dev/utils": "^1.1.78",
     "@hookform/resolvers": "^3.9.0",
     "@tanstack/react-router": "^1.45.8",
     "antd": "^5.20.3",
@@ -86,7 +85,6 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
-    "orval": "^6.31.0",
     "prettier": "^2.8.1",
     "sass": "^1.56.2",
     "ts-node": "^10.7.0",

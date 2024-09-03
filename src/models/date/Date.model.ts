@@ -1,10 +1,14 @@
-import { DataModelBase } from "@force-dev/utils";
+import { DataModelBase, Maybe } from "@force-dev/utils";
 
-export class DateModel extends DataModelBase<Date> {
+export class DateModel extends DataModelBase<Maybe<string>> {
   public get formatted() {
-    const dateTime = new Date(this.data).toISOString();
-    const split = dateTime.split("T");
+    const dateTime = this.data && new Date(this.data).toISOString();
+    const split = dateTime?.split("T");
 
-    return `${split[0]} -- ${split[1]?.split(".")[0]}`;
+    if (split) {
+      return `${split[0]} / ${split[1]?.split(".")[0]}`;
+    }
+
+    return "";
   }
 }

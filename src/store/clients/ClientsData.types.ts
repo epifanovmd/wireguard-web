@@ -1,7 +1,7 @@
 import { DataHolder, iocDecorator } from "@force-dev/utils";
 
 import { ClientModel } from "~@models";
-import { IClient } from "~@service";
+import { IClient, ICreateClient } from "~@service";
 
 export const IClientsDataStore = iocDecorator<IClientsDataStore>();
 
@@ -14,7 +14,12 @@ export interface IClientsDataStore {
   start(): void;
 
   subscribeSocket(): void;
+
   unSubscribeSocket(): void;
+
+  createClient(params: ICreateClient): Promise<void>;
+
+  deleteClient(clientId: string): Promise<void>;
 
   onRefresh(): Promise<IClient[]>;
 }

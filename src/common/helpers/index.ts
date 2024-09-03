@@ -1,1 +1,2 @@
-export * from "./bytes.helper";
+export * from "./bytes";
+export * from "./downloadBlob";

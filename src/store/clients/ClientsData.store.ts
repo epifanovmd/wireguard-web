@@ -2,7 +2,12 @@ import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { ClientModel } from "~@models";
-import { IClient, IClientsService, IClientsSocketService } from "~@service";
+import {
+  IClient,
+  IClientsService,
+  IClientsSocketService,
+  ICreateClient,
+} from "~@service";
 
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
@@ -48,6 +53,20 @@ export class ClientsDataStore implements IClientsDataStore {
 
   unSubscribeSocket() {
     this._clientSocketService.unsubscribeAllClients();
+  }
+
+  async createClient(params: ICreateClient) {
+    const client = await this._clientsService.createClient(params);
+
+    if (client.data) {
+      this.holder.setData([...this.data, client.data]);
+    }
+  }
+
+  async deleteClient(clientId: string) {
+    await this._clientsService.deleteClient(clientId);
+
+    this.holder.setData(this.data.filter(item => item.id !== clientId));
   }
 
   async onRefresh() {

@@ -3,8 +3,8 @@ import { createRootRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
-import { Container } from "~@components";
-import { ISessionDataStore, useSessionDataStore } from "~@store";
+import { ConfirmModalProvider, Container } from "~@components";
+import { useSessionDataStore } from "~@store";
 
 const Component = observer(() => {
   const { initialize } = useSessionDataStore();
@@ -14,7 +14,7 @@ const Component = observer(() => {
     const dispose = initialize(() => {
       navigate({
         to: "/auth/login",
-      });
+      }).then();
     });
 
     return () => {
@@ -25,19 +25,14 @@ const Component = observer(() => {
 
   return (
     <Container>
-      <Outlet />
+      <ConfirmModalProvider>
+        <Outlet />
+      </ConfirmModalProvider>
     </Container>
   );
 });
 
 export const Route = createRootRoute({
-  beforeLoad: async () => {
-    const { isReady, restore } = ISessionDataStore.getInstance();
-
-    if (!isReady) {
-      restore().then();
-    }
-  },
   component: Component,
   pendingMinMs: 0,
   pendingMs: 0,

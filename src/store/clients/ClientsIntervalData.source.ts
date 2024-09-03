@@ -1,6 +1,6 @@
-import { IClient, IClientsService } from "~@service";
+import { IntervalDataSource } from "@force-dev/utils";
 
-import { IntervalDataSource } from "./IntervalDataSource";
+import { IClient, IClientsService } from "~@service";
 
 export class ClientsIntervalDataSource extends IntervalDataSource<
   IClient[],
@@ -16,10 +16,6 @@ export class ClientsIntervalDataSource extends IntervalDataSource<
       return res.data || [];
     });
   }
-
-  subscribe = (onData: (res: IClient[]) => void, timerInterval?: number) => {
-    return super.subscribe(onData, timerInterval);
-  };
 
   afterFetch(v: IClient[]) {
     return v;
