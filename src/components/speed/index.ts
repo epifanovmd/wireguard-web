@@ -1,1 +1,1 @@
-export * from "./Speed";
+export * from "./TransferTxRx";

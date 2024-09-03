@@ -2,7 +2,7 @@ import { Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React from "react";
 
-import { Online, Speed } from "~@components";
+import { Online, TransferTxRx } from "~@components";
 import { ClientModel } from "~@models";
 
 export const clientListColumns: ColumnsType<ClientModel> = [
@@ -21,21 +21,21 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     ),
   },
   {
-    title: "transferRx",
+    title: "Загружено",
     dataIndex: "transferRx",
     key: "transferRx",
     width: "200px",
-    render: (_, { data }) => <Speed value={data.transferRx ?? 0} />,
+    render: (_, { data }) => <TransferTxRx value={data.transferRx ?? 0} />,
   },
   {
-    title: "transferTx",
+    title: "Скачано",
     dataIndex: "transferTx",
     key: "transferTx",
     width: "200px",
-    render: (_, { data }) => <Speed value={data.transferTx ?? 0} />,
+    render: (_, { data }) => <TransferTxRx value={data.transferTx ?? 0} />,
   },
   {
-    title: "Дата и вреся последнего подключения",
+    title: "Дата / время последнего подключения",
     key: "date",
     dataIndex: "date",
     render: (_, { date }) => <div>{date.formatted}</div>,

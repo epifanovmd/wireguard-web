@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 
 import { bytes } from "~@common";
 
-export const Speed: FC<{ value: number }> = ({ value }) => {
+export const TransferTxRx: FC<{ value: number }> = ({ value }) => {
   const timeoutId = useRef<number>();
   const [prev, setPrev] = useState(0);
   const [current, setCurrent] = useState("0");
