@@ -26,7 +26,8 @@ export const Speed: FC<{ value: number }> = ({ value }) => {
 
   return (
     <div style={{ flexGrow: 1, flexBasis: 0 }}>
-      {parseFloat(current) > 0 ? `${current}/s` : ""}
+      {value !== 0 &&
+        `${bytes(value)} ${parseFloat(current) > 0 ? `- ${current}/s` : ""}`}
     </div>
   );
 };
