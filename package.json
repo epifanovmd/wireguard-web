@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "prod": "yarn build && NODE_ENV=production vite preview",
+    "prod": "yarn build && vite preview",
     "build": "vite build",
     "lint:fix": "eslint --fix \"**/*{.ts,.tsx}\"",
     "prettier:fix": "prettier --parser typescript --write src/**/*.{ts,tsx}",

@@ -30,8 +30,9 @@ const _Online: FC<PropsWithChildren<IOnlineProps>> = ({ client }) => {
       setCurrent(tx + rx);
 
       timeoutId.current = setTimeout(() => {
+        setPrev(prev);
         setCurrent(prev);
-      }, 30000) as never;
+      }, 25000) as never;
     } else {
       setPrev(tx + rx);
     }

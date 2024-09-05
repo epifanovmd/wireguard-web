@@ -5,9 +5,9 @@ interface EnvVariables {
   PROD: boolean;
   SSR: boolean;
 
-  VITE_DEV_PROTOCOL: string;
-  VITE_DEV_HOST: string;
-  VITE_DEV_PORT: string;
+  VITE_PROTOCOL: string;
+  VITE_HOST: string;
+  VITE_PORT: string;
   VITE_BASE_URL: string;
   VITE_SOCKET_BASE_URL: string;
   VITE_APP_NAME: string;
