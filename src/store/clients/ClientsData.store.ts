@@ -6,7 +6,8 @@ import {
   IClient,
   IClientsService,
   IClientsSocketService,
-  ICreateClient,
+  ICreateClientRequest,
+  IUpdateClientRequest,
 } from "~@service";
 
 import { IClientsDataStore } from "./ClientsData.types";
@@ -47,15 +48,42 @@ export class ClientsDataStore implements IClientsDataStore {
     }, 1000);
   }
 
-  subscribeSocket() {
-    this._clientSocketService.subscribeAllClients(this.holder.setData);
+  subscribeSocket(clientId: string[]) {
+    this._clientSocketService.subscribeClient(clientId, data => {
+      this.holder.setData(
+        this.data.map(item => {
+          const dataItem = data[item.id];
+
+          if (dataItem) {
+            return {
+              ...item,
+              ...dataItem,
+            };
+          }
+
+          return item;
+        }),
+      );
+    });
   }
 
   unSubscribeSocket() {
-    this._clientSocketService.unsubscribeAllClients();
+    this._clientSocketService.unsubscribeClient();
   }
 
-  async createClient(params: ICreateClient) {
+  async updateClient(clientId: string, params: IUpdateClientRequest) {
+    const client = await this._clientsService.updateClient(clientId, params);
+
+    if (client.data) {
+      const clientData = client.data;
+
+      this.holder.setData(
+        this.data.map(item => (item.id === clientData.id ? clientData : item)),
+      );
+    }
+  }
+
+  async createClient(params: ICreateClientRequest) {
     const client = await this._clientsService.createClient(params);
 
     if (client.data) {
@@ -69,21 +97,21 @@ export class ClientsDataStore implements IClientsDataStore {
     this.holder.setData(this.data.filter(item => item.id !== clientId));
   }
 
-  async onRefresh() {
-    this._clientSocketService.unsubscribeAllClients();
+  async onRefresh(serverId: string) {
+    this._clientSocketService.unsubscribeClient();
     this.holder.setLoading();
-    const res = await this._clientsService.getClients();
+    const res = await this._clientsService.getClients(serverId);
 
     if (res.axiosError) {
       if (!res.isCanceled) {
         this.holder.setError({ msg: res.axiosError.toString() });
       }
     } else if (res.data) {
-      this.holder.setData(res.data);
+      this.holder.setData(res.data.data);
 
-      this.subscribeSocket();
+      this.subscribeSocket(res.data.data.map(item => item.id));
 
-      return res.data;
+      return res.data.data;
     }
 
     return [];

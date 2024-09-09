@@ -6,13 +6,13 @@ import styled from "styled-components";
 
 import { AsyncButton, Container, Input } from "~@components";
 
-import { useLoginVM } from "./hooks";
-import { TLoginForm } from "./validations";
+import { useSignInVM } from "./hooks";
+import { TSignInForm } from "./validations";
 
-const Field = typedFormField<TLoginForm>();
+const Field = typedFormField<TSignInForm>();
 
-export const LoginPage = observer(() => {
-  const { form, handleLogin } = useLoginVM();
+export const SignInPage = observer(() => {
+  const { form, handleLogin, handleNavigateSignUp } = useSignInVM();
 
   return (
     <Container>
@@ -27,6 +27,7 @@ export const LoginPage = observer(() => {
                 fieldState: { invalid },
               }) => (
                 <Input
+                  name={"username"}
                   status={invalid ? "error" : undefined}
                   className={"mt-2"}
                   value={value}
@@ -42,16 +43,21 @@ export const LoginPage = observer(() => {
                 fieldState: { invalid },
               }) => (
                 <Input
+                  name={"password"}
                   status={invalid ? "error" : undefined}
                   className={"mt-2"}
                   value={value}
                   onChange={onChange}
+                  type={"password"}
                 />
               )}
             />
-            <AsyncButton className={"mt-4"} onClick={handleLogin}>
-              {"Войти"}
-            </AsyncButton>
+            <div className={"flex justify-between mt-4"}>
+              <AsyncButton onClick={handleLogin}>{"Войти"}</AsyncButton>
+              <AsyncButton type={"link"} onClick={handleNavigateSignUp}>
+                {"Зарегистрироваться"}
+              </AsyncButton>
+            </div>
           </FormProvider>
         </Form>
       </Wrap>

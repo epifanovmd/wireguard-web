@@ -1,32 +1,52 @@
 import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 
+import { ListResponse } from "~@api";
+
+import { IProfile } from "../profile";
+import { IServer } from "../server";
+
 export interface IClient {
   id: string;
-  enabled?: boolean;
+  serverId: string;
+  profileId: string;
   name: string;
-  publicKey: string;
-  privateKey?: string;
-  preSharedKey?: string;
   address: string;
   allowedIPs?: string;
-  latestHandshakeAt?: string;
+  publicKey: string;
+  privateKey: string;
+  preSharedKey: string;
   transferRx?: number;
   transferTx?: number;
-  persistentKeepalive?: string;
+  latestHandshakeAt?: string;
+  persistentKeepalive?: number;
+  enabled?: boolean;
   createdAt: string;
   updatedAt: string;
+  profile: IProfile;
+  server: IServer;
 }
 
 export type TClientsResponse = IClient[];
+
 export interface IClientResponse extends IClient {}
-export interface ICreateClient {
+
+export interface ICreateClientRequest {
+  serverId: string;
   name: string;
+  allowedIPs?: string;
+  persistentKeepalive?: number;
+  enabled?: boolean;
 }
+
+export interface IUpdateClientRequest
+  extends Partial<Omit<ICreateClientRequest, "serverId">> {}
 
 export const IClientsService = iocDecorator<IClientsService>();
 
 export interface IClientsService {
-  getClients(): CancelablePromise<ApiResponse<TClientsResponse>>;
+  getClients(
+    serverId: string,
+  ): CancelablePromise<ApiResponse<ListResponse<TClientsResponse>>>;
 
   getClient(clientId: string): CancelablePromise<ApiResponse<IClientResponse>>;
 
@@ -34,9 +54,13 @@ export interface IClientsService {
     clientId: string,
   ): CancelablePromise<ApiResponse<string>>;
 
-  getClientQRCode(clientId: string): CancelablePromise<ApiResponse<string>>;
   createClient(
-    params: ICreateClient,
+    params: ICreateClientRequest,
+  ): CancelablePromise<ApiResponse<IClientResponse>>;
+
+  updateClient(
+    clientId: string,
+    params: IUpdateClientRequest,
   ): CancelablePromise<ApiResponse<IClientResponse>>;
 
   deleteClient(clientId: string): CancelablePromise<ApiResponse<string>>;

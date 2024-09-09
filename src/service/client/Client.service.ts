@@ -1,9 +1,10 @@
-import { IApiService } from "~@api";
+import { IApiService, ListResponse } from "~@api";
 
 import {
   IClientResponse,
   IClientsService,
-  ICreateClient,
+  ICreateClientRequest,
+  IUpdateClientRequest,
   TClientsResponse,
 } from "./Client.types";
 
@@ -11,36 +12,39 @@ import {
 export class ClientService implements IClientsService {
   constructor(@IApiService() private _apiService: IApiService) {}
 
-  getClients() {
-    return this._apiService.get<TClientsResponse>("/api/wireguard/clients");
+  getClients(serverId: string) {
+    return this._apiService.get<ListResponse<TClientsResponse>, string>(
+      `/api/wgclients/server/${serverId}`,
+    );
   }
 
   getClient(clientId: string) {
-    return this._apiService.get<IClientResponse>("/api/wireguard/client", {
-      clientId,
-    });
-  }
-
-  getClientQRCode(clientId: string) {
-    return this._apiService.get<string>("/api/wireguard/client/qrcode", {
-      clientId,
-    });
+    return this._apiService.get<IClientResponse>(
+      `/api/wgclients/client/${clientId}`,
+    );
   }
 
   getClientConfiguration(clientId: string) {
-    return this._apiService.get<string>("/api/wireguard/client/configuration", {
-      clientId,
-    });
+    return this._apiService.get<string>(
+      `/api/wgclients/client/${clientId}/configuration`,
+    );
   }
 
-  createClient(params: ICreateClient) {
-    return this._apiService.post<IClientResponse, ICreateClient>(
-      "/api/wireguard/client",
+  createClient(params: ICreateClientRequest) {
+    return this._apiService.post<IClientResponse, ICreateClientRequest>(
+      "/api/wgclients/create",
+      params,
+    );
+  }
+
+  updateClient(clientId: string, params: IUpdateClientRequest) {
+    return this._apiService.patch<IClientResponse, IUpdateClientRequest>(
+      `/api/wgclients/update/${clientId}`,
       params,
     );
   }
 
   deleteClient(clientId: string) {
-    return this._apiService.delete<string>(`/api/wireguard/client/${clientId}`);
+    return this._apiService.delete<string>(`/api/wgclients/delete/${clientId}`);
   }
 }

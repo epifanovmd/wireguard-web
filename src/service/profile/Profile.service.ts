@@ -1,6 +1,7 @@
 import { IApiService } from "~@api";
 
 import {
+  IProfile,
   IProfileService,
   IRefreshTokenRequest,
   IRefreshTokenResponse,
@@ -8,11 +9,23 @@ import {
   ISignInResponse,
   ISignUpRequest,
   ISignUpResponse,
+  IUpdateProfileRequest,
 } from "./Profile.types";
 
 @IProfileService()
 export class ProfileService implements IProfileService {
   constructor(@IApiService() private _apiService: IApiService) {}
+
+  getProfile() {
+    return this._apiService.get<IProfile>("api/profile/my");
+  }
+
+  updateProfile(params: IUpdateProfileRequest) {
+    return this._apiService.put<IProfile, IUpdateProfileRequest>(
+      "api/profile/my/update",
+      params,
+    );
+  }
 
   signIn(credentials: ISignInRequest) {
     return this._apiService.post<ISignInResponse, ISignInRequest>(

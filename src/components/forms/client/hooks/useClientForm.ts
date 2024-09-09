@@ -6,7 +6,7 @@ import { clientValidation, TClientForm } from "../validation";
 
 export const useClientForm = (props?: UseFormProps<TClientForm>) => {
   return useForm<TClientForm>({
-    defaultValues: { name: "" },
+    defaultValues: { name: "", enabled: true },
     resolver: zodResolver(clientValidation),
     ...props,
   });

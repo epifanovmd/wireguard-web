@@ -21,10 +21,10 @@ export const Route = createFileRoute("/_private")({
       const accessToken = await restore();
 
       if (!accessToken) {
-        throw redirect({ to: "/auth/login" });
+        throw redirect({ to: "/auth/signIn" });
       }
     } else if (!isAuthorized) {
-      throw redirect({ to: "/auth/login" });
+      throw redirect({ to: "/auth/signIn" });
     }
   },
   component: Component,

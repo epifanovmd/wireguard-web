@@ -13,7 +13,7 @@ const Component = observer(() => {
   useEffect(() => {
     const dispose = initialize(() => {
       navigate({
-        to: "/auth/login",
+        to: "/auth/signIn",
       }).then();
     });
 

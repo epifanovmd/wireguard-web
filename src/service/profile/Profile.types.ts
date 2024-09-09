@@ -3,9 +3,14 @@ import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 export const IProfileService = iocDecorator<IProfileService>();
 
 export interface IProfileService {
+  getProfile(): CancelablePromise<ApiResponse<IProfile>>;
+  updateProfile(
+    params: IUpdateProfileRequest,
+  ): CancelablePromise<ApiResponse<IProfile>>;
   signIn(
     credentials: ISignInRequest,
   ): CancelablePromise<ApiResponse<ISignInResponse>>;
+  signUp(body: ISignUpRequest): CancelablePromise<ApiResponse<ISignUpResponse>>;
 
   refresh(
     body: IRefreshTokenRequest,
@@ -19,9 +24,18 @@ export interface IRefreshTokenResponse {
 
 export interface IProfile {
   id: string;
-  login: string;
-  name: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+
+  createdAt: string;
+  updatedAt: string;
 }
+
+export interface IUpdateProfileRequest
+  extends Omit<ISignUpRequest, "password"> {}
 
 export interface ISignInRequest {
   username: string;
@@ -33,7 +47,10 @@ export interface ISignInResponse extends IProfile {
 }
 
 export interface ISignUpRequest extends ISignInRequest {
-  name: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface ISignUpResponse extends IProfile {

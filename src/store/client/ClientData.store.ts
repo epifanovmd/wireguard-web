@@ -30,8 +30,24 @@ export class ClientDataStore implements IClientDataStore {
     return this.holder.isLoading;
   }
 
+  subscribeSocket(clientId: string[]) {
+    this._clientSocketService.subscribeClient(clientId, data => {
+      if (this.data) {
+        const dataItem = data[this.data.id];
+
+        this.holder.setData(
+          dataItem ? { ...this.data, ...dataItem } : this.data,
+        );
+      }
+    });
+  }
+
+  unSubscribeSocket() {
+    this._clientSocketService.unsubscribeClient();
+  }
+
   async onRefresh(clientId: string) {
-    this._clientSocketService.unsubscribeAllClients();
+    this.unSubscribeSocket();
     this.holder.setLoading();
     const res = await this._clientsService.getClient(clientId);
 
@@ -41,6 +57,8 @@ export class ClientDataStore implements IClientDataStore {
       }
     } else if (res.data) {
       this.holder.setData(res.data);
+
+      this._clientSocketService.subscribeClient([res.data.id]);
 
       return res.data;
     }

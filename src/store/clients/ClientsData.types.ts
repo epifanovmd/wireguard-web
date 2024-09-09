@@ -1,7 +1,7 @@
 import { DataHolder, iocDecorator } from "@force-dev/utils";
 
 import { ClientModel } from "~@models";
-import { IClient, ICreateClient } from "~@service";
+import { IClient, ICreateClientRequest, IUpdateClientRequest } from "~@service";
 
 export const IClientsDataStore = iocDecorator<IClientsDataStore>();
 
@@ -13,13 +13,15 @@ export interface IClientsDataStore {
 
   start(): void;
 
-  subscribeSocket(): void;
+  subscribeSocket(clientId: string[]): void;
 
   unSubscribeSocket(): void;
 
-  createClient(params: ICreateClient): Promise<void>;
+  updateClient(clientId: string, params: IUpdateClientRequest): Promise<void>;
+
+  createClient(params: ICreateClientRequest): Promise<void>;
 
   deleteClient(clientId: string): Promise<void>;
 
-  onRefresh(): Promise<IClient[]>;
+  onRefresh(serverId: string): Promise<IClient[]>;
 }

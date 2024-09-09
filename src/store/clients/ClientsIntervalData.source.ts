@@ -4,16 +4,19 @@ import { IClient, IClientsService } from "~@service";
 
 export class ClientsIntervalDataSource extends IntervalDataSource<
   IClient[],
-  {}
+  { serverId?: string }
 > {
   private _params = {};
 
   constructor(_clientsService: IClientsService) {
     super(async req => {
-      console.log("req", req);
-      const res = await _clientsService.getClients();
+      if (req.serverId) {
+        const res = await _clientsService.getClients(req.serverId);
 
-      return res.data || [];
+        return res.data?.data || [];
+      }
+
+      return [];
     });
   }
 
@@ -28,7 +31,7 @@ export class ClientsIntervalDataSource extends IntervalDataSource<
     return this._params;
   }
 
-  setParams(args: {}) {
+  setParams(args: { serverId: string }) {
     this._params = args;
   }
 }

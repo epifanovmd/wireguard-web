@@ -20,7 +20,8 @@ import { Route as PrivateImport } from './routes/_private'
 // Create Virtual Routes
 
 const PrivateIndexLazyImport = createFileRoute('/_private/')()
-const AuthLoginLazyImport = createFileRoute('/auth/login')()
+const AuthSignUpLazyImport = createFileRoute('/auth/signUp')()
+const AuthSignInLazyImport = createFileRoute('/auth/signIn')()
 const PublicAboutIndexLazyImport = createFileRoute('/_public/about/')()
 
 // Create/Update Routes
@@ -47,10 +48,15 @@ const PrivateIndexLazyRoute = PrivateIndexLazyImport.update({
   import('./routes/_private/index.lazy').then((d) => d.Route),
 )
 
-const AuthLoginLazyRoute = AuthLoginLazyImport.update({
-  path: '/login',
+const AuthSignUpLazyRoute = AuthSignUpLazyImport.update({
+  path: '/signUp',
   getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/auth/signUp.lazy').then((d) => d.Route))
+
+const AuthSignInLazyRoute = AuthSignInLazyImport.update({
+  path: '/signIn',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() => import('./routes/auth/signIn.lazy').then((d) => d.Route))
 
 const PublicAboutIndexLazyRoute = PublicAboutIndexLazyImport.update({
   path: '/about/',
@@ -84,11 +90,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginLazyImport
+    '/auth/signIn': {
+      id: '/auth/signIn'
+      path: '/signIn'
+      fullPath: '/auth/signIn'
+      preLoaderRoute: typeof AuthSignInLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/auth/signUp': {
+      id: '/auth/signUp'
+      path: '/signUp'
+      fullPath: '/auth/signUp'
+      preLoaderRoute: typeof AuthSignUpLazyImport
       parentRoute: typeof AuthImport
     }
     '/_private/': {
@@ -113,7 +126,10 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   PrivateRoute: PrivateRoute.addChildren({ PrivateIndexLazyRoute }),
   PublicRoute: PublicRoute.addChildren({ PublicAboutIndexLazyRoute }),
-  AuthRoute: AuthRoute.addChildren({ AuthLoginLazyRoute }),
+  AuthRoute: AuthRoute.addChildren({
+    AuthSignInLazyRoute,
+    AuthSignUpLazyRoute,
+  }),
 })
 
 /* prettier-ignore-end */
@@ -144,11 +160,16 @@ export const routeTree = rootRoute.addChildren({
     "/auth": {
       "filePath": "auth.tsx",
       "children": [
-        "/auth/login"
+        "/auth/signIn",
+        "/auth/signUp"
       ]
     },
-    "/auth/login": {
-      "filePath": "auth/login.lazy.tsx",
+    "/auth/signIn": {
+      "filePath": "auth/signIn.lazy.tsx",
+      "parent": "/auth"
+    },
+    "/auth/signUp": {
+      "filePath": "auth/signUp.lazy.tsx",
       "parent": "/auth"
     },
     "/_private/": {

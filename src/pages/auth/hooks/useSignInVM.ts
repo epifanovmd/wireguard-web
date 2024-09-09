@@ -5,19 +5,23 @@ import { useForm } from "react-hook-form";
 
 import { useProfileDataStore } from "~@store";
 
-import { loginFormValidation, TLoginForm } from "../validations";
+import { signInFormValidation, TSignInForm } from "../validations";
 
-export const useLoginVM = () => {
+export const useSignInVM = () => {
   const profileDataStore = useProfileDataStore();
   const navigate = useNavigate();
 
-  const form = useForm<TLoginForm>({
+  const form = useForm<TSignInForm>({
     defaultValues: {
-      username: "string",
-      password: "string",
+      username: "",
+      password: "",
     },
-    resolver: zodResolver(loginFormValidation),
+    resolver: zodResolver(signInFormValidation),
   });
+
+  const handleNavigateSignUp = useCallback(() => {
+    return navigate({ to: "/auth/signUp" });
+  }, [navigate]);
 
   const handleLogin = useCallback(async () => {
     return form.handleSubmit(async data => {
@@ -33,5 +37,6 @@ export const useLoginVM = () => {
   return {
     form,
     handleLogin,
+    handleNavigateSignUp,
   };
 };

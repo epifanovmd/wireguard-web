@@ -1,27 +1,32 @@
 import { iocDecorator } from "@force-dev/utils";
 
-import { IClient } from "../../client";
+export interface IWireguardPeerStatus {
+  allowedIps: string;
+  latestHandshakeAt?: string;
+  transferRx: number;
+  transferTx: number;
+  persistentKeepalive: number;
+}
+
+export interface IWireguardPeerStatusDto
+  extends Record<string, IWireguardPeerStatus | null> {}
 
 export interface ClientsSocketEvents {
-  all: (...args: [data: IClient[]]) => void;
-  client: (...args: [data: IClient]) => void;
+  client: (...args: [clients: IWireguardPeerStatusDto]) => void;
 }
 
 export interface ClientSocketEmitEvents {
-  subscribeToAll: () => void;
-  unsubscribeFromAll: () => void;
-  subscribeToClient: (...args: [clientId: string]) => void;
-  unsubscribeFromClient: (...args: [clientId: string]) => void;
+  subscribeToClient: (...args: [clientId: string[]]) => void;
+  unsubscribeFromClient: () => void;
 }
 
 export const IClientsSocketService = iocDecorator<IClientsSocketService>();
 
 export interface IClientsSocketService {
-  subscribeAllClients(onData?: (clients: IClient[]) => void): void;
+  subscribeClient(
+    clientId: string[],
+    onData?: (data: IWireguardPeerStatusDto) => void,
+  ): void;
 
-  unsubscribeAllClients(): void;
-
-  subscribeClient(clientId: string, onData?: (client: IClient) => void): void;
-
-  unsubscribeClient(clientId: string): void;
+  unsubscribeClient(): void;
 }

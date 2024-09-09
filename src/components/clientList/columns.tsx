@@ -16,9 +16,17 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     title: "Статус",
     dataIndex: "enabled",
     key: "enabled",
-    render: (_, { enabled }) => (
-      <Tag color={enabled === "Активен" ? "success" : "error"}>{enabled}</Tag>
+    render: (_, { data }) => (
+      <Tag color={data.enabled ? "success" : "error"}>
+        {data.enabled ? "Активен" : "Отключен"}
+      </Tag>
     ),
+  },
+  {
+    title: "IP",
+    dataIndex: "address",
+    key: "address",
+    render: (_, { data }) => <div>{data.address}</div>,
   },
   {
     title: "Загружено",

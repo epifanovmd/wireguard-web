@@ -1,4 +1,5 @@
 import { useBoolean } from "@force-dev/react";
+import { ButtonType } from "antd/es/button/buttonHelpers";
 import React, {
   ComponentProps,
   FC,
@@ -21,7 +22,8 @@ export interface IConfirmParams {
   description?: React.ReactNode;
   question?: React.ReactNode;
 
-  submitColor?: string;
+  submitColor?: ButtonType;
+  cancelColor?: ButtonType;
   submitTitle?: string;
   cancelTitle?: string;
 
@@ -75,7 +77,7 @@ export const ConfirmModalProvider: FC<
 
   const submitButtonProps: ComponentProps<typeof AsyncButton> = useMemo(
     () => ({
-      color: confirmData?.submitColor ?? "danger",
+      type: confirmData?.submitColor ?? "primary",
     }),
     [confirmData?.submitColor],
   );

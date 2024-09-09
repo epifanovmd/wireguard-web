@@ -65,6 +65,8 @@ export class SessionDataStore implements ISessionDataStore {
 
     const { accessToken } = await this._profileDataStore.updateToken();
 
+    await this._profileDataStore.getProfile();
+
     this.holder.setData(accessToken);
 
     return accessToken;
