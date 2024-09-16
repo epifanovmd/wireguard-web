@@ -1,37 +1,27 @@
-import React, { FC, memo } from "react";
-import styled from "styled-components";
+import { useNavigate } from "@tanstack/react-router";
+import React, { FC, memo, useCallback } from "react";
 
-import { Link } from "../link";
+import { useTokenService } from "~@service";
+
+import { Button } from "../ui";
 
 export const Header: FC = memo(() => {
+  const navigate = useNavigate();
+  const tokenService = useTokenService();
+
+  const onLogout = useCallback(() => {
+    tokenService.clear();
+    navigate({ to: "/auth/signIn" }).then();
+  }, [navigate, tokenService]);
+
   return (
-    <HeaderWrap>
-      <menu>
-        <Items>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/about">About</Link>
-          </li>
-        </Items>
-      </menu>
-    </HeaderWrap>
+    <div
+      className={
+        "flex shadow-md rounded-xl p-4 flex-grow mb-4 mt-4 justify-between"
+      }
+    >
+      <div>{"VPN ADMIN PANEL"}</div>
+      <Button onClick={onLogout}>{"Выход"}</Button>
+    </div>
   );
 });
-
-const HeaderWrap = styled.div`
-  li {
-    list-style-type: none;
-
-    &:not(:first-of-type):not(:last-of-type) {
-      margin: 0 5px 0 5px;
-    }
-  }
-`;
-
-const Items = styled.ul`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-`;

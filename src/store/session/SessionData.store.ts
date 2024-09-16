@@ -21,10 +21,7 @@ export class SessionDataStore implements ISessionDataStore {
   }
 
   initialize(authRedirect: () => void) {
-    this._apiService.onError(async ({ status, error }) => {
-      console.log("status", status);
-      console.log("error", error);
-
+    this._apiService.onError(async ({ status }) => {
       if (status === 401) {
         authRedirect();
       }

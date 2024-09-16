@@ -1,6 +1,7 @@
 import { ApiResponse, DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
+import { ApiError } from "~@api";
 import {
   IProfile,
   IProfileService,
@@ -94,7 +95,7 @@ export class ProfileDataStore implements IProfileDataStore {
     }
   }
 
-  private _updateProfileHolder(res: ApiResponse<ISignInResponse>) {
+  private _updateProfileHolder(res: ApiResponse<ISignInResponse, ApiError>) {
     if (res.error) {
       this._tokenService.clear();
       this.holder.setError({ msg: res.error.message });

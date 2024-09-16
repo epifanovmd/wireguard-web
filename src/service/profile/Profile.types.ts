@@ -1,20 +1,24 @@
 import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 
+import { ApiError } from "~@api";
+
 export const IProfileService = iocDecorator<IProfileService>();
 
 export interface IProfileService {
-  getProfile(): CancelablePromise<ApiResponse<IProfile>>;
+  getProfile(): CancelablePromise<ApiResponse<IProfile, ApiError>>;
   updateProfile(
     params: IUpdateProfileRequest,
-  ): CancelablePromise<ApiResponse<IProfile>>;
+  ): CancelablePromise<ApiResponse<IProfile, ApiError>>;
   signIn(
     credentials: ISignInRequest,
-  ): CancelablePromise<ApiResponse<ISignInResponse>>;
-  signUp(body: ISignUpRequest): CancelablePromise<ApiResponse<ISignUpResponse>>;
+  ): CancelablePromise<ApiResponse<ISignInResponse, ApiError>>;
+  signUp(
+    body: ISignUpRequest,
+  ): CancelablePromise<ApiResponse<ISignUpResponse, ApiError>>;
 
   refresh(
     body: IRefreshTokenRequest,
-  ): CancelablePromise<ApiResponse<IRefreshTokenResponse>>;
+  ): CancelablePromise<ApiResponse<IRefreshTokenResponse, ApiError>>;
 }
 
 export interface IRefreshTokenResponse {

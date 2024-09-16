@@ -28,7 +28,6 @@ export const useSignInVM = () => {
       await profileDataStore.signIn(data);
 
       if (profileDataStore.profile) {
-        console.log("profileDataStore.profile", profileDataStore.profile);
         navigate({ to: "/" }).then();
       }
     })();

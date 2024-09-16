@@ -22,7 +22,6 @@ import { Route as PrivateImport } from './routes/_private'
 const PrivateIndexLazyImport = createFileRoute('/_private/')()
 const AuthSignUpLazyImport = createFileRoute('/auth/signUp')()
 const AuthSignInLazyImport = createFileRoute('/auth/signIn')()
-const PublicAboutIndexLazyImport = createFileRoute('/_public/about/')()
 
 // Create/Update Routes
 
@@ -57,13 +56,6 @@ const AuthSignInLazyRoute = AuthSignInLazyImport.update({
   path: '/signIn',
   getParentRoute: () => AuthRoute,
 } as any).lazy(() => import('./routes/auth/signIn.lazy').then((d) => d.Route))
-
-const PublicAboutIndexLazyRoute = PublicAboutIndexLazyImport.update({
-  path: '/about/',
-  getParentRoute: () => PublicRoute,
-} as any).lazy(() =>
-  import('./routes/_public/about/index.lazy').then((d) => d.Route),
-)
 
 // Populate the FileRoutesByPath interface
 
@@ -111,13 +103,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateIndexLazyImport
       parentRoute: typeof PrivateImport
     }
-    '/_public/about/': {
-      id: '/_public/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof PublicAboutIndexLazyImport
-      parentRoute: typeof PublicImport
-    }
   }
 }
 
@@ -125,7 +110,6 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   PrivateRoute: PrivateRoute.addChildren({ PrivateIndexLazyRoute }),
-  PublicRoute: PublicRoute.addChildren({ PublicAboutIndexLazyRoute }),
   AuthRoute: AuthRoute.addChildren({
     AuthSignInLazyRoute,
     AuthSignUpLazyRoute,
@@ -152,10 +136,7 @@ export const routeTree = rootRoute.addChildren({
       ]
     },
     "/_public": {
-      "filePath": "_public.tsx",
-      "children": [
-        "/_public/about/"
-      ]
+      "filePath": "_public.tsx"
     },
     "/auth": {
       "filePath": "auth.tsx",
@@ -175,10 +156,6 @@ export const routeTree = rootRoute.addChildren({
     "/_private/": {
       "filePath": "_private/index.lazy.tsx",
       "parent": "/_private"
-    },
-    "/_public/about/": {
-      "filePath": "_public/about/index.lazy.tsx",
-      "parent": "/_public"
     }
   }
 }

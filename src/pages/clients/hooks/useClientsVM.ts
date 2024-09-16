@@ -26,7 +26,7 @@ export const useClientsVM = () => {
 
   useEffect(() => {
     onRefreshServers().then(res => {
-      const id = res?.[0].id;
+      const id = res?.[0]?.id;
 
       if (id && !serverId) {
         setServerId(id);

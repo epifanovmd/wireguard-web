@@ -32,7 +32,7 @@
     "@babel/plugin-proposal-decorators": "^7.24.7",
     "@force-dev/react": "^1.1.2",
     "@force-dev/react-web": "^0.0.1",
-    "@force-dev/utils": "^1.1.78",
+    "@force-dev/utils": "^1.1.85",
     "@hookform/resolvers": "^3.9.0",
     "@mdx-js/rollup": "^3.0.1",
     "@tanstack/react-router": "^1.45.8",

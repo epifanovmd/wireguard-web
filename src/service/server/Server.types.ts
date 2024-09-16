@@ -1,6 +1,6 @@
 import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 
-import { ListResponse } from "~@api";
+import { ApiError, ListResponse } from "~@api";
 
 import { IClient } from "../client";
 import { IProfile } from "../profile";
@@ -28,13 +28,19 @@ export interface ICreateServerRequest {
 export const IServerService = iocDecorator<IServerService>();
 
 export interface IServerService {
-  getServers(): CancelablePromise<ApiResponse<ListResponse<TServersResponse>>>;
+  getServers(): CancelablePromise<
+    ApiResponse<ListResponse<TServersResponse>, ApiError>
+  >;
 
-  getServer(serverId: string): CancelablePromise<ApiResponse<IServerResponse>>;
+  getServer(
+    serverId: string,
+  ): CancelablePromise<ApiResponse<IServerResponse, ApiError>>;
 
   createServer(
     params: ICreateServerRequest,
-  ): CancelablePromise<ApiResponse<IServerResponse>>;
+  ): CancelablePromise<ApiResponse<IServerResponse, ApiError>>;
 
-  deleteServer(ServerId: string): CancelablePromise<ApiResponse<string>>;
+  deleteServer(
+    ServerId: string,
+  ): CancelablePromise<ApiResponse<string, ApiError>>;
 }
