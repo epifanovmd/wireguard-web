@@ -45,7 +45,7 @@ remove-container:
 
 # Правило для запуска Docker Compose
 docker-compose-up:
-	$(if $(USE_SSH),$(CMD_PREFIX) 'cd $(PROJECT_DIR) && docker compose up -d --no-deps --build --force-recreate',docker compose up -d --no-deps --build --force-recreate)
+	$(if $(USE_SSH),$(CMD_PREFIX) 'cd $(PROJECT_DIR) && docker compose --env-file .env.production up -d --no-deps --build --force-recreate',docker compose --env-file .env.production up -d --no-deps --build --force-recreate)
 
 # Проверка состояния контейнеров
 status:
