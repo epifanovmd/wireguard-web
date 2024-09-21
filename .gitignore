@@ -1,6 +1,26 @@
+.husky
 dist
 build
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.idea/
 .vscode/
-node_modules
-.idea
-yarn-error.log
+*.iml
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# Others
+local.properties
+.git/

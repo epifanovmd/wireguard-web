@@ -17,7 +17,7 @@ CMD_PREFIX=$(if $(USE_SSH),ssh $(SSH_USER)@$(SSH_HOST),)
 LOCAL_PROJECT_DIR=.
 
 # Директория проекта только для SSH
-SSH_PROJECT_DIR=development/wireguard-web
+SSH_PROJECT_DIR=development/$(CONTAINER_NAME)
 
 # Директория проекта (локально или по SSH)
 PROJECT_DIR=$(if $(USE_SSH),$(SSH_PROJECT_DIR),$(LOCAL_PROJECT_DIR))
@@ -39,8 +39,8 @@ copy:
 
 # Правило для остановки и удаления запущенного контейнера
 remove-container:
-	@if [ "$$($(CMD_PREFIX) docker ps -f name=wireguard-web -q -a)" != "" ]; then \
-		$(CMD_PREFIX) docker rm --force $$($(CMD_PREFIX) docker ps -f name=wireguard-web -q -a); \
+	@if [ "$$($(CMD_PREFIX) docker ps -f name=$(CONTAINER_NAME) -q -a)" != "" ]; then \
+		$(CMD_PREFIX) docker rm --force $$($(CMD_PREFIX) docker ps -f name=$(CONTAINER_NAME) -q -a); \
 	fi
 
 # Правило для запуска Docker Compose
