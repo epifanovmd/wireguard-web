@@ -2,16 +2,13 @@
 SSH_USER=root
 SSH_HOST=147.45.245.104
 
-.PHONY: remove-container docker-compose-up clone copy deploy clean status logs restart-container update-images backup
+.PHONY: remove-container docker-compose-up copy deploy clean status logs restart-container backup
 
 # Параметры репозитория
 BRANCH=main
 
 # Имя контейнера (или сервиса в docker-compose.yml)
 CONTAINER_NAME=wireguard-web
-
-# Цель по умолчанию
-all: deploy
 
 # Переменная для использования SSH
 USE_SSH=$(filter ssh,$(MAKECMDGOALS))
@@ -27,6 +24,9 @@ SSH_PROJECT_DIR=development/wireguard-web
 
 # Директория проекта (локально или по SSH)
 PROJECT_DIR=$(if $(USE_SSH),$(SSH_PROJECT_DIR),$(LOCAL_PROJECT_DIR))
+
+# Цель по умолчанию
+all: deploy
 
 # Комплексное правило для деплоя
 deploy: copy remove-container docker-compose-up
@@ -48,7 +48,7 @@ remove-container:
 
 # Правило для запуска Docker Compose
 docker-compose-up:
-	$(if $(USE_SSH),$(CMD_PREFIX) 'cd $(PROJECT_DIR) && docker compose up --no-deps --build --force-recreate',docker compose up --no-deps --build --force-recreate)
+	$(if $(USE_SSH),$(CMD_PREFIX) 'cd $(PROJECT_DIR) && docker compose up -d --no-deps --build --force-recreate',docker compose up -d --no-deps --build --force-recreate)
 
 # Проверка состояния контейнеров
 status:
