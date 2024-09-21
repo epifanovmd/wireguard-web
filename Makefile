@@ -7,9 +7,6 @@ SSH_HOST=147.45.245.104
 # Параметры репозитория
 BRANCH=main
 
-# Локальная директория проекта
-LOCAL_PROJECT_DIR=.
-
 # Имя контейнера (или сервиса в docker-compose.yml)
 CONTAINER_NAME=wireguard-web
 
@@ -22,11 +19,14 @@ USE_SSH=$(filter ssh,$(MAKECMDGOALS))
 # Префикс для команд (локально или по SSH)
 CMD_PREFIX=$(if $(USE_SSH),ssh $(SSH_USER)@$(SSH_HOST),)
 
-# Директория проекта (локально или по SSH)
-PROJECT_DIR=$(if $(USE_SSH),development/wireguard-web,.)
+# Локальная директория проекта
+LOCAL_PROJECT_DIR=.
 
 # Директория проекта только для SSH
 SSH_PROJECT_DIR=development/wireguard-web
+
+# Директория проекта (локально или по SSH)
+PROJECT_DIR=$(if $(USE_SSH),$(SSH_PROJECT_DIR),$(LOCAL_PROJECT_DIR))
 
 # Комплексное правило для деплоя
 deploy: copy remove-container docker-compose-up
