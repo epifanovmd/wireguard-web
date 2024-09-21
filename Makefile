@@ -17,7 +17,7 @@ CMD_PREFIX=$(if $(USE_SSH),ssh $(SSH_USER)@$(SSH_HOST),)
 LOCAL_PROJECT_DIR=.
 
 # Директория проекта только для SSH
-SSH_PROJECT_DIR=development/$(CONTAINER_NAME)
+SSH_PROJECT_DIR=development/wireguard-web
 
 # Директория проекта (локально или по SSH)
 PROJECT_DIR=$(if $(USE_SSH),$(SSH_PROJECT_DIR),$(LOCAL_PROJECT_DIR))
