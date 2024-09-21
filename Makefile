@@ -2,10 +2,7 @@
 SSH_USER=root
 SSH_HOST=147.45.245.104
 
-.PHONY: remove-container docker-compose-up copy deploy clean status logs restart-container backup
-
-# Параметры репозитория
-BRANCH=main
+.PHONY: all deploy clean copy remove-container docker-compose-up status logs restart-container backup
 
 # Имя контейнера (или сервиса в docker-compose.yml)
 CONTAINER_NAME=wireguard-web
