@@ -1,30 +1,34 @@
-name: Deploy with Docker Compose # Имя workflow
+name: Deploy with Docker Compose
 
-on: # Определение событий, которые запускают workflow
-  push: # Запуск при пуше в репозиторий
-    branches: [ master ] # Только для ветки master
-  pull_request: # Запуск при создании pull request
-    branches: [ master ] # Только для ветки master
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-jobs: # Определение задач (jobs) в рамках workflow
-  deploy: # Имя задачи
+env:
+  DEPLOY_PATH: ./development/wireguard-web
+  REMOTE_USER: root
+  REMOTE_HOST: 147.45.245.104
+  REMOTE_ADDRESS: ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
 
-    runs-on: ubuntu-latest # Указание используемой виртуальной машины
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-    steps: # Шаги, выполняемые в рамках задачи
-      - name: Checkout code # Имя шага
-        uses: actions/checkout@v2 # Использование действия для клонирования кода репозитория
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up SSH # Настройка SSH
+      - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add remote server to known_hosts # Добавление удаленного сервера в known_hosts
-        run: ssh-keyscan 147.45.245.104 >> ~/.ssh/known_hosts
+      - name: Add remote server to known_hosts and Copy files via SCP
+        run: |
+          ssh-keyscan ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ${{ env.DEPLOY_PATH }} && rsync" ./ ${{ env.REMOTE_ADDRESS }}:${{ env.DEPLOY_PATH }}
 
-      - name: Copy files via SCP # Копирование файлов через rsync
-        run: rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ./development/wireguard-web && rsync" ./ root@147.45.245.104:./development/wireguard-web
-
-      - name: Run Docker Compose on remote server # Запуск Docker Compose на удаленном сервере
-        run: ssh root@147.45.245.104 'cd ./development/wireguard-web && docker compose --env-file .env.production up -d --no-deps --build --force-recreate'
+      - name: Run Docker Compose on remote server
+        run: ssh ${{ env.REMOTE_ADDRESS }} 'cd ${{ env.DEPLOY_PATH }} && docker compose --env-file .env.production up -d --no-deps --build --force-recreate'
