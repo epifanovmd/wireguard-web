@@ -30,7 +30,7 @@ jobs: # Определение задач (jobs) в рамках workflow
         run: sudo apt-get install docker-compose # Установка Docker Compose
 
       - name: Build and run containers # Имя шага
-        run: docker-compose up --build -d # Сборка и запуск контейнеров в фоновом режиме
+        run: docker-compose --env-file .env.production up -d --no-deps --build # Сборка и запуск контейнеров в фоновом режиме
 
       - name: Run tests # Имя шага
         run: docker-compose exec app npm test # Выполнение тестов внутри контейнера приложения
