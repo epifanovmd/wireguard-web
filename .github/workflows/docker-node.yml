@@ -24,7 +24,7 @@ jobs: # Определение задач (jobs) в рамках workflow
         run: ssh-keyscan 147.45.245.104 >> ~/.ssh/known_hosts
 
       - name: Copy files via SCP # Копирование файлов через rsync
-        run: rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p /development/wireguard-web && rsync" ./ root@147.45.245.104:/development/wireguard-web
+        run: rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ./development/wireguard-web && rsync" ./ root@147.45.245.104:./development/wireguard-web
 
       - name: Run Docker Compose on remote server # Запуск Docker Compose на удаленном сервере
-        run: ssh root@147.45.245.104 'cd /development/wireguard-web && docker compose --env-file .env.production up -d --no-deps --build'
+        run: ssh root@147.45.245.104 'cd ./development/wireguard-web && docker compose --env-file .env.production up -d --no-deps --build'
