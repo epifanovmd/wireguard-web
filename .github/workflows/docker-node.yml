@@ -17,16 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-#      - name: Install make
-#        run: sudo apt-get update && sudo apt-get install -y make
-
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add remote server to known_hosts and Copy files via SCP
+      - name: Add remote server to known_hosts
         run: ssh-keyscan ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Run Docker Compose on remote server using Makefile
+      - name: Deploy
         run: make deploy ssh
