@@ -10,7 +10,6 @@ env:
   DEPLOY_PATH: ./development/wireguard-web
   REMOTE_USER: root
   REMOTE_HOST: 147.45.245.104
-  REMOTE_ADDRESS: ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
 
 jobs:
   deploy:
@@ -27,8 +26,11 @@ jobs:
 
       - name: Add remote server to known_hosts and Copy files via SCP
         run: |
+          export REMOTE_ADDRESS=${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
           ssh-keyscan ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
-          rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ${{ env.DEPLOY_PATH }} && rsync" ./ ${{ env.REMOTE_ADDRESS }}:${{ env.DEPLOY_PATH }}
+          rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ${{ env.DEPLOY_PATH }} && rsync" ./ $REMOTE_ADDRESS:${{ env.DEPLOY_PATH }}
 
       - name: Run Docker Compose on remote server
-        run: ssh ${{ env.REMOTE_ADDRESS }} 'cd ${{ env.DEPLOY_PATH }} && docker compose --env-file .env.production up -d --no-deps --build --force-recreate'
+        run: |
+          export REMOTE_ADDRESS=${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
+          ssh $REMOTE_ADDRESS 'cd ${{ env.DEPLOY_PATH }} && docker compose --env-file .env.production up -d --no-deps --build --force-recreate'
