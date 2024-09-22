@@ -19,18 +19,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+#      - name: Install make
+#        run: sudo apt-get update && sudo apt-get install -y make
+
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add remote server to known_hosts and Copy files via SCP
+      - name: Run Docker Compose on remote server using Makefile
         run: |
           export REMOTE_ADDRESS=${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
-          ssh-keyscan ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
-          rsync -avz --delete --exclude-from='.gitignore' --rsync-path="mkdir -p ${{ env.DEPLOY_PATH }} && rsync" ./ $REMOTE_ADDRESS:${{ env.DEPLOY_PATH }}
-
-      - name: Run Docker Compose on remote server
-        run: |
-          export REMOTE_ADDRESS=${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
-          ssh $REMOTE_ADDRESS 'cd ${{ env.DEPLOY_PATH }} && docker compose --env-file .env.production up -d --no-deps --build --force-recreate'
+          ssh $REMOTE_ADDRESS 'cd ${{ env.DEPLOY_PATH }} && make deploy'
