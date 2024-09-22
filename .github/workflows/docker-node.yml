@@ -7,8 +7,6 @@ on:
     branches: [ master ]
 
 env:
-  DEPLOY_PATH: ./development/wireguard-web
-  REMOTE_USER: root
   REMOTE_HOST: 147.45.245.104
 
 jobs:
@@ -27,7 +25,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add remote server to known_hosts and Copy files via SCP
+        run: ssh-keyscan ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
+
       - name: Run Docker Compose on remote server using Makefile
-        run: |
-          export REMOTE_ADDRESS=${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
-          ssh $REMOTE_ADDRESS 'cd ${{ env.DEPLOY_PATH }} && make deploy'
+        run: make docker-compose-up ssh
