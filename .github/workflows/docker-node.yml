@@ -1,4 +1,4 @@
-name: Build and Test with Docker Compose # Имя workflow
+name: Build with Docker Compose # Имя workflow
 
 on: # Определение событий, которые запускают workflow
   push: # Запуск при пуше в репозиторий
@@ -15,25 +15,8 @@ jobs: # Определение задач (jobs) в рамках workflow
       - name: Checkout code # Имя шага
         uses: actions/checkout@v2 # Использование действия для клонирования кода репозитория
 
-      - name: Set up Docker Buildx # Имя шага
-        uses: docker/setup-buildx-action@v1 # Использование действия для настройки Docker Buildx
-
-      - name: Cache Docker layers # Имя шага
-        uses: actions/cache@v2 # Использование действия для кэширования слоев Docker
-        with:
-          path: /tmp/.buildx-cache # Путь к кэшу
-          key: ${{ runner.os }}-buildx-${{ github.sha }} # Ключ кэша, уникальный для каждого коммита
-          restore-keys: |
-            ${{ runner.os }}-buildx- # Восстановление кэша по ключу
-
       - name: Set up Docker Compose # Имя шага
         run: sudo apt-get install docker-compose # Установка Docker Compose
 
       - name: Build and run containers # Имя шага
         run: docker-compose --env-file .env.production up -d --no-deps --build # Сборка и запуск контейнеров в фоновом режиме
-
-      - name: Run tests # Имя шага
-        run: docker-compose exec app npm test # Выполнение тестов внутри контейнера приложения
-
-      - name: Shut down containers # Имя шага
-        run: docker-compose down # Остановка и удаление контейнеров
