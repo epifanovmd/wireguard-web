@@ -20,9 +20,6 @@ jobs: # Определение задач (jobs) в рамках workflow
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add remote server to known_hosts # Добавление удаленного сервера в known_hosts
-        run: ssh-keyscan 147.45.245.104 >> ~/.ssh/known_hosts
-
       - name: Copy files via SCP # Копирование файлов через rsync
         run: rsync -avz --delete --exclude-from='.gitignore' ./ root@147.45.245.104:/development/wireguard-web
 
