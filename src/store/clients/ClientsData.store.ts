@@ -1,4 +1,5 @@
 import { DataHolder } from "@force-dev/utils";
+import { notification } from "antd";
 import { makeAutoObservable } from "mobx";
 
 import { ClientModel } from "~@models";
@@ -92,7 +93,12 @@ export class ClientsDataStore implements IClientsDataStore {
   }
 
   async deleteClient(clientId: string) {
-    await this._clientsService.deleteClient(clientId);
+    const res = await this._clientsService.deleteClient(clientId);
+
+    if (res.error) {
+      notification.error({ message: res.error.message });
+      throw res.error;
+    }
 
     this.holder.setData(this.data.filter(item => item.id !== clientId));
   }

@@ -1,4 +1,5 @@
 import { DataHolder } from "@force-dev/utils";
+import { notification } from "antd";
 import { makeAutoObservable } from "mobx";
 
 import { ServerModel } from "~@models";
@@ -39,10 +40,14 @@ export class ServerDataStore implements IServerDataStore {
   }
 
   async deleteServer(serverId: string) {
-    await this._serversService.deleteServer(serverId);
-    this.holder.setData(this.data.filter(item => item.id !== serverId));
+    const res = await this._serversService.deleteServer(serverId);
 
-    return serverId;
+    if (res.error) {
+      notification.error({ message: res.error.message });
+      throw res.error;
+    }
+
+    this.holder.setData(this.data.filter(item => item.id !== serverId));
   }
 
   async onRefresh() {

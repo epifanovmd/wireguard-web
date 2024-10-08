@@ -15,7 +15,7 @@ export interface IServerDataStore {
     data: ICreateServerRequest,
   ): Promise<IServerResponse | undefined>;
 
-  deleteServer(serverId: string): Promise<string>;
+  deleteServer(serverId: string): Promise<void>;
 
   onRefresh(): Promise<Maybe<IServer[]>>;
 }

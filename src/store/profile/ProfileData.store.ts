@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 
 import { ApiError } from "~@api";
 import {
+  ERole,
   IProfile,
   IProfileService,
   ISignInRequest,
@@ -51,6 +52,10 @@ export class ProfileDataStore implements IProfileDataStore {
 
   get isEmpty() {
     return this.holder.isEmpty;
+  }
+
+  get isAdmin() {
+    return this.holder.d?.role.name === ERole.ADMIN;
   }
 
   async signIn(params: ISignInRequest) {

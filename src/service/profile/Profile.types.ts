@@ -6,12 +6,15 @@ export const IProfileService = iocDecorator<IProfileService>();
 
 export interface IProfileService {
   getProfile(): CancelablePromise<ApiResponse<IProfile, ApiError>>;
+
   updateProfile(
     params: IUpdateProfileRequest,
   ): CancelablePromise<ApiResponse<IProfile, ApiError>>;
+
   signIn(
     credentials: ISignInRequest,
   ): CancelablePromise<ApiResponse<ISignInResponse, ApiError>>;
+
   signUp(
     body: ISignUpRequest,
   ): CancelablePromise<ApiResponse<ISignUpResponse, ApiError>>;
@@ -26,6 +29,18 @@ export interface IRefreshTokenResponse {
   refreshToken: string;
 }
 
+export enum ERole {
+  ADMIN = "admin",
+  USER = "user",
+  GUEST = "guest",
+}
+
+export enum EPermissions {
+  READ = "read",
+  WRITE = "write",
+  DELETE = "delete",
+}
+
 export interface IProfile {
   id: string;
   username: string;
@@ -36,6 +51,15 @@ export interface IProfile {
 
   createdAt: string;
   updatedAt: string;
+
+  role: {
+    id: string;
+    name: ERole;
+    permissions: {
+      id: string;
+      name: EPermissions;
+    }[];
+  };
 }
 
 export interface IUpdateProfileRequest

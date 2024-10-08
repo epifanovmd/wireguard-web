@@ -1,10 +1,17 @@
 import { useBoolean } from "@force-dev/react";
 import { Modal, Spin, Tabs } from "antd";
 import { isString } from "lodash";
-import React, { FC, memo, PropsWithChildren, useCallback } from "react";
+import React, {
+  FC,
+  memo,
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+} from "react";
 
 import { ServerModel } from "~@models";
 import { ICreateServerRequest } from "~@service";
+import { useProfileDataStore } from "~@store";
 
 import { ServerForm, TServerForm } from "../forms";
 import { useConfirmModal } from "../ui";
@@ -14,8 +21,8 @@ export interface IServerListProps {
   items: ServerModel[];
   loading?: boolean;
   onServerSelect: (serverId: string) => void;
-  onCreate?: (data: ICreateServerRequest) => void;
-  onDelete?: (serverId: string) => void;
+  onCreate?: (data: ICreateServerRequest) => Promise<void> | void;
+  onDelete?: (serverId: string) => Promise<void> | void;
 }
 
 const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
@@ -28,6 +35,7 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
 }) => {
   const [open, onOpen, onClose] = useBoolean();
   const { onConfirm } = useConfirmModal();
+  const { isAdmin } = useProfileDataStore();
 
   const handleSubmit = useCallback(
     async (data: TServerForm) => {
@@ -46,11 +54,15 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
           "Сервер будет удален безвовратно, а так же все связанные с ним клиенты",
         submitTitle: "Удалить",
         onSubmit: async () => {
-          await onDelete?.(serverId);
+          try {
+            await onDelete?.(serverId);
+          } catch {
+            onClose();
+          }
         },
       });
     },
-    [onConfirm, onDelete],
+    [onClose, onConfirm, onDelete],
   );
 
   const onEdit = useCallback(
@@ -67,6 +79,15 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
     [handleDelete, onCreate, onOpen],
   );
 
+  const tabs = useMemo(
+    () =>
+      items.map(item => ({
+        key: item.data.id,
+        label: item.data.name,
+      })),
+    [items],
+  );
+
   return (
     <div>
       {loading ? (
@@ -78,11 +99,10 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
           type="editable-card"
           defaultActiveKey="1"
           activeKey={serverId}
-          items={items.map(item => ({
-            key: item.data.id,
-            label: item.data.name,
-          }))}
-          onEdit={onEdit}
+          items={tabs}
+          hideAdd={!isAdmin}
+          removeIcon={isAdmin ? undefined : <div />}
+          onEdit={isAdmin ? onEdit : undefined}
           onChange={id => onServerSelect(id)}
         />
       )}

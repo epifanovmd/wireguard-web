@@ -15,6 +15,7 @@ export interface IProfileDataStore {
   isLoading: boolean;
   isError: boolean;
   isEmpty: boolean;
+  isAdmin: boolean;
 
   getProfile(): Promise<IProfile | undefined>;
 
