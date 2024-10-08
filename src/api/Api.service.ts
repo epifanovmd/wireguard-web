@@ -1,4 +1,4 @@
-import { delayPromise, iocDecorator } from "@force-dev/utils";
+import { iocDecorator } from "@force-dev/utils";
 
 import { ITokenService } from "~@service";
 
