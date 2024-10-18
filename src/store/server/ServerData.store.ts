@@ -10,6 +10,7 @@ import { IServerDataStore } from "./ServerData.types";
 @IServerDataStore()
 export class ServerDataStore implements IServerDataStore {
   public holder = new DataHolder<IServer[]>();
+  public enabled = false;
 
   constructor(@IServerService() private _serversService: IServerService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -48,6 +49,41 @@ export class ServerDataStore implements IServerDataStore {
     }
 
     this.holder.setData(this.data.filter(item => item.id !== serverId));
+  }
+
+  async getStatus(serverId: string) {
+    const res = await this._serversService.getStatus(serverId);
+
+    if (res.error) {
+      notification.error({ message: res.error.message });
+      throw res.error;
+    } else {
+      this.enabled = !!res.data;
+    }
+  }
+
+  async startServer(serverId: string) {
+    const res = await this._serversService.serverStart(serverId);
+
+    if (res.error) {
+      if (!res.isCanceled) {
+        notification.error({ message: res.error.message });
+      }
+    } else {
+      this.enabled = true;
+    }
+  }
+
+  async stopServer(serverId: string) {
+    const res = await this._serversService.serverStop(serverId);
+
+    if (res.error) {
+      if (!res.isCanceled) {
+        notification.error({ message: res.error.message });
+      }
+    } else {
+      this.enabled = false;
+    }
   }
 
   async onRefresh() {

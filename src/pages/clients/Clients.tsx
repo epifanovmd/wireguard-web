@@ -3,6 +3,7 @@ import React, { FC, PropsWithChildren } from "react";
 
 import { ClientList, ServerList } from "~@components";
 
+import { ServerActions } from "../../components/serverActions";
 import { useClientsVM } from "./hooks";
 
 interface IProps {}
@@ -34,6 +35,7 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
           onCreate={createServer}
           onDelete={deleteServer}
         />
+        <ServerActions serverId={serverId} />
         <ClientList
           serverId={serverId}
           data={clients}

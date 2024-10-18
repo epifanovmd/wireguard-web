@@ -49,7 +49,7 @@ export class ClientsDataStore implements IClientsDataStore {
     }, 1000);
   }
 
-  subscribeSocket(clientId: string[]) {
+  subscribeSocket(clientId: string[] = this.data.map(item => item.id)) {
     this._clientSocketService.subscribeClient(clientId, data => {
       this.holder.setData(
         this.data.map(item => {
@@ -68,11 +68,12 @@ export class ClientsDataStore implements IClientsDataStore {
     });
   }
 
-  unSubscribeSocket() {
+  unsubscribeSocket() {
     this._clientSocketService.unsubscribeClient();
   }
 
   async updateClient(clientId: string, params: IUpdateClientRequest) {
+    this.unsubscribeSocket();
     const client = await this._clientsService.updateClient(clientId, params);
 
     if (client.data) {
@@ -81,18 +82,22 @@ export class ClientsDataStore implements IClientsDataStore {
       this.holder.setData(
         this.data.map(item => (item.id === clientData.id ? clientData : item)),
       );
+      this.subscribeSocket();
     }
   }
 
   async createClient(params: ICreateClientRequest) {
+    this.unsubscribeSocket();
     const client = await this._clientsService.createClient(params);
 
     if (client.data) {
       this.holder.setData([...this.data, client.data]);
+      this.subscribeSocket();
     }
   }
 
   async deleteClient(clientId: string) {
+    this.unsubscribeSocket();
     const res = await this._clientsService.deleteClient(clientId);
 
     if (res.error) {
@@ -101,10 +106,11 @@ export class ClientsDataStore implements IClientsDataStore {
     }
 
     this.holder.setData(this.data.filter(item => item.id !== clientId));
+    this.subscribeSocket();
   }
 
   async onRefresh(serverId: string) {
-    this._clientSocketService.unsubscribeClient();
+    this.unsubscribeSocket();
     this.holder.setLoading();
     const res = await this._clientsService.getClients(serverId);
 
@@ -114,7 +120,6 @@ export class ClientsDataStore implements IClientsDataStore {
       }
     } else if (res.data) {
       this.holder.setData(res.data.data);
-
       this.subscribeSocket(res.data.data.map(item => item.id));
 
       return res.data.data;

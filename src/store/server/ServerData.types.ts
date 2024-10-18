@@ -10,12 +10,19 @@ export interface IServerDataStore {
   data: IServer[];
   models: ServerModel[];
   loading: boolean;
+  enabled: boolean;
 
   createServer(
     data: ICreateServerRequest,
   ): Promise<IServerResponse | undefined>;
 
   deleteServer(serverId: string): Promise<void>;
+
+  getStatus(serverId: string): Promise<void>;
+
+  startServer(serverId: string): Promise<void>;
+
+  stopServer(serverId: string): Promise<void>;
 
   onRefresh(): Promise<Maybe<IServer[]>>;
 }

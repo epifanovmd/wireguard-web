@@ -33,4 +33,18 @@ export class ServerService implements IServerService {
   deleteServer(serverId: string) {
     return this._apiService.delete<string>(`/api/wgserver/delete/${serverId}`);
   }
+
+  getStatus(serverId: string) {
+    return this._apiService.get<string>(
+      `/api/wgserver/server/${serverId}/status`,
+    );
+  }
+
+  serverStart(serverId: string) {
+    return this._apiService.get<void>(`/api/wgserver/server/${serverId}/start`);
+  }
+
+  serverStop(serverId: string) {
+    return this._apiService.get<void>(`/api/wgserver/server/${serverId}/stop`);
+  }
 }

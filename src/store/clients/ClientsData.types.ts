@@ -15,7 +15,7 @@ export interface IClientsDataStore {
 
   subscribeSocket(clientId: string[]): void;
 
-  unSubscribeSocket(): void;
+  unsubscribeSocket(): void;
 
   updateClient(clientId: string, params: IUpdateClientRequest): Promise<void>;
 

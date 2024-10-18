@@ -30,6 +30,7 @@ export const SignInPage = observer(() => {
                   name={"username"}
                   status={invalid ? "error" : undefined}
                   className={"mt-2"}
+                  placeholder={"Username"}
                   value={value}
                   onChange={onChange}
                 />
@@ -46,6 +47,7 @@ export const SignInPage = observer(() => {
                   name={"password"}
                   status={invalid ? "error" : undefined}
                   className={"mt-2"}
+                  placeholder={"Пароль"}
                   value={value}
                   onChange={onChange}
                   type={"password"}

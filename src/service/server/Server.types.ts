@@ -41,6 +41,12 @@ export interface IServerService {
   ): CancelablePromise<ApiResponse<IServerResponse, ApiError>>;
 
   deleteServer(
-    ServerId: string,
+    serverId: string,
   ): CancelablePromise<ApiResponse<string, ApiError>>;
+
+  getStatus(serverId: string): CancelablePromise<ApiResponse<string, ApiError>>;
+
+  serverStart(serverId: string): CancelablePromise<ApiResponse<void, ApiError>>;
+
+  serverStop(serverId: string): CancelablePromise<ApiResponse<void, ApiError>>;
 }
