@@ -3,7 +3,7 @@ import { Switch } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
 
-import { useServerDataStore } from "~@store";
+import { useProfileDataStore, useServerDataStore } from "~@store";
 
 export interface IServerActionsProps {
   serverId?: string;
@@ -14,6 +14,7 @@ const _ServerActions: FC<PropsWithChildren<IServerActionsProps>> = ({
 }) => {
   const [loading, start, stop] = useLoading();
   const { getStatus, startServer, stopServer, enabled } = useServerDataStore();
+  const { isAdmin } = useProfileDataStore();
 
   useEffect(() => {
     if (serverId) {
@@ -38,6 +39,10 @@ const _ServerActions: FC<PropsWithChildren<IServerActionsProps>> = ({
     },
     [serverId, start, startServer, stop, stopServer],
   );
+
+  if (!isAdmin || !serverId) {
+    return null;
+  }
 
   return (
     <Switch
