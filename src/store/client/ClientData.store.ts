@@ -42,12 +42,12 @@ export class ClientDataStore implements IClientDataStore {
     });
   }
 
-  unSubscribeSocket() {
+  unsubscribeSocket() {
     this._clientSocketService.unsubscribeClient();
   }
 
   async onRefresh(clientId: string) {
-    this.unSubscribeSocket();
+    this.unsubscribeSocket();
     this.holder.setLoading();
     const res = await this._clientsService.getClient(clientId);
 

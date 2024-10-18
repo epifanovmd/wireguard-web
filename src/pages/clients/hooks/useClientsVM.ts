@@ -13,7 +13,7 @@ export const useClientsVM = () => {
     updateClient,
     createClient,
     deleteClient,
-    unSubscribeSocket,
+    unsubscribeSocket,
   } = useClientsDataStore();
 
   const {
@@ -34,7 +34,7 @@ export const useClientsVM = () => {
     });
 
     return () => {
-      unSubscribeSocket();
+      unsubscribeSocket();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
