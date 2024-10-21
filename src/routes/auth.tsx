@@ -2,14 +2,13 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-import { Container } from "~@components";
 import { ISessionDataStore } from "~@store";
 
 const Component = observer(() => {
   return (
-    <Container>
+    <>
       <Outlet />
-    </Container>
+    </>
   );
 });
 

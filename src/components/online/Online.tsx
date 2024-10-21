@@ -47,13 +47,15 @@ const _Online: FC<PropsWithChildren<IOnlineProps>> = ({ client }) => {
 
   return (
     <a className={"flex items-center"}>
-      {client.name}
       {
-        <div
-          className={"ml-1 rounded h-2 w-2 bg-green-500"}
+        <span
+          className={"mr-1 rounded h-2 w-2 bg-green-500"}
           style={{ background: online ? "#22c55e" : "#ef6f66" }}
         />
       }
+      <span className={"overflow-hidden overflow-ellipsis whitespace-nowrap"}>
+        {client.name}
+      </span>
     </a>
   );
 };

@@ -652,18 +652,20 @@
   resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.3.0.tgz#731656abe21e8e769a7f70a4d833e6312fe59b7f"
   integrity sha512-5Aap/GaRupgNx/feGBwLLTVv8OQFfv3pq2lPRzPg9R+IOBnDgghTGW7l7EuVXOvg5cc/xSAlRW8rBrjIC3Nvqw==
 
-"@force-dev/react-web@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@force-dev/react-web/-/react-web-0.0.1.tgz#9eba1a7361c5bf686839a76438fb734642e57305"
-  integrity sha512-/tc4pBseSa3Nz5aAtNiL3LqB10Fb/J24HtcJvBfg7u1SyDHKgcMDTHqUjC8cjaw577ZsVLOT5Z+GWEWQqaw4oQ==
+"@force-dev/react-web@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@force-dev/react-web/-/react-web-0.0.10.tgz#aa95517ceea464bef8bd158b99fa4314ce965fdd"
+  integrity sha512-XK+HtFEbSq+nsBBsXcwsdyQTNBIaMFYxK/PCK714eh2Ttzg1MTrUzoSXTDIz4nSLVQmWSdGTN7+jZxLCQTpbEg==
   dependencies:
-    "@force-dev/react" "^1.1.18"
-    "@force-dev/utils" "^1.1.64"
+    "@force-dev/react" "^1.1.19"
+    "@types/body-scroll-lock" "^3.1.2"
+    body-scroll-lock "^4.0.0-beta.0"
+    postcss "^8.4.41"
     rc-select "^14.15.1"
     rollup-plugin-postcss "^4.0.2"
     sass "^1.77.8"
 
-"@force-dev/react@^1.1.18", "@force-dev/react@^1.1.2":
+"@force-dev/react@^1.1.19", "@force-dev/react@^1.1.2":
   version "1.1.21"
   resolved "https://registry.yarnpkg.com/@force-dev/react/-/react-1.1.21.tgz#53c51525811891b2b6c3b5078285fc796bfac68b"
   integrity sha512-IBL+I3+LxkEJQR5Jf31rupqgPkn1C4L+bnM/aUXKUcB+2kXewS7Mlkdmqe/biBs+73Lm60H/XJ7Qr2msgCxqLA==
@@ -672,7 +674,7 @@
     react-hook-form "^7.52.1"
     zod "^3.23.8"
 
-"@force-dev/utils@^1.1.64", "@force-dev/utils@^1.1.77":
+"@force-dev/utils@^1.1.77":
   version "1.1.77"
   resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.1.77.tgz#36606b346469e4825b166e98dd8dfda0a12060fe"
   integrity sha512-70CTnJqsj8+MIx6QWDFv/U89T8mWqxuTt39NbNGEfNVOd9Sei2gpgWlahalu54RT/S95R6AYeG211UMdp7Ky5A==
@@ -1149,6 +1151,11 @@
   dependencies:
     "@types/connect" "*"
     "@types/node" "*"
+
+"@types/body-scroll-lock@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@types/body-scroll-lock/-/body-scroll-lock-3.1.2.tgz#1ae7857d98180dbe6c3b05abbe7ec1fa67b614e3"
+  integrity sha512-ELhtuphE/YbhEcpBf/rIV9Tl3/O0A0gpCVD+oYFSS8bWstHFJUgA4nNw1ZakVlRC38XaQEIsBogUZKWIPBvpfQ==
 
 "@types/compression@^1.7.2":
   version "1.7.5"
@@ -1809,6 +1816,11 @@ body-parser@1.20.2:
     raw-body "2.5.2"
     type-is "~1.6.18"
     unpipe "1.0.0"
+
+body-scroll-lock@^4.0.0-beta.0:
+  version "4.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-4.0.0-beta.0.tgz#4f78789d10e6388115c0460cd6d7d4dd2bbc4f7e"
+  integrity sha512-a7tP5+0Mw3YlUJcGAKUqIBkYYGlYxk2fnCasq/FUph1hadxlTRjF+gAcZksxANnaMnALjxEddmSi/H3OR8ugcQ==
 
 boolbase@^1.0.0:
   version "1.0.0"

@@ -20,7 +20,7 @@ export const Header: FC = memo(() => {
         "flex shadow-md rounded-xl p-4 flex-grow mb-4 mt-4 justify-between"
       }
     >
-      <div>{"VPN ADMIN PANEL"}</div>
+      <div>{"Wireguard"}</div>
       <Button onClick={onLogout}>{"Выход"}</Button>
     </div>
   );

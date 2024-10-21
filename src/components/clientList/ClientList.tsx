@@ -4,6 +4,7 @@ import {
   QrcodeOutlined,
 } from "@ant-design/icons";
 import { useBoolean } from "@force-dev/react";
+import { useWindowSize } from "@force-dev/react-web";
 import { Modal, Space, Table, TableProps } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, useCallback, useMemo, useState } from "react";
@@ -14,6 +15,7 @@ import { IClient, ICreateClientRequest, IUpdateClientRequest } from "~@service";
 import { ClientForm, TClientForm } from "../forms";
 import { Button, useConfirmModal } from "../ui";
 import { ClientConfiguration } from "../сlientConfiguration";
+import { ClientCard } from "./ClientCard";
 import { clientListColumns } from "./columns";
 
 interface IProps {
@@ -32,6 +34,8 @@ export const ClientList: FC<IProps> = observer(
   ({ serverId, data, loading, onUpdate, onCreate, onDelete }) => {
     const [createOpen, onCreateOpen, onCreateClose] = useBoolean();
     const [editClient, setEditClient] = useState<IClient>();
+    const { width = 0 } = useWindowSize();
+    const isMobile = width < 992;
 
     const { onConfirm } = useConfirmModal();
 
@@ -132,15 +136,25 @@ export const ClientList: FC<IProps> = observer(
             </Button>
           )}
         </div>
-        <Table
-          rowKey={({ data }) => data.id}
-          columns={_columns}
-          dataSource={data}
-          loading={loading}
-          size={"small"}
-          bordered
-          pagination={false}
-        />
+        {isMobile ? (
+          data.map(client => (
+            <ClientCard
+              columns={_columns}
+              key={client.data.id}
+              client={client}
+            />
+          ))
+        ) : (
+          <Table
+            rowKey={({ data }) => data.id}
+            columns={_columns}
+            dataSource={data}
+            loading={loading}
+            size={"small"}
+            bordered
+            pagination={false}
+          />
+        )}
         <Modal
           open={createOpen || !!editClient}
           title={editClient ? "Редактирование" : "Создать клиента"}

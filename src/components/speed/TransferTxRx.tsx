@@ -25,7 +25,7 @@ export const TransferTxRx: FC<{ value: number }> = ({ value }) => {
   }, [value]);
 
   return (
-    <div style={{ flexGrow: 1, flexBasis: 0 }}>
+    <div className={"flex-grow basis-0 whitespace-nowrap"}>
       {value !== 0 &&
         `${bytes(value)} ${parseFloat(current) > 0 ? `- ${current}/s` : ""}`}
     </div>

@@ -26,7 +26,7 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
 
   return (
     <div className={"flex pt-1"}>
-      <div className={"ml-2 shadow-2xl rounded-xl p-4 flex-grow"}>
+      <div className={"ml-2 shadow-2xl rounded-xl p-4 flex-grow min-w-0"}>
         <ServerList
           serverId={serverId}
           items={servers}

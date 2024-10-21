@@ -11,6 +11,7 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     dataIndex: "name",
     key: "name",
     render: (_, client) => <Online client={client} />,
+    // width: "100%",
   },
   {
     title: "Статус",
@@ -32,20 +33,22 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     title: "Загружено",
     dataIndex: "transferRx",
     key: "transferRx",
-    width: "200px",
+    // width: "220px",
     render: (_, { data }) => <TransferTxRx value={data.transferRx ?? 0} />,
   },
   {
     title: "Скачано",
     dataIndex: "transferTx",
     key: "transferTx",
-    width: "200px",
+    // width: "220px",
     render: (_, { data }) => <TransferTxRx value={data.transferTx ?? 0} />,
   },
   {
-    title: "Дата / время последнего подключения",
+    title: "Подключение",
     key: "date",
     dataIndex: "date",
-    render: (_, { date }) => <div>{date.formatted}</div>,
+    render: (_, { date }) => (
+      <div className={"min-w-[150px]"}>{date.formatted}</div>
+    ),
   },
 ];
