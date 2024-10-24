@@ -2,7 +2,7 @@ import { DataHolder, Interval } from "@force-dev/utils";
 import { makeAutoObservable, reaction } from "mobx";
 
 import { IApiService } from "~@api";
-import { ITokenService } from "~@service";
+import { IRefreshTokenResponse, ITokenService } from "~@service";
 
 import { IProfileDataStore } from "../profile";
 import { ISessionDataStore } from "./SessionData.types";
@@ -57,15 +57,22 @@ export class SessionDataStore implements ISessionDataStore {
     return this.holder.isReady;
   }
 
-  async restore() {
-    this.holder.setLoading();
+  async restore(tokens?: IRefreshTokenResponse) {
+    if (tokens) {
+      this._tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
+      await this._profileDataStore.getProfile();
 
-    const { accessToken } = await this._profileDataStore.updateToken();
+      return tokens.accessToken;
+    } else {
+      this.holder.setLoading();
 
-    await this._profileDataStore.getProfile();
+      const { accessToken } = await this._profileDataStore.updateToken();
 
-    this.holder.setData(accessToken);
+      await this._profileDataStore.getProfile();
 
-    return accessToken;
+      this.holder.setData(accessToken);
+
+      return accessToken;
+    }
   }
 }

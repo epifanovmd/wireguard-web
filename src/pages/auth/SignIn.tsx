@@ -7,18 +7,27 @@ import styled from "styled-components";
 import { AsyncButton, Input } from "~@components";
 
 import { useSignInVM } from "./hooks";
+import { usePasskeyAuth } from "./hooks/usePasskyAuth";
 import { TSignInForm } from "./validations";
 
 const Field = typedFormField<TSignInForm>();
 
 export const SignInPage = observer(() => {
   const { form, handleLogin, handleNavigateSignUp } = useSignInVM();
+  const { support, handleLogin: handlePasskey } = usePasskeyAuth();
 
   return (
     <Wrap>
       <Form>
         <FormProvider {...form}>
-          <div className={"text-xl mb-4"}>{"Авторизация"}</div>
+          <div className={"flex justify-between"}>
+            <div className={"text-xl mb-4"}>{"Авторизация"}</div>
+            {support && (
+              <AsyncButton type={"primary"} onClick={handlePasskey}>
+                {"Passkey"}
+              </AsyncButton>
+            )}
+          </div>
           <Field
             name={"username"}
             render={({
