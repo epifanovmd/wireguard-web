@@ -24,31 +24,34 @@ export const usePasskeyAuth = () => {
     setSupport(browserSupportsWebAuthn());
   }, []);
 
-  const handleRegister = useCallback(async (profileId: string) => {
-    localStorage.setItem("profileId", profileId);
-    try {
-      // Получите challenge и другие данные с сервера
-      const response = await generateRegistrationOptions(profileId);
+  const handleRegister = useCallback(
+    async (profileId: string) => {
+      localStorage.setItem("profileId", profileId);
+      try {
+        // Получите challenge и другие данные с сервера
+        const response = await generateRegistrationOptions(profileId);
 
-      if (response.data) {
-        // Запустите процесс регистрации
-        const data = await startRegistration({ optionsJSON: response.data });
-        // Отправьте результат обратно на сервер
+        if (response.data) {
+          // Запустите процесс регистрации
+          const data = await startRegistration({ optionsJSON: response.data });
+          // Отправьте результат обратно на сервер
 
-        const verifyResponse = await verifyRegistration({
-          profileId,
-          data,
-        });
+          const verifyResponse = await verifyRegistration({
+            profileId,
+            data,
+          });
 
-        return !!verifyResponse.data?.verified;
+          return !!verifyResponse.data?.verified;
+        }
+      } catch (error) {
+        console.log("error", error);
+        //
       }
-    } catch (error) {
-      console.log("error", error);
-      //
-    }
 
-    return false;
-  }, []);
+      return false;
+    },
+    [generateRegistrationOptions, verifyRegistration],
+  );
 
   const handleLogin = useCallback(async () => {
     try {
@@ -77,7 +80,7 @@ export const usePasskeyAuth = () => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [navigate, restore]);
+  }, [generateAuthenticationOptions, navigate, restore, verifyAuthentication]);
 
   return { handleRegister, handleLogin, support };
 };
