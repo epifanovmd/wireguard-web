@@ -1,6 +1,6 @@
 import { iocDecorator } from "@force-dev/utils";
 
-import { ITokenService } from "~@service";
+import { ITokenService } from "~@service/token";
 
 import { ApiError } from "./Api.types";
 import { Api } from "./api-gen/Api";
@@ -19,7 +19,7 @@ export const IApiService = iocDecorator<ApiService>();
 
 @IApiService({ inSingleton: true })
 class ApiService extends Api<ApiError, ApiError> {
-  constructor() {
+  constructor(@ITokenService() private _tokenService: ITokenService) {
     super(
       {
         timeout: 2 * 60 * 1000,
@@ -37,7 +37,7 @@ class ApiService extends Api<ApiError, ApiError> {
 
     this.instance.interceptors.request.use(async request => {
       const headers = request.headers;
-      const token = ITokenService.getInstance().accessToken;
+      const token = this._tokenService.accessToken;
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

@@ -28,12 +28,19 @@
     "strict": true,
     "paths": {
       "~@api": ["./src/api"],
+      "~@api/*": ["./src/api/*"],
       "~@common": ["./src/common"],
+      "~@common/*": ["./src/common/*"],
       "~@components": ["./src/components"],
+      "~@components/*": ["./src/components/*"],
       "~@models": ["./src/models"],
+      "~@models/*": ["./src/models/*"],
       "~@service": ["./src/service"],
+      "~@service/*": ["./src/service/*"],
       "~@store": ["./src/store"],
+      "~@store/*": ["./src/store/*"],
       "~@theme": ["./src/theme"],
+      "~@theme/*": ["./src/theme/*"],
     }
   },
   "ts-node": {
