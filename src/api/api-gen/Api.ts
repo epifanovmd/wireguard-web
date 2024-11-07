@@ -11,18 +11,25 @@
 
 import type { AxiosError } from "axios";
 import {
+  Base64URLString,
   CheckStatusParams,
   CreateWgServerPayload,
+  GenerateAuthenticationOptionsPayload,
+  GenerateRegistrationOptionsPayload,
   GetAllProfilesParams,
   GetWgClientsParams,
   GetWgServersParams,
   IProfileDto,
   IProfileListDto,
+  IProfilePrivilegesRequest,
   IProfileUpdateRequest,
   IProfileWithTokensDto,
   ISignInRequest,
   ISignUpRequest,
   ITokensDto,
+  IVerifyAuthenticationRequest,
+  IVerifyAuthenticationResponse,
+  IVerifyRegistrationRequest,
   IWgClientCreateRequest,
   IWgClientListDto,
   IWgClientsDto,
@@ -30,6 +37,7 @@ import {
   IWgServerDto,
   IWgServersListDto,
   IWireguardPeerStatus,
+  PublicKeyCredentialRequestOptionsJSON,
   RefreshPayload,
 } from "./data-contracts";
 import { EContentType, HttpClient, RequestParams } from "./http-client";
@@ -79,7 +87,7 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * @secure
    */
   deleteMyProfile = (params: RequestParams = {}) =>
-    this.request<string, any>({
+    this.request<Base64URLString, any>({
       url: `/api/profile/my/delete`,
       method: "DELETE",
       responseType: "json",
@@ -120,6 +128,23 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * No description
    *
    * @tags Profile
+   * @name SetPrivileges
+   * @request PATCH:/api/profile/setPrivileges/{id}
+   * @secure
+   */
+  setPrivileges = (id: string, data: IProfilePrivilegesRequest, params: RequestParams = {}) =>
+    this.request<IProfileDto, any>({
+      url: `/api/profile/setPrivileges/${id}`,
+      method: "PATCH",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Profile
    * @name UpdateProfile
    * @request PATCH:/api/profile/update/{id}
    * @secure
@@ -142,7 +167,7 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * @secure
    */
   deleteProfile = (id: string, params: RequestParams = {}) =>
-    this.request<string, any>({
+    this.request<Base64URLString, any>({
       url: `/api/profile/delete/${id}`,
       method: "DELETE",
       responseType: "json",
@@ -191,6 +216,75 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
   refresh = (data: RefreshPayload, params: RequestParams = {}) =>
     this.request<ITokensDto, any>({
       url: `/api/auth/refresh`,
+      method: "POST",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Passkeys
+   * @name GenerateRegistrationOptions
+   * @request POST:/api/passkeys/generate-registration-options
+   */
+  generateRegistrationOptions = (data: GenerateRegistrationOptionsPayload, params: RequestParams = {}) =>
+    this.request<PublicKeyCredentialRequestOptionsJSON, any>({
+      url: `/api/passkeys/generate-registration-options`,
+      method: "POST",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Passkeys
+   * @name VerifyRegistration
+   * @request POST:/api/passkeys/verify-registration
+   */
+  verifyRegistration = (data: IVerifyRegistrationRequest, params: RequestParams = {}) =>
+    this.request<
+      {
+        verified: boolean;
+      },
+      any
+    >({
+      url: `/api/passkeys/verify-registration`,
+      method: "POST",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Passkeys
+   * @name GenerateAuthenticationOptions
+   * @request POST:/api/passkeys/generate-authentication-options
+   */
+  generateAuthenticationOptions = (data: GenerateAuthenticationOptionsPayload, params: RequestParams = {}) =>
+    this.request<PublicKeyCredentialRequestOptionsJSON, any>({
+      url: `/api/passkeys/generate-authentication-options`,
+      method: "POST",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Passkeys
+   * @name VerifyAuthentication
+   * @request POST:/api/passkeys/verify-authentication
+   */
+  verifyAuthentication = (data: IVerifyAuthenticationRequest, params: RequestParams = {}) =>
+    this.request<IVerifyAuthenticationResponse, any>({
+      url: `/api/passkeys/verify-authentication`,
       method: "POST",
       data: data,
       type: EContentType.Json,
@@ -342,7 +436,7 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * @secure
    */
   deleteWgServer = (id: string, params: RequestParams = {}) =>
-    this.request<string, any>({
+    this.request<Base64URLString, any>({
       url: `/api/wgserver/delete/${id}`,
       method: "DELETE",
       responseType: "json",
@@ -388,7 +482,7 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * @secure
    */
   getWgClientConfiguration = (id: string, params: RequestParams = {}) =>
-    this.request<string, any>({
+    this.request<Base64URLString, any>({
       url: `/api/wgclients/client/${id}/configuration`,
       method: "GET",
       responseType: "json",
@@ -437,7 +531,7 @@ export class Api<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBod
    * @secure
    */
   deleteWgClient = (id: string, params: RequestParams = {}) =>
-    this.request<string, any>({
+    this.request<Base64URLString, any>({
       url: `/api/wgclients/delete/${id}`,
       method: "DELETE",
       responseType: "json",

@@ -1,4 +1,4 @@
-module.exports = plop => {
+export default plop => {
   plop.setGenerator("service", {
     description: "Создает сервис",
     prompts: [
