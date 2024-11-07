@@ -89,6 +89,7 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
+    "plop": "^4.0.1",
     "prettier": "^2.8.1",
     "sass": "^1.56.2",
     "ts-node": "^10.7.0",

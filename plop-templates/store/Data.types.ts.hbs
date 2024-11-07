@@ -1,0 +1,19 @@
+import { AsyncDataSource, iocDecorator } from "@force-dev/utils";
+
+import { {{properCase name}}Model } from "~@models";
+import { I{{properCase name}}, I{{properCase name}}Request } from "~@service";
+
+export const I{{properCase name}}DataStore = iocDecorator<I{{properCase name}}DataStore>();
+
+export interface I{{properCase name}}DataStore {
+  dataSource: AsyncDataSource<I{{properCase name}}, I{{properCase name}}Request>;
+
+  data?: I{{properCase name}};
+  model?: {{properCase name}}Model;
+
+  error?: string;
+  loading: boolean;
+  loaded: boolean;
+
+  onRefresh(req: I{{properCase name}}Request): Promise<I{{properCase name}} | undefined>;
+}

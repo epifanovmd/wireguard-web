@@ -1,0 +1,19 @@
+import { IApiService } from "~@api";
+
+import {
+  I{{properCase name}}Request,
+  I{{properCase name}}Response,
+  I{{properCase name}}Service,
+} from "./{{properCase name}}.types";
+
+@I{{properCase name}}Service()
+export class {{properCase name}}Service implements I{{properCase name}}Service {
+  constructor(@IApiService() private _apiService: IApiService) {}
+
+  get{{properCase name}}(params?: I{{properCase name}}Request) {
+    return this._apiService.get<I{{properCase name}}Response, I{{properCase name}}Request>(
+      "{endpoint}",
+      params,
+    );
+  }
+}

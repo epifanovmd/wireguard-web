@@ -1,0 +1,40 @@
+import { AsyncDataSource } from "@force-dev/utils";
+import { makeAutoObservable } from "mobx";
+
+import { {{properCase name}}Model } from "~@models";
+import { I{{properCase name}}, I{{properCase name}}Request, I{{properCase name}}Service } from "~@service";
+
+import { I{{properCase name}}DataStore } from "./{{properCase name}}Data.types";
+
+@I{{properCase name}}DataStore()
+export class {{properCase name}}DataStore implements I{{properCase name}}DataStore {
+  public dataSource: AsyncDataSource<I{{properCase name}}, I{{properCase name}}Request>;
+  public model = new {{properCase name}}Model(() => this.data);
+
+  constructor(@I{{properCase name}}Service() private _{{camelCase name}}Service: I{{properCase name}}Service) {
+    this.dataSource = new AsyncDataSource(query =>
+      this._{{camelCase name}}Service.get{{properCase name}}(query),
+    );
+    makeAutoObservable(this, {}, { autoBind: true });
+  }
+
+  get data() {
+    return this.dataSource.d;
+  }
+
+  get error() {
+    return this.dataSource.error?.msg;
+  }
+
+  get loading() {
+    return this.dataSource.isLoading;
+  }
+
+  get loaded() {
+    return this.dataSource.isReady;
+  }
+
+  onRefresh = async (id: number) => {
+    return this.dataSource.refresh(id);
+  };
+}
