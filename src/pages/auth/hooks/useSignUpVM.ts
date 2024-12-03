@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
+import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
@@ -16,12 +17,13 @@ export const useSignUpVM = () => {
     resolver: zodResolver(signUpFormValidation),
   });
 
-  console.log("errors", form.formState.errors);
-
   const handleSignUp = useCallback(async () => {
     return form.handleSubmit(async data => {
-      console.log("data", data);
       await profileDataStore.signUp(data);
+
+      if (profileDataStore.isError) {
+        notification.error({ message: profileDataStore.holder.error?.msg });
+      }
 
       if (profileDataStore.profile) {
         navigate({ to: "/" }).then();

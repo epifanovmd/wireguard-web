@@ -23,5 +23,5 @@ export interface IProfileDataStore {
 
   signIn(params: ISignInRequest): Promise<void>;
 
-  signUp(params: ISignUpRequest): void;
+  signUp(params: ISignUpRequest): Promise<void>;
 }

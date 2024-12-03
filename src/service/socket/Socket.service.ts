@@ -61,6 +61,7 @@ export class SocketService implements ISocketService {
         query: { access_token: this._tokenService.accessToken },
         autoConnect: true,
         reconnection: true,
+        useNativeTimers: true,
       });
 
       this._socket.on("connect", () => {

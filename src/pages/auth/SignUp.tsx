@@ -41,7 +41,7 @@ export const SignUpPage = observer(() => {
               field: { onChange, value },
               fieldState: { invalid },
             }) => (
-              <Input
+              <Input.Password
                 placeholder={"Пароль"}
                 type={"password"}
                 status={invalid ? "error" : undefined}
@@ -57,7 +57,7 @@ export const SignUpPage = observer(() => {
               field: { onChange, value },
               fieldState: { invalid },
             }) => (
-              <Input
+              <Input.Password
                 placeholder={"Подтверждение пароля"}
                 type={"password"}
                 status={invalid ? "error" : undefined}

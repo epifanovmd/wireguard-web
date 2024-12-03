@@ -17,7 +17,7 @@ const _ClientConfiguration: FC<
   const { onRefresh, data } = useClientConfigurationDataStore();
 
   useEffect(() => {
-    onRefresh(clientId).then(res => console.log("res", res));
+    onRefresh(clientId).then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

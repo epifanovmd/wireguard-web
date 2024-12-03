@@ -51,7 +51,7 @@ export const SignInPage = observer(() => {
               field: { onChange, value },
               fieldState: { invalid },
             }) => (
-              <Input
+              <Input.Password
                 name={"password"}
                 status={invalid ? "error" : undefined}
                 className={"mt-2"}

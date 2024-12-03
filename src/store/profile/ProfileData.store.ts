@@ -25,17 +25,17 @@ export class ProfileDataStore implements IProfileDataStore {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
-  updateToken() {
-    return this._tokenService.restoreRefreshToken().then(async refreshToken => {
-      if (refreshToken) {
-        await this._refresh(refreshToken);
-      }
+  async updateToken() {
+    const refreshToken = await this._tokenService.restoreRefreshToken();
 
-      return {
-        accessToken: this._tokenService.accessToken,
-        refreshToken: this._tokenService.refreshToken,
-      };
-    });
+    if (refreshToken) {
+      await this._refresh(refreshToken);
+    }
+
+    return {
+      accessToken: this._tokenService.accessToken,
+      refreshToken: this._tokenService.refreshToken,
+    };
   }
 
   get profile() {

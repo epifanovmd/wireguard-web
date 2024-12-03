@@ -44,11 +44,11 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     render: (_, { data }) => <TransferTxRx value={data.transferTx ?? 0} />,
   },
   {
-    title: "Подключение",
+    title: "Последнее подключение",
     key: "date",
     dataIndex: "date",
     render: (_, { date }) => (
-      <div className={"min-w-[150px]"}>{date.formatted}</div>
+      <div className={"min-w-[150px]"}>{date.formattedDiff}</div>
     ),
   },
 ];
