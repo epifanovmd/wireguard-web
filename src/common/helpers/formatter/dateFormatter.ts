@@ -5,9 +5,9 @@ import {
   isToday,
 } from "date-fns";
 
-import { pluralizeDay, pluralizeHour, pluralizeMinute } from "./pluralize";
+import { pluralizeDay, pluralizeHour, pluralizeMinute } from "~@common";
 
-class DateFormatter {
+export class DateFormatter {
   diff = (date: Date): string => {
     const now = new Date();
 
@@ -34,11 +34,3 @@ class DateFormatter {
     }
   };
 }
-
-class Formatter {
-  get date() {
-    return new DateFormatter();
-  }
-}
-
-export const formatter = new Formatter();
