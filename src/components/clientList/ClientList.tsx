@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import { useBoolean } from "@force-dev/react";
 import { useWindowSize } from "@force-dev/react-web";
-import { Modal, Space, Table, TableProps } from "antd";
+import { Modal, notification, Space, Table, TableProps } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, useCallback, useMemo, useState } from "react";
 
@@ -78,6 +78,26 @@ export const ClientList: FC<IProps> = observer(
       setEditClient(undefined);
     }, [onCreateClose]);
 
+    const onOpenQr = useCallback((id: string) => {
+      const modal = Modal.success({
+        title: "Отсканируйте QR код",
+        icon: null,
+        closable: true,
+        content: (
+          <ClientConfiguration
+            clientId={id}
+            onError={() => {
+              modal.destroy();
+              notification.error({
+                message: "Не уадалось загрузить конфигурацию",
+              });
+            }}
+          />
+        ),
+        okText: "Готово",
+      });
+    }, []);
+
     const _columns = useMemo<TableProps<ClientModel>["columns"]>(
       () => [
         ...clientListColumns,
@@ -90,15 +110,7 @@ export const ClientList: FC<IProps> = observer(
               <Space className={"flex justify-center"}>
                 <QrcodeOutlined
                   className={"cursor-pointer"}
-                  onClick={() => {
-                    Modal.success({
-                      title: "Отсканируйте QR код",
-                      icon: null,
-                      closable: true,
-                      content: <ClientConfiguration clientId={data.id} />,
-                      okText: "Готово",
-                    });
-                  }}
+                  onClick={() => onOpenQr(data.id)}
                 />
                 {onUpdate && (
                   <EditOutlined
@@ -116,7 +128,7 @@ export const ClientList: FC<IProps> = observer(
           ),
         },
       ],
-      [handleDelete, onUpdate],
+      [handleDelete, onOpenQr, onUpdate],
     );
 
     if (!serverId) {

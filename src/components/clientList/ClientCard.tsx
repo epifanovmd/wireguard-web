@@ -15,7 +15,7 @@ const _ClientCard: FC<PropsWithChildren<IClientCardProps>> = ({
   return (
     <div
       className={
-        "grid grid-cols-1 sm:grid-cols-2 rounded-xl gap-1 mb-2 pt-[48px] border-[1px] border-[#E7E7E7] p-[14px] relative"
+        "grid grid-cols-1 sm:grid-cols-2 rounded-md gap-1 mb-2 pt-[48px] border-[1px] border-[#E7E7E7] p-[14px] relative"
       }
     >
       {columns.map(({ key, title, render }, index) => {

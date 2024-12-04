@@ -21,7 +21,7 @@ export const Header: FC = memo(() => {
   return (
     <div
       className={
-        "flex shadow-md rounded-xl p-4 flex-grow mb-4 mt-4 justify-between"
+        "flex shadow-md rounded-md p-4 flex-grow mb-4 mt-4 justify-between bg-white"
       }
     >
       <div>{"Wireguard"}</div>

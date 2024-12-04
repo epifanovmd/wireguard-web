@@ -1,4 +1,4 @@
-import { QRCode, Spin } from "antd";
+import { Alert, Modal, QRCode, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
 
@@ -9,15 +9,20 @@ import { Button } from "../ui";
 
 export interface IClientConfigurationProps {
   clientId: string;
+  onError?: () => void;
 }
 
 const _ClientConfiguration: FC<
   PropsWithChildren<IClientConfigurationProps>
-> = ({ clientId }) => {
+> = ({ clientId, onError }) => {
   const { onRefresh, data } = useClientConfigurationDataStore();
 
   useEffect(() => {
-    onRefresh(clientId).then();
+    onRefresh(clientId).then(res => {
+      if (!res) {
+        onError?.();
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

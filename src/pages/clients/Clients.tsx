@@ -1,3 +1,4 @@
+import { Alert } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren } from "react";
 
@@ -26,7 +27,15 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
 
   return (
     <div className={"flex pt-1"}>
-      <div className={"ml-2 shadow-2xl rounded-xl p-4 flex-grow min-w-0"}>
+      <div className={"shadow-2xl rounded-md p-4 flex-grow min-w-0"}>
+        <Alert
+          message="Внимание"
+          description="Одновременное использование одной точки доступа на двух и более устройствах, приведет к нестабильной работе доступа в интернет."
+          type="warning"
+          className={"mb-2"}
+          showIcon
+          closable
+        />
         <ServerList
           serverId={serverId}
           items={servers}
