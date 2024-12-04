@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+// const passwordSchema = z
+//   .string()
+//   .min(8, "Пароль должен содержать минимум 8 символов")
+//   .regex(/[A-Z]/, "Пароль должен содержать хотя бы одну заглавную букву")
+//   .regex(
+//     /[!@#$%^&*(),.?":{}|<>]/,
+//     "Пароль должен содержать хотя бы один специальный символ",
+//   );
+
 export const signInFormValidation = z.object({
   username: z
     .string()

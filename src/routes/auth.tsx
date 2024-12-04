@@ -13,17 +13,21 @@ const Component = observer(() => {
 });
 
 export const Route = createFileRoute("/auth")({
-  beforeLoad: async () => {
+  beforeLoad: async ctx => {
     const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
 
-    if (!isReady) {
-      const accessToken = await restore();
+    const isSignUp = ctx.location.pathname.includes("signUp");
 
-      if (accessToken) {
+    if (!isSignUp) {
+      if (!isReady) {
+        const accessToken = await restore();
+
+        if (accessToken) {
+          throw redirect({ to: "/" });
+        }
+      } else if (isAuthorized) {
         throw redirect({ to: "/" });
       }
-    } else if (isAuthorized) {
-      throw redirect({ to: "/" });
     }
   },
   component: Component,

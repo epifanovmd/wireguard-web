@@ -1,10 +1,12 @@
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { typedFormField } from "@force-dev/react";
+import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useCallback } from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
-import { AsyncButton, Container, Input } from "~@components";
+import { AsyncButton, Input } from "~@components";
 
 import { useSignUpVM } from "./hooks";
 import { TSignUpForm } from "./validations";
@@ -13,12 +15,24 @@ const Field = typedFormField<TSignUpForm>();
 
 export const SignUpPage = observer(() => {
   const { form, handleSignUp } = useSignUpVM();
+  const navigate = useNavigate();
+
+  const onBack = useCallback(() => {
+    navigate({ to: "/auth/signIn" }).then();
+  }, [navigate]);
 
   return (
     <Wrap>
-      <Form>
-        <FormProvider {...form}>
-          <div className={"text-xl mb-4"}>{"Регистрация"}</div>
+      <FormProvider {...form}>
+        <Form>
+          <div className={"flex items-center mb-4"}>
+            <ArrowLeftOutlined
+              className={"p-1 mr-2 cursor-pointer"}
+              onClick={onBack}
+            />
+            <div className={"text-xl"}>{"Регистрация"}</div>
+          </div>
+
           <Field
             name={"username"}
             render={({
@@ -31,6 +45,7 @@ export const SignUpPage = observer(() => {
                 className={"mt-2"}
                 value={value}
                 onChange={onChange}
+                autoComplete={"username"}
               />
             )}
           />
@@ -48,6 +63,7 @@ export const SignUpPage = observer(() => {
                 className={"mt-2"}
                 value={value}
                 onChange={onChange}
+                autoComplete={"new-password"}
               />
             )}
           />
@@ -64,16 +80,18 @@ export const SignUpPage = observer(() => {
                 className={"mt-2"}
                 value={value}
                 onChange={onChange}
+                autoComplete={"new-password"}
               />
             )}
           />
+
           <div className={"flex justify-end mt-4"}>
             <AsyncButton onClick={handleSignUp}>
               {"Зарегистрироваться"}
             </AsyncButton>
           </div>
-        </FormProvider>
-      </Form>
+        </Form>
+      </FormProvider>
     </Wrap>
   );
 });
@@ -86,7 +104,7 @@ const Wrap = styled.div`
   height: 100vh;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   width: 100%;
   max-width: 500px;
   padding: 32px;

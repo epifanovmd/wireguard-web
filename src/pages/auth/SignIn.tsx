@@ -18,8 +18,8 @@ export const SignInPage = observer(() => {
 
   return (
     <Wrap>
-      <Form>
-        <FormProvider {...form}>
+      <FormProvider {...form}>
+        <Form>
           <div className={"flex justify-between"}>
             <div className={"text-xl mb-4"}>{"Авторизация"}</div>
             {support && (
@@ -41,6 +41,7 @@ export const SignInPage = observer(() => {
                 placeholder={"Username"}
                 value={value}
                 onChange={onChange}
+                autoComplete={"username"}
               />
             )}
           />
@@ -59,17 +60,18 @@ export const SignInPage = observer(() => {
                 value={value}
                 onChange={onChange}
                 type={"password"}
+                autoComplete={"current-password"}
               />
             )}
           />
           <div className={"flex justify-between mt-4"}>
             <AsyncButton onClick={handleLogin}>{"Войти"}</AsyncButton>
             <AsyncButton type={"link"} onClick={handleNavigateSignUp}>
-              {"Зарегистрироваться"}
+              {"Регистрация"}
             </AsyncButton>
           </div>
-        </FormProvider>
-      </Form>
+        </Form>
+      </FormProvider>
     </Wrap>
   );
 });
@@ -82,7 +84,7 @@ const Wrap = styled.div`
   height: 100vh;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   width: 100%;
   max-width: 500px;
   padding: 32px;

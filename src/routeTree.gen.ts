@@ -14,7 +14,6 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/auth'
-import { Route as PublicImport } from './routes/_public'
 import { Route as PrivateImport } from './routes/_private'
 
 // Create Virtual Routes
@@ -27,11 +26,6 @@ const AuthSignInLazyImport = createFileRoute('/auth/signIn')()
 
 const AuthRoute = AuthImport.update({
   path: '/auth',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const PublicRoute = PublicImport.update({
-  id: '/_public',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -66,13 +60,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof PrivateImport
-      parentRoute: typeof rootRoute
-    }
-    '/_public': {
-      id: '/_public'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof PublicImport
       parentRoute: typeof rootRoute
     }
     '/auth': {
@@ -125,7 +112,6 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/_private",
-        "/_public",
         "/auth"
       ]
     },
@@ -134,9 +120,6 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/_private/"
       ]
-    },
-    "/_public": {
-      "filePath": "_public.tsx"
     },
     "/auth": {
       "filePath": "auth.tsx",
