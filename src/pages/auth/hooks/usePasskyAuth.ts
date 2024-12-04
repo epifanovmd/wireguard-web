@@ -4,6 +4,7 @@ import {
   startRegistration,
 } from "@simplewebauthn/browser";
 import { useNavigate } from "@tanstack/react-router";
+import { notification } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
 import { usePasskeysService } from "~@service";
@@ -43,9 +44,8 @@ export const usePasskeyAuth = () => {
 
           return !!verifyResponse.data?.verified;
         }
-      } catch (error) {
-        console.log("error", error);
-        //
+      } catch (error: any) {
+        notification.error({ message: error.message });
       }
 
       return false;
@@ -77,8 +77,8 @@ export const usePasskeyAuth = () => {
           navigate({ to: "/" }).then();
         }
       }
-    } catch (error) {
-      console.log("error", error);
+    } catch (error: any) {
+      notification.error({ message: error.message });
     }
   }, [generateAuthenticationOptions, navigate, restore, verifyAuthentication]);
 
