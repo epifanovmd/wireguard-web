@@ -49,7 +49,7 @@ const _ClientForm: FC<PropsWithChildren<IClientFormProps>> = ({
             validateStatus={invalid ? "error" : undefined}
             help={error?.message}
           >
-            <Input placeholder="Название VPN клиента" {...field} />
+            <Input placeholder="Имя VPN клиента" {...field} />
           </Form.Item>
         )}
       />
