@@ -23,8 +23,8 @@ const _ClientForm: FC<PropsWithChildren<IClientFormProps>> = ({
 }) => {
   const form = useClientForm({
     defaultValues: {
-      name: client?.name,
-      enabled: client?.enabled,
+      name: client?.name ?? "",
+      enabled: client?.enabled || true,
     },
   });
 
