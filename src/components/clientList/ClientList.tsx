@@ -11,6 +11,7 @@ import {
   Modal,
   notification,
   Space,
+  Spin,
   Table,
   TableProps,
 } from "antd";
@@ -27,7 +28,7 @@ import { ClientCard } from "./ClientCard";
 import { clientListColumns } from "./columns";
 
 interface IProps {
-  serverId?: string;
+  serverId: string;
   data: ClientModel[];
   loading?: boolean;
   onDelete?: (clientId: string) => void | Promise<void>;
@@ -139,23 +140,16 @@ export const ClientList: FC<IProps> = observer(
       [handleDelete, onOpenQr, onUpdate],
     );
 
-    if (!serverId) {
-      return (
-        <div className={"flex justify-center p-4"}>
-          <div>{"Выберете сервер"}</div>
-        </div>
-      );
-    }
-
     return (
       <>
         <div className={"flex justify-end mb-3"}>
-          {onCreate && (
+          {onCreate && !loading && (
             <Button type={"link"} onClick={onCreateOpen}>
               {"Добавить клиента"}
             </Button>
           )}
         </div>
+
         <Alert
           description={
             "Чтобы добавить VPN на устройство, " +
@@ -169,7 +163,11 @@ export const ClientList: FC<IProps> = observer(
         />
 
         {isMobile ? (
-          data.length ? (
+          loading ? (
+            <div className={"flex justify-center"}>
+              <Spin />
+            </div>
+          ) : data.length ? (
             data.map(client => (
               <ClientCard
                 columns={_columns}
@@ -178,7 +176,7 @@ export const ClientList: FC<IProps> = observer(
               />
             ))
           ) : (
-            <Empty />
+            <Empty description={"Пока нет ни одного клиента"} />
           )
         ) : (
           <Table
@@ -190,7 +188,7 @@ export const ClientList: FC<IProps> = observer(
             bordered
             pagination={false}
             locale={{
-              emptyText: <Empty />,
+              emptyText: <Empty description={"Пока нет ни одного клиента"} />,
             }}
           />
         )}

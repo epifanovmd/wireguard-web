@@ -1,5 +1,5 @@
 import { useBoolean } from "@force-dev/react";
-import { Modal, Spin, Tabs } from "antd";
+import { Empty, Modal, Spin, Tabs } from "antd";
 import { isString } from "lodash";
 import React, {
   FC,
@@ -94,7 +94,7 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
         <div className={"flex justify-center"}>
           <Spin />
         </div>
-      ) : (
+      ) : tabs.length ? (
         <Tabs
           type="editable-card"
           defaultActiveKey="1"
@@ -105,6 +105,8 @@ const _ServerList: FC<PropsWithChildren<IServerListProps>> = ({
           onEdit={isAdmin ? onEdit : undefined}
           onChange={id => onServerSelect(id)}
         />
+      ) : (
+        <Empty description={"Пока нет ни одного сервера"} />
       )}
 
       <Modal
