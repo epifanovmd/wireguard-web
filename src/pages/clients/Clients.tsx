@@ -1,8 +1,9 @@
-import { Alert } from "antd";
+import { useBoolean } from "@force-dev/react";
+import { Alert, Collapse, Divider, Modal, Steps } from "antd";
 import { observer } from "mobx-react-lite";
-import React, { FC, PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren, useState } from "react";
 
-import { ClientList, ServerList } from "~@components";
+import { AsyncButton, ClientList, ServerList } from "~@components";
 
 import { ServerActions } from "../../components/serverActions";
 import { useClientsVM } from "./hooks";
@@ -25,17 +26,20 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
     deleteServer,
   } = useClientsVM();
 
+  const warnMessage =
+    "Одновременное использование одной точки доступа на двух и более устройствах, приведет к нестабильной работе доступа в интернет.";
+
   return (
     <div className={"flex pt-1"}>
       <div className={"shadow-2xl rounded-md p-4 flex-grow min-w-0"}>
         <Alert
-          message="Внимание"
-          description="Одновременное использование одной точки доступа на двух и более устройствах, приведет к нестабильной работе доступа в интернет."
+          description={warnMessage}
           type="warning"
           className={"mb-2"}
           showIcon
           closable
         />
+
         <ServerList
           serverId={serverId}
           items={servers}

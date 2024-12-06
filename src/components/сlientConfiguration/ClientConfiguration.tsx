@@ -1,24 +1,25 @@
-import { Alert, Modal, QRCode, Spin } from "antd";
+import { QRCode, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
 
 import { downloadBlob } from "~@common";
+import { IClient } from "~@service";
 import { useClientConfigurationDataStore } from "~@store";
 
 import { Button } from "../ui";
 
 export interface IClientConfigurationProps {
-  clientId: string;
+  client: IClient;
   onError?: () => void;
 }
 
 const _ClientConfiguration: FC<
   PropsWithChildren<IClientConfigurationProps>
-> = ({ clientId, onError }) => {
+> = ({ client, onError }) => {
   const { onRefresh, data } = useClientConfigurationDataStore();
 
   useEffect(() => {
-    onRefresh(clientId).then(res => {
+    onRefresh(client.id).then(res => {
       if (!res) {
         onError?.();
       }
@@ -28,9 +29,9 @@ const _ClientConfiguration: FC<
 
   const handleDownload = useCallback(
     (value: string) => {
-      downloadBlob(new Blob([value]), `${clientId}.conf`);
+      downloadBlob(new Blob([value]), `${client.name}.conf`);
     },
-    [clientId],
+    [client.name],
   );
 
   return (

@@ -5,7 +5,15 @@ import {
 } from "@ant-design/icons";
 import { useBoolean } from "@force-dev/react";
 import { useWindowSize } from "@force-dev/react-web";
-import { Modal, notification, Space, Table, TableProps } from "antd";
+import {
+  Alert,
+  Empty,
+  Modal,
+  notification,
+  Space,
+  Table,
+  TableProps,
+} from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, useCallback, useMemo, useState } from "react";
 
@@ -78,14 +86,14 @@ export const ClientList: FC<IProps> = observer(
       setEditClient(undefined);
     }, [onCreateClose]);
 
-    const onOpenQr = useCallback((id: string) => {
+    const onOpenQr = useCallback((client: IClient) => {
       const modal = Modal.success({
         title: "Отсканируйте QR код",
         icon: null,
         closable: true,
         content: (
           <ClientConfiguration
-            clientId={id}
+            client={client}
             onError={() => {
               modal.destroy();
               notification.error({
@@ -110,7 +118,7 @@ export const ClientList: FC<IProps> = observer(
               <Space className={"flex justify-center"}>
                 <QrcodeOutlined
                   className={"cursor-pointer"}
-                  onClick={() => onOpenQr(data.id)}
+                  onClick={() => onOpenQr(data)}
                 />
                 {onUpdate && (
                   <EditOutlined
@@ -148,14 +156,30 @@ export const ClientList: FC<IProps> = observer(
             </Button>
           )}
         </div>
+        <Alert
+          description={
+            "Чтобы добавить VPN на устройство, " +
+            "откройте приложение WireGuard и " +
+            "добавьте туннель, отсканировав " +
+            "QR-код или загрузив файл конфигурации."
+          }
+          type="info"
+          className={"mb-2"}
+          closable
+        />
+
         {isMobile ? (
-          data.map(client => (
-            <ClientCard
-              columns={_columns}
-              key={client.data.id}
-              client={client}
-            />
-          ))
+          data.length ? (
+            data.map(client => (
+              <ClientCard
+                columns={_columns}
+                key={client.data.id}
+                client={client}
+              />
+            ))
+          ) : (
+            <Empty />
+          )
         ) : (
           <Table
             rowKey={({ data }) => data.id}
@@ -165,6 +189,9 @@ export const ClientList: FC<IProps> = observer(
             size={"small"}
             bordered
             pagination={false}
+            locale={{
+              emptyText: <Empty />,
+            }}
           />
         )}
         <Modal
@@ -175,6 +202,11 @@ export const ClientList: FC<IProps> = observer(
           maskClosable={false}
           onCancel={handleClose}
         >
+          <Alert
+            type={"info"}
+            description={"Имя клиента должно быть понятным и относится к вам!"}
+            className={"mb-2"}
+          />
           <ClientForm
             client={editClient}
             onSubmit={editClient ? handleUpdate : handleCreate}

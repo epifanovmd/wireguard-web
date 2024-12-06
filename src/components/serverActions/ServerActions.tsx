@@ -40,7 +40,7 @@ const _ServerActions: FC<PropsWithChildren<IServerActionsProps>> = ({
     [serverId, start, startServer, stop, stopServer],
   );
 
-  if (!serverId) {
+  if (!serverId || !isAdmin) {
     return null;
   }
 
@@ -50,8 +50,8 @@ const _ServerActions: FC<PropsWithChildren<IServerActionsProps>> = ({
       loading={loading}
       disabled={!serverId || !isAdmin}
       onChange={onToggle}
-      checkedChildren="Вкл"
-      unCheckedChildren="Выкл"
+      checkedChildren={"Вкл"}
+      unCheckedChildren={"Выкл"}
     />
   );
 };

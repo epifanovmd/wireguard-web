@@ -45,11 +45,11 @@ const _ClientForm: FC<PropsWithChildren<IClientFormProps>> = ({
           <Form.Item
             layout={"vertical"}
             colon={true}
-            label="Название"
+            label={"Имя клиента"}
             validateStatus={invalid ? "error" : undefined}
             help={error?.message}
           >
-            <Input placeholder="Имя VPN клиента" {...field} />
+            <Input placeholder={"Введите имя"} {...field} />
           </Form.Item>
         )}
       />
@@ -59,7 +59,7 @@ const _ClientForm: FC<PropsWithChildren<IClientFormProps>> = ({
           <Form.Item
             layout={"horizontal"}
             colon={true}
-            label="Активен"
+            label={"Активен"}
             validateStatus={invalid ? "error" : undefined}
             help={error?.message}
           >
