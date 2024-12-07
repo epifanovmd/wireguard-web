@@ -3,8 +3,8 @@ import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren } from "react";
 
 import { ClientList, ServerList } from "~@components";
+import { ServerActions } from "~@components/serverActions";
 
-import { ServerActions } from "../../components/serverActions";
 import { useClientsVM } from "./hooks";
 
 interface IProps {}
@@ -27,8 +27,6 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
 
   const warnMessage =
     "Одновременное использование одной точки доступа на двух и более устройствах, приведет к нестабильной работе доступа в интернет.";
-
-  console.log("serverId", serverId);
 
   return (
     <div className={"flex pt-1"}>
