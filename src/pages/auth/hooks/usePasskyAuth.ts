@@ -33,7 +33,7 @@ export const usePasskeyAuth = () => {
 
       return false;
     },
-    [generateRegistrationOptions, verifyRegistration],
+    [_handleRegister],
   );
 
   const handleLogin = useCallback(async () => {
@@ -47,7 +47,7 @@ export const usePasskeyAuth = () => {
     } catch (error: any) {
       notification.error({ message: error.message });
     }
-  }, [generateAuthenticationOptions, navigate, restore, verifyAuthentication]);
+  }, [_handleLogin, navigate, restore]);
 
   return { handleRegister, handleLogin, support };
 };
