@@ -1,10 +1,10 @@
 import { useNavigate } from "@tanstack/react-router";
 import React, { FC, memo, useCallback } from "react";
 
+import { usePasskeyAuth } from "~@common";
 import { useTokenService } from "~@service";
 import { useProfileDataStore } from "~@store";
 
-import { usePasskeyAuth } from "../../pages/auth/hooks/usePasskyAuth";
 import { AsyncButton, Button } from "../ui";
 
 export const Header: FC = memo(() => {

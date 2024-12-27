@@ -5,11 +5,11 @@ import React from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
+import { usePasskeyAuth } from "~@common";
 import { AsyncButton, Input } from "~@components";
 import { FieldWrapper } from "~@components/ui/form/field";
 
 import { useSignInVM } from "./hooks";
-import { usePasskeyAuth } from "./hooks/usePasskyAuth";
 import { TSignInForm } from "./validations";
 
 const Field = typedFormField<TSignInForm>();
