@@ -32,7 +32,10 @@ export interface IVerifyRegistrationResponse {
 export const IPasskeysService = iocDecorator<IPasskeysService>();
 
 export interface IPasskeysService {
+  profileId: string | null;
+
   handleRegister(profileId: string): Promise<boolean>;
+
   handleLogin(): Promise<IVerifyAuthenticationResponse | undefined>;
 
   generateRegistrationOptions(

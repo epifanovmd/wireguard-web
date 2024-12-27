@@ -39,8 +39,8 @@ copy:
 
 # Правило для остановки и удаления запущенного контейнера
 remove-container:
-	@if [ "$$($(CMD_PREFIX) docker ps -f name=^/$CONTAINER_NAME$ -q -a)" != "" ]; then \
-		$(CMD_PREFIX) docker rm --force $$($(CMD_PREFIX) docker ps -f name=^/$CONTAINER_NAME$ -q -a); \
+	@if [ "$$($(CMD_PREFIX) docker ps -f name=^/$(CONTAINER_NAME) -q -a)" != "" ]; then \
+		$(CMD_PREFIX) docker rm --force $$($(CMD_PREFIX) docker ps -f name=^/$(CONTAINER_NAME) -q -a); \
 	fi
 
 # Правило для запуска Docker Compose

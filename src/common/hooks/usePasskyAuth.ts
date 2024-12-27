@@ -8,13 +8,18 @@ import { useSessionDataStore } from "~@store";
 
 export const usePasskeyAuth = () => {
   const [support, setSupport] = useState<boolean>(false);
-  const { handleRegister: _handleRegister, handleLogin: _handleLogin } =
-    usePasskeysService();
+  const {
+    profileId,
+    handleRegister: _handleRegister,
+    handleLogin: _handleLogin,
+  } = usePasskeysService();
   const { restore } = useSessionDataStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSupport(browserSupportsWebAuthn());
+    const support = browserSupportsWebAuthn();
+
+    setSupport(support);
   }, []);
 
   const handleRegister = useCallback(
@@ -43,5 +48,5 @@ export const usePasskeyAuth = () => {
     }
   }, [_handleLogin, navigate, restore]);
 
-  return { handleRegister, handleLogin, support };
+  return { profileId, handleRegister, handleLogin, support };
 };

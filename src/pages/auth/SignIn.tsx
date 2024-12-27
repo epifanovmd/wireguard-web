@@ -21,7 +21,7 @@ export const SignInPage = observer(() => {
     handleNavigateSignUp,
     handleNavigateRecoveryPassword,
   } = useSignInVM();
-  const { support, handleLogin: handlePasskey } = usePasskeyAuth();
+  const { profileId, support, handleLogin: handlePasskey } = usePasskeyAuth();
 
   return (
     <Wrap>
@@ -29,7 +29,7 @@ export const SignInPage = observer(() => {
         <Form1>
           <div className={"flex justify-between"}>
             <div className={"text-xl mb-4"}>{"Авторизация"}</div>
-            {support && (
+            {support && profileId && (
               <AsyncButton type={"primary"} onClick={handlePasskey}>
                 {"Passkey"}
               </AsyncButton>

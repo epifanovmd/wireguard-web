@@ -21,6 +21,11 @@ import {
 export class PasskeysService implements IPasskeysService {
   constructor(@IApiService() private _apiService: IApiService) {}
 
+  get profileId() {
+    // Сохраненный profileId в localStorage, означает что доступен вход по биометрии
+    return localStorage.getItem("profileId");
+  }
+
   handleRegister = async (profileId: string) => {
     localStorage.setItem("profileId", profileId);
 
@@ -44,20 +49,18 @@ export class PasskeysService implements IPasskeysService {
   };
 
   handleLogin = async () => {
-    const profileId = localStorage.getItem("profileId");
-
-    if (!profileId) {
+    if (!this.profileId) {
       return;
     }
 
     // Получите challenge и другие данные с сервера
-    const response = await this.generateAuthenticationOptions(profileId);
+    const response = await this.generateAuthenticationOptions(this.profileId);
 
     if (response.data) {
       // Запустите процесс аутентификации
       const data = await startAuthentication({ optionsJSON: response.data });
       const verifyResponse = await this.verifyAuthentication({
-        profileId,
+        profileId: this.profileId,
         data,
       });
 
