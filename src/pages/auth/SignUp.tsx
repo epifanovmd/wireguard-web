@@ -34,7 +34,7 @@ export const SignUpPage = observer(() => {
           </div>
 
           <Field
-            name={"email"}
+            name={"login"}
             render={({
               field: { onChange, value },
               fieldState: { invalid },

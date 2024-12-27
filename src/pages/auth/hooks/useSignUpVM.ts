@@ -4,6 +4,7 @@ import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
+import { isEmail, isPhone } from "~@common";
 import { useProfileDataStore } from "~@store";
 
 import { signUpFormValidationSchema, TSignUpForm } from "../validations";
@@ -19,7 +20,14 @@ export const useSignUpVM = () => {
 
   const handleSignUp = useCallback(async () => {
     return form.handleSubmit(async data => {
-      await profileDataStore.signUp(data);
+      const email = isEmail(data.login) ? data.login : undefined;
+      const phone = isPhone(data.login) ? data.login : undefined;
+
+      await profileDataStore.signUp({
+        email,
+        phone,
+        password: data.password,
+      });
 
       if (profileDataStore.isError) {
         notification.error({ message: profileDataStore.holder.error?.msg });

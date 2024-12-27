@@ -13,13 +13,7 @@ export const signInFormValidationSchema = z.object({
 
 export const signUpFormValidationSchema = z
   .object({
-    confirmPassword: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
-    email: z.string().email("Invalid email address").optional(),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    phone: z.string().optional(),
+    confirmPassword: passwordValidation,
   })
   .merge(signInFormValidationSchema)
   .refine(data => data.password === data.confirmPassword, {

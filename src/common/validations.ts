@@ -1,22 +1,12 @@
 import { z } from "zod";
 
-const EMAIL_REGEX = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-const PHONE_REGEX = new RegExp(/^\d{10,15}$/);
+import { isEmail, isPhone } from "./helpers";
 
-export const loginValidation = z.string().refine(
-  value => {
-    // Проверяем, является ли значение email
-    const isEmail = EMAIL_REGEX.test(value);
-    // Проверяем, является ли значение телефонным номером (например, только цифры)
-    const isPhone = PHONE_REGEX.test(value);
-
-    // Возвращаем true, если это либо email, либо телефонный номер
-    return isEmail || isPhone;
-  },
-  {
+export const loginValidation = z
+  .string()
+  .refine(value => isEmail(value) || isPhone(value), {
     message: "Введите корректный email или номер телефона",
-  },
-);
+  });
 
 export const passwordValidation = z
   .string()

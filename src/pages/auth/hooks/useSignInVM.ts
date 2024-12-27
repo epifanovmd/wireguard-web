@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
+import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
@@ -30,6 +31,10 @@ export const useSignInVM = () => {
   const handleLogin = useCallback(async () => {
     return form.handleSubmit(async data => {
       await profileDataStore.signIn(data);
+
+      if (profileDataStore.isError) {
+        notification.error({ message: profileDataStore.holder.error?.msg });
+      }
 
       if (profileDataStore.profile) {
         navigate({ to: "/" }).then();
