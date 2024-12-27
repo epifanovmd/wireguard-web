@@ -1,8 +1,4 @@
-import {
-  browserSupportsWebAuthn,
-  startAuthentication,
-  startRegistration,
-} from "@simplewebauthn/browser";
+import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 import { useNavigate } from "@tanstack/react-router";
 import { notification } from "antd";
 import { useCallback, useEffect, useState } from "react";
@@ -13,6 +9,8 @@ import { useSessionDataStore } from "~@store";
 export const usePasskeyAuth = () => {
   const [support, setSupport] = useState<boolean>(false);
   const {
+    handleRegister: _handleRegister,
+    handleLogin: _handleLogin,
     generateRegistrationOptions,
     verifyRegistration,
     generateAuthenticationOptions,
@@ -27,23 +25,8 @@ export const usePasskeyAuth = () => {
 
   const handleRegister = useCallback(
     async (profileId: string) => {
-      localStorage.setItem("profileId", profileId);
       try {
-        // Получите challenge и другие данные с сервера
-        const response = await generateRegistrationOptions(profileId);
-
-        if (response.data) {
-          // Запустите процесс регистрации
-          const data = await startRegistration({ optionsJSON: response.data });
-          // Отправьте результат обратно на сервер
-
-          const verifyResponse = await verifyRegistration({
-            profileId,
-            data,
-          });
-
-          return !!verifyResponse.data?.verified;
-        }
+        return await _handleRegister(profileId);
       } catch (error: any) {
         notification.error({ message: error.message });
       }
@@ -55,27 +38,11 @@ export const usePasskeyAuth = () => {
 
   const handleLogin = useCallback(async () => {
     try {
-      const profileId = localStorage.getItem("profileId");
+      const response = await _handleLogin();
 
-      if (!profileId) {
-        return;
-      }
-
-      // Получите challenge и другие данные с сервера
-      const response = await generateAuthenticationOptions(profileId);
-
-      if (response.data) {
-        // Запустите процесс аутентификации
-        const data = await startAuthentication({ optionsJSON: response.data });
-        const verifyResponse = await verifyAuthentication({
-          profileId,
-          data,
-        });
-
-        if (verifyResponse.data) {
-          await restore(verifyResponse.data.tokens);
-          navigate({ to: "/" }).then();
-        }
+      if (response) {
+        await restore(response.tokens);
+        navigate({ to: "/" }).then();
       }
     } catch (error: any) {
       notification.error({ message: error.message });

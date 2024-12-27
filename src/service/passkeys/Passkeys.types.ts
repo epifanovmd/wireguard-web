@@ -8,7 +8,7 @@ import {
 
 import { ApiError } from "~@api";
 
-import { ITokensDto } from "../../api/api-gen/data-contracts";
+import { IRefreshTokenResponse } from "../profile";
 
 export interface IVerifyRegistrationRequest {
   profileId: string;
@@ -22,7 +22,7 @@ export interface IVerifyAuthenticationRequest {
 
 export interface IVerifyAuthenticationResponse {
   verified: boolean;
-  tokens?: ITokensDto;
+  tokens?: IRefreshTokenResponse;
 }
 
 export interface IVerifyRegistrationResponse {
@@ -32,6 +32,9 @@ export interface IVerifyRegistrationResponse {
 export const IPasskeysService = iocDecorator<IPasskeysService>();
 
 export interface IPasskeysService {
+  handleRegister(profileId: string): Promise<boolean>;
+  handleLogin(): Promise<IVerifyAuthenticationResponse | undefined>;
+
   generateRegistrationOptions(
     profileId: string,
   ): CancelablePromise<
