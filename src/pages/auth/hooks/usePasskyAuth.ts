@@ -8,14 +8,8 @@ import { useSessionDataStore } from "~@store";
 
 export const usePasskeyAuth = () => {
   const [support, setSupport] = useState<boolean>(false);
-  const {
-    handleRegister: _handleRegister,
-    handleLogin: _handleLogin,
-    generateRegistrationOptions,
-    verifyRegistration,
-    generateAuthenticationOptions,
-    verifyAuthentication,
-  } = usePasskeysService();
+  const { handleRegister: _handleRegister, handleLogin: _handleLogin } =
+    usePasskeysService();
   const { restore } = useSessionDataStore();
   const navigate = useNavigate();
 
