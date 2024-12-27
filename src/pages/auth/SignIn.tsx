@@ -13,7 +13,12 @@ import { TSignInForm } from "./validations";
 const Field = typedFormField<TSignInForm>();
 
 export const SignInPage = observer(() => {
-  const { form, handleLogin, handleNavigateSignUp } = useSignInVM();
+  const {
+    form,
+    handleLogin,
+    handleNavigateSignUp,
+    handleNavigateRecoveryPassword,
+  } = useSignInVM();
   const { support, handleLogin: handlePasskey } = usePasskeyAuth();
 
   return (
@@ -65,7 +70,15 @@ export const SignInPage = observer(() => {
             )}
           />
           <div className={"flex justify-between mt-4"}>
-            <AsyncButton onClick={handleLogin}>{"Войти"}</AsyncButton>
+            <div className={"flex"}>
+              <AsyncButton onClick={handleLogin}>{"Войти"}</AsyncButton>
+              <AsyncButton
+                type={"link"}
+                onClick={handleNavigateRecoveryPassword}
+              >
+                {"Забыли пароль?"}
+              </AsyncButton>
+            </div>
             <AsyncButton type={"link"} onClick={handleNavigateSignUp}>
               {"Регистрация"}
             </AsyncButton>

@@ -1,22 +1,17 @@
 import { z } from "zod";
 
-// const passwordSchema = z
-//   .string()
-//   .min(8, "Пароль должен содержать минимум 8 символов")
-//   .regex(/[A-Z]/, "Пароль должен содержать хотя бы одну заглавную букву")
-//   .regex(
-//     /[!@#$%^&*(),.?":{}|<>]/,
-//     "Пароль должен содержать хотя бы один специальный символ",
-//   );
+import { loginValidation, passwordValidation } from "~@common";
 
-export const signInFormValidation = z.object({
-  login: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+export const recoveryPasswordValidationSchema = z.object({
+  login: loginValidation,
 });
 
-export const signUpFormValidation = z
+export const signInFormValidationSchema = z.object({
+  login: loginValidation,
+  password: passwordValidation,
+});
+
+export const signUpFormValidationSchema = z
   .object({
     confirmPassword: z
       .string()
@@ -26,11 +21,14 @@ export const signUpFormValidation = z
     lastName: z.string().optional(),
     phone: z.string().optional(),
   })
-  .merge(signInFormValidation)
+  .merge(signInFormValidationSchema)
   .refine(data => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "Passwords does not match",
   });
 
-export type TSignInForm = z.infer<typeof signInFormValidation>;
-export type TSignUpForm = z.infer<typeof signUpFormValidation>;
+export type TRecoveryPasswordForm = z.infer<
+  typeof recoveryPasswordValidationSchema
+>;
+export type TSignInForm = z.infer<typeof signInFormValidationSchema>;
+export type TSignUpForm = z.infer<typeof signUpFormValidationSchema>;

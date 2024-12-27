@@ -3,6 +3,11 @@ export type ApiRequest<T extends object = {}> = T & {
   limit?: number;
 };
 
+export interface IServiceApiResponseData<T = any> {
+  message?: string;
+  data?: T;
+}
+
 export interface ListResponse<T> {
   count?: number;
   offset?: number;

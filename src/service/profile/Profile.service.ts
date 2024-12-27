@@ -1,10 +1,12 @@
-import { IApiService } from "~@api";
+import { IApiService, IServiceApiResponseData } from "~@api";
 
 import {
   IProfile,
   IProfileService,
+  IRecoveryPasswordRequest,
   IRefreshTokenRequest,
   IRefreshTokenResponse,
+  IResetPasswordRequest,
   ISignInRequest,
   ISignInResponse,
   ISignUpRequest,
@@ -39,6 +41,20 @@ export class ProfileService implements IProfileService {
       "api/auth/signUp",
       body,
     );
+  }
+
+  requestResetPassword(body: IRecoveryPasswordRequest) {
+    return this._apiService.post<
+      IServiceApiResponseData,
+      IRecoveryPasswordRequest
+    >("api/auth/requestResetPassword", body);
+  }
+
+  resetPassword(body: IResetPasswordRequest) {
+    return this._apiService.post<
+      IServiceApiResponseData,
+      IResetPasswordRequest
+    >("api/auth/resetPassword", body);
   }
 
   refresh(body: IRefreshTokenRequest) {

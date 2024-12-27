@@ -18,11 +18,22 @@ import { Route as PrivateImport } from './routes/_private'
 
 // Create Virtual Routes
 
+const ResetPasswordLazyImport = createFileRoute('/reset-password')()
 const PrivateIndexLazyImport = createFileRoute('/_private/')()
 const AuthSignUpLazyImport = createFileRoute('/auth/signUp')()
 const AuthSignInLazyImport = createFileRoute('/auth/signIn')()
+const AuthRecoveryPasswordLazyImport = createFileRoute(
+  '/auth/recovery-password',
+)()
 
 // Create/Update Routes
+
+const ResetPasswordLazyRoute = ResetPasswordLazyImport.update({
+  path: '/reset-password',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/reset-password.lazy').then((d) => d.Route),
+)
 
 const AuthRoute = AuthImport.update({
   path: '/auth',
@@ -51,6 +62,13 @@ const AuthSignInLazyRoute = AuthSignInLazyImport.update({
   getParentRoute: () => AuthRoute,
 } as any).lazy(() => import('./routes/auth/signIn.lazy').then((d) => d.Route))
 
+const AuthRecoveryPasswordLazyRoute = AuthRecoveryPasswordLazyImport.update({
+  path: '/recovery-password',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/auth/recovery-password.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -68,6 +86,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/recovery-password': {
+      id: '/auth/recovery-password'
+      path: '/recovery-password'
+      fullPath: '/auth/recovery-password'
+      preLoaderRoute: typeof AuthRecoveryPasswordLazyImport
+      parentRoute: typeof AuthImport
     }
     '/auth/signIn': {
       id: '/auth/signIn'
@@ -98,9 +130,11 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   PrivateRoute: PrivateRoute.addChildren({ PrivateIndexLazyRoute }),
   AuthRoute: AuthRoute.addChildren({
+    AuthRecoveryPasswordLazyRoute,
     AuthSignInLazyRoute,
     AuthSignUpLazyRoute,
   }),
+  ResetPasswordLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -112,7 +146,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/_private",
-        "/auth"
+        "/auth",
+        "/reset-password"
       ]
     },
     "/_private": {
@@ -124,9 +159,17 @@ export const routeTree = rootRoute.addChildren({
     "/auth": {
       "filePath": "auth.tsx",
       "children": [
+        "/auth/recovery-password",
         "/auth/signIn",
         "/auth/signUp"
       ]
+    },
+    "/reset-password": {
+      "filePath": "reset-password.lazy.tsx"
+    },
+    "/auth/recovery-password": {
+      "filePath": "auth/recovery-password.lazy.tsx",
+      "parent": "/auth"
     },
     "/auth/signIn": {
       "filePath": "auth/signIn.lazy.tsx",

@@ -1,6 +1,6 @@
 import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
 
-import { ApiError } from "~@api";
+import { ApiError, IServiceApiResponseData } from "~@api";
 
 export const IProfileService = iocDecorator<IProfileService>();
 
@@ -18,6 +18,13 @@ export interface IProfileService {
   signUp(
     body: ISignUpRequest,
   ): CancelablePromise<ApiResponse<ISignUpResponse, ApiError>>;
+
+  requestResetPassword(
+    body: IRecoveryPasswordRequest,
+  ): CancelablePromise<ApiResponse<IServiceApiResponseData, ApiError>>;
+  resetPassword(
+    body: IResetPasswordRequest,
+  ): CancelablePromise<ApiResponse<IServiceApiResponseData, ApiError>>;
 
   refresh(
     body: IRefreshTokenRequest,
@@ -64,6 +71,15 @@ export interface IProfile {
 
 export interface IUpdateProfileRequest
   extends Omit<ISignUpRequest, "password"> {}
+
+export interface IRecoveryPasswordRequest {
+  login: string;
+}
+
+export interface IResetPasswordRequest {
+  token: string;
+  password: string;
+}
 
 export interface ISignInRequest {
   login: string;

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { useProfileDataStore } from "~@store";
 
-import { signUpFormValidation, TSignUpForm } from "../validations";
+import { signUpFormValidationSchema, TSignUpForm } from "../validations";
 
 export const useSignUpVM = () => {
   const profileDataStore = useProfileDataStore();
@@ -14,7 +14,7 @@ export const useSignUpVM = () => {
 
   const form = useForm<TSignUpForm>({
     defaultValues: {},
-    resolver: zodResolver(signUpFormValidation),
+    resolver: zodResolver(signUpFormValidationSchema),
   });
 
   const handleSignUp = useCallback(async () => {

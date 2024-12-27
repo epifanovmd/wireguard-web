@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { useProfileDataStore } from "~@store";
 
-import { signInFormValidation, TSignInForm } from "../validations";
+import { signInFormValidationSchema, TSignInForm } from "../validations";
 
 export const useSignInVM = () => {
   const profileDataStore = useProfileDataStore();
@@ -16,11 +16,15 @@ export const useSignInVM = () => {
       login: "",
       password: "",
     },
-    resolver: zodResolver(signInFormValidation),
+    resolver: zodResolver(signInFormValidationSchema),
   });
 
   const handleNavigateSignUp = useCallback(() => {
     return navigate({ to: "/auth/signUp" });
+  }, [navigate]);
+
+  const handleNavigateRecoveryPassword = useCallback(() => {
+    return navigate({ to: "/auth/recovery-password" });
   }, [navigate]);
 
   const handleLogin = useCallback(async () => {
@@ -36,6 +40,7 @@ export const useSignInVM = () => {
   return {
     form,
     handleLogin,
+    handleNavigateRecoveryPassword,
     handleNavigateSignUp,
   };
 };
