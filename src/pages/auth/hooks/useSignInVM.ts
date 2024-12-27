@@ -13,7 +13,7 @@ export const useSignInVM = () => {
 
   const form = useForm<TSignInForm>({
     defaultValues: {
-      username: "",
+      login: "",
       password: "",
     },
     resolver: zodResolver(signInFormValidation),

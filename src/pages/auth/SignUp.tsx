@@ -34,18 +34,18 @@ export const SignUpPage = observer(() => {
           </div>
 
           <Field
-            name={"username"}
+            name={"email"}
             render={({
               field: { onChange, value },
               fieldState: { invalid },
             }) => (
               <Input
-                placeholder={"Username"}
+                placeholder={"Email"}
                 status={invalid ? "error" : undefined}
                 className={"mt-2"}
                 value={value}
                 onChange={onChange}
-                autoComplete={"username"}
+                autoComplete={"email"}
               />
             )}
           />

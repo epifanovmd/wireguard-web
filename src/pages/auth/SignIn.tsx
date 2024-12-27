@@ -29,19 +29,19 @@ export const SignInPage = observer(() => {
             )}
           </div>
           <Field
-            name={"username"}
+            name={"login"}
             render={({
               field: { onChange, value },
               fieldState: { invalid },
             }) => (
               <Input
-                name={"username"}
+                name={"login"}
                 status={invalid ? "error" : undefined}
                 className={"mt-2"}
-                placeholder={"Username"}
+                placeholder={"Login"}
                 value={value}
                 onChange={onChange}
-                autoComplete={"username"}
+                autoComplete={"login"}
               />
             )}
           />

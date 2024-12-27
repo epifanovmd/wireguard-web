@@ -66,7 +66,7 @@ export interface IUpdateProfileRequest
   extends Omit<ISignUpRequest, "password"> {}
 
 export interface ISignInRequest {
-  username: string;
+  login: string;
   password: string;
 }
 
@@ -74,11 +74,12 @@ export interface ISignInResponse extends IProfile {
   tokens: IRefreshTokenResponse;
 }
 
-export interface ISignUpRequest extends ISignInRequest {
+export interface ISignUpRequest {
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
+  password: string;
 }
 
 export interface ISignUpResponse extends IProfile {
