@@ -3,14 +3,14 @@ import { z } from "zod";
 import { isEmail, isPhone } from "./helpers";
 
 export const loginValidation = z
-  .string()
+  .string({ message: "Введите email или номер телефона." })
   .refine(value => isEmail(value) || isPhone(value), {
     message: "Введите корректный email или номер телефона",
   });
 
 export const passwordValidation = z
-  .string()
-  .min(6, { message: "Password must be at least 6 characters" });
+  .string({ message: "Введите пароль." })
+  .min(6, { message: "Пароль должен быть не менее 6-ти символов." });
 
 // const passwordValidation = z
 //   .string()

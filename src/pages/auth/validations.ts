@@ -18,7 +18,7 @@ export const signUpFormValidationSchema = z
   .merge(signInFormValidationSchema)
   .refine(data => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Passwords does not match",
+    message: "Пароли не совпадают.",
   });
 
 export type TRecoveryPasswordForm = z.infer<

@@ -3,7 +3,7 @@ import React, { FC, memo, PropsWithChildren } from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
-import { AsyncButton, Input } from "~@components";
+import { AsyncButton, FieldWrapper, Input } from "~@components";
 
 import { useResetPassword } from "./hooks";
 import { TResetPasswordForm } from "./validations";
@@ -27,36 +27,40 @@ const _ResetPassword: FC<PropsWithChildren<IResetPasswordProps>> = () => {
             name={"password"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input.Password
-                name={"password"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                placeholder={"Пароль"}
-                value={value}
-                onChange={onChange}
-                type={"password"}
-                autoComplete={"new-password"}
-              />
+              <FieldWrapper error={error}>
+                <Input.Password
+                  name={"password"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  placeholder={"Пароль"}
+                  value={value}
+                  onChange={onChange}
+                  type={"password"}
+                  autoComplete={"new-password"}
+                />
+              </FieldWrapper>
             )}
           />
           <Field
             name={"confirmPassword"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input.Password
-                name={"confirmPassword"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                placeholder={"Подтверждение пароля"}
-                value={value}
-                onChange={onChange}
-                type={"password"}
-                autoComplete={"new-password"}
-              />
+              <FieldWrapper error={error}>
+                <Input.Password
+                  name={"confirmPassword"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  placeholder={"Подтверждение пароля"}
+                  value={value}
+                  onChange={onChange}
+                  type={"password"}
+                  autoComplete={"new-password"}
+                />
+              </FieldWrapper>
             )}
           />
 

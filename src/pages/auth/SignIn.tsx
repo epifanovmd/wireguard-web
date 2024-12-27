@@ -1,10 +1,12 @@
 import { typedFormField } from "@force-dev/react";
+import { Form } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
 import { AsyncButton, Input } from "~@components";
+import { FieldWrapper } from "~@components/ui/form/field";
 
 import { useSignInVM } from "./hooks";
 import { usePasskeyAuth } from "./hooks/usePasskyAuth";
@@ -24,7 +26,7 @@ export const SignInPage = observer(() => {
   return (
     <Wrap>
       <FormProvider {...form}>
-        <Form>
+        <Form1>
           <div className={"flex justify-between"}>
             <div className={"text-xl mb-4"}>{"Авторизация"}</div>
             {support && (
@@ -37,17 +39,19 @@ export const SignInPage = observer(() => {
             name={"login"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input
-                name={"login"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                placeholder={"Login"}
-                value={value}
-                onChange={onChange}
-                autoComplete={"login"}
-              />
+              <FieldWrapper error={error}>
+                <Input
+                  name={"login"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  placeholder={"Login"}
+                  value={value}
+                  onChange={onChange}
+                  autoComplete={"login"}
+                />
+              </FieldWrapper>
             )}
           />
 
@@ -55,18 +59,20 @@ export const SignInPage = observer(() => {
             name={"password"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input.Password
-                name={"password"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                placeholder={"Пароль"}
-                value={value}
-                onChange={onChange}
-                type={"password"}
-                autoComplete={"current-password"}
-              />
+              <FieldWrapper error={error}>
+                <Input.Password
+                  name={"password"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  placeholder={"Пароль"}
+                  value={value}
+                  onChange={onChange}
+                  type={"password"}
+                  autoComplete={"current-password"}
+                />
+              </FieldWrapper>
             )}
           />
           <div className={"flex justify-between mt-4"}>
@@ -83,7 +89,7 @@ export const SignInPage = observer(() => {
               {"Регистрация"}
             </AsyncButton>
           </div>
-        </Form>
+        </Form1>
       </FormProvider>
     </Wrap>
   );
@@ -97,7 +103,7 @@ const Wrap = styled.div`
   height: 100vh;
 `;
 
-const Form = styled.form`
+const Form1 = styled.form`
   width: 100%;
   max-width: 500px;
   padding: 32px;

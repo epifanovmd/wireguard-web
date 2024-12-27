@@ -3,7 +3,7 @@ import React, { FC, memo, PropsWithChildren } from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
-import { AsyncButton, Input } from "~@components";
+import { AsyncButton, FieldWrapper, Input } from "~@components";
 
 import { useRecoveryPassword } from "./hooks/useRecoveryPassword";
 import { TRecoveryPasswordForm } from "./validations";
@@ -27,18 +27,20 @@ const _RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> = () => {
             name={"login"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input
-                name={"login"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                placeholder={"Введите ваш Email для востановления пароля"}
-                value={value}
-                onChange={onChange}
-                type={"email"}
-                autoComplete={"email"}
-              />
+              <FieldWrapper error={error}>
+                <Input
+                  name={"login"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  placeholder={"Введите ваш Email для востановления пароля"}
+                  value={value}
+                  onChange={onChange}
+                  type={"email"}
+                  autoComplete={"email"}
+                />
+              </FieldWrapper>
             )}
           />
           <div className={"flex justify-between mt-4"}>

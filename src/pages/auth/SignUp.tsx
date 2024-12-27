@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
-import { AsyncButton, Input } from "~@components";
+import { AsyncButton, FieldWrapper, Input } from "~@components";
 
 import { useSignUpVM } from "./hooks";
 import { TSignUpForm } from "./validations";
@@ -37,16 +37,18 @@ export const SignUpPage = observer(() => {
             name={"login"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input
-                placeholder={"Email"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                value={value}
-                onChange={onChange}
-                autoComplete={"email"}
-              />
+              <FieldWrapper error={error}>
+                <Input
+                  placeholder={"Email"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  value={value}
+                  onChange={onChange}
+                  autoComplete={"email"}
+                />
+              </FieldWrapper>
             )}
           />
 
@@ -54,34 +56,38 @@ export const SignUpPage = observer(() => {
             name={"password"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input.Password
-                placeholder={"Пароль"}
-                type={"password"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                value={value}
-                onChange={onChange}
-                autoComplete={"new-password"}
-              />
+              <FieldWrapper error={error}>
+                <Input.Password
+                  placeholder={"Пароль"}
+                  type={"password"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  value={value}
+                  onChange={onChange}
+                  autoComplete={"new-password"}
+                />
+              </FieldWrapper>
             )}
           />
           <Field
             name={"confirmPassword"}
             render={({
               field: { onChange, value },
-              fieldState: { invalid },
+              fieldState: { invalid, error },
             }) => (
-              <Input.Password
-                placeholder={"Подтверждение пароля"}
-                type={"password"}
-                status={invalid ? "error" : undefined}
-                className={"mt-2"}
-                value={value}
-                onChange={onChange}
-                autoComplete={"new-password"}
-              />
+              <FieldWrapper error={error}>
+                <Input.Password
+                  placeholder={"Подтверждение пароля"}
+                  type={"password"}
+                  status={invalid ? "error" : undefined}
+                  className={"mt-2"}
+                  value={value}
+                  onChange={onChange}
+                  autoComplete={"new-password"}
+                />
+              </FieldWrapper>
             )}
           />
 
