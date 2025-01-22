@@ -25,6 +25,7 @@ const AuthSignInLazyImport = createFileRoute('/auth/signIn')()
 const AuthRecoveryPasswordLazyImport = createFileRoute(
   '/auth/recovery-password',
 )()
+const PrivateCallLazyImport = createFileRoute('/_private/call')()
 
 // Create/Update Routes
 
@@ -69,6 +70,11 @@ const AuthRecoveryPasswordLazyRoute = AuthRecoveryPasswordLazyImport.update({
   import('./routes/auth/recovery-password.lazy').then((d) => d.Route),
 )
 
+const PrivateCallLazyRoute = PrivateCallLazyImport.update({
+  path: '/call',
+  getParentRoute: () => PrivateRoute,
+} as any).lazy(() => import('./routes/_private/call.lazy').then((d) => d.Route))
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -93,6 +99,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordLazyImport
       parentRoute: typeof rootRoute
+    }
+    '/_private/call': {
+      id: '/_private/call'
+      path: '/call'
+      fullPath: '/call'
+      preLoaderRoute: typeof PrivateCallLazyImport
+      parentRoute: typeof PrivateImport
     }
     '/auth/recovery-password': {
       id: '/auth/recovery-password'
@@ -128,7 +141,10 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  PrivateRoute: PrivateRoute.addChildren({ PrivateIndexLazyRoute }),
+  PrivateRoute: PrivateRoute.addChildren({
+    PrivateCallLazyRoute,
+    PrivateIndexLazyRoute,
+  }),
   AuthRoute: AuthRoute.addChildren({
     AuthRecoveryPasswordLazyRoute,
     AuthSignInLazyRoute,
@@ -153,6 +169,7 @@ export const routeTree = rootRoute.addChildren({
     "/_private": {
       "filePath": "_private.tsx",
       "children": [
+        "/_private/call",
         "/_private/"
       ]
     },
@@ -166,6 +183,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/reset-password": {
       "filePath": "reset-password.lazy.tsx"
+    },
+    "/_private/call": {
+      "filePath": "_private/call.lazy.tsx",
+      "parent": "/_private"
     },
     "/auth/recovery-password": {
       "filePath": "auth/recovery-password.lazy.tsx",

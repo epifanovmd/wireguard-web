@@ -1,11 +1,14 @@
 import { iocDecorator, SupportInitialize } from "@force-dev/utils";
 import { Socket as SocketIO } from "socket.io-client";
 
+import { CallSocketEmitEvents, CallSocketEvents } from "./call";
 import { ClientSocketEmitEvents, ClientsSocketEvents } from "./clients";
 
-export interface SocketEvents extends ClientsSocketEvents {}
+export interface SocketEvents extends CallSocketEvents, ClientsSocketEvents {}
 
-export interface SocketEmitEvents extends ClientSocketEmitEvents {}
+export interface SocketEmitEvents
+  extends CallSocketEmitEvents,
+    ClientSocketEmitEvents {}
 
 export type Socket = SocketIO<SocketEvents, SocketEmitEvents>;
 
