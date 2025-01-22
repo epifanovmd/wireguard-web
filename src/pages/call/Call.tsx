@@ -15,13 +15,13 @@ export const CallPage: FC<PropsWithChildren<IProps>> = observer(() => {
       <div className={"relative"}>
         <div className={"flex shadow-md rounded-lg overflow-hidden"}>
           <video
-            className={"flex-grow basis-0 min-w-0"}
+            className={"flex-grow basis-0 min-w-0 scale-x-[-1]"}
             ref={localStreamRef}
             autoPlay
             playsInline
           />
           <video
-            className={"flex-grow basis-0 flex-shrink-0 min-w-0"}
+            className={"flex-grow basis-0 min-w-0 scale-x-[-1]"}
             ref={remoteStreamRef}
             autoPlay
             playsInline
