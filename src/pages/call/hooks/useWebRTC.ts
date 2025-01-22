@@ -2,20 +2,31 @@ import { useEffect, useRef } from "react";
 
 import { ISocketService, useCallSocket } from "~@service";
 
-const config = {
-  audio: {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: true,
-  },
-  video: true,
-};
-
 const peer = new RTCPeerConnection({
   iceServers: [
     { urls: ["stun:stun.l.google.com:19302", "stun:freestun.net:3478"] },
   ],
 });
+
+const getMediaStreams = async () => {
+  // Получаем стрим со звуком и видео
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+    },
+    video: true,
+  });
+
+  // Клонируем стрим и удаляем аудиотреки для получения видео без звука
+  const mutedStream = new MediaStream(stream.getVideoTracks());
+
+  return {
+    stream,
+    mutedStream,
+  };
+};
 
 export const useWebRTC = () => {
   const { socket } = useCallSocket();
@@ -23,13 +34,13 @@ export const useWebRTC = () => {
   const remoteStreamRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    navigator.mediaDevices?.getUserMedia(config).then(localStream => {
+    getMediaStreams().then(({ stream, mutedStream }) => {
       if (localStreamRef.current) {
-        localStreamRef.current.srcObject = localStream;
+        localStreamRef.current.srcObject = mutedStream;
       }
 
-      localStream.getTracks().forEach(track => {
-        peer.addTrack(track, localStream);
+      stream.getTracks().forEach(track => {
+        peer.addTrack(track, stream);
       });
 
       receivedCall(peer, socket).then();
