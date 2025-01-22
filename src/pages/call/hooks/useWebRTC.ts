@@ -190,7 +190,9 @@ export const useWebRTC = () => {
     localStream?.getTracks().forEach(track => track.stop());
     peer.current.close();
     setOffer(null);
-    setLocalStream(null);
+    setTimeout(() => {
+      setLocalStream(null);
+    }, 0);
     setRemoteStream(null);
   }, [localStream]);
 
