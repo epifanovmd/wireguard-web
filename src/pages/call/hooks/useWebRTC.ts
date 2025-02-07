@@ -145,8 +145,12 @@ export const useWebRTC = () => {
         peer.current.iceConnectionState === "closed" ||
         peer.current.iceConnectionState === "failed"
       ) {
+        peer.current.close();
+        localStream?.getTracks().forEach(track => track.stop());
         setOffer(null);
-        setLocalStream(null);
+        // setTimeout(() => {
+        //   setLocalStream(null);
+        // }, 0);
         setRemoteStream(null);
       }
     };
@@ -155,7 +159,7 @@ export const useWebRTC = () => {
     socket.on("offer", async ({ offer }) => {
       setOffer(offer);
     });
-  }, [socket]);
+  }, [localStream, socket]);
 
   const handleStartCall = useCallback(async () => {
     if (peer.current.iceConnectionState === "closed") {
