@@ -1,6 +1,6 @@
-import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
+import { ApiResponse, CancelablePromise, createServiceDecorator } from "@force-dev/utils";
 
-export const I{{properCase name}}Service = iocDecorator<I{{properCase name}}Service>();
+export const I{{properCase name}}Service = createServiceDecorator<I{{properCase name}}Service>();
 
 export interface I{{properCase name}}Service {
   get{{properCase name}}(params?: I{{properCase name}}Request): CancelablePromise<ApiResponse<I{{properCase name}}>>;

@@ -1,4 +1,4 @@
-import { iocDecorator } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
 import { ISocketService } from "../Socket.types";
 
@@ -18,7 +18,7 @@ export interface CallSocketEmitEvents {
   "ice-candidate": (data: { from: string; to: string; candidate: any }) => void;
 }
 
-export const ICallSocketService = iocDecorator<ICallSocketService>();
+export const ICallSocketService = createServiceDecorator<ICallSocketService>();
 
 export interface ICallSocketService {
   socket: ISocketService;

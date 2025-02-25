@@ -1,6 +1,6 @@
-import { iocDecorator } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
-export const ITokenService = iocDecorator<ITokenService>();
+export const ITokenService = createServiceDecorator<ITokenService>();
 
 export interface ITokenService {
   accessToken: string;

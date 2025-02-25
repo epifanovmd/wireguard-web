@@ -1,7 +1,7 @@
-import { DataHolder, iocDecorator, Maybe } from "@force-dev/utils";
+import { createServiceDecorator, DataHolder, Maybe } from "@force-dev/utils";
 
 export const IClientConfigurationDataDataStore =
-  iocDecorator<IClientConfigurationDataDataStore>();
+  createServiceDecorator<IClientConfigurationDataDataStore>();
 
 export interface IClientConfigurationDataDataStore {
   holder: DataHolder<string>;

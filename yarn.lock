@@ -693,10 +693,10 @@
     reflect-metadata "^0.1.13"
     shortid "^2.2.16"
 
-"@force-dev/utils@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.3.5.tgz#d3b14a4f19ffe99492b337e332c90d1104580f8f"
-  integrity sha512-yJR7Up+nDVU7XP02hSvRzcJDYa9zeZwi+RU0FgPP9wqsD0IbPiUAATWfvZyYcdb1XcRgNqj2OpynEctwWE6u+Q==
+"@force-dev/utils@^1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@force-dev/utils/-/utils-1.3.9.tgz#8b40e29a2b072b17d12593b942beba0ca93eae63"
+  integrity sha512-c/Y6GJRoOSgYMr1lwkeHGenqnM7lxPrVvUoOHjRoGPgEpvxuFObhSX77ggmCBrJvzE982gLG+AjvMf+MDi7gIg==
   dependencies:
     "@types/shortid" "^0.0.32"
     axios "^1.7.2"

@@ -1,8 +1,8 @@
-import { iocDecorator, SupportInitialize } from "@force-dev/utils";
+import { createServiceDecorator, SupportInitialize } from "@force-dev/utils";
 
 import { IRefreshTokenResponse } from "~@service";
 
-export const ISessionDataStore = iocDecorator<ISessionDataStore>();
+export const ISessionDataStore = createServiceDecorator<ISessionDataStore>();
 
 export interface ISessionDataStore extends SupportInitialize<() => void> {
   isAuthorized: boolean;

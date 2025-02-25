@@ -1,4 +1,8 @@
-import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
+import {
+  ApiResponse,
+  CancelablePromise,
+  createServiceDecorator,
+} from "@force-dev/utils";
 
 import { ApiError, ListResponse } from "~@api";
 
@@ -41,7 +45,7 @@ export interface ICreateClientRequest {
 export interface IUpdateClientRequest
   extends Partial<Omit<ICreateClientRequest, "serverId">> {}
 
-export const IClientsService = iocDecorator<IClientsService>();
+export const IClientsService = createServiceDecorator<IClientsService>();
 
 export interface IClientsService {
   getClients(

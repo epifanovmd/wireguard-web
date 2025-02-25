@@ -1,4 +1,4 @@
-import { DataHolder, iocDecorator } from "@force-dev/utils";
+import { createServiceDecorator, DataHolder } from "@force-dev/utils";
 
 import {
   IProfile,
@@ -7,7 +7,7 @@ import {
   ISignUpRequest,
 } from "~@service";
 
-export const IProfileDataStore = iocDecorator<IProfileDataStore>();
+export const IProfileDataStore = createServiceDecorator<IProfileDataStore>();
 
 export interface IProfileDataStore {
   holder: DataHolder<IProfile>;

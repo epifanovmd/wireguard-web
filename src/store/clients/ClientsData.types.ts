@@ -1,9 +1,9 @@
-import { DataHolder, iocDecorator } from "@force-dev/utils";
+import { createServiceDecorator, DataHolder } from "@force-dev/utils";
 
 import { ClientModel } from "~@models";
 import { IClient, ICreateClientRequest, IUpdateClientRequest } from "~@service";
 
-export const IClientsDataStore = iocDecorator<IClientsDataStore>();
+export const IClientsDataStore = createServiceDecorator<IClientsDataStore>();
 
 export interface IClientsDataStore {
   holder: DataHolder<IClient[]>;

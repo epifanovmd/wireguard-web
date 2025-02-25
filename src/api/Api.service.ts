@@ -1,4 +1,4 @@
-import { iocDecorator } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
 import { ITokenService } from "~@service/token";
 
@@ -15,7 +15,7 @@ export const SOCKET_BASE_URL = env.VITE_SOCKET_BASE_URL;
 
 export interface IApiService extends Api<ApiError, ApiError> {}
 
-export const IApiService = iocDecorator<ApiService>();
+export const IApiService = createServiceDecorator<ApiService>();
 
 @IApiService({ inSingleton: true })
 class ApiService extends Api<ApiError, ApiError> {

@@ -1,4 +1,8 @@
-import { ApiResponse, CancelablePromise, iocDecorator } from "@force-dev/utils";
+import {
+  ApiResponse,
+  CancelablePromise,
+  createServiceDecorator,
+} from "@force-dev/utils";
 import {
   AuthenticationResponseJSON,
   PublicKeyCredentialCreationOptionsJSON,
@@ -29,7 +33,7 @@ export interface IVerifyRegistrationResponse {
   verified: boolean;
 }
 
-export const IPasskeysService = iocDecorator<IPasskeysService>();
+export const IPasskeysService = createServiceDecorator<IPasskeysService>();
 
 export interface IPasskeysService {
   profileId: string | null;

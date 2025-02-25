@@ -33,7 +33,7 @@
     "@babel/plugin-proposal-decorators": "^7.24.7",
     "@force-dev/react": "^1.1.2",
     "@force-dev/react-web": "^0.0.10",
-    "@force-dev/utils": "^1.3.5",
+    "@force-dev/utils": "^1.3.9",
     "@hookform/resolvers": "^3.9.0",
     "@mdx-js/rollup": "^3.0.1",
     "@simplewebauthn/browser": "^11.0.0",
