@@ -1,7 +1,9 @@
-import "./index.css";
+import "./styles/index.scss";
+import "./styles/tailwind.css";
+import "@ant-design/v5-patch-for-react-19";
 
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { Spin } from "antd";
+import { ConfigProvider, Spin } from "antd";
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
@@ -16,7 +18,7 @@ const lang = localStorage.getItem("i18nextLng");
 initLocalization({ initLang: lang ?? undefined }).finally();
 
 // Create a new router instance
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   defaultPendingMinMs: 300,
   defaultPendingMs: 100,
@@ -32,8 +34,10 @@ declare module "@tanstack/react-router" {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <ConfigProvider>
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ConfigProvider>
   </StrictMode>,
 );

@@ -1,11 +1,10 @@
 import mdx from "@mdx-js/rollup";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import tailwindcss from "@tailwindcss/vite";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import path from "path";
-import { UserConfig } from "vite";
+import { defineConfig } from "vite";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 
 const projectRootDir = path.resolve(__dirname);
@@ -17,7 +16,7 @@ const { VITE_HOST, VITE_PORT, VITE_BASE_URL } = process.env;
 const HOST = VITE_HOST;
 const PORT = VITE_PORT ? Number(VITE_PORT) : 3000;
 
-const config: UserConfig = {
+export default defineConfig({
   plugins: [
     TanStackRouterVite(),
     react({
@@ -28,12 +27,9 @@ const config: UserConfig = {
     mdx(),
     cjsInterop({
       // List of CJS dependencies that require interop
-      dependencies: [
-        "styled-components",
-        "lodash",
-        "inversify-inject-decorators",
-      ],
+      dependencies: ["lodash", "inversify-inject-decorators"],
     }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
@@ -57,9 +53,8 @@ const config: UserConfig = {
     },
   },
   preview: {
+    allowedHosts: ["wireguard.force-dev.ru"],
     host: HOST,
     port: PORT,
   },
-};
-
-export default config;
+});

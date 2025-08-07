@@ -1,7 +1,7 @@
 import { AsyncDataSource } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { IClientsService } from "~@service";
+import { IApiService } from "~@api";
 
 import { IClientConfigurationDataDataStore } from "./ClientConfigurationData.types";
 
@@ -10,10 +10,10 @@ export class ClientConfigurationDataStore
   implements IClientConfigurationDataDataStore
 {
   public holder = new AsyncDataSource<string, string>(clientId =>
-    this._clientsService.getClientConfiguration(clientId),
+    this._apiService.getWgClientConfiguration(clientId),
   );
 
-  constructor(@IClientsService() private _clientsService: IClientsService) {
+  constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 

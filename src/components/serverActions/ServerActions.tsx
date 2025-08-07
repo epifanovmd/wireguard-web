@@ -9,51 +9,49 @@ export interface IServerActionsProps {
   serverId?: string;
 }
 
-const _ServerActions: FC<PropsWithChildren<IServerActionsProps>> = ({
-  serverId,
-}) => {
-  const [loading, start, stop] = useLoading();
-  const { getStatus, startServer, stopServer, enabled } = useServerDataStore();
-  const { isAdmin } = useProfileDataStore();
+export const ServerActions: FC<PropsWithChildren<IServerActionsProps>> =
+  observer(({ serverId }) => {
+    const [loading, start, stop] = useLoading();
+    const { getStatus, startServer, stopServer, enabled } =
+      useServerDataStore();
+    const { isAdmin } = useProfileDataStore();
 
-  useEffect(() => {
-    if (serverId) {
-      getStatus(serverId).then();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverId]);
-
-  const onToggle = useCallback(
-    async (checked: boolean) => {
+    useEffect(() => {
       if (serverId) {
-        start();
-
-        if (checked) {
-          await startServer(serverId);
-        } else {
-          await stopServer(serverId);
-        }
-
-        stop();
+        getStatus(serverId).then();
       }
-    },
-    [serverId, start, startServer, stop, stopServer],
-  );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [serverId]);
 
-  if (!serverId || !isAdmin) {
-    return null;
-  }
+    const onToggle = useCallback(
+      async (checked: boolean) => {
+        if (serverId) {
+          start();
 
-  return (
-    <Switch
-      value={enabled}
-      loading={loading}
-      disabled={!serverId || !isAdmin}
-      onChange={onToggle}
-      checkedChildren={"Вкл"}
-      unCheckedChildren={"Выкл"}
-    />
-  );
-};
+          if (checked) {
+            await startServer(serverId);
+          } else {
+            await stopServer(serverId);
+          }
 
-export const ServerActions = observer(_ServerActions);
+          stop();
+        }
+      },
+      [serverId, start, startServer, stop, stopServer],
+    );
+
+    if (!serverId || !isAdmin) {
+      return null;
+    }
+
+    return (
+      <Switch
+        value={enabled}
+        loading={loading}
+        disabled={!serverId || !isAdmin}
+        onChange={onToggle}
+        checkedChildren={"Вкл"}
+        unCheckedChildren={"Выкл"}
+      />
+    );
+  });

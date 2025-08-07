@@ -1,7 +1,7 @@
 import React, { FC, memo, PropsWithChildren } from "react";
 import styled from "styled-components";
 
-export const Container: FC<PropsWithChildren<{}>> = memo(({ children }) => (
+export const Container: FC<PropsWithChildren> = memo(({ children }) => (
   <HeaderWrap>{children}</HeaderWrap>
 ));
 

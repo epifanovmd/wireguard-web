@@ -2,31 +2,33 @@ import { DataHolder } from "@force-dev/utils";
 import { notification } from "antd";
 import { makeAutoObservable } from "mobx";
 
-import { ClientModel } from "~@models";
+import { IApiService } from "~@api";
 import {
-  IClient,
-  IClientsService,
-  IClientsSocketService,
-  ICreateClientRequest,
-  IUpdateClientRequest,
-} from "~@service";
+  IWgClientCreateRequest,
+  IWgClientsDto,
+  IWgClientUpdateRequest,
+} from "~@api/api-gen/data-contracts";
+import { ClientModel } from "~@models";
+import { IClientsSocketService } from "~@service";
 
 import { IClientsDataStore } from "./ClientsData.types";
 import { ClientsIntervalDataSource } from "./ClientsIntervalData.source";
 
 @IClientsDataStore()
 export class ClientsDataStore implements IClientsDataStore {
-  public holder = new DataHolder<IClient[]>([]);
+  public holder = new DataHolder<IWgClientsDto[]>([]);
 
-  private _intervalDataSource = new ClientsIntervalDataSource(
-    this._clientsService,
-  );
+  private _intervalDataSource: ClientsIntervalDataSource;
 
   constructor(
-    @IClientsService() private _clientsService: IClientsService,
+    @IApiService() private _apiService: IApiService,
     @IClientsSocketService()
     private _clientSocketService: IClientsSocketService,
   ) {
+    this._intervalDataSource = new ClientsIntervalDataSource(
+      this._apiService.getWgClients,
+    );
+
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
@@ -49,11 +51,11 @@ export class ClientsDataStore implements IClientsDataStore {
     }, 1000);
   }
 
-  subscribeSocket(clientId: string[] = this.data.map(item => item.id)) {
+  subscribeSocket(clientId: string[] = this.data.map(item => item.id!)) {
     this._clientSocketService.subscribeClient(clientId, data => {
       this.holder.setData(
         this.data.map(item => {
-          const dataItem = data[item.id];
+          const dataItem = data[item.id!];
 
           if (dataItem) {
             return {
@@ -72,9 +74,9 @@ export class ClientsDataStore implements IClientsDataStore {
     this._clientSocketService.unsubscribeClient();
   }
 
-  async updateClient(clientId: string, params: IUpdateClientRequest) {
+  async updateClient(clientId: string, params: IWgClientUpdateRequest) {
     this.unsubscribeSocket();
-    const client = await this._clientsService.updateClient(clientId, params);
+    const client = await this._apiService.updateWgClient(clientId, params);
 
     if (client.data) {
       const clientData = client.data;
@@ -86,9 +88,9 @@ export class ClientsDataStore implements IClientsDataStore {
     }
   }
 
-  async createClient(params: ICreateClientRequest) {
+  async createClient(params: IWgClientCreateRequest) {
     this.unsubscribeSocket();
-    const client = await this._clientsService.createClient(params);
+    const client = await this._apiService.createWgClient(params);
 
     if (client.data) {
       this.holder.setData([...this.data, client.data]);
@@ -98,7 +100,7 @@ export class ClientsDataStore implements IClientsDataStore {
 
   async deleteClient(clientId: string) {
     this.unsubscribeSocket();
-    const res = await this._clientsService.deleteClient(clientId);
+    const res = await this._apiService.deleteWgClient(clientId);
 
     if (res.error) {
       notification.error({ message: res.error.message });
@@ -112,15 +114,15 @@ export class ClientsDataStore implements IClientsDataStore {
   async onRefresh(serverId: string) {
     this.unsubscribeSocket();
     this.holder.setLoading();
-    const res = await this._clientsService.getClients(serverId);
+    const res = await this._apiService.getWgClients({ serverId });
 
     if (res.axiosError) {
       if (!res.isCanceled) {
-        this.holder.setError({ msg: res.axiosError.toString() });
+        this.holder.setError(res.axiosError.toString());
       }
     } else if (res.data) {
       this.holder.setData(res.data.data);
-      this.subscribeSocket(res.data.data.map(item => item.id));
+      this.subscribeSocket(res.data.data.map(item => item.id!));
 
       return res.data.data;
     }

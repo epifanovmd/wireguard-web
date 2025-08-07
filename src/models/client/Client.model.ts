@@ -1,10 +1,10 @@
 import { DataModelBase } from "@force-dev/utils";
 
-import { IClient } from "~@service";
+import { IWgClientsDto } from "~@api/api-gen/data-contracts";
 
 import { DateModel } from "../date";
 
-export class ClientModel extends DataModelBase<IClient> {
+export class ClientModel extends DataModelBase<IWgClientsDto> {
   public date = new DateModel(() => this.data.latestHandshakeAt);
 
   public get name() {

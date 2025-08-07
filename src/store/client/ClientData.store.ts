@@ -1,17 +1,19 @@
 import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
+import { IApiService } from "~@api";
+import { IWgClientsDto } from "~@api/api-gen/data-contracts";
 import { ClientModel } from "~@models";
-import { IClient, IClientsService, IClientsSocketService } from "~@service";
+import { IClientsSocketService } from "~@service";
 
 import { IClientDataStore } from "./ClientData.types";
 
 @IClientDataStore()
 export class ClientDataStore implements IClientDataStore {
-  public holder = new DataHolder<IClient>();
+  public holder = new DataHolder<IWgClientsDto>();
 
   constructor(
-    @IClientsService() private _clientsService: IClientsService,
+    @IApiService() private _apiService: IApiService,
     @IClientsSocketService()
     private _clientSocketService: IClientsSocketService,
   ) {
@@ -33,7 +35,7 @@ export class ClientDataStore implements IClientDataStore {
   subscribeSocket(clientId: string[]) {
     this._clientSocketService.subscribeClient(clientId, data => {
       if (this.data) {
-        const dataItem = data[this.data.id];
+        const dataItem = data[this.data.id!];
 
         this.holder.setData(
           dataItem ? { ...this.data, ...dataItem } : this.data,
@@ -49,16 +51,16 @@ export class ClientDataStore implements IClientDataStore {
   async onRefresh(clientId: string) {
     this.unsubscribeSocket();
     this.holder.setLoading();
-    const res = await this._clientsService.getClient(clientId);
+    const res = await this._apiService.getWgClient(clientId);
 
     if (res.axiosError) {
       if (!res.isCanceled) {
-        this.holder.setError({ msg: res.axiosError.toString() });
+        this.holder.setError(res.axiosError.toString());
       }
     } else if (res.data) {
       this.holder.setData(res.data);
 
-      this._clientSocketService.subscribeClient([res.data.id]);
+      this._clientSocketService.subscribeClient([res.data.id!]);
 
       return res.data;
     }

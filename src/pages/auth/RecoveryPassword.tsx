@@ -8,51 +8,50 @@ import { AsyncButton, FieldWrapper, Input } from "~@components";
 import { useRecoveryPassword } from "./hooks/useRecoveryPassword";
 import { TRecoveryPasswordForm } from "./validations";
 
-export interface IRecoveryPasswordProps {}
+export type IRecoveryPasswordProps = object;
 
 const Field = typedFormField<TRecoveryPasswordForm>();
 
-const _RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> = () => {
-  const { form, handleSubmit } = useRecoveryPassword();
+export const RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> =
+  memo(() => {
+    const { form, handleSubmit } = useRecoveryPassword();
 
-  return (
-    <Wrap>
-      <FormProvider {...form}>
-        <Form>
-          <div className={"flex justify-between"}>
-            <div className={"text-xl mb-4"}>{"Востановление пароля"}</div>
-          </div>
+    return (
+      <Wrap>
+        <FormProvider {...form}>
+          <Form>
+            <div className={"flex justify-between"}>
+              <div className={"text-xl mb-4"}>{"Востановление пароля"}</div>
+            </div>
 
-          <Field
-            name={"login"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input
-                  name={"login"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  placeholder={"Введите ваш Email для востановления пароля"}
-                  value={value}
-                  onChange={onChange}
-                  type={"email"}
-                  autoComplete={"email"}
-                />
-              </FieldWrapper>
-            )}
-          />
-          <div className={"flex justify-between mt-4"}>
-            <AsyncButton onClick={handleSubmit}>{"Востановить"}</AsyncButton>
-          </div>
-        </Form>
-      </FormProvider>
-    </Wrap>
-  );
-};
-
-export const RecoveryPassword = memo(_RecoveryPassword);
+            <Field
+              name={"login"}
+              render={({
+                field: { onChange, value },
+                fieldState: { invalid, error },
+              }) => (
+                <FieldWrapper error={error}>
+                  <Input
+                    name={"login"}
+                    status={invalid ? "error" : undefined}
+                    className={"mt-2"}
+                    placeholder={"Введите ваш Email для востановления пароля"}
+                    value={value}
+                    onChange={onChange}
+                    type={"email"}
+                    autoComplete={"email"}
+                  />
+                </FieldWrapper>
+              )}
+            />
+            <div className={"flex justify-between mt-4"}>
+              <AsyncButton onClick={handleSubmit}>{"Востановить"}</AsyncButton>
+            </div>
+          </Form>
+        </FormProvider>
+      </Wrap>
+    );
+  });
 
 const Wrap = styled.div`
   display: flex;

@@ -7,9 +7,7 @@ import { ServerActions } from "~@components/serverActions";
 
 import { useClientsVM } from "./hooks";
 
-interface IProps {}
-
-export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
+export const ClientsPage: FC = observer(() => {
   const {
     serverId,
     onChangeServer,
@@ -34,7 +32,7 @@ export const ClientsPage: FC<PropsWithChildren<IProps>> = observer(() => {
         <Alert
           description={warnMessage}
           type="warning"
-          className={"mb-2"}
+          className={"!mb-2"}
           showIcon
           closable
         />

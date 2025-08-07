@@ -1,16 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 import { isEmail, isPhone } from "~@common";
-import { useProfileDataStore } from "~@store";
+import { useSessionDataStore } from "~@store";
 
 import { signUpFormValidationSchema, TSignUpForm } from "../validations";
 
 export const useSignUpVM = () => {
-  const profileDataStore = useProfileDataStore();
+  const sessionDataStore = useSessionDataStore();
   const navigate = useNavigate();
 
   const form = useForm<TSignUpForm>({
@@ -23,21 +22,23 @@ export const useSignUpVM = () => {
       const email = isEmail(data.login) ? data.login : undefined;
       const phone = isPhone(data.login) ? data.login : undefined;
 
-      await profileDataStore.signUp({
-        email,
-        phone,
-        password: data.password,
-      });
-
-      if (profileDataStore.isError) {
-        notification.error({ message: profileDataStore.holder.error?.msg });
+      if (email) {
+        await sessionDataStore.signUp({
+          email,
+          password: data.password,
+        });
+      } else if (phone) {
+        await sessionDataStore.signUp({
+          phone,
+          password: data.password,
+        });
       }
 
-      if (profileDataStore.profile) {
+      if (sessionDataStore.isAuthorized) {
         navigate({ to: "/" }).then();
       }
     })();
-  }, [form, navigate, profileDataStore]);
+  }, [form, navigate, sessionDataStore]);
 
   return {
     form,

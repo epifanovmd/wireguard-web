@@ -1,5 +1,4 @@
 import { typedFormField } from "@force-dev/react";
-import { Form } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FormProvider } from "react-hook-form";

@@ -1,10 +1,8 @@
 import { Button as AntdButton } from "antd";
 import React, { ComponentProps, FC, memo, PropsWithChildren } from "react";
 
-interface IButtonProps extends ComponentProps<typeof AntdButton> {}
+type IButtonProps = ComponentProps<typeof AntdButton>;
 
-export const _Button: FC<PropsWithChildren<IButtonProps>> = props => {
+export const Button: FC<PropsWithChildren<IButtonProps>> = memo(props => {
   return <AntdButton {...props} />;
-};
-
-export const Button = memo(_Button);
+});

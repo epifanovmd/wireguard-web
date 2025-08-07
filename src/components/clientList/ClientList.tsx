@@ -18,8 +18,12 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { FC, useCallback, useMemo, useState } from "react";
 
+import {
+  IWgClientCreateRequest,
+  IWgClientsDto,
+  IWgClientUpdateRequest,
+} from "~@api/api-gen/data-contracts";
 import { ClientModel } from "~@models";
-import { IClient, ICreateClientRequest, IUpdateClientRequest } from "~@service";
 
 import { ClientForm, TClientForm } from "../forms";
 import { Button, useConfirmModal } from "../ui";
@@ -34,15 +38,15 @@ interface IProps {
   onDelete?: (clientId: string) => void | Promise<void>;
   onUpdate?: (
     clientId: string,
-    data: IUpdateClientRequest,
+    data: IWgClientUpdateRequest,
   ) => void | Promise<void>;
-  onCreate?: (data: ICreateClientRequest) => void | Promise<void>;
+  onCreate?: (data: IWgClientCreateRequest) => void | Promise<void>;
 }
 
 export const ClientList: FC<IProps> = observer(
   ({ serverId, data, loading, onUpdate, onCreate, onDelete }) => {
     const [createOpen, onCreateOpen, onCreateClose] = useBoolean();
-    const [editClient, setEditClient] = useState<IClient>();
+    const [editClient, setEditClient] = useState<IWgClientsDto>();
     const { width = 0 } = useWindowSize();
     const isMobile = width < 992;
 
@@ -75,7 +79,7 @@ export const ClientList: FC<IProps> = observer(
     const handleUpdate = useCallback(
       async (data: TClientForm) => {
         if (editClient) {
-          await onUpdate?.(editClient.id, data);
+          await onUpdate?.(editClient.id!, data);
           setEditClient(undefined);
         }
       },
@@ -87,7 +91,7 @@ export const ClientList: FC<IProps> = observer(
       setEditClient(undefined);
     }, [onCreateClose]);
 
-    const onOpenQr = useCallback((client: IClient) => {
+    const onOpenQr = useCallback((client: IWgClientsDto) => {
       const modal = Modal.success({
         title: "Отсканируйте QR код",
         icon: null,
@@ -130,7 +134,7 @@ export const ClientList: FC<IProps> = observer(
                 <DeleteOutlined
                   color={"danger"}
                   className={"cursor-pointer"}
-                  onClick={() => handleDelete(data.id)}
+                  onClick={() => handleDelete(data.id!)}
                 />
               </Space>
             </div>
@@ -158,7 +162,7 @@ export const ClientList: FC<IProps> = observer(
             "QR-код или загрузив файл конфигурации."
           }
           type="info"
-          className={"mb-2"}
+          className={"!mb-2"}
           closable
         />
 
@@ -180,7 +184,7 @@ export const ClientList: FC<IProps> = observer(
           )
         ) : (
           <Table
-            rowKey={({ data }) => data.id}
+            rowKey={({ data }) => data.id!}
             columns={_columns}
             dataSource={data}
             loading={loading}
@@ -196,7 +200,7 @@ export const ClientList: FC<IProps> = observer(
           open={createOpen || !!editClient}
           title={editClient ? "Редактирование" : "Создать клиента"}
           footer={false}
-          destroyOnClose={true}
+          destroyOnHidden={true}
           maskClosable={false}
           onCancel={handleClose}
         >

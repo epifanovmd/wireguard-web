@@ -4,8 +4,7 @@ import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
-import { useProfileService } from "~@service/profile/hooks";
-import { useProfileDataStore } from "~@store";
+import { useApi } from "~@api";
 
 import {
   recoveryPasswordValidationSchema,
@@ -13,7 +12,7 @@ import {
 } from "../validations";
 
 export const useRecoveryPassword = () => {
-  const profileService = useProfileService();
+  const api = useApi();
   const navigate = useNavigate();
 
   const form = useForm<TRecoveryPasswordForm>({
@@ -25,7 +24,7 @@ export const useRecoveryPassword = () => {
 
   const handleSubmit = useCallback(() => {
     return form.handleSubmit(async data => {
-      const res = await profileService.requestResetPassword(data);
+      const res = await api.requestResetPassword(data);
 
       if (res.error) {
         notification.error({ message: res.error.message });
@@ -34,7 +33,7 @@ export const useRecoveryPassword = () => {
         navigate({ to: "/auth/signIn" }).then();
       }
     })();
-  }, [form, navigate, profileService]);
+  }, [form, navigate, api]);
 
   return { form, handleSubmit };
 };

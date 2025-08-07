@@ -1,19 +1,17 @@
 import { createServiceDecorator, DataHolder, Maybe } from "@force-dev/utils";
 
+import { IWgClientsDto } from "~@api/api-gen/data-contracts";
 import { ServerModel } from "~@models";
-import { IClient } from "~@service";
 
 export const IClientDataStore = createServiceDecorator<IClientDataStore>();
 
 export interface IClientDataStore {
-  holder: DataHolder<IClient>;
-  data: Maybe<IClient>;
+  holder: DataHolder<IWgClientsDto>;
+  data: Maybe<IWgClientsDto>;
   model: Maybe<ServerModel>;
   loading: boolean;
 
   subscribeSocket(clientId: string[]): void;
-
   unsubscribeSocket(): void;
-
-  onRefresh(clientId: string): Promise<Maybe<IClient>>;
+  onRefresh(clientId: string): Promise<Maybe<IWgClientsDto>>;
 }

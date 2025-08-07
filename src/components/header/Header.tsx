@@ -2,21 +2,21 @@ import { useNavigate } from "@tanstack/react-router";
 import React, { FC, memo, useCallback } from "react";
 
 import { usePasskeyAuth } from "~@common";
-import { useTokenService } from "~@service";
-import { useProfileDataStore } from "~@store";
+import { useProfileDataStore, useSessionDataStore } from "~@store";
 
 import { AsyncButton, Button } from "../ui";
 
 export const Header: FC = memo(() => {
   const navigate = useNavigate();
-  const tokenService = useTokenService();
+  const { clear } = useSessionDataStore();
   const { profile } = useProfileDataStore();
-  const { handleRegister, support } = usePasskeyAuth();
+  const { profileId, handleRegister, support } = usePasskeyAuth();
+  const _profileId = profile?.id;
 
   const onLogout = useCallback(() => {
-    tokenService.clear();
+    clear();
     navigate({ to: "/auth/signIn" }).then();
-  }, [navigate, tokenService]);
+  }, [navigate, clear]);
 
   return (
     <div
@@ -26,13 +26,13 @@ export const Header: FC = memo(() => {
     >
       <div>{"Wireguard"}</div>
       <div>
-        {support && profile && (
+        {support && _profileId && !profileId && (
           <AsyncButton
             type={"primary"}
             onClick={async () => {
-              await handleRegister(profile.id);
+              await handleRegister(_profileId);
             }}
-            className={"mr-2"}
+            className={"!mr-2"}
           >
             {"Passkey reg"}
           </AsyncButton>

@@ -1,52 +1,36 @@
-import { DataHolder, Interval } from "@force-dev/utils";
-import { makeAutoObservable, reaction } from "mobx";
+import { ApiResponse, DataHolder } from "@force-dev/utils";
+import { notification } from "antd";
+import { makeAutoObservable } from "mobx";
 
-import { IApiService } from "~@api";
-import { IRefreshTokenResponse, ITokenService } from "~@service";
+import { ApiError, IApiService, IApiTokenProvider } from "~@api";
+import {
+  IProfileWithTokensDto,
+  ISignInRequest,
+  ISignUpRequest,
+  ITokensDto,
+} from "~@api/api-gen/data-contracts";
 
 import { IProfileDataStore } from "../profile";
 import { ISessionDataStore } from "./SessionData.types";
 
 @ISessionDataStore({ inSingleton: true })
 export class SessionDataStore implements ISessionDataStore {
-  private _interval = new Interval({ timeout: 60000 });
   private holder: DataHolder<string> = new DataHolder<string>();
 
   constructor(
     @IApiService() private _apiService: IApiService,
     @IProfileDataStore() private _profileDataStore: IProfileDataStore,
-    @ITokenService() private _tokenService: ITokenService,
+    @IApiTokenProvider() private _tokenProvider: IApiTokenProvider,
   ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
-  initialize(authRedirect: () => void) {
-    this._apiService.onError(async ({ status }) => {
-      if (status === 401) {
-        authRedirect();
-      }
+  initialize() {
+    return [];
+  }
 
-      if (status === 403) {
-        await this._profileDataStore.updateToken();
-      }
-    });
-
-    return [
-      reaction(
-        () => this._profileDataStore.profile,
-        profile => {
-          if (profile) {
-            this._interval.start(async () => {
-              await this._profileDataStore.updateToken();
-            });
-          } else {
-            this._interval.stop();
-          }
-        },
-      ),
-      reaction(() => this._tokenService.accessToken, this.holder.setData),
-      () => this._interval.stop(),
-    ];
+  get isLoading() {
+    return this.holder.isLoading;
   }
 
   get isAuthorized() {
@@ -57,22 +41,63 @@ export class SessionDataStore implements ISessionDataStore {
     return this.holder.isReady;
   }
 
-  async restore(tokens?: IRefreshTokenResponse) {
+  public async signIn(params: ISignInRequest) {
+    this.holder.setLoading();
+
+    const res = await this._apiService.signIn(params);
+
+    this._handleResponse(res);
+  }
+
+  public async signUp(params: ISignUpRequest) {
+    this.holder.setLoading();
+
+    const res = await this._apiService.signUp(params);
+
+    this._handleResponse(res);
+  }
+
+  async restore(tokens?: ITokensDto) {
+    this.holder.setLoading();
+
     if (tokens) {
-      this._tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
+      this._tokenProvider.setTokens(tokens.accessToken, tokens.refreshToken);
       await this._profileDataStore.getProfile();
-
-      return tokens.accessToken;
     } else {
-      this.holder.setLoading();
+      const refreshToken = await this._tokenProvider.restoreRefreshToken();
 
-      const { accessToken } = await this._profileDataStore.updateToken();
+      if (refreshToken) {
+        await this._apiService.updateToken();
 
-      await this._profileDataStore.getProfile();
+        if (this._tokenProvider.accessToken) {
+          await this._profileDataStore.getProfile();
+          this.holder.setData(this._tokenProvider.accessToken);
 
-      this.holder.setData(accessToken);
+          return;
+        }
+      }
+    }
+    this.holder.setPending();
+  }
 
-      return accessToken;
+  public clear() {
+    this.holder.clear();
+    this._tokenProvider.clear();
+    this._profileDataStore.holder.clear();
+  }
+
+  private _handleResponse(res: ApiResponse<IProfileWithTokensDto, ApiError>) {
+    if (res.error) {
+      this._tokenProvider.clear();
+      this.holder.setError(res.error.message);
+
+      notification.error({ message: res.error.message });
+    } else if (res.data) {
+      const { tokens, ...user } = res.data;
+
+      this._profileDataStore.holder.setData(user);
+      this._tokenProvider.setTokens(tokens.accessToken, tokens.refreshToken);
+      this.holder.setData(this._tokenProvider.accessToken);
     }
   }
 }

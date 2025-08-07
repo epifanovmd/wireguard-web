@@ -15,16 +15,14 @@ const Component = memo(() => {
 
 export const Route = createFileRoute("/_private")({
   beforeLoad: async () => {
-    const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
+    const session = ISessionDataStore.getInstance();
 
-    if (!isReady) {
-      const accessToken = await restore();
+    if (!session.isAuthorized) {
+      await session.restore();
 
-      if (!accessToken) {
+      if (!session.isAuthorized) {
         throw redirect({ to: "/auth/signIn" });
       }
-    } else if (!isAuthorized) {
-      throw redirect({ to: "/auth/signIn" });
     }
   },
   component: Component,

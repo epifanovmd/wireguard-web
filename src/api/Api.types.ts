@@ -1,4 +1,13 @@
-export type ApiRequest<T extends object = {}> = T & {
+import { createServiceDecorator } from "@force-dev/utils";
+
+import { Api } from "./api-gen/Api";
+
+export const IApiService = createServiceDecorator<IApiService>();
+export interface IApiService extends Api<ApiError, ApiError> {
+  updateToken(): Promise<void>;
+}
+
+export type ApiRequest<T extends object = object> = T & {
   skip?: number;
   limit?: number;
 };

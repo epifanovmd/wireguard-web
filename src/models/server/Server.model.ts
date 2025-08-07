@@ -1,5 +1,5 @@
 import { DataModelBase } from "@force-dev/utils";
 
-import { IServer } from "~@service";
+import { IWgServerDto } from "~@api/api-gen/data-contracts";
 
-export class ServerModel extends DataModelBase<IServer> {}
+export class ServerModel extends DataModelBase<IWgServerDto> {}

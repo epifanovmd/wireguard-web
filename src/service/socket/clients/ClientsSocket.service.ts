@@ -12,15 +12,19 @@ export class ClientsSocketService implements IClientsSocketService {
     clientId: string[],
     onData?: (client: IWireguardPeerStatusDto) => void,
   ) => {
-    this.unsubscribeClient();
-    this._socketService.emit("subscribeToClient", clientId);
+    if (this._socketService.isConnected) {
+      this.unsubscribeClient();
+      this._socketService.emit("subscribeToClient", clientId);
 
-    this._socketService.on("client", clients => {
-      onData?.(clients);
-    });
+      this._socketService.on("client", clients => {
+        onData?.(clients);
+      });
+    }
   };
 
   unsubscribeClient = () => {
-    this._socketService.emit("unsubscribeFromClient");
+    if (this._socketService.isConnected) {
+      this._socketService.emit("unsubscribeFromClient");
+    }
   };
 }

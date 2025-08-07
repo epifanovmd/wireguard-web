@@ -41,7 +41,7 @@ export const ModalFooter: FC<PropsWithChildren<IProps>> = memo(
         <div className={`flex flex-grow ${clasName}`}>
           {onPrev && (
             <AsyncButton
-              color="secondary"
+              color="default"
               onClick={onPrev}
               disabled={disabledPrev || loading}
               className={"mr-auto"}
@@ -59,7 +59,7 @@ export const ModalFooter: FC<PropsWithChildren<IProps>> = memo(
                 disabled={disabledCancel || loading}
                 onClick={onCancel}
                 {...cancelButtonProps}
-                className={`ml-2 ${cancelButtonProps?.className}`}
+                className={`!ml-2 ${cancelButtonProps?.className}`}
               >
                 {cancelTitle}
               </AsyncButton>
@@ -72,7 +72,7 @@ export const ModalFooter: FC<PropsWithChildren<IProps>> = memo(
                 color="primary"
                 onClick={onSubmit}
                 {...submitButtonProps}
-                className={`ml-2 ${submitButtonProps?.className}`}
+                className={`!ml-2 ${submitButtonProps?.className}`}
               >
                 {submitTitle}
               </AsyncButton>

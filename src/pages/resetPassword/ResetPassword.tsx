@@ -1,5 +1,5 @@
 import { typedFormField } from "@force-dev/react";
-import React, { FC, memo, PropsWithChildren } from "react";
+import React, { memo } from "react";
 import { FormProvider } from "react-hook-form";
 import styled from "styled-components";
 
@@ -8,11 +8,9 @@ import { AsyncButton, FieldWrapper, Input } from "~@components";
 import { useResetPassword } from "./hooks";
 import { TResetPasswordForm } from "./validations";
 
-export interface IResetPasswordProps {}
-
 const Field = typedFormField<TResetPasswordForm>();
 
-const _ResetPassword: FC<PropsWithChildren<IResetPasswordProps>> = () => {
+export const ResetPassword = memo(() => {
   const { form, handleSubmit } = useResetPassword();
 
   return (
@@ -71,9 +69,7 @@ const _ResetPassword: FC<PropsWithChildren<IResetPasswordProps>> = () => {
       </FormProvider>
     </Wrap>
   );
-};
-
-export const ResetPassword = memo(_ResetPassword);
+});
 
 const Wrap = styled.div`
   display: flex;

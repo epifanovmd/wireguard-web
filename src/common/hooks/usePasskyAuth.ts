@@ -1,18 +1,26 @@
-import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
+import {
+  browserSupportsWebAuthn,
+  startAuthentication,
+  startRegistration,
+} from "@simplewebauthn/browser";
+import { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
 import { useNavigate } from "@tanstack/react-router";
 import { notification } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
-import { usePasskeysService } from "~@service";
+import { useApi } from "~@api";
+import {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from "~@api/api-gen/data-contracts";
 import { useSessionDataStore } from "~@store";
 
 export const usePasskeyAuth = () => {
   const [support, setSupport] = useState<boolean>(false);
-  const {
-    profileId,
-    handleRegister: _handleRegister,
-    handleLogin: _handleLogin,
-  } = usePasskeysService();
+  // Сохраненный userId в localStorage, означает что доступен вход по биометрии
+  const [profileId, setProfileId] = useState(localStorage.getItem("profileId"));
+
+  const api = useApi();
   const { restore } = useSessionDataStore();
   const navigate = useNavigate();
 
@@ -24,29 +32,73 @@ export const usePasskeyAuth = () => {
 
   const handleRegister = useCallback(
     async (profileId: string) => {
-      try {
-        return await _handleRegister(profileId);
-      } catch (error: any) {
-        notification.error({ message: error.message });
+      // Получите challenge и другие данные с сервера
+      const response = await api.generateRegistrationOptions({ profileId });
+
+      if (response.error) {
+        notification.error({ message: response.error.message });
+      } else if (response.data) {
+        // Запустите процесс регистрации
+        return await startRegistration({
+          optionsJSON: response.data as PublicKeyCredentialCreationOptionsJSON,
+        })
+          .then(async data => {
+            const isVerified = await api
+              .verifyRegistration({
+                profileId,
+                data: data as RegistrationResponseJSON,
+              })
+              .then(res => !!res.data?.verified)
+              .catch(
+                err =>
+                  err.message === "The authenticator was previously registered",
+              );
+
+            if (isVerified) {
+              localStorage.setItem("profileId", profileId);
+              setProfileId(profileId);
+            }
+
+            return isVerified;
+          })
+          .catch(err => {
+            if (err.message === "The authenticator was previously registered") {
+              localStorage.setItem("profileId", profileId);
+              setProfileId(profileId);
+            }
+
+            return false;
+          });
       }
 
       return false;
     },
-    [_handleRegister],
+    [api],
   );
 
   const handleLogin = useCallback(async () => {
-    try {
-      const response = await _handleLogin();
+    if (!profileId) {
+      return;
+    }
 
-      if (response) {
-        await restore(response.tokens);
+    const response = await api.generateAuthenticationOptions({ profileId });
+
+    if (response.data) {
+      // Запустите процесс аутентификации
+      const data = await startAuthentication({ optionsJSON: response.data });
+      const verifyResponse = await api.verifyAuthentication({
+        profileId,
+        data: data as AuthenticationResponseJSON,
+      });
+
+      if (verifyResponse.error) {
+        notification.error({ message: verifyResponse.error.message });
+      } else if (verifyResponse.data) {
+        await restore(verifyResponse.data.tokens);
         navigate({ to: "/" }).then();
       }
-    } catch (error: any) {
-      notification.error({ message: error.message });
     }
-  }, [_handleLogin, navigate, restore]);
+  }, [api, navigate, profileId, restore]);
 
   return { profileId, handleRegister, handleLogin, support };
 };

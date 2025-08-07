@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { ICreateServerRequest } from "~@service";
+import { CreateWgServerPayload } from "~@api/api-gen/data-contracts";
 import { useClientsDataStore, useServerDataStore } from "~@store";
 
 export const useClientsVM = () => {
@@ -61,7 +61,7 @@ export const useClientsVM = () => {
   }, []);
 
   const onCreateServer = useCallback(
-    async (req: ICreateServerRequest) => {
+    async (req: CreateWgServerPayload) => {
       const server = await createServer(req);
 
       if (server) {

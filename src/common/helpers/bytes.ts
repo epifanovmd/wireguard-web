@@ -21,6 +21,6 @@ export const bytes = (
     if (index !== -1) i = index;
   }
 
-  // eslint-disable-next-line no-restricted-properties
+   
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };

@@ -1,17 +1,18 @@
 import { IntervalDataSource } from "@force-dev/utils";
 
-import { IClient, IClientsService } from "~@service";
+import { IApiService } from "~@api";
+import { IWgClientsDto } from "~@api/api-gen/data-contracts";
 
 export class ClientsIntervalDataSource extends IntervalDataSource<
-  IClient[],
+  IWgClientsDto[],
   { serverId?: string }
 > {
   private _params = {};
 
-  constructor(_clientsService: IClientsService) {
+  constructor(_getWgClients: IApiService["getWgClients"]) {
     super(async req => {
       if (req.serverId) {
-        const res = await _clientsService.getClients(req.serverId);
+        const res = await _getWgClients({ serverId: req.serverId });
 
         return res.data?.data || [];
       }
@@ -20,14 +21,13 @@ export class ClientsIntervalDataSource extends IntervalDataSource<
     });
   }
 
-  afterFetch(v: IClient[]) {
+  afterFetch(v: IWgClientsDto[]) {
     return v;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   beforeFetch() {}
 
-  getParams(): {} {
+  getParams() {
     return this._params;
   }
 

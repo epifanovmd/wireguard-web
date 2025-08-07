@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,6 +9,42 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
+
+export enum AuthenticatorAttachment {
+  CrossPlatform = "cross-platform",
+  Platform = "platform",
+}
+
+export enum UserVerificationRequirement {
+  Discouraged = "discouraged",
+  Preferred = "preferred",
+  Required = "required",
+}
+
+/**
+ * A super class of TypeScript's `AuthenticatorTransport` that includes support for the latest
+ * transports. Should eventually be replaced by TypeScript's when TypeScript gets updated to
+ * know about it (sometime after 4.6.3)
+ */
+export enum AuthenticatorTransportFuture {
+  Ble = "ble",
+  Cable = "cable",
+  Hybrid = "hybrid",
+  Internal = "internal",
+  Nfc = "nfc",
+  SmartCard = "smart-card",
+  Usb = "usb",
+}
+
+export enum PublicKeyCredentialType {
+  PublicKey = "public-key",
+}
+
+export enum ERole {
+  Admin = "admin",
+  User = "user",
+  Guest = "guest",
+}
 
 export enum EPermissions {
   Read = "read",
@@ -32,12 +69,6 @@ export interface IPermissionDto {
   /** @format date-time */
   updatedAt?: string;
   name?: EPermissions;
-}
-
-export enum ERole {
-  Admin = "admin",
-  User = "user",
-  Guest = "guest",
 }
 
 /**
@@ -75,10 +106,10 @@ export interface IRoleDto {
 /** From T, pick a set of properties whose keys are in the union K */
 export interface PickProfileModelExcludeKeysPasswordHash {
   id?: string;
-  username?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
+  emailVerified?: boolean;
   phone?: string;
   roleId?: string;
   challenge?: string;
@@ -90,10 +121,10 @@ export interface PickProfileModelExcludeKeysPasswordHash {
 
 export interface IProfileDto {
   id?: string;
-  username?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
+  emailVerified?: boolean;
   phone?: string;
   roleId?: string;
   challenge?: string;
@@ -106,7 +137,6 @@ export interface IProfileDto {
 
 /** From T, pick a set of properties whose keys are in the union K */
 export interface PickTProfileCreateModelExcludeKeysIdOrPasswordHash {
-  username?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -116,7 +146,6 @@ export interface PickTProfileCreateModelExcludeKeysIdOrPasswordHash {
 }
 
 export interface IProfileUpdateRequest {
-  username?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -140,6 +169,15 @@ export interface IProfilePrivilegesRequest {
   permissions: EPermissions[];
 }
 
+export interface ApiResponse {
+  message?: string;
+  data?: any;
+}
+
+export interface IProfilePassword {
+  password: string;
+}
+
 export interface ITokensDto {
   accessToken: string;
   refreshToken: string;
@@ -147,10 +185,10 @@ export interface ITokensDto {
 
 export interface IProfileWithTokensDto {
   id?: string;
-  username?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
+  emailVerified?: boolean;
   phone?: string;
   roleId?: string;
   challenge?: string;
@@ -162,43 +200,40 @@ export interface IProfileWithTokensDto {
   tokens: ITokensDto;
 }
 
-export interface ISignUpRequest {
-  username?: string;
+/** From T, pick a set of properties whose keys are in the union K */
+export interface PickTProfileCreateModelExcludeKeysPasswordHashOrRoleIdOrChallenge {
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
-  roleId?: string;
-  challenge?: string;
+}
+
+export interface ISignUpRequest {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
   password: string;
 }
 
 export interface ISignInRequest {
-  username: string;
+  /** Может быть телефоном, email-ом и username-ом */
+  login: string;
   password: string;
+}
+
+export interface IProfileLogin {
+  /** Может быть телефоном, email-ом и username-ом */
+  login: string;
+}
+
+export interface IProfileResetPasswordRequest {
+  password: string;
+  token: string;
 }
 
 /** An attempt to communicate that this isn't just any string, but a Base64URL-encoded string */
 export type Base64URLString = string;
-
-export enum PublicKeyCredentialType {
-  PublicKey = "public-key",
-}
-
-/**
- * A super class of TypeScript's `AuthenticatorTransport` that includes support for the latest
- * transports. Should eventually be replaced by TypeScript's when TypeScript gets updated to
- * know about it (sometime after 4.6.3)
- */
-export enum AuthenticatorTransportFuture {
-  Ble = "ble",
-  Cable = "cable",
-  Hybrid = "hybrid",
-  Internal = "internal",
-  Nfc = "nfc",
-  SmartCard = "smart-card",
-  Usb = "usb",
-}
 
 /** https://w3c.github.io/webauthn/#dictdef-publickeycredentialdescriptorjson */
 export interface PublicKeyCredentialDescriptorJSON {
@@ -206,12 +241,6 @@ export interface PublicKeyCredentialDescriptorJSON {
   id: Base64URLString;
   type: PublicKeyCredentialType;
   transports?: AuthenticatorTransportFuture[];
-}
-
-export enum UserVerificationRequirement {
-  Discouraged = "discouraged",
-  Preferred = "preferred",
-  Required = "required",
 }
 
 export interface AuthenticationExtensionsClientInputs {
@@ -255,11 +284,6 @@ export interface AuthenticatorAttestationResponseJSON {
   publicKeyAlgorithm?: COSEAlgorithmIdentifier;
   /** An attempt to communicate that this isn't just any string, but a Base64URL-encoded string */
   publicKey?: Base64URLString;
-}
-
-export enum AuthenticatorAttachment {
-  CrossPlatform = "cross-platform",
-  Platform = "platform",
 }
 
 export interface CredentialPropertiesOutput {
@@ -373,62 +397,6 @@ export interface IWireguardPeerStatus {
   persistentKeepalive: number;
 }
 
-export interface IWgServerDto {
-  id?: string;
-  profileId?: string;
-  name?: string;
-  /** @format double */
-  port?: number;
-  privateKey?: string;
-  publicKey?: string;
-  address?: string;
-  createdAt?: string & {
-    undefined?: true;
-  };
-  updatedAt?: string & {
-    undefined?: true;
-  };
-  clients?: IWgClientsDto[];
-  profile?: IProfileDto;
-}
-
-/**
- * Utility type to extract Attributes of a given Model class.
- *
- * It returns all instance properties defined in the Model, except:
- * - those inherited from Model (intermediate inheritance works),
- * - the ones whose type is a function,
- * - the ones manually excluded using the second parameter.
- * - the ones branded using {@link NonAttribute}
- *
- * It cannot detect whether something is a getter or not, you should use the `Excluded`
- * parameter to exclude getter & setters from the attribute list.
- */
-export interface InferAttributesWgClient {
-  id?: string;
-  serverId?: string;
-  profileId?: string;
-  name?: string;
-  address?: string;
-  allowedIPs?: string;
-  publicKey?: string;
-  privateKey?: string;
-  preSharedKey?: string;
-  /** @format double */
-  transferRx?: number;
-  /** @format double */
-  transferTx?: number;
-  /** @format date-time */
-  latestHandshakeAt?: string;
-  /** @format double */
-  persistentKeepalive?: number;
-  enabled?: boolean;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
 export interface IWgClientsDto {
   id?: string;
   serverId?: string;
@@ -469,6 +437,8 @@ export interface IWgClientsDto {
  * parameter to exclude getter & setters from the attribute list.
  */
 export interface InferAttributesWgServer {
+  clients?: IWgClientsDto[];
+  profile?: IProfileDto;
   id?: string;
   profileId?: string;
   name?: string;
@@ -485,14 +455,60 @@ export interface InferAttributesWgServer {
   };
 }
 
-export interface IWgServersListDto {
+export interface IWgServerDto {
+  clients?: IWgClientsDto[];
+  profile?: IProfileDto;
+  id?: string;
+  profileId?: string;
+  name?: string;
   /** @format double */
-  count?: number;
+  port?: number;
+  privateKey?: string;
+  publicKey?: string;
+  address?: string;
+  createdAt?: string & {
+    undefined?: true;
+  };
+  updatedAt?: string & {
+    undefined?: true;
+  };
+}
+
+/**
+ * Utility type to extract Attributes of a given Model class.
+ *
+ * It returns all instance properties defined in the Model, except:
+ * - those inherited from Model (intermediate inheritance works),
+ * - the ones whose type is a function,
+ * - the ones manually excluded using the second parameter.
+ * - the ones branded using {@link NonAttribute}
+ *
+ * It cannot detect whether something is a getter or not, you should use the `Excluded`
+ * parameter to exclude getter & setters from the attribute list.
+ */
+export interface InferAttributesWgClient {
+  id?: string;
+  serverId?: string;
+  profileId?: string;
+  name?: string;
+  address?: string;
+  allowedIPs?: string;
+  publicKey?: string;
+  privateKey?: string;
+  preSharedKey?: string;
   /** @format double */
-  offset?: number;
+  transferRx?: number;
   /** @format double */
-  limit?: number;
-  data: IWgServerDto[];
+  transferTx?: number;
+  /** @format date-time */
+  latestHandshakeAt?: string;
+  /** @format double */
+  persistentKeepalive?: number;
+  enabled?: boolean;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface IWgClientListDto {
@@ -522,6 +538,16 @@ export interface IWgClientUpdateRequest {
   enabled?: boolean;
 }
 
+export interface IWgServersListDto {
+  /** @format double */
+  count?: number;
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  data: IWgServerDto[];
+}
+
 export interface GetAllProfilesParams {
   /** @format double */
   offset?: number;
@@ -546,6 +572,14 @@ export interface CheckStatusParams {
   interfaceName: string;
 }
 
+export interface GetWgClientsParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  serverId: string;
+}
+
 export interface GetWgServersParams {
   /** @format double */
   offset?: number;
@@ -555,12 +589,4 @@ export interface GetWgServersParams {
 
 export interface CreateWgServerPayload {
   name: string;
-}
-
-export interface GetWgClientsParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
-  serverId: string;
 }

@@ -15,14 +15,14 @@ export type Socket = SocketIO<SocketEvents, SocketEmitEvents>;
 export const ISocketService = createServiceDecorator<ISocketService>();
 
 export interface ISocketService extends SupportInitialize {
-  get socket(): Socket;
+  isConnected: boolean;
 
   initialize(): () => void;
 
   emit<K extends keyof SocketEmitEvents>(
     event: K,
     ...args: Parameters<SocketEmitEvents[K]>
-  ): Socket;
+  ): Promise<Socket>;
 
   on<K extends keyof SocketEvents>(
     event: K,
@@ -30,7 +30,7 @@ export interface ISocketService extends SupportInitialize {
     unsubscribe?: () => void,
   ): () => void;
 
-  connect(): Socket | undefined;
+  connect(): Promise<Socket | undefined>;
 
   disconnect(): void;
 }

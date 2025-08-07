@@ -53,7 +53,6 @@ export const initLocalization = ({
     .use(LngDetector)
     .use(initReactI18next)
     .init({
-      compatibilityJSON: "v3",
       fallbackLng: initLang,
       lng: initLang,
       debug: false,

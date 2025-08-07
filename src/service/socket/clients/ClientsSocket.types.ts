@@ -8,8 +8,10 @@ export interface IWireguardPeerStatus {
   persistentKeepalive: number;
 }
 
-export interface IWireguardPeerStatusDto
-  extends Record<string, IWireguardPeerStatus | null> {}
+export type IWireguardPeerStatusDto = Record<
+  string,
+  IWireguardPeerStatus | null
+>;
 
 export interface ClientsSocketEvents {
   client: (...args: [clients: IWireguardPeerStatusDto]) => void;

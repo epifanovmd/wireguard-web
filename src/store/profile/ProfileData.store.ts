@@ -1,41 +1,17 @@
-import { ApiResponse, DataHolder } from "@force-dev/utils";
+import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { ApiError } from "~@api";
-import {
-  ERole,
-  IProfile,
-  IProfileService,
-  ISignInRequest,
-  ISignInResponse,
-  ISignUpRequest,
-  ITokenService,
-} from "~@service";
+import { IApiService } from "~@api";
+import { ERole, IProfileDto } from "~@api/api-gen/data-contracts";
 
 import { IProfileDataStore } from "./ProfileData.types";
 
 @IProfileDataStore({ inSingleton: true })
 export class ProfileDataStore implements IProfileDataStore {
-  public holder = new DataHolder<IProfile>();
+  public holder = new DataHolder<IProfileDto>();
 
-  constructor(
-    @IProfileService() private _profileService: IProfileService,
-    @ITokenService() private _tokenService: ITokenService,
-  ) {
+  constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
-  }
-
-  async updateToken() {
-    const refreshToken = await this._tokenService.restoreRefreshToken();
-
-    if (refreshToken) {
-      await this._refresh(refreshToken);
-    }
-
-    return {
-      accessToken: this._tokenService.accessToken,
-      refreshToken: this._tokenService.refreshToken,
-    };
   }
 
   get profile() {
@@ -55,32 +31,16 @@ export class ProfileDataStore implements IProfileDataStore {
   }
 
   get isAdmin() {
-    return this.holder.d?.role.name === ERole.ADMIN;
-  }
-
-  async signIn(params: ISignInRequest) {
-    this.holder.setLoading();
-
-    const res = await this._profileService.signIn(params);
-
-    this._updateProfileHolder(res);
-  }
-
-  async signUp(params: ISignUpRequest) {
-    this.holder.setLoading();
-
-    const res = await this._profileService.signUp(params);
-
-    this._updateProfileHolder(res);
+    return this.holder.d?.role.name === ERole.Admin;
   }
 
   async getProfile() {
     this.holder.setLoading();
 
-    const res = await this._profileService.getProfile();
+    const res = await this._apiService.getMyProfile();
 
     if (res.error) {
-      this.holder.setError({ msg: res.error.message });
+      this.holder.setError(res.error.message);
     } else if (res.data) {
       this.holder.setData(res.data);
 
@@ -88,27 +48,5 @@ export class ProfileDataStore implements IProfileDataStore {
     }
 
     return undefined;
-  }
-
-  private async _refresh(refreshToken: string) {
-    const res = await this._profileService.refresh({ refreshToken });
-
-    if (res.error) {
-      this._tokenService.clear();
-    } else if (res.data) {
-      this._tokenService.setTokens(res.data.accessToken, res.data.refreshToken);
-    }
-  }
-
-  private _updateProfileHolder(res: ApiResponse<ISignInResponse, ApiError>) {
-    if (res.error) {
-      this._tokenService.clear();
-      this.holder.setError({ msg: res.error.message });
-    } else if (res.data) {
-      const { tokens, ...profile } = res.data;
-
-      this.holder.setData(profile);
-      this._tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
-    }
   }
 }

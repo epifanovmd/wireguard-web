@@ -50,7 +50,7 @@ export const ThemeProvider = React.memo<PropsWithChildren>(props => {
         isDarkMode ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID,
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const memoizedValue = React.useMemo(() => {

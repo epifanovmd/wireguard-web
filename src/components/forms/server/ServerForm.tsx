@@ -14,42 +14,39 @@ export interface IServerFormProps {
 
 export const ServerFormField = typedFormField<TServerForm>();
 
-const _ServerForm: FC<PropsWithChildren<IServerFormProps>> = ({
-  onSubmit,
-  children,
-}) => {
-  const form = useServerForm();
+export const ServerForm: FC<PropsWithChildren<IServerFormProps>> = memo(
+  ({ onSubmit, children }) => {
+    const form = useServerForm();
 
-  const handleSubmit = useCallback(
-    () => form.handleSubmit(onSubmit)(),
-    [form, onSubmit],
-  );
+    const handleSubmit = useCallback(
+      () => form.handleSubmit(onSubmit)(),
+      [form, onSubmit],
+    );
 
-  if (children) {
-    return <FormProvider {...form}>{children}</FormProvider>;
-  }
+    if (children) {
+      return <FormProvider {...form}>{children}</FormProvider>;
+    }
 
-  return (
-    <FormProvider {...form}>
-      <ServerFormField
-        name={"name"}
-        render={({ field, fieldState: { error, invalid } }) => (
-          <Form.Item
-            layout={"vertical"}
-            colon={true}
-            label="Название серверв"
-            validateStatus={invalid ? "error" : undefined}
-            help={error?.message}
-          >
-            <Input placeholder="wg0" {...field} />
-          </Form.Item>
-        )}
-      />
-      <div className={"flex justify-end mt-3"}>
-        <AsyncButton onClick={handleSubmit}>{"Создать"}</AsyncButton>
-      </div>
-    </FormProvider>
-  );
-};
-
-export const ServerForm = memo(_ServerForm);
+    return (
+      <FormProvider {...form}>
+        <ServerFormField
+          name={"name"}
+          render={({ field, fieldState: { error, invalid } }) => (
+            <Form.Item
+              layout={"vertical"}
+              colon={true}
+              label="Название серверв"
+              validateStatus={invalid ? "error" : undefined}
+              help={error?.message}
+            >
+              <Input placeholder="wg0" {...field} />
+            </Form.Item>
+          )}
+        />
+        <div className={"flex justify-end mt-3"}>
+          <AsyncButton onClick={handleSubmit}>{"Создать"}</AsyncButton>
+        </div>
+      </FormProvider>
+    );
+  },
+);

@@ -1,21 +1,16 @@
 import { disposer } from "@force-dev/utils";
-import { createRootRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
 import { ConfirmModalProvider, Container } from "~@components";
-import { useSessionDataStore } from "~@store";
+import { useAppDataStore } from "~@store";
 
 const Component = observer(() => {
-  const { initialize } = useSessionDataStore();
-  const navigate = useNavigate();
+  const { initialize } = useAppDataStore();
 
   useEffect(() => {
-    const dispose = initialize(() => {
-      navigate({
-        to: "/auth/signIn",
-      }).then();
-    });
+    const dispose = initialize();
 
     return () => {
       disposer(dispose);

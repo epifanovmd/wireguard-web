@@ -4,18 +4,18 @@ import { notification } from "antd";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { useProfileService } from "~@service";
+import { useApi } from "~@api";
 
-import { Route } from "../../../routes/reset-password.lazy";
+import { Route } from "../../../routes/reset-password";
 import {
   resetPasswordValidationSchema,
   TResetPasswordForm,
 } from "../validations";
 
 export const useResetPassword = () => {
-  const profileService = useProfileService();
+  const api = useApi();
   const navigate = useNavigate();
-  const { token } = Route.useSearch<{ token?: string }>();
+  const { token } = Route.useSearch();
 
   useEffect(() => {
     if (!token) {
@@ -37,7 +37,7 @@ export const useResetPassword = () => {
   const handleSubmit = useCallback(() => {
     return form.handleSubmit(async data => {
       if (token) {
-        const res = await profileService.resetPassword({
+        const res = await api.resetPassword({
           password: data.password,
           token,
         });
@@ -50,7 +50,7 @@ export const useResetPassword = () => {
         }
       }
     })();
-  }, [form, navigate, profileService, token]);
+  }, [form, navigate, api, token]);
 
   return { form, handleSubmit };
 };

@@ -1,12 +1,19 @@
 import { createServiceDecorator, SupportInitialize } from "@force-dev/utils";
 
-import { IRefreshTokenResponse } from "~@service";
+import {
+  ISignInRequest,
+  ISignUpRequest,
+  ITokensDto,
+} from "~@api/api-gen/data-contracts";
 
 export const ISessionDataStore = createServiceDecorator<ISessionDataStore>();
 
-export interface ISessionDataStore extends SupportInitialize<() => void> {
+export interface ISessionDataStore extends SupportInitialize {
+  isLoading: boolean;
   isAuthorized: boolean;
-  isReady: boolean;
 
-  restore(tokens?: IRefreshTokenResponse): Promise<string>;
+  signIn(params: ISignInRequest): Promise<void>;
+  signUp(params: ISignUpRequest): Promise<void>;
+  restore(tokens?: ITokensDto): Promise<void>;
+  clear(): void;
 }

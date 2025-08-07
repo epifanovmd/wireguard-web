@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { UseFormProps } from "react-hook-form/dist/types";
+import { useForm, UseFormProps } from "react-hook-form";
 
 import { clientValidation, TClientForm } from "../validation";
 

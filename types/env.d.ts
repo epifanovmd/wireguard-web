@@ -13,7 +13,7 @@ interface EnvVariables {
   VITE_APP_NAME: string;
 }
 
-interface ImportMetaEnv extends EnvVariables {}
+type ImportMetaEnv = EnvVariables;
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;

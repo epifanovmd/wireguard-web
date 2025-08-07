@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,7 +10,12 @@
  * ---------------------------------------------------------------
  */
 
-import { ApiRequestConfig, ApiResponse, ApiService, CancelablePromise } from "@force-dev/utils";
+import {
+  ApiRequestConfig,
+  ApiResponse,
+  ApiService,
+  CancelablePromise,
+} from "@force-dev/utils";
 import type { AxiosError } from "axios";
 
 interface AxiosRequestParams<P = any> extends ApiRequestConfig<P> {
@@ -17,7 +23,10 @@ interface AxiosRequestParams<P = any> extends ApiRequestConfig<P> {
   type?: EContentType;
 }
 
-export type RequestParams = Omit<AxiosRequestParams, "data" | "method" | "params" | "url">;
+export type RequestParams = Omit<
+  AxiosRequestParams,
+  "data" | "method" | "params" | "url"
+>;
 
 export enum EContentType {
   Json = "application/json",
@@ -26,10 +35,10 @@ export enum EContentType {
   Text = "text/plain",
 }
 
-export class HttpClient<E extends Error | AxiosError<EBody> = AxiosError<unknown>, EBody = unknown> extends ApiService<
-  E,
-  EBody
-> {
+export class HttpClient<
+  E extends Error | AxiosError<EBody> = AxiosError<unknown>,
+  EBody = unknown,
+> extends ApiService<E, EBody> {
   protected stringifyFormItem(formItem: unknown) {
     if (typeof formItem === "object" && formItem !== null) {
       return JSON.stringify(formItem);
@@ -44,11 +53,15 @@ export class HttpClient<E extends Error | AxiosError<EBody> = AxiosError<unknown
     }
     return Object.keys(input || {}).reduce((formData, key) => {
       const property = input[key];
-      const propertyContent: any[] = property instanceof Array ? property : [property];
+      const propertyContent: any[] =
+        property instanceof Array ? property : [property];
 
       for (const formItem of propertyContent) {
         const isFileType = formItem instanceof Blob || formItem instanceof File;
-        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem));
+        formData.append(
+          key,
+          isFileType ? formItem : this.stringifyFormItem(formItem),
+        );
       }
 
       return formData;

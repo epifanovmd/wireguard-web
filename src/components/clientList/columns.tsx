@@ -11,7 +11,6 @@ export const clientListColumns: ColumnsType<ClientModel> = [
     dataIndex: "name",
     key: "name",
     render: (_, client) => <Online client={client} />,
-    // width: "100%",
   },
   {
     title: "Статус",

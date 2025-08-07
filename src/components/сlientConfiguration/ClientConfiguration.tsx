@@ -2,24 +2,24 @@ import { QRCode, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
 
+import { IWgClientsDto } from "~@api/api-gen/data-contracts";
 import { downloadBlob } from "~@common";
-import { IClient } from "~@service";
 import { useClientConfigurationDataStore } from "~@store";
 
 import { Button } from "../ui";
 
 export interface IClientConfigurationProps {
-  client: IClient;
+  client: IWgClientsDto;
   onError?: () => void;
 }
 
-const _ClientConfiguration: FC<
+export const ClientConfiguration: FC<
   PropsWithChildren<IClientConfigurationProps>
-> = ({ client, onError }) => {
+> = observer(({ client, onError }) => {
   const { onRefresh, data } = useClientConfigurationDataStore();
 
   useEffect(() => {
-    onRefresh(client.id).then(res => {
+    onRefresh(client.id!).then(res => {
       if (!res) {
         onError?.();
       }
@@ -52,6 +52,4 @@ const _ClientConfiguration: FC<
       )}
     </div>
   );
-};
-
-export const ClientConfiguration = observer(_ClientConfiguration);
+});

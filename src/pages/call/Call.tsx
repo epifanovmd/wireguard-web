@@ -1,13 +1,11 @@
 import { observer } from "mobx-react-lite";
-import React, { FC, PropsWithChildren, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 
 import { Button } from "~@components";
 
 import { useWebRTC } from "./hooks";
 
-interface IProps {}
-
-export const CallPage: FC<PropsWithChildren<IProps>> = observer(() => {
+export const CallPage: FC = observer(() => {
   const localStreamRef = useRef<HTMLVideoElement>(null);
   const remoteStreamRef = useRef<HTMLVideoElement>(null);
 

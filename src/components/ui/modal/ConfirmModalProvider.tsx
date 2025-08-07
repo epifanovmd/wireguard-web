@@ -15,7 +15,7 @@ import { ConfirmModalContext } from "./ConfirmModalContext";
 import { Modal } from "./Modal";
 import { ModalFooter } from "./ModalFooter";
 
-interface IConfirmModalProviderProps extends PropsWithChildren {}
+type IConfirmModalProviderProps = PropsWithChildren;
 
 export interface IConfirmParams {
   title?: React.ReactNode;

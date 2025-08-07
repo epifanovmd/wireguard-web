@@ -1,9 +1,9 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, memo, useEffect, useRef, useState } from "react";
 
 import { bytes } from "~@common";
 
-export const TransferTxRx: FC<{ value: number }> = ({ value }) => {
-  const timeoutId = useRef<number>();
+export const TransferTxRx: FC<{ value: number }> = memo(({ value }) => {
+  const timeoutId = useRef<number>(undefined);
   const [prev, setPrev] = useState(0);
   const [current, setCurrent] = useState("0");
 
@@ -30,4 +30,4 @@ export const TransferTxRx: FC<{ value: number }> = ({ value }) => {
         `${bytes(value)} ${parseFloat(current) > 0 ? `- ${current}/s` : ""}`}
     </div>
   );
-};
+});

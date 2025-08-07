@@ -1,12 +1,10 @@
 {
   "compilerOptions": {
-    "module": "ES2020",
-    "target": "ES2020",
+    "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": [
-      "vite/client",
-      "reflect-metadata"
-    ],
+    "module": "ESNext",
+    "types": ["vite/client", "reflect-metadata"],
+    // Custom
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
@@ -14,18 +12,23 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "isolatedModules": true,
-    "jsx": "react",
-    "moduleResolution": "Node",
-    "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noUnusedParameters": true,
     "preserveSymlinks": true,
     "removeComments": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
     "sourceMap": true,
+    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
     "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
     "paths": {
       "~@api": ["./src/api"],
       "~@api/*": ["./src/api/*"],
@@ -43,14 +46,7 @@
       "~@theme/*": ["./src/theme/*"],
     }
   },
-  "ts-node": {
-    "transpileOnly": true,
-    "esm": true,
-    "compilerOptions": {
-      "moduleResolution": "Node16",
-      "useDefineForClassFields": true
-    }
-  },
+  "include": ["./src/**/*", "./scripts"],
   "exclude": [
     "node_modules",
     "build",

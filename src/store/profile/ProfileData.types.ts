@@ -1,27 +1,16 @@
 import { createServiceDecorator, DataHolder } from "@force-dev/utils";
 
-import {
-  IProfile,
-  IRefreshTokenResponse,
-  ISignInRequest,
-  ISignUpRequest,
-} from "~@service";
+import { IProfileDto } from "~@api/api-gen/data-contracts";
 
 export const IProfileDataStore = createServiceDecorator<IProfileDataStore>();
 
 export interface IProfileDataStore {
-  holder: DataHolder<IProfile>;
-  profile?: IProfile;
+  holder: DataHolder<IProfileDto>;
+  profile?: IProfileDto;
   isLoading: boolean;
   isError: boolean;
   isEmpty: boolean;
   isAdmin: boolean;
 
-  getProfile(): Promise<IProfile | undefined>;
-
-  updateToken(): Promise<IRefreshTokenResponse>;
-
-  signIn(params: ISignInRequest): Promise<void>;
-
-  signUp(params: ISignUpRequest): Promise<void>;
+  getProfile(): Promise<IProfileDto | undefined>;
 }

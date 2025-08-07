@@ -1,9 +1,21 @@
+import { createServiceDecorator } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
-import { ITokenService } from "./Token.types";
+export const IApiTokenProvider = createServiceDecorator<IApiTokenProvider>();
 
-@ITokenService({ inSingleton: true })
-export class TokenService implements ITokenService {
+export interface IApiTokenProvider {
+  accessToken: string;
+  refreshToken: string;
+
+  setTokens(accessToken: string, refreshToken: string): void;
+
+  restoreRefreshToken(): Promise<string>;
+
+  clear(): void;
+}
+
+@IApiTokenProvider({ inSingleton: true })
+export class ApiTokenProvider implements IApiTokenProvider {
   public accessToken = "";
   public refreshToken = "";
 

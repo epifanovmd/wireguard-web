@@ -14,18 +14,18 @@ const Component = observer(() => {
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: async ctx => {
-    const { isReady, isAuthorized, restore } = ISessionDataStore.getInstance();
+    const session = ISessionDataStore.getInstance();
 
     const isSignUp = ctx.location.pathname.includes("signUp");
 
     if (!isSignUp) {
-      if (!isReady) {
-        const accessToken = await restore();
+      if (!session.isAuthorized) {
+        await session.restore();
 
-        if (accessToken) {
+        if (session.isAuthorized) {
           throw redirect({ to: "/" });
         }
-      } else if (isAuthorized) {
+      } else {
         throw redirect({ to: "/" });
       }
     }

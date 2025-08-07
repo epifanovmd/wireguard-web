@@ -1,27 +1,25 @@
 import { createServiceDecorator, DataHolder } from "@force-dev/utils";
 
+import {
+  IWgClientCreateRequest,
+  IWgClientsDto,
+  IWgClientUpdateRequest,
+} from "~@api/api-gen/data-contracts";
 import { ClientModel } from "~@models";
-import { IClient, ICreateClientRequest, IUpdateClientRequest } from "~@service";
 
 export const IClientsDataStore = createServiceDecorator<IClientsDataStore>();
 
 export interface IClientsDataStore {
-  holder: DataHolder<IClient[]>;
-  data: IClient[];
+  holder: DataHolder<IWgClientsDto[]>;
+  data: IWgClientsDto[];
   models: ClientModel[];
   loading: boolean;
 
   start(): void;
-
   subscribeSocket(clientId: string[]): void;
-
   unsubscribeSocket(): void;
-
-  updateClient(clientId: string, params: IUpdateClientRequest): Promise<void>;
-
-  createClient(params: ICreateClientRequest): Promise<void>;
-
+  updateClient(clientId: string, params: IWgClientUpdateRequest): Promise<void>;
+  createClient(params: IWgClientCreateRequest): Promise<void>;
   deleteClient(clientId: string): Promise<void>;
-
-  onRefresh(serverId: string): Promise<IClient[]>;
+  onRefresh(serverId: string): Promise<IWgClientsDto[]>;
 }
