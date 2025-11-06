@@ -5,7 +5,7 @@ const projectRootDir = path.resolve(import.meta.dirname);
 
 generateApiService({
   output: path.resolve(projectRootDir, "../src/api/api-gen"),
-  url: "http://wireguard.force-dev.ru/api-docs/swagger.json", // URL вашего Swagger JSON
+  url: "http://wireguard.epifanov-dev.ru/api-docs/swagger.json", // URL вашего Swagger JSON
 })
   .then(() => {
     console.log("API успешно сгенерировано");

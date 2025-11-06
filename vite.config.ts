@@ -53,7 +53,7 @@ export default defineConfig({
     },
   },
   preview: {
-    allowedHosts: ["wireguard.force-dev.ru"],
+    allowedHosts: ["wireguard.epifanov-dev.ru"],
     host: HOST,
     port: PORT,
   },
