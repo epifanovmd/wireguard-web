@@ -35,6 +35,8 @@ export const usePasskeyAuth = () => {
       // Получите challenge и другие данные с сервера
       const response = await api.generateRegistrationOptions({ profileId });
 
+      console.log("response", response);
+
       if (response.error) {
         notification.error({ message: response.error.message });
       } else if (response.data) {
@@ -62,6 +64,7 @@ export const usePasskeyAuth = () => {
             return isVerified;
           })
           .catch(err => {
+            console.log("[usePasskeyAuth:handleRegister] error", err);
             if (err.message === "The authenticator was previously registered") {
               localStorage.setItem("profileId", profileId);
               setProfileId(profileId);

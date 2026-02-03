@@ -77,16 +77,16 @@ export const SignInPage = observer(() => {
           <div className={"flex justify-between mt-4"}>
             <div className={"flex"}>
               <AsyncButton onClick={handleLogin}>{"Войти"}</AsyncButton>
-              <AsyncButton
-                type={"link"}
-                onClick={handleNavigateRecoveryPassword}
-              >
-                {"Забыли пароль?"}
-              </AsyncButton>
+              {/*<AsyncButton*/}
+              {/*  type={"link"}*/}
+              {/*  onClick={handleNavigateRecoveryPassword}*/}
+              {/*>*/}
+              {/*  {"Забыли пароль?"}*/}
+              {/*</AsyncButton>*/}
             </div>
-            <AsyncButton type={"link"} onClick={handleNavigateSignUp}>
-              {"Регистрация"}
-            </AsyncButton>
+            {/*<AsyncButton type={"link"} onClick={handleNavigateSignUp}>*/}
+            {/*  {"Регистрация"}*/}
+            {/*</AsyncButton>*/}
           </div>
         </Form1>
       </FormProvider>

@@ -1,6 +1,6 @@
 import { DataHolder } from "@force-dev/utils";
 import { notification } from "antd";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { IApiService } from "~@api";
 import {
@@ -62,7 +62,9 @@ export class ServerDataStore implements IServerDataStore {
       notification.error({ message: res.error.message });
       throw res.error;
     } else {
-      this.enabled = !!res.data;
+      runInAction(() => {
+        this.enabled = !!res.data;
+      });
     }
   }
 
@@ -74,7 +76,9 @@ export class ServerDataStore implements IServerDataStore {
         notification.error({ message: res.error.message });
       }
     } else {
-      this.enabled = true;
+      runInAction(() => {
+        this.enabled = true;
+      });
     }
   }
 
@@ -86,7 +90,9 @@ export class ServerDataStore implements IServerDataStore {
         notification.error({ message: res.error.message });
       }
     } else {
-      this.enabled = false;
+      runInAction(() => {
+        this.enabled = false;
+      });
     }
   }
 
