@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Power, QrCode, Search, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
@@ -8,9 +8,9 @@ import {
   Button,
   Card,
   CopyableText,
-  Drawer,
   Empty,
   Input,
+  Modal,
   PageHeader,
   Select,
   Spinner,
@@ -47,7 +47,10 @@ const PeerRow: FC<PeerRowProps> = ({
   const { status: liveStatus } = useWgPeer(peer.data.id);
 
   return (
-    <tr className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] transition-colors">
+    <tr
+      className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] transition-colors cursor-pointer"
+      onClick={() => onView(peer.data.id)}
+    >
       <td className="px-4 py-3">
         <p className="font-medium text-[var(--text-primary)]">{peer.name}</p>
         <CopyableText
@@ -93,39 +96,31 @@ const PeerRow: FC<PeerRowProps> = ({
           ? new Date(liveStatus.lastHandshake).toLocaleString()
           : peer.createdAtFormatted}
       </td>
-      <td className="px-4 py-3">
-        <div className="flex items-center justify-end gap-1">
-          <Button
-            size="sm"
-            variant="ghost"
+      <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-end gap-0.5">
+          <button
+            title="QR Code"
+            className="p-1.5 rounded-md hover:bg-[var(--bg-hover,rgba(99,102,241,0.1))] text-[var(--text-muted)] hover:text-[#6366f1] transition-colors"
             onClick={() => onQr(peer.data.id, peer.name)}
           >
-            QR
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            loading={loading === "toggle"}
+            <QrCode size={15} />
+          </button>
+          <button
+            title={peer.enabled ? "Disable" : "Enable"}
+            className={`p-1.5 rounded-md transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
             onClick={() => onToggle(peer.data.id, peer.enabled)}
+            disabled={loading === "toggle"}
           >
-            {peer.enabled ? "Disable" : "Enable"}
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onView(peer.data.id)}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-[#ef4444]"
-            loading={loading === "delete"}
+            <Power size={15} />
+          </button>
+          <button
+            title="Delete"
+            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+            disabled={loading === "delete"}
             onClick={() => onDelete(peer.data.id, peer.name)}
           >
-            Del
-          </Button>
+            <Trash2 size={15} />
+          </button>
         </div>
       </td>
     </tr>
@@ -318,10 +313,11 @@ export const PeersList: FC = observer(() => {
         </Card>
       </div>
 
-      <Drawer
+      <Modal
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         title="Add peer"
+        size="lg"
       >
         <PeerForm
           servers={serversStore.servers}
@@ -340,7 +336,7 @@ export const PeersList: FC = observer(() => {
             }
           }}
         />
-      </Drawer>
+      </Modal>
 
       {qrPeer && (
         <QrCodeModal

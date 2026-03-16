@@ -1,3 +1,4 @@
+import { Pencil, Play, RotateCcw, Square } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 import {
@@ -15,7 +16,7 @@ import {
 import {
   Button,
   Card,
-  Drawer,
+  Modal,
   PageHeader,
   Spinner,
   StatCard,
@@ -119,40 +120,38 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
           { label: server.name },
         ]}
         actions={
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="secondary"
+          <div className="flex items-center gap-1">
+            <button
+              title="Edit"
+              className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
               onClick={() => setEditOpen(true)}
             >
-              Edit
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              loading={actionLoading === "start"}
+              <Pencil size={17} />
+            </button>
+            <button
+              title="Start"
+              className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] transition-colors disabled:opacity-40"
+              disabled={actionLoading === "start" || effectiveStatus === "up"}
               onClick={() => handleAction("start")}
-              disabled={effectiveStatus === "up"}
             >
-              Start
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              loading={actionLoading === "stop"}
+              <Play size={17} />
+            </button>
+            <button
+              title="Stop"
+              className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] transition-colors disabled:opacity-40"
+              disabled={actionLoading === "stop" || effectiveStatus === "down"}
               onClick={() => handleAction("stop")}
-              disabled={effectiveStatus === "down"}
             >
-              Stop
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              loading={actionLoading === "restart"}
+              <Square size={17} />
+            </button>
+            <button
+              title="Restart"
+              className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors disabled:opacity-40"
+              disabled={actionLoading === "restart"}
               onClick={() => handleAction("restart")}
             >
-              Restart
-            </Button>
+              <RotateCcw size={17} />
+            </button>
           </div>
         }
       />
@@ -332,10 +331,11 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         />
       </div>
 
-      <Drawer
+      <Modal
         open={editOpen}
         onClose={() => setEditOpen(false)}
         title="Edit server"
+        size="lg"
       >
         <ServerForm
           isEdit
@@ -351,7 +351,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             }
           }}
         />
-      </Drawer>
+      </Modal>
     </div>
   );
 });

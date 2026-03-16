@@ -1,3 +1,4 @@
+import { Pencil, Power, QrCode, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 import {
@@ -17,7 +18,7 @@ import {
   Button,
   Card,
   CopyableText,
-  Drawer,
+  Modal,
   PageHeader,
   Spinner,
   StatCard,
@@ -133,32 +134,32 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             { label: peer.name },
           ]}
           actions={
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="secondary"
+            <div className="flex items-center gap-1">
+              <button
+                title="QR / Config"
+                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
                 onClick={() => setQrOpen(true)}
               >
-                QR / Config
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                loading={toggling}
+                <QrCode size={17} />
+              </button>
+              <button
+                title={peer.enabled ? "Disable" : "Enable"}
+                className={`p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+                disabled={toggling}
                 onClick={handleToggle}
               >
-                {peer.enabled ? "Disable" : "Enable"}
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
+                <Power size={17} />
+              </button>
+              <button
+                title="Edit"
+                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
                 onClick={() => setEditOpen(true)}
               >
-                Edit
-              </Button>
-              <Button
-                size="sm"
-                variant="danger"
+                <Pencil size={17} />
+              </button>
+              <button
+                title="Delete"
+                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
                 onClick={async () => {
                   const ok = await confirm({
                     title: "Delete peer",
@@ -174,8 +175,8 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                   }
                 }}
               >
-                Delete
-              </Button>
+                <Trash2 size={17} />
+              </button>
             </div>
           }
         />
@@ -449,10 +450,11 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           />
         </div>
 
-        <Drawer
+        <Modal
           open={editOpen}
           onClose={() => setEditOpen(false)}
           title="Edit peer"
+          size="lg"
         >
           <PeerForm
             isEdit
@@ -467,7 +469,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               }
             }}
           />
-        </Drawer>
+        </Modal>
 
         <QrCodeModal
           open={qrOpen}

@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { Download, Server, Upload, Zap } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
@@ -21,6 +22,7 @@ import { formatSpeed } from "./dashboard.helpers";
 export const Dashboard: FC = observer(() => {
   const servers = useServersDataStore();
   const overview = useWgOverview();
+  const navigate = useNavigate();
   const [livePoints, setLivePoints] = useState<
     { t: string; rx: number; tx: number }[]
   >([]);
@@ -190,7 +192,8 @@ export const Dashboard: FC = observer(() => {
                     servers.servers.map(server => (
                       <tr
                         key={server.id}
-                        className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)]"
+                        className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] cursor-pointer"
+                        onClick={() => navigate({ to: "/wireguard/servers/$serverId", params: { serverId: server.id } })}
                       >
                         <td className="px-3 py-3 font-medium text-[var(--text-primary)]">
                           {server.name}

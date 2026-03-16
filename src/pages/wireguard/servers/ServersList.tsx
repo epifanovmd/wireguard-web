@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import { Play, RotateCcw, Square, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
@@ -7,8 +8,8 @@ import {
   Badge,
   Button,
   Card,
-  Drawer,
   Empty,
+  Modal,
   PageHeader,
   Spinner,
   useConfirm,
@@ -36,7 +37,11 @@ const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) 
   const isDown = effectiveStatus === "down" || effectiveStatus === "error";
 
   return (
-    <Card padding="md" className="hover:shadow-md transition-shadow">
+    <Card
+      padding="md"
+      className="hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => onView(server.data.id)}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -78,46 +83,42 @@ const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) 
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-4 flex-wrap">
+      <div className="flex items-center gap-1 mt-4" onClick={e => e.stopPropagation()}>
         {isDown ? (
-          <Button
-            size="sm"
-            variant="secondary"
-            loading={loading === "start"}
+          <button
+            title="Start"
+            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] transition-colors disabled:opacity-50"
+            disabled={loading === "start"}
             onClick={() => onAction(server.data.id, "start")}
           >
-            Start
-          </Button>
+            <Play size={15} />
+          </button>
         ) : (
-          <Button
-            size="sm"
-            variant="secondary"
-            loading={loading === "stop"}
+          <button
+            title="Stop"
+            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] transition-colors disabled:opacity-50"
+            disabled={loading === "stop"}
             onClick={() => onAction(server.data.id, "stop")}
           >
-            Stop
-          </Button>
+            <Square size={15} />
+          </button>
         )}
-        <Button
-          size="sm"
-          variant="secondary"
-          loading={loading === "restart"}
+        <button
+          title="Restart"
+          className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors disabled:opacity-50"
+          disabled={loading === "restart"}
           onClick={() => onAction(server.data.id, "restart")}
         >
-          Restart
-        </Button>
-        <Button size="sm" variant="ghost" onClick={() => onView(server.data.id)}>
-          View
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="text-[#ef4444]"
-          loading={loading === "delete"}
+          <RotateCcw size={15} />
+        </button>
+        <button
+          title="Delete"
+          className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors disabled:opacity-50"
+          disabled={loading === "delete"}
           onClick={() => onAction(server.data.id, "delete")}
         >
-          Delete
-        </Button>
+          <Trash2 size={15} />
+        </button>
       </div>
     </Card>
   );
@@ -217,10 +218,11 @@ export const ServersList: FC = observer(() => {
         )}
       </div>
 
-      <Drawer
+      <Modal
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         title="Add server"
+        size="lg"
       >
         <ServerForm
           loading={false}
@@ -235,7 +237,7 @@ export const ServersList: FC = observer(() => {
             }
           }}
         />
-      </Drawer>
+      </Modal>
     </div>
   );
 });
