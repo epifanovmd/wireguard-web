@@ -1,8 +1,18 @@
-import { Button as AntdButton } from "antd";
-import React, { ComponentProps, FC, memo, PropsWithChildren } from "react";
+import {
+  Button as MantineButton,
+  ButtonProps,
+  ElementProps,
+} from "@mantine/core";
+import React, { forwardRef } from "react";
 
-type IButtonProps = ComponentProps<typeof AntdButton>;
+export type ButtonVariant = ButtonProps["variant"];
 
-export const Button: FC<PropsWithChildren<IButtonProps>> = memo(props => {
-  return <AntdButton {...props} />;
-});
+export interface IButtonProps
+  extends ButtonProps,
+    ElementProps<"button", keyof ButtonProps> {}
+
+export const Button = forwardRef<HTMLButtonElement, IButtonProps>(
+  ({ variant = "primary", size = "sm", ...props }, ref) => {
+    return <MantineButton ref={ref} size={size} {...props} />;
+  },
+);

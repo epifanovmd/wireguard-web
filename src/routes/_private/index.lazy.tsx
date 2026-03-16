@@ -1,8 +1,8 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import React from "react";
 
-import { ClientsPage } from "../../pages/clients";
+import { Dashboard } from "../../pages/dashboard/Dashboard";
 
 export const Route = createLazyFileRoute("/_private/")({
-  component: () => <ClientsPage />,
+  component: Dashboard,
 });

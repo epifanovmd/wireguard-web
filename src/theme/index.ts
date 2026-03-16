@@ -1,5 +1,4 @@
-export * from "./hooks";
+export * from "./hooks/useTheme";
+export * from "./mantineTheme";
 export * from "./ThemeContext";
 export * from "./ThemeProvider";
-export * from "./types";
-export * from "./variants";

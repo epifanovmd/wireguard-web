@@ -1,88 +1,81 @@
-import { typedFormField } from "@force-dev/react";
-import React, { memo } from "react";
-import { FormProvider } from "react-hook-form";
-import styled from "styled-components";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { FC, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { AsyncButton, FieldWrapper, Input } from "~@components";
+import { useApi } from "~@api/hooks";
+import { AuthLayout, Button, Card, Input } from "~@components";
 
-import { useResetPassword } from "./hooks";
-import { TResetPasswordForm } from "./validations";
-
-const Field = typedFormField<TResetPasswordForm>();
-
-export const ResetPassword = memo(() => {
-  const { form, handleSubmit } = useResetPassword();
-
-  return (
-    <Wrap>
-      <FormProvider {...form}>
-        <Form>
-          <div className={"flex justify-between"}>
-            <div className={"text-xl mb-4"}>{"Введите новый пароль"}</div>
-          </div>
-
-          <Field
-            name={"password"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input.Password
-                  name={"password"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  placeholder={"Пароль"}
-                  value={value}
-                  onChange={onChange}
-                  type={"password"}
-                  autoComplete={"new-password"}
-                />
-              </FieldWrapper>
-            )}
-          />
-          <Field
-            name={"confirmPassword"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input.Password
-                  name={"confirmPassword"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  placeholder={"Подтверждение пароля"}
-                  value={value}
-                  onChange={onChange}
-                  type={"password"}
-                  autoComplete={"new-password"}
-                />
-              </FieldWrapper>
-            )}
-          />
-
-          <div className={"flex justify-between mt-4"}>
-            <AsyncButton onClick={handleSubmit}>{"Сохранить"}</AsyncButton>
-          </div>
-        </Form>
-      </FormProvider>
-    </Wrap>
-  );
+const schema = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine(d => d.password === d.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
-const Wrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-`;
+type FormData = z.infer<typeof schema>;
 
-const Form = styled.form`
-  width: 100%;
-  max-width: 500px;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 3px 4px 18px 0 rgba(34, 60, 80, 0.2);
-`;
+interface ResetPasswordProps {
+  token: string;
+  onSuccess: () => void;
+}
+
+export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
+  const api = useApi();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    setError(null);
+    const res = await api.resetPassword({ token, password: data.password });
+    setLoading(false);
+    if (res.error) {
+      setError(res.error.message);
+    } else {
+      onSuccess();
+    }
+  };
+
+  return (
+    <AuthLayout>
+      <Card>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-[var(--text-primary)]">Reset password</h2>
+          <p className="text-sm text-[var(--text-muted)] mt-1">Enter your new password</p>
+        </div>
+
+        {error && (
+          <div className="mb-4 px-4 py-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <Input
+            label="New password"
+            type="password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            {...register("password")}
+          />
+          <Input
+            label="Confirm password"
+            type="password"
+            placeholder="••••••••"
+            error={errors.confirmPassword?.message}
+            {...register("confirmPassword")}
+          />
+          <Button type="submit" fullWidth loading={loading}>
+            Set new password
+          </Button>
+        </form>
+      </Card>
+    </AuthLayout>
+  );
+};

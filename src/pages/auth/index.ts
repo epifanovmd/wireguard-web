@@ -1,3 +1,2 @@
-export * from "./RecoveryPassword";
-export * from "./SignIn";
-export * from "./SignUp";
+export { ForgotPassword } from "./ForgotPassword";
+export { SignIn } from "./SignIn";

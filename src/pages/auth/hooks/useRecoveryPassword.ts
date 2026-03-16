@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { notification } from "antd";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
@@ -27,9 +26,9 @@ export const useRecoveryPassword = () => {
       const res = await api.requestResetPassword(data);
 
       if (res.error) {
-        notification.error({ message: res.error.message });
+        console.error(res.error.message);
       } else if (res.data) {
-        notification.success({ message: res.data.message });
+        console.log(res.data.message);
         navigate({ to: "/auth/signIn" }).then();
       }
     })();

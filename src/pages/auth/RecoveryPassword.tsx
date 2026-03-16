@@ -1,7 +1,6 @@
 import { typedFormField } from "@force-dev/react";
 import React, { FC, memo, PropsWithChildren } from "react";
 import { FormProvider } from "react-hook-form";
-import styled from "styled-components";
 
 import { AsyncButton, FieldWrapper, Input } from "~@components";
 
@@ -17,9 +16,13 @@ export const RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> =
     const { form, handleSubmit } = useRecoveryPassword();
 
     return (
-      <Wrap>
+      <div className={"flex items-center justify-center flex-col h-screen"}>
         <FormProvider {...form}>
-          <Form>
+          <form
+            className={
+              "w-full max-w-[500px] p-8 rounded-2xl shadow-[3px_4px_18px_0_rgba(34,60,80,0.2)]"
+            }
+          >
             <div className={"flex justify-between"}>
               <div className={"text-xl mb-4"}>{"Востановление пароля"}</div>
             </div>
@@ -28,12 +31,11 @@ export const RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> =
               name={"login"}
               render={({
                 field: { onChange, value },
-                fieldState: { invalid, error },
+                fieldState: { error },
               }) => (
                 <FieldWrapper error={error}>
                   <Input
                     name={"login"}
-                    status={invalid ? "error" : undefined}
                     className={"mt-2"}
                     placeholder={"Введите ваш Email для востановления пароля"}
                     value={value}
@@ -47,24 +49,8 @@ export const RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> =
             <div className={"flex justify-between mt-4"}>
               <AsyncButton onClick={handleSubmit}>{"Востановить"}</AsyncButton>
             </div>
-          </Form>
+          </form>
         </FormProvider>
-      </Wrap>
+      </div>
     );
   });
-
-const Wrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 500px;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 3px 4px 18px 0 rgba(34, 60, 80, 0.2);
-`;

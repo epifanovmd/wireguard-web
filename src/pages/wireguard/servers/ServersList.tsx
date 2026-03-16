@@ -1,0 +1,221 @@
+import { useNavigate } from "@tanstack/react-router";
+import { observer } from "mobx-react-lite";
+import React, { FC, useEffect, useState } from "react";
+
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import {
+  Badge,
+  Button,
+  Card,
+  Drawer,
+  Empty,
+  PageHeader,
+  Spinner,
+  useConfirm,
+} from "~@components";
+import { useToast } from "~@components";
+import { useServersDataStore } from "~@store";
+
+import { ServerForm } from "./components/ServerForm";
+import { ServerStatusBadge } from "./components/ServerStatusBadge";
+
+export const ServersList: FC = observer(() => {
+  const store = useServersDataStore();
+  const navigate = useNavigate();
+  const confirm = useConfirm();
+  const toast = useToast();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
+    {},
+  );
+
+  useEffect(() => {
+    store.loadServers().then();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const setLoading = (id: string, action: string) =>
+    setActionLoading(prev => ({ ...prev, [id]: action }));
+  const clearLoading = (id: string) =>
+    setActionLoading(prev => {
+      const n = { ...prev };
+      delete n[id];
+      return n;
+    });
+
+  const handleAction = async (
+    id: string,
+    action: "start" | "stop" | "restart" | "delete",
+  ) => {
+    if (action === "delete") {
+      const ok = await confirm({
+        title: "Delete server",
+        message: "This will permanently delete the server and all its peers.",
+        variant: "danger",
+      });
+      if (!ok) return;
+    }
+    setLoading(id, action);
+    let res;
+    if (action === "start") res = await store.startServer(id);
+    else if (action === "stop") res = await store.stopServer(id);
+    else if (action === "restart") res = await store.restartServer(id);
+    else res = await store.deleteServer(id);
+    clearLoading(id);
+    if (res?.error) {
+      toast.error(res.error.message);
+    } else if (action === "delete") {
+      toast.success("Server deleted");
+    }
+  };
+
+  const activeCount = store.servers.filter(
+    s => s.status === EWgServerStatus.Up,
+  ).length;
+
+  return (
+    <div className="flex flex-col h-full">
+      <PageHeader
+        title="Servers"
+        subtitle={`${store.total} total, ${activeCount} active`}
+        actions={
+          <Button onClick={() => setCreateOpen(true)}>Add server</Button>
+        }
+      />
+      <div className="p-6">
+        {store.isLoading ? (
+          <div className="flex justify-center py-16">
+            <Spinner />
+          </div>
+        ) : store.servers.length === 0 ? (
+          <Empty
+            title="No servers"
+            description="Add your first WireGuard server to get started"
+            action={{ label: "Add server", onClick: () => setCreateOpen(true) }}
+          />
+        ) : (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {store.models.map(server => {
+              const loading = actionLoading[server.data.id];
+              return (
+                <Card
+                  key={server.data.id}
+                  padding="md"
+                  className="hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-[var(--text-primary)] truncate">
+                          {server.name}
+                        </h3>
+                        <ServerStatusBadge status={server.statusLabel} />
+                        {!server.data.enabled && (
+                          <Badge variant="warning">Disabled</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--text-muted)]">
+                        <span className="font-mono">
+                          {server.data.interface}
+                        </span>
+                        <span>·</span>
+                        <span>:{server.data.listenPort}</span>
+                        {server.data.address && (
+                          <>
+                            <span>·</span>
+                            <span>{server.data.address}</span>
+                          </>
+                        )}
+                      </div>
+                      {server.data.endpoint && (
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
+                          {server.data.endpoint}
+                        </p>
+                      )}
+                      {server.data.description && (
+                        <p className="text-xs text-[var(--text-secondary)] mt-1 truncate">
+                          {server.data.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-4 flex-wrap">
+                    {server.isDown || server.isError ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        loading={loading === "start"}
+                        onClick={() => handleAction(server.data.id, "start")}
+                      >
+                        Start
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        loading={loading === "stop"}
+                        onClick={() => handleAction(server.data.id, "stop")}
+                      >
+                        Stop
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      loading={loading === "restart"}
+                      onClick={() => handleAction(server.data.id, "restart")}
+                    >
+                      Restart
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() =>
+                        navigate({
+                          to: "/wireguard/servers/$serverId",
+                          params: { serverId: server.data.id },
+                        })
+                      }
+                    >
+                      View
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-[#ef4444]"
+                      loading={loading === "delete"}
+                      onClick={() => handleAction(server.data.id, "delete")}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <Drawer
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        title="Add server"
+      >
+        <ServerForm
+          loading={false}
+          onCancel={() => setCreateOpen(false)}
+          onSubmit={async data => {
+            const res = await store.createServer(data as any);
+            if (res.error) {
+              toast.error(res.error.message);
+            } else {
+              toast.success("Server created");
+              setCreateOpen(false);
+            }
+          }}
+        />
+      </Drawer>
+    </div>
+  );
+});

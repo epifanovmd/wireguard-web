@@ -1,4 +1,9 @@
-import React from "react";
-import { ThemeContext } from "styled-components";
+import { useContext } from "react";
 
-export const useTheme = () => React.useContext(ThemeContext);
+import { ThemeContext, ThemeContextValue } from "../ThemeContext";
+
+export const useTheme = (): ThemeContextValue => {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
+  return ctx;
+};

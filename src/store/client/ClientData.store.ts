@@ -2,9 +2,7 @@ import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
-import { IWgClientsDto } from "~@api/api-gen/data-contracts";
-import { ClientModel } from "~@models";
-import { IClientsSocketService } from "~@service";
+import { ClientModel, IWgClientsDto } from "~@models";
 
 import { IClientDataStore } from "./ClientData.types";
 
@@ -12,11 +10,7 @@ import { IClientDataStore } from "./ClientData.types";
 export class ClientDataStore implements IClientDataStore {
   public holder = new DataHolder<IWgClientsDto>();
 
-  constructor(
-    @IApiService() private _apiService: IApiService,
-    @IClientsSocketService()
-    private _clientSocketService: IClientsSocketService,
-  ) {
+  constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
@@ -32,37 +26,18 @@ export class ClientDataStore implements IClientDataStore {
     return this.holder.isLoading;
   }
 
-  subscribeSocket(clientId: string[]) {
-    this._clientSocketService.subscribeClient(clientId, data => {
-      if (this.data) {
-        const dataItem = data[this.data.id!];
-
-        this.holder.setData(
-          dataItem ? { ...this.data, ...dataItem } : this.data,
-        );
-      }
-    });
-  }
-
-  unsubscribeSocket() {
-    this._clientSocketService.unsubscribeClient();
-  }
-
   async onRefresh(clientId: string) {
-    this.unsubscribeSocket();
     this.holder.setLoading();
-    const res = await this._apiService.getWgClient(clientId);
+    const res = await this._apiService.getPeer(clientId);
 
     if (res.axiosError) {
       if (!res.isCanceled) {
         this.holder.setError(res.axiosError.toString());
       }
     } else if (res.data) {
-      this.holder.setData(res.data);
+      this.holder.setData(res.data as IWgClientsDto);
 
-      this._clientSocketService.subscribeClient([res.data.id!]);
-
-      return res.data;
+      return res.data as IWgClientsDto;
     }
 
     return undefined;

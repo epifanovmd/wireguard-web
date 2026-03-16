@@ -2,9 +2,9 @@ import { disposer, InitializeDispose, Interval } from "@force-dev/utils";
 import { makeAutoObservable, reaction } from "mobx";
 
 import { IApiService } from "~@api";
-import { ISocketService } from "~@service";
 
-import { router } from "../../index";
+import { router } from "../../router";
+import { ISocketTransport } from "../../socket";
 import { ISessionDataStore } from "../session";
 import { IAppDataStore } from "./AppData.types";
 
@@ -15,7 +15,7 @@ export class AppDataStore implements IAppDataStore {
   constructor(
     @ISessionDataStore() public sessionDataStore: ISessionDataStore,
     @IApiService() private _apiService: IApiService,
-    @ISocketService() private _socketService: ISocketService,
+    @ISocketTransport() private _socketTransport: ISocketTransport,
   ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
@@ -28,7 +28,7 @@ export class AppDataStore implements IAppDataStore {
         () => this.sessionDataStore.isAuthorized,
         isAuthorized => {
           if (isAuthorized) {
-            disposers.add(this._socketService.initialize());
+            disposers.add(this._socketTransport.initialize());
 
             this._interval.start(async () => {
               await this._apiService.updateToken();

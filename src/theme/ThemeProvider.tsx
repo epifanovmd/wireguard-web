@@ -1,74 +1,57 @@
-import React, { PropsWithChildren, useEffect } from "react";
-import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
-import { ThemeContext } from "./ThemeContext";
-import { ITheme, IThemeContext } from "./types";
-import {
-  DEFAULT_DARK_THEME,
-  DEFAULT_DARK_THEME_ID,
-  DEFAULT_LIGHT_THEME,
-  DEFAULT_LIGHT_THEME_ID,
-} from "./variants";
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import React, { FC, PropsWithChildren, useEffect, useState } from "react";
 
-const THEMES: { [key in string]: ITheme } = {
-  [DEFAULT_LIGHT_THEME_ID]: DEFAULT_DARK_THEME,
-  [DEFAULT_DARK_THEME_ID]: DEFAULT_LIGHT_THEME,
-};
+import { cssVariablesResolver, mantineTheme } from "./mantineTheme";
+import { ThemeContext, ThemeMode } from "./ThemeContext";
 
-export const ThemeProvider = React.memo<PropsWithChildren>(props => {
-  const [theme, setTheme] = React.useState<ITheme>(DEFAULT_LIGHT_THEME);
+function getInitialTheme(): ThemeMode {
+  const saved = localStorage.getItem("theme") as ThemeMode | null;
+  if (saved === "light" || saved === "dark") return saved;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
 
-  const toggleThemeCallback = React.useCallback(() => {
-    setTheme(currentTheme => {
-      if (currentTheme.id === DEFAULT_LIGHT_THEME_ID) {
-        localStorage.setItem("themeId", DEFAULT_LIGHT_THEME_ID);
-
-        return DEFAULT_DARK_THEME;
-      }
-      if (currentTheme.id === DEFAULT_DARK_THEME_ID) {
-        localStorage.setItem("themeId", DEFAULT_DARK_THEME_ID);
-
-        return DEFAULT_LIGHT_THEME;
-      }
-
-      return currentTheme;
-    });
-  }, []);
+export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [theme, setThemeState] = useState<ThemeMode>(getInitialTheme);
 
   useEffect(() => {
-    const isDarkMode =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const themeId = localStorage.getItem("themeId");
-
-    if (themeId) {
-      setTheme({ ...THEMES[themeId] });
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      setTheme(isDarkMode ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME);
-      localStorage.setItem(
-        "themeId",
-        isDarkMode ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID,
-      );
+      document.documentElement.classList.remove("dark");
     }
-     
-  }, []);
+  }, [theme]);
 
-  const memoizedValue = React.useMemo(() => {
-    const value: IThemeContext = {
-      theme: theme,
-      toggleTheme: toggleThemeCallback,
-      isLight: theme.id === DEFAULT_LIGHT_THEME_ID,
-      isDark: theme.id === DEFAULT_DARK_THEME_ID,
-    };
+  const setTheme = (t: ThemeMode) => {
+    setThemeState(t);
+    localStorage.setItem("theme", t);
+  };
 
-    return value;
-  }, [theme, toggleThemeCallback]);
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return (
-    <ThemeContext.Provider value={memoizedValue}>
-      <StyledComponentsThemeProvider theme={memoizedValue.theme}>
-        {theme ? props.children : null}
-      </StyledComponentsThemeProvider>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        isDark: theme === "dark",
+        isLight: theme === "light",
+        setTheme,
+        toggleTheme,
+      }}
+    >
+      <MantineProvider
+        theme={mantineTheme}
+        cssVariablesResolver={cssVariablesResolver}
+        forceColorScheme={theme}
+      >
+        <Notifications position="bottom-right" zIndex={9999} />
+        {children}
+      </MantineProvider>
     </ThemeContext.Provider>
   );
-});
+};

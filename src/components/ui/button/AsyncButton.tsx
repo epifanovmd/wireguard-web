@@ -1,43 +1,41 @@
-import { useLoading } from "@force-dev/react";
-import React, {
-  ComponentProps,
-  FC,
-  memo,
-  PropsWithChildren,
-  useCallback,
-} from "react";
+import React, { forwardRef, useCallback, useState } from "react";
 
-import { Button } from "./Button";
+import { Button, IButtonProps } from "./Button";
 
-export interface IAsyncButtonProps
-  extends Omit<ComponentProps<typeof Button>, "onClick"> {
-  onClick?: () => void | Promise<void>;
+export interface IAsyncButtonProps extends Omit<IButtonProps, "onClick"> {
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
 }
 
-export const AsyncButton: FC<PropsWithChildren<IAsyncButtonProps>> = memo(
-  ({ onClick, children, ...props }) => {
-    const [loading, startLoading, stopLoading] = useLoading();
+export const AsyncButton = forwardRef<HTMLButtonElement, IAsyncButtonProps>(
+  ({ onClick, children, disabled, loading, ...props }, ref) => {
+    const [pending, setPending] = useState(false);
+    const isLoading = loading || pending;
+    const isDisabled = disabled || isLoading;
 
-    const handleClick = useCallback(async () => {
-      if (onClick) {
-        startLoading();
+    const handleClick = useCallback(
+      async (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!onClick || isDisabled) return;
+        setPending(true);
         try {
-          await onClick?.();
-        } catch (e) {
-          if (e instanceof Error) {
-            console.log("AsyncButton onClick ERROR: ", e.message);
+          await onClick(e);
+        } catch (err) {
+          if (err instanceof Error) {
+            console.error("AsyncButton error:", err.message);
           }
         } finally {
-          stopLoading();
+          setPending(false);
         }
-      }
-    }, [onClick, startLoading, stopLoading]);
+      },
+      [onClick, isDisabled],
+    );
 
     return (
       <Button
+        ref={ref}
         {...props}
+        disabled={isDisabled}
+        loading={isLoading}
         onClick={handleClick}
-        loading={loading || props.loading}
       >
         {children}
       </Button>

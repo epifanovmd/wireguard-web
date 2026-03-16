@@ -1,7 +1,4 @@
-import { createContext } from "react";
-
-import { IConfirmModalContext } from "./ConfirmModalProvider";
-
-export const ConfirmModalContext = createContext<IConfirmModalContext>(
-  undefined as unknown as IConfirmModalContext,
-);
+// This file is kept for backwards compatibility.
+// The confirm modal context is now managed inside ConfirmModal.tsx.
+// Use the `useConfirm` hook exported from ConfirmModal.tsx instead.
+export { useConfirm } from "./ConfirmModal";

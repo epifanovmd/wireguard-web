@@ -1,13 +1,13 @@
-import React from "react";
+import { createContext } from "react";
 
-import { IThemeContext } from "./types";
-import { DEFAULT_LIGHT_THEME } from "./variants";
+export type ThemeMode = "light" | "dark";
 
-export const ThemeContext = React.createContext<IThemeContext>({
-  theme: DEFAULT_LIGHT_THEME,
-  toggleTheme: () => {
-    console.error("ThemeProvider is not rendered!");
-  },
-  isDark: false,
-  isLight: true,
-});
+export interface ThemeContextValue {
+  theme: ThemeMode;
+  isDark: boolean;
+  isLight: boolean;
+  setTheme: (theme: ThemeMode) => void;
+  toggleTheme: () => void;
+}
+
+export const ThemeContext = createContext<ThemeContextValue | null>(null);

@@ -10,7 +10,7 @@ export class ClientConfigurationDataStore
   implements IClientConfigurationDataDataStore
 {
   public holder = new AsyncDataSource<string, string>(clientId =>
-    this._apiService.getWgClientConfiguration(clientId),
+    this._apiService.getPeerConfig(clientId),
   );
 
   constructor(@IApiService() private _apiService: IApiService) {

@@ -5,7 +5,6 @@ import {
 } from "@simplewebauthn/browser";
 import { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
 import { useNavigate } from "@tanstack/react-router";
-import { notification } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
 import { useApi } from "~@api";
@@ -33,12 +32,12 @@ export const usePasskeyAuth = () => {
   const handleRegister = useCallback(
     async (profileId: string) => {
       // Получите challenge и другие данные с сервера
-      const response = await api.generateRegistrationOptions({ profileId });
+      const response = await api.generateRegistrationOptions();
 
       console.log("response", response);
 
       if (response.error) {
-        notification.error({ message: response.error.message });
+        console.error(response.error.message);
       } else if (response.data) {
         // Запустите процесс регистрации
         return await startRegistration({
@@ -47,7 +46,6 @@ export const usePasskeyAuth = () => {
           .then(async data => {
             const isVerified = await api
               .verifyRegistration({
-                profileId,
                 data: data as RegistrationResponseJSON,
               })
               .then(res => !!res.data?.verified)
@@ -84,18 +82,17 @@ export const usePasskeyAuth = () => {
       return;
     }
 
-    const response = await api.generateAuthenticationOptions({ profileId });
+    const response = await api.generateAuthenticationOptions({ login: profileId });
 
     if (response.data) {
       // Запустите процесс аутентификации
       const data = await startAuthentication({ optionsJSON: response.data });
       const verifyResponse = await api.verifyAuthentication({
-        profileId,
         data: data as AuthenticationResponseJSON,
       });
 
       if (verifyResponse.error) {
-        notification.error({ message: verifyResponse.error.message });
+        console.error(verifyResponse.error.message);
       } else if (verifyResponse.data) {
         await restore(verifyResponse.data.tokens);
         navigate({ to: "/" }).then();

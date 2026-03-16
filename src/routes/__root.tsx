@@ -1,29 +1,13 @@
-import { disposer } from "@force-dev/utils";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 
-import { ConfirmModalProvider, Container } from "~@components";
-import { useAppDataStore } from "~@store";
+import { ConfirmModalProvider } from "~@components";
 
-const Component = observer(() => {
-  const { initialize } = useAppDataStore();
-
-  useEffect(() => {
-    const dispose = initialize();
-
-    return () => {
-      disposer(dispose);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+const Component = memo(() => {
   return (
-    <Container>
-      <ConfirmModalProvider>
-        <Outlet />
-      </ConfirmModalProvider>
-    </Container>
+    <ConfirmModalProvider>
+      <Outlet />
+    </ConfirmModalProvider>
   );
 });
 

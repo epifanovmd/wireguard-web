@@ -1,85 +1,84 @@
-import React, { ComponentProps, FC, memo, PropsWithChildren } from "react";
+import React, { FC, memo } from "react";
 
-import { AsyncButton } from "~@components";
+import type { IAsyncButtonProps } from "../button/AsyncButton";
+import { AsyncButton } from "../button/AsyncButton";
 
-interface IProps {
-  clasName?: string;
+export interface ModalFooterProps {
+  className?: string;
   prevTitle?: string;
   cancelTitle?: string;
   submitTitle?: string;
-  onPrev?: () => void;
-  onCancel?: () => void;
-  onSubmit?: () => Promise<void> | void;
+  onPrev?: () => void | Promise<void>;
+  onCancel?: () => void | Promise<void>;
+  onSubmit?: () => void | Promise<void>;
   disabledPrev?: boolean;
   disabledCancel?: boolean;
-  disableSubmit?: boolean;
+  disabledSubmit?: boolean;
   loading?: boolean;
-  prevButtonProps?: ComponentProps<typeof AsyncButton>;
-  cancelButtonProps?: ComponentProps<typeof AsyncButton>;
-  submitButtonProps?: ComponentProps<typeof AsyncButton>;
+  prevButtonProps?: Omit<IAsyncButtonProps, "onClick">;
+  cancelButtonProps?: Omit<IAsyncButtonProps, "onClick">;
+  submitButtonProps?: Omit<IAsyncButtonProps, "onClick">;
 }
 
-export const ModalFooter: FC<PropsWithChildren<IProps>> = memo(
+export const ModalFooter: FC<ModalFooterProps> = memo(
   ({
-    clasName,
-    prevTitle = "Назад",
-    cancelTitle = "Отменить",
-    submitTitle = "Далее",
+    className,
+    prevTitle = "Back",
+    cancelTitle = "Cancel",
+    submitTitle = "Submit",
     onPrev,
     onCancel,
     onSubmit,
     disabledPrev,
     disabledCancel,
-    disableSubmit,
+    disabledSubmit,
     loading,
     prevButtonProps,
     cancelButtonProps,
     submitButtonProps,
   }) => {
     return (
-      <div className={"modal-footer bg-white sticky bottom-0 z-50 mt-3"}>
-        <div className={`flex flex-grow ${clasName}`}>
-          {onPrev && (
+      <div className={`flex items-center gap-2 w-full ${className ?? ""}`}>
+        {onPrev && (
+          <AsyncButton
+            variant="ghost"
+            size="sm"
+            onClick={onPrev}
+            disabled={disabledPrev || loading}
+            className="mr-auto"
+            {...prevButtonProps}
+          >
+            {prevTitle}
+          </AsyncButton>
+        )}
+        <div className={`flex items-center gap-2 ${!onPrev ? "ml-auto" : ""}`}>
+          {onCancel && (
             <AsyncButton
-              color="default"
-              onClick={onPrev}
-              disabled={disabledPrev || loading}
-              className={"mr-auto"}
-              {...prevButtonProps}
+              variant="secondary"
+              size="sm"
+              onClick={onCancel}
+              disabled={disabledCancel || loading}
+              {...cancelButtonProps}
             >
-              {prevTitle}
+              {cancelTitle}
             </AsyncButton>
           )}
-
-          <div className={!onPrev ? "ml-auto" : ""}>
-            {onCancel && (
-              <AsyncButton
-                type={"primary"}
-                danger={true}
-                disabled={disabledCancel || loading}
-                onClick={onCancel}
-                {...cancelButtonProps}
-                className={`!ml-2 ${cancelButtonProps?.className}`}
-              >
-                {cancelTitle}
-              </AsyncButton>
-            )}
-            {onSubmit && (
-              <AsyncButton
-                type={"primary"}
-                loading={loading}
-                disabled={disableSubmit || loading}
-                color="primary"
-                onClick={onSubmit}
-                {...submitButtonProps}
-                className={`!ml-2 ${submitButtonProps?.className}`}
-              >
-                {submitTitle}
-              </AsyncButton>
-            )}
-          </div>
+          {onSubmit && (
+            <AsyncButton
+              variant="primary"
+              size="sm"
+              onClick={onSubmit}
+              disabled={disabledSubmit || loading}
+              loading={loading}
+              {...submitButtonProps}
+            >
+              {submitTitle}
+            </AsyncButton>
+          )}
         </div>
       </div>
     );
   },
 );
+
+ModalFooter.displayName = "ModalFooter";

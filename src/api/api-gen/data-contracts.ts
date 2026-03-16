@@ -10,15 +10,35 @@
  * ---------------------------------------------------------------
  */
 
-export enum AuthenticatorAttachment {
-  CrossPlatform = "cross-platform",
-  Platform = "platform",
+export enum EWgServerStatus {
+  Up = "up",
+  Down = "down",
+  Error = "error",
+  Unknown = "unknown",
+}
+
+export enum AttestationConveyancePreference {
+  Direct = "direct",
+  Enterprise = "enterprise",
+  Indirect = "indirect",
+  None = "none",
 }
 
 export enum UserVerificationRequirement {
   Discouraged = "discouraged",
   Preferred = "preferred",
   Required = "required",
+}
+
+export enum ResidentKeyRequirement {
+  Discouraged = "discouraged",
+  Preferred = "preferred",
+  Required = "required",
+}
+
+export enum AuthenticatorAttachment {
+  CrossPlatform = "cross-platform",
+  Platform = "platform",
 }
 
 /**
@@ -40,118 +60,64 @@ export enum PublicKeyCredentialType {
   PublicKey = "public-key",
 }
 
+export enum EPermissions {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  WgServerView = "wg:server:view",
+  WgServerManage = "wg:server:manage",
+  WgServerControl = "wg:server:control",
+  WgPeerView = "wg:peer:view",
+  WgPeerManage = "wg:peer:manage",
+  WgPeerOwn = "wg:peer:own",
+  WgStatsView = "wg:stats:view",
+  WgStatsExport = "wg:stats:export",
+}
+
 export enum ERole {
   Admin = "admin",
   User = "user",
   Guest = "guest",
 }
 
-export enum EPermissions {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
+export enum EProfileStatus {
+  Online = "online",
+  Offline = "offline",
 }
 
-/** From T, pick a set of properties whose keys are in the union K */
-export interface PickPermissionModelExcludeKeysPasswordHash {
-  id?: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  name?: EPermissions;
-}
-
-export interface IPermissionDto {
-  id?: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  name?: EPermissions;
-}
-
-/**
- * Utility type to extract Attributes of a given Model class.
- *
- * It returns all instance properties defined in the Model, except:
- * - those inherited from Model (intermediate inheritance works),
- * - the ones whose type is a function,
- * - the ones manually excluded using the second parameter.
- * - the ones branded using {@link NonAttribute}
- *
- * It cannot detect whether something is a getter or not, you should use the `Excluded`
- * parameter to exclude getter & setters from the attribute list.
- */
-export interface InferAttributesRole {
-  permissions: IPermissionDto[];
-  id?: string;
-  name?: ERole;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
-export interface IRoleDto {
-  permissions: IPermissionDto[];
-  id?: string;
-  name?: ERole;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
-/** From T, pick a set of properties whose keys are in the union K */
-export interface PickProfileModelExcludeKeysPasswordHash {
-  id?: string;
+export interface ProfileDto {
+  id: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
-  emailVerified?: boolean;
-  phone?: string;
-  roleId?: string;
-  challenge?: string;
   /** @format date-time */
-  createdAt?: string;
+  birthDate?: string | null;
+  gender?: string;
+  status?: string;
   /** @format date-time */
-  updatedAt?: string;
+  lastOnline?: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
 }
 
-export interface IProfileDto {
-  id?: string;
+export interface IProfileUpdateRequestDto {
   firstName?: string;
   lastName?: string;
-  email?: string;
-  emailVerified?: boolean;
-  phone?: string;
-  roleId?: string;
-  challenge?: string;
+  bio?: string;
   /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  role: IRoleDto;
+  birthDate?: string;
+  gender?: string;
+  status?: EProfileStatus;
 }
 
-/** From T, pick a set of properties whose keys are in the union K */
-export interface PickTProfileCreateModelExcludeKeysIdOrPasswordHash {
+export interface PublicProfileDto {
+  id: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
-  phone?: string;
-  roleId?: string;
-  challenge?: string;
-}
-
-export interface IProfileUpdateRequest {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  roleId?: string;
-  challenge?: string;
+  status: EProfileStatus;
+  /** @format date-time */
+  lastOnline?: string;
 }
 
 export interface IProfileListDto {
@@ -161,20 +127,74 @@ export interface IProfileListDto {
   offset?: number;
   /** @format double */
   limit?: number;
-  data: IProfileDto[];
+  data: PublicProfileDto[];
 }
 
-export interface IProfilePrivilegesRequest {
+export interface IPermissionDto {
+  id: string;
+  name: EPermissions;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface IRoleDto {
+  id: string;
+  name: ERole;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  permissions: IPermissionDto[];
+}
+
+export interface UserDto {
+  id: string;
+  email?: string;
+  emailVerified?: boolean;
+  phone?: string;
+  profile?: ProfileDto;
+  role: IRoleDto;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface IUserUpdateRequestDto {
+  email?: string;
+  phone?: string;
+  roleId?: string;
+}
+
+export interface PublicUserDto {
+  userId: string;
+  email: string;
+  profile: PublicProfileDto;
+}
+
+export interface IUserListDto {
+  /** @format double */
+  count?: number;
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  data: PublicUserDto[];
+}
+
+export interface IUserPrivilegesRequestDto {
   roleName: ERole;
   permissions: EPermissions[];
 }
 
-export interface ApiResponse {
+export interface ApiResponseDto {
   message?: string;
   data?: any;
 }
 
-export interface IProfilePassword {
+export interface IUserChangePasswordDto {
   password: string;
 }
 
@@ -183,57 +203,73 @@ export interface ITokensDto {
   refreshToken: string;
 }
 
-export interface IProfileWithTokensDto {
-  id?: string;
-  firstName?: string;
-  lastName?: string;
+export interface IUserWithTokensDto {
+  id: string;
   email?: string;
   emailVerified?: boolean;
   phone?: string;
-  roleId?: string;
-  challenge?: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
+  profile?: ProfileDto;
   role: IRoleDto;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
   tokens: ITokensDto;
 }
 
-/** From T, pick a set of properties whose keys are in the union K */
-export interface PickTProfileCreateModelExcludeKeysPasswordHashOrRoleIdOrChallenge {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-}
-
-export interface ISignUpRequest {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
+export type TSignUpRequestDto = {
   password: string;
-}
+  lastName?: string;
+  firstName?: string;
+} & (
+  | {
+      phone: string;
+      email?: string;
+    }
+  | {
+      phone?: string;
+      email: string;
+    }
+);
 
-export interface ISignInRequest {
+export interface ISignInRequestDto {
   /** Может быть телефоном, email-ом и username-ом */
   login: string;
   password: string;
 }
 
-export interface IProfileLogin {
+export interface IUserLoginRequestDto {
   /** Может быть телефоном, email-ом и username-ом */
   login: string;
 }
 
-export interface IProfileResetPasswordRequest {
+export interface IUserResetPasswordRequestDto {
   password: string;
   token: string;
 }
 
+export interface PublicKeyCredentialRpEntity {
+  name: string;
+  id?: string;
+}
+
+/** https://w3c.github.io/webauthn/#dictdef-publickeycredentialuserentityjson */
+export interface PublicKeyCredentialUserEntityJSON {
+  id: string;
+  name: string;
+  displayName: string;
+}
+
 /** An attempt to communicate that this isn't just any string, but a Base64URL-encoded string */
 export type Base64URLString = string;
+
+/** @format double */
+export type COSEAlgorithmIdentifier = number;
+
+export interface PublicKeyCredentialParameters {
+  alg: COSEAlgorithmIdentifier;
+  type: PublicKeyCredentialType;
+}
 
 /** https://w3c.github.io/webauthn/#dictdef-publickeycredentialdescriptorjson */
 export interface PublicKeyCredentialDescriptorJSON {
@@ -243,29 +279,47 @@ export interface PublicKeyCredentialDescriptorJSON {
   transports?: AuthenticatorTransportFuture[];
 }
 
+export interface AuthenticatorSelectionCriteria {
+  authenticatorAttachment?: AuthenticatorAttachment;
+  requireResidentKey?: boolean;
+  residentKey?: ResidentKeyRequirement;
+  userVerification?: UserVerificationRequirement;
+}
+
 export interface AuthenticationExtensionsClientInputs {
   appid?: string;
   credProps?: boolean;
   hmacCreateSecret?: boolean;
+  minPinLength?: boolean;
 }
 
 /**
- * A variant of PublicKeyCredentialRequestOptions suitable for JSON transmission to the browser to
- * (eventually) get passed into navigator.credentials.get(...) in the browser.
+ * A variant of PublicKeyCredentialCreationOptions suitable for JSON transmission to the browser to
+ * (eventually) get passed into navigator.credentials.create(...) in the browser.
+ *
+ * This should eventually get replaced with official TypeScript DOM types when WebAuthn L3 types
+ * eventually make it into the language:
+ *
+ * https://w3c.github.io/webauthn/#dictdef-publickeycredentialcreationoptionsjson
  */
-export interface PublicKeyCredentialRequestOptionsJSON {
+export interface PublicKeyCredentialCreationOptionsJSON {
+  rp: PublicKeyCredentialRpEntity;
+  /** https://w3c.github.io/webauthn/#dictdef-publickeycredentialuserentityjson */
+  user: PublicKeyCredentialUserEntityJSON;
   /** An attempt to communicate that this isn't just any string, but a Base64URL-encoded string */
   challenge: Base64URLString;
+  pubKeyCredParams: PublicKeyCredentialParameters[];
   /** @format double */
   timeout?: number;
-  rpId?: string;
-  allowCredentials?: PublicKeyCredentialDescriptorJSON[];
-  userVerification?: UserVerificationRequirement;
+  excludeCredentials?: PublicKeyCredentialDescriptorJSON[];
+  authenticatorSelection?: AuthenticatorSelectionCriteria;
+  attestation?: AttestationConveyancePreference;
   extensions?: AuthenticationExtensionsClientInputs;
 }
 
-/** @format double */
-export type COSEAlgorithmIdentifier = number;
+export interface IVerifyRegistrationResponseDto {
+  verified: boolean;
+}
 
 /**
  * A slightly-modified AuthenticatorAttestationResponse to simplify working with ArrayBuffers that
@@ -319,8 +373,7 @@ export interface RegistrationResponseJSON {
   type: PublicKeyCredentialType;
 }
 
-export interface IVerifyRegistrationRequest {
-  profileId: string;
+export interface IVerifyRegistrationRequestDto {
   /**
    * A slightly-modified RegistrationCredential to simplify working with ArrayBuffers that
    * are Base64URL-encoded in the browser so that they can be sent as JSON to the server.
@@ -330,7 +383,27 @@ export interface IVerifyRegistrationRequest {
   data: RegistrationResponseJSON;
 }
 
-export interface IVerifyAuthenticationResponse {
+/**
+ * A variant of PublicKeyCredentialRequestOptions suitable for JSON transmission to the browser to
+ * (eventually) get passed into navigator.credentials.get(...) in the browser.
+ */
+export interface PublicKeyCredentialRequestOptionsJSON {
+  /** An attempt to communicate that this isn't just any string, but a Base64URL-encoded string */
+  challenge: Base64URLString;
+  /** @format double */
+  timeout?: number;
+  rpId?: string;
+  allowCredentials?: PublicKeyCredentialDescriptorJSON[];
+  userVerification?: UserVerificationRequirement;
+  extensions?: AuthenticationExtensionsClientInputs;
+}
+
+export interface IGenerateAuthenticationOptionsRequestDto {
+  /** Email или телефон пользователя */
+  login: string;
+}
+
+export interface IVerifyAuthenticationResponseDto {
   verified: boolean;
   tokens?: ITokensDto;
 }
@@ -375,8 +448,7 @@ export interface AuthenticationResponseJSON {
   type: PublicKeyCredentialType;
 }
 
-export interface IVerifyAuthenticationRequest {
-  profileId: string;
+export interface IVerifyAuthenticationRequestDto {
   /**
    * A slightly-modified AuthenticationCredential to simplify working with ArrayBuffers that
    * are Base64URL-encoded in the browser so that they can be sent as JSON to the server.
@@ -386,207 +458,290 @@ export interface IVerifyAuthenticationRequest {
   data: AuthenticationResponseJSON;
 }
 
-export interface IWireguardPeerStatus {
-  allowedIps: string;
-  latestHandshakeAt?: string;
+export interface WgPeerDto {
+  id: string;
+  serverId: string;
+  userId: string | null;
+  name: string;
+  publicKey: string;
+  hasPresharedKey: boolean;
+  allowedIPs: string;
+  endpoint: string | null;
   /** @format double */
-  transferRx: number;
+  persistentKeepalive: number | null;
+  dns: string | null;
   /** @format double */
-  transferTx: number;
-  /** @format double */
-  persistentKeepalive: number;
+  mtu: number | null;
+  clientAllowedIPs: string;
+  enabled: boolean;
+  /** @format date-time */
+  expiresAt: string | null;
+  description: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
 }
 
-export interface IWgClientsDto {
-  id?: string;
-  serverId?: string;
-  profileId?: string;
-  name?: string;
-  address?: string;
-  allowedIPs?: string;
-  publicKey?: string;
-  privateKey?: string;
-  preSharedKey?: string;
+export interface IWgPeerListDto {
   /** @format double */
-  transferRx?: number;
-  /** @format double */
-  transferTx?: number;
-  /** @format date-time */
-  latestHandshakeAt?: string;
+  count: number;
+  data: WgPeerDto[];
+}
+
+export interface IWgPeerCreateRequestDto {
+  name: string;
+  presharedKey?: boolean;
   /** @format double */
   persistentKeepalive?: number;
+  dns?: string;
+  /** @format double */
+  mtu?: number;
+  clientAllowedIPs?: string;
+  endpoint?: string;
+  description?: string;
+  expiresAt?: string;
   enabled?: boolean;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  profile: IProfileDto;
-  server: IWgServerDto;
 }
 
-/**
- * Utility type to extract Attributes of a given Model class.
- *
- * It returns all instance properties defined in the Model, except:
- * - those inherited from Model (intermediate inheritance works),
- * - the ones whose type is a function,
- * - the ones manually excluded using the second parameter.
- * - the ones branded using {@link NonAttribute}
- *
- * It cannot detect whether something is a getter or not, you should use the `Excluded`
- * parameter to exclude getter & setters from the attribute list.
- */
-export interface InferAttributesWgServer {
-  clients?: IWgClientsDto[];
-  profile?: IProfileDto;
-  id?: string;
-  profileId?: string;
+export interface IWgPeerUpdateRequestDto {
   name?: string;
-  /** @format double */
-  port?: number;
-  privateKey?: string;
-  publicKey?: string;
-  address?: string;
-  createdAt?: string & {
-    undefined?: true;
-  };
-  updatedAt?: string & {
-    undefined?: true;
-  };
-}
-
-export interface IWgServerDto {
-  clients?: IWgClientsDto[];
-  profile?: IProfileDto;
-  id?: string;
-  profileId?: string;
-  name?: string;
-  /** @format double */
-  port?: number;
-  privateKey?: string;
-  publicKey?: string;
-  address?: string;
-  createdAt?: string & {
-    undefined?: true;
-  };
-  updatedAt?: string & {
-    undefined?: true;
-  };
-}
-
-/**
- * Utility type to extract Attributes of a given Model class.
- *
- * It returns all instance properties defined in the Model, except:
- * - those inherited from Model (intermediate inheritance works),
- * - the ones whose type is a function,
- * - the ones manually excluded using the second parameter.
- * - the ones branded using {@link NonAttribute}
- *
- * It cannot detect whether something is a getter or not, you should use the `Excluded`
- * parameter to exclude getter & setters from the attribute list.
- */
-export interface InferAttributesWgClient {
-  id?: string;
-  serverId?: string;
-  profileId?: string;
-  name?: string;
-  address?: string;
   allowedIPs?: string;
-  publicKey?: string;
-  privateKey?: string;
-  preSharedKey?: string;
+  userId?: string | null;
+  /** true — сгенерировать новый, false/null — удалить существующий */
+  presharedKey?: boolean | null;
   /** @format double */
-  transferRx?: number;
+  persistentKeepalive?: number | null;
+  dns?: string | null;
   /** @format double */
-  transferTx?: number;
-  /** @format date-time */
-  latestHandshakeAt?: string;
-  /** @format double */
-  persistentKeepalive?: number;
+  mtu?: number | null;
+  clientAllowedIPs?: string;
+  endpoint?: string | null;
+  description?: string | null;
+  expiresAt?: string | null;
   enabled?: boolean;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
 }
 
-export interface IWgClientListDto {
+export interface WgServerDto {
+  id: string;
+  userId: string | null;
+  name: string;
+  interface: string;
   /** @format double */
-  count?: number;
+  listenPort: number;
+  publicKey: string;
+  address: string;
+  dns: string | null;
+  endpoint: string | null;
   /** @format double */
+  mtu: number | null;
+  preUp: string | null;
+  preDown: string | null;
+  postUp: string | null;
+  postDown: string | null;
+  status: EWgServerStatus;
+  enabled: boolean;
+  description: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface IWgServerListDto {
+  /** @format double */
+  count: number;
+  data: WgServerDto[];
+}
+
+export interface IWgServerCreateRequestDto {
+  userId?: string | null;
+  name: string;
+  interface: string;
+  /** @format double */
+  listenPort: number;
+  address: string;
+  dns?: string;
+  endpoint?: string;
+  /** @format double */
+  mtu?: number;
+  preUp?: string;
+  preDown?: string;
+  postUp?: string;
+  postDown?: string;
+  description?: string;
+  enabled?: boolean;
+}
+
+export interface IWgServerUpdateRequestDto {
+  name?: string;
+  /** @format double */
+  listenPort?: number;
+  address?: string;
+  dns?: string;
+  endpoint?: string;
+  /** @format double */
+  mtu?: number;
+  preUp?: string | null;
+  preDown?: string | null;
+  postUp?: string | null;
+  postDown?: string | null;
+  description?: string;
+  enabled?: boolean;
+}
+
+export interface IWgServerStatusDto {
+  serverId: string;
+  interface: string;
+  status: EWgServerStatus;
+  /** @format double */
+  listenPort: number;
+  /** @format double */
+  peerCount: number;
+  /** @format double */
+  activePeerCount: number;
+  publicKey: string;
+}
+
+export interface WgTrafficStatDto {
+  id: string;
+  peerId: string;
+  serverId: string;
+  /** @format double */
+  rxBytes: number;
+  /** @format double */
+  txBytes: number;
+  /** @format date-time */
+  lastHandshake: string | null;
+  endpoint: string | null;
+  /** @format date-time */
+  timestamp: string;
+}
+
+export interface WgSpeedSampleDto {
+  id: string;
+  peerId: string;
+  serverId: string;
+  /** @format double */
+  rxSpeedBps: number;
+  /** @format double */
+  txSpeedBps: number;
+  isActive: boolean;
+  /** @format date-time */
+  timestamp: string;
+}
+
+export interface IWgPeerStatsResponse {
+  peerId: string;
+  traffic: WgTrafficStatDto[];
+  speed: WgSpeedSampleDto[];
+  latest: {
+    /** @format date-time */
+    lastHandshake: string | null;
+    isActive: boolean;
+    /** @format double */
+    txSpeedBps: number;
+    /** @format double */
+    rxSpeedBps: number;
+    /** @format double */
+    txBytes: number;
+    /** @format double */
+    rxBytes: number;
+  };
+}
+
+export interface IWgServerStatsResponse {
+  serverId: string;
+  traffic: WgTrafficStatDto[];
+  speed: WgSpeedSampleDto[];
+}
+
+export interface GetProfilesParams {
+  /**
+   * Смещение для пагинации
+   * @format double
+   */
   offset?: number;
-  /** @format double */
+  /**
+   * Лимит количества возвращаемых профилей
+   * @format double
+   */
   limit?: number;
-  data: IWgClientsDto[];
 }
 
-export interface IWgClientCreateRequest {
-  name?: string;
-  serverId?: string;
-  allowedIPs?: string;
-  /** @format double */
-  persistentKeepalive?: number;
-  enabled?: boolean;
-}
-
-export interface IWgClientUpdateRequest {
-  name?: string;
-  allowedIPs?: string;
-  /** @format double */
-  persistentKeepalive?: number;
-  enabled?: boolean;
-}
-
-export interface IWgServersListDto {
-  /** @format double */
-  count?: number;
-  /** @format double */
+export interface GetUsersParams {
+  /**
+   * Смещение для пагинации
+   * @format double
+   */
   offset?: number;
-  /** @format double */
-  limit?: number;
-  data: IWgServerDto[];
-}
-
-export interface GetAllProfilesParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
+  /**
+   * Лимит количества возвращаемых пользователей
+   * @format double
+   */
   limit?: number;
 }
 
+/** Тело запроса с refresh токеном */
 export interface RefreshPayload {
   refreshToken: string;
 }
 
-export interface GenerateRegistrationOptionsPayload {
-  profileId: string;
+export interface AssignPeerParams {
+  userId: string;
+  id: string;
 }
 
-export interface GenerateAuthenticationOptionsPayload {
-  profileId: string;
+export interface GetPeerTrafficParams {
+  /** ISO date string (default: 24h ago) */
+  from?: string;
+  /** ISO date string (default: now) */
+  to?: string;
+  /** Peer ID */
+  peerId: string;
 }
 
-export interface CheckStatusParams {
-  publicKey: string;
-  interfaceName: string;
+export interface GetPeerSpeedParams {
+  /** ISO date string (default: 1h ago) */
+  from?: string;
+  /** ISO date string (default: now) */
+  to?: string;
+  /** Peer ID */
+  peerId: string;
 }
 
-export interface GetWgClientsParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
+export interface GetPeerStatsParams {
+  /** ISO date string (default: 24h ago) */
+  from?: string;
+  /** ISO date string (default: now) */
+  to?: string;
+  /** Peer ID */
+  peerId: string;
+}
+
+export interface GetServerTrafficParams {
+  /** ISO date string */
+  from?: string;
+  /** ISO date string */
+  to?: string;
+  /** Server ID */
   serverId: string;
 }
 
-export interface GetWgServersParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
+export interface GetServerSpeedParams {
+  /** ISO date string */
+  from?: string;
+  /** ISO date string */
+  to?: string;
+  /** Server ID */
+  serverId: string;
 }
 
-export interface CreateWgServerPayload {
-  name: string;
+export interface GetServerStatsParams {
+  /** ISO date string */
+  from?: string;
+  /** ISO date string */
+  to?: string;
+  /** Server ID */
+  serverId: string;
 }

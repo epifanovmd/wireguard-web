@@ -1,0 +1,75 @@
+import React, { FC, useEffect, useState } from "react";
+
+import { useApi } from "~@api/hooks";
+import { Button, Modal, Spinner } from "~@components";
+import { usePeersDataStore } from "~@store";
+
+interface QrCodeModalProps {
+  peerId: string;
+  peerName: string;
+  open: boolean;
+  onClose: () => void;
+}
+
+export const QrCodeModal: FC<QrCodeModalProps> = ({ peerId, peerName, open, onClose }) => {
+  const api = useApi();
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open && peerId) {
+      setLoading(true);
+      api.getPeerQrCode(peerId).then(res => {
+        if (res.data) {
+          setQrUrl((res.data as any).dataUrl ?? null);
+        }
+        setLoading(false);
+      });
+    }
+  }, [open, peerId]);
+
+  const handleDownload = async () => {
+    const res = await api.getPeerConfig(peerId);
+    if (res.data) {
+      const blob = new Blob([res.data as any], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${peerName}.conf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`QR Code — ${peerName}`}
+      footer={
+        <>
+          <Button variant="secondary" onClick={handleDownload}>Download .conf</Button>
+          <Button onClick={onClose}>Close</Button>
+        </>
+      }
+    >
+      <div className="flex flex-col items-center gap-4 py-4">
+        {loading ? (
+          <div className="w-48 h-48 flex items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        ) : qrUrl ? (
+          <img src={qrUrl} alt="QR Code" className="w-48 h-48 rounded-lg border border-[var(--border-color)]" />
+        ) : (
+          <div className="w-48 h-48 flex items-center justify-center bg-[var(--bg-surface-2)] rounded-lg">
+            <p className="text-sm text-[var(--text-muted)]">QR code unavailable</p>
+          </div>
+        )}
+        <div className="text-center">
+          <p className="text-sm text-[var(--text-secondary)]">Scan this QR code with the WireGuard app</p>
+          <p className="text-xs text-[var(--text-muted)] mt-1">Available for iOS, Android, Windows, macOS, Linux</p>
+        </div>
+      </div>
+    </Modal>
+  );
+};

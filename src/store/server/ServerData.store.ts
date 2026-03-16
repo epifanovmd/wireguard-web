@@ -1,11 +1,10 @@
 import { DataHolder } from "@force-dev/utils";
-import { notification } from "antd";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { IApiService } from "~@api";
 import {
-  CreateWgServerPayload,
-  IWgServerDto,
+  IWgServerCreateRequestDto,
+  WgServerDto,
 } from "~@api/api-gen/data-contracts";
 import { ServerModel } from "~@models";
 
@@ -13,7 +12,7 @@ import { IServerDataStore } from "./ServerData.types";
 
 @IServerDataStore()
 export class ServerDataStore implements IServerDataStore {
-  public holder = new DataHolder<IWgServerDto[]>();
+  public holder = new DataHolder<WgServerDto[]>();
   public enabled = false;
 
   constructor(@IApiService() private _apiService: IApiService) {
@@ -32,8 +31,8 @@ export class ServerDataStore implements IServerDataStore {
     return this.holder.isLoading;
   }
 
-  async createServer(data: CreateWgServerPayload) {
-    const server = await this._apiService.createWgServer(data);
+  async createServer(data: IWgServerCreateRequestDto) {
+    const server = await this._apiService.createServer(data);
 
     if (server.data) {
       this.holder.setData([...this.data, server.data]);
@@ -45,10 +44,10 @@ export class ServerDataStore implements IServerDataStore {
   }
 
   async deleteServer(serverId: string) {
-    const res = await this._apiService.deleteWgServer(serverId);
+    const res = await this._apiService.deleteServer(serverId);
 
     if (res.error) {
-      notification.error({ message: res.error.message });
+      console.error(res.error.message);
       throw res.error;
     }
 
@@ -59,7 +58,7 @@ export class ServerDataStore implements IServerDataStore {
     const res = await this._apiService.getServerStatus(serverId);
 
     if (res.error) {
-      notification.error({ message: res.error.message });
+      console.error(res.error.message);
       throw res.error;
     } else {
       runInAction(() => {
@@ -73,7 +72,7 @@ export class ServerDataStore implements IServerDataStore {
 
     if (res.error) {
       if (!res.isCanceled) {
-        notification.error({ message: res.error.message });
+        console.error(res.error.message);
       }
     } else {
       runInAction(() => {
@@ -87,7 +86,7 @@ export class ServerDataStore implements IServerDataStore {
 
     if (res.error) {
       if (!res.isCanceled) {
-        notification.error({ message: res.error.message });
+        console.error(res.error.message);
       }
     } else {
       runInAction(() => {
@@ -98,16 +97,18 @@ export class ServerDataStore implements IServerDataStore {
 
   async onRefresh() {
     this.holder.setLoading();
-    const res = await this._apiService.getWgServers({});
+    const res = await this._apiService.getServers();
 
     if (res.error) {
       if (!res.isCanceled) {
         this.holder.setError(res.error.toString());
       }
     } else if (res.data) {
-      this.holder.setData(res.data.data);
+      const data = Array.isArray(res.data) ? res.data : (res.data as any).data ?? [];
 
-      return res.data.data;
+      this.holder.setData(data);
+
+      return data;
     }
 
     return undefined;

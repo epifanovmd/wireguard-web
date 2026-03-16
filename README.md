@@ -3,7 +3,6 @@
 ##### Stack:
   - Typescript
   - React
-  - Styled Components
   - Vite
 
 ### Installation

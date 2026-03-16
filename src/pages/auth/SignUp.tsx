@@ -1,119 +1,72 @@
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { typedFormField } from "@force-dev/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
-import React, { useCallback } from "react";
-import { FormProvider } from "react-hook-form";
-import styled from "styled-components";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { AsyncButton, FieldWrapper, Input } from "~@components";
+import { AuthLayout, Button, Card, Input } from "~@components";
+import { useSessionDataStore } from "~@store";
 
-import { useSignUpVM } from "./hooks";
-import { TSignUpForm } from "./validations";
+const schema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Min 6 characters"),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+type FormData = z.infer<typeof schema>;
 
-const Field = typedFormField<TSignUpForm>();
-
-export const SignUpPage = observer(() => {
-  const { form, handleSignUp } = useSignUpVM();
+export const SignUp = observer(() => {
+  const session = useSessionDataStore();
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onBack = useCallback(() => {
-    navigate({ to: "/auth/signIn" }).then();
-  }, [navigate]);
+  const onSubmit = async (data: FormData) => {
+    await session.signUp({
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+    });
+    if (session.isAuthorized) navigate({ to: "/" });
+  };
 
   return (
-    <Wrap>
-      <FormProvider {...form}>
-        <Form>
-          <div className={"flex items-center mb-4"}>
-            <ArrowLeftOutlined
-              className={"p-1 mr-2 cursor-pointer"}
-              onClick={onBack}
-            />
-            <div className={"text-xl"}>{"Регистрация"}</div>
+    <AuthLayout>
+      <Card>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-[var(--text-primary)]">
+            Create account
+          </h2>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="First name" {...register("firstName")} />
+            <Input label="Last name" {...register("lastName")} />
           </div>
-
-          <Field
-            name={"login"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input
-                  placeholder={"Email"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  value={value}
-                  onChange={onChange}
-                  autoComplete={"email"}
-                />
-              </FieldWrapper>
-            )}
+          <Input
+            label="Email"
+            type="email"
+            required
+            error={errors.email?.message}
+            {...register("email")}
           />
-
-          <Field
-            name={"password"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input.Password
-                  placeholder={"Пароль"}
-                  type={"password"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  value={value}
-                  onChange={onChange}
-                  autoComplete={"new-password"}
-                />
-              </FieldWrapper>
-            )}
+          <Input
+            label="Password"
+            type="password"
+            required
+            error={errors.password?.message}
+            {...register("password")}
           />
-          <Field
-            name={"confirmPassword"}
-            render={({
-              field: { onChange, value },
-              fieldState: { invalid, error },
-            }) => (
-              <FieldWrapper error={error}>
-                <Input.Password
-                  placeholder={"Подтверждение пароля"}
-                  type={"password"}
-                  status={invalid ? "error" : undefined}
-                  className={"mt-2"}
-                  value={value}
-                  onChange={onChange}
-                  autoComplete={"new-password"}
-                />
-              </FieldWrapper>
-            )}
-          />
-
-          <div className={"flex justify-end mt-4"}>
-            <AsyncButton onClick={handleSignUp}>
-              {"Зарегистрироваться"}
-            </AsyncButton>
-          </div>
-        </Form>
-      </FormProvider>
-    </Wrap>
+          <Button type="submit" loading={session.isLoading}>
+            Create account
+          </Button>
+        </form>
+      </Card>
+    </AuthLayout>
   );
 });
-
-const Wrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 500px;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 3px 4px 18px 0 rgba(34, 60, 80, 0.2);
-`;

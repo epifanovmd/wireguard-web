@@ -2,13 +2,13 @@ import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
-import { ERole, IProfileDto } from "~@api/api-gen/data-contracts";
+import { ProfileDto } from "~@api/api-gen/data-contracts";
 
 import { IProfileDataStore } from "./ProfileData.types";
 
 @IProfileDataStore({ inSingleton: true })
 export class ProfileDataStore implements IProfileDataStore {
-  public holder = new DataHolder<IProfileDto>();
+  public holder = new DataHolder<ProfileDto>();
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -28,10 +28,6 @@ export class ProfileDataStore implements IProfileDataStore {
 
   get isEmpty() {
     return this.holder.isEmpty;
-  }
-
-  get isAdmin() {
-    return this.holder.d?.role.name === ERole.Admin;
   }
 
   async getProfile() {

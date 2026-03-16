@@ -1,35 +1,30 @@
-import { Form } from "antd";
-import { FormItemProps } from "antd/es/form/FormItem";
-import classNames from "classnames";
+import { Input } from "@mantine/core";
 import React, { FC, memo, PropsWithChildren } from "react";
 import { FieldError } from "react-hook-form";
 
-export interface IFieldWrapperProps extends FormItemProps {
-  error?: FieldError;
+export interface FieldWrapperProps {
+  error?: FieldError | string;
   caption?: string;
+  label?: string;
+  required?: boolean;
+  className?: string;
 }
 
-const _FieldWrapper: FC<PropsWithChildren<IFieldWrapperProps>> = ({
-  error,
-  caption,
-  children,
-  className,
-  ...rest
-}) => {
-  const validateStatus =
-    rest?.validateStatus ?? error?.message ? "error" : "success";
-  const help = rest.help ?? error?.message ?? caption;
+export const FieldWrapper: FC<PropsWithChildren<FieldWrapperProps>> = memo(
+  ({ error, caption, label, required, children, className }) => {
+    const errorMessage = typeof error === "string" ? error : error?.message;
+    const helpText = errorMessage ?? caption;
 
-  return (
-    <Form.Item
-      {...rest}
-      className={classNames("mb-0", className)}
-      validateStatus={validateStatus}
-      help={help}
-    >
-      {children}
-    </Form.Item>
-  );
-};
-
-export const FieldWrapper = memo(_FieldWrapper);
+    return (
+      <Input.Wrapper
+        label={label}
+        error={errorMessage}
+        description={!errorMessage ? helpText : undefined}
+        required={required}
+        className={className}
+      >
+        {children}
+      </Input.Wrapper>
+    );
+  },
+);

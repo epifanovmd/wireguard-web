@@ -21,7 +21,26 @@ const AuthSignInLazyRouteImport = createFileRoute('/auth/signIn')()
 const AuthRecoveryPasswordLazyRouteImport = createFileRoute(
   '/auth/recovery-password',
 )()
-const PrivateCallLazyRouteImport = createFileRoute('/_private/call')()
+const PrivateSettingsLazyRouteImport = createFileRoute('/_private/settings')()
+const PrivateUsersIndexLazyRouteImport = createFileRoute('/_private/users/')()
+const PrivateWireguardStatsLazyRouteImport = createFileRoute(
+  '/_private/wireguard/stats',
+)()
+const PrivateUsersUserIdLazyRouteImport = createFileRoute(
+  '/_private/users/$userId',
+)()
+const PrivateWireguardServersIndexLazyRouteImport = createFileRoute(
+  '/_private/wireguard/servers/',
+)()
+const PrivateWireguardPeersIndexLazyRouteImport = createFileRoute(
+  '/_private/wireguard/peers/',
+)()
+const PrivateWireguardServersServerIdLazyRouteImport = createFileRoute(
+  '/_private/wireguard/servers/$serverId',
+)()
+const PrivateWireguardPeersPeerIdLazyRouteImport = createFileRoute(
+  '/_private/wireguard/peers/$peerId',
+)()
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -62,70 +81,174 @@ const AuthRecoveryPasswordLazyRoute =
   } as any).lazy(() =>
     import('./routes/auth/recovery-password.lazy').then((d) => d.Route),
   )
-const PrivateCallLazyRoute = PrivateCallLazyRouteImport.update({
-  id: '/call',
-  path: '/call',
+const PrivateSettingsLazyRoute = PrivateSettingsLazyRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => PrivateRoute,
-} as any).lazy(() => import('./routes/_private/call.lazy').then((d) => d.Route))
+} as any).lazy(() =>
+  import('./routes/_private/settings.lazy').then((d) => d.Route),
+)
+const PrivateUsersIndexLazyRoute = PrivateUsersIndexLazyRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => PrivateRoute,
+} as any).lazy(() =>
+  import('./routes/_private/users/index.lazy').then((d) => d.Route),
+)
+const PrivateWireguardStatsLazyRoute =
+  PrivateWireguardStatsLazyRouteImport.update({
+    id: '/wireguard/stats',
+    path: '/wireguard/stats',
+    getParentRoute: () => PrivateRoute,
+  } as any).lazy(() =>
+    import('./routes/_private/wireguard/stats.lazy').then((d) => d.Route),
+  )
+const PrivateUsersUserIdLazyRoute = PrivateUsersUserIdLazyRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => PrivateRoute,
+} as any).lazy(() =>
+  import('./routes/_private/users/$userId.lazy').then((d) => d.Route),
+)
+const PrivateWireguardServersIndexLazyRoute =
+  PrivateWireguardServersIndexLazyRouteImport.update({
+    id: '/wireguard/servers/',
+    path: '/wireguard/servers/',
+    getParentRoute: () => PrivateRoute,
+  } as any).lazy(() =>
+    import('./routes/_private/wireguard/servers/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+const PrivateWireguardPeersIndexLazyRoute =
+  PrivateWireguardPeersIndexLazyRouteImport.update({
+    id: '/wireguard/peers/',
+    path: '/wireguard/peers/',
+    getParentRoute: () => PrivateRoute,
+  } as any).lazy(() =>
+    import('./routes/_private/wireguard/peers/index.lazy').then((d) => d.Route),
+  )
+const PrivateWireguardServersServerIdLazyRoute =
+  PrivateWireguardServersServerIdLazyRouteImport.update({
+    id: '/wireguard/servers/$serverId',
+    path: '/wireguard/servers/$serverId',
+    getParentRoute: () => PrivateRoute,
+  } as any).lazy(() =>
+    import('./routes/_private/wireguard/servers/$serverId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+const PrivateWireguardPeersPeerIdLazyRoute =
+  PrivateWireguardPeersPeerIdLazyRouteImport.update({
+    id: '/wireguard/peers/$peerId',
+    path: '/wireguard/peers/$peerId',
+    getParentRoute: () => PrivateRoute,
+  } as any).lazy(() =>
+    import('./routes/_private/wireguard/peers/$peerId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/call': typeof PrivateCallLazyRoute
+  '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/': typeof PrivateIndexLazyRoute
+  '/users/$userId': typeof PrivateUsersUserIdLazyRoute
+  '/wireguard/stats': typeof PrivateWireguardStatsLazyRoute
+  '/users': typeof PrivateUsersIndexLazyRoute
+  '/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
+  '/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
+  '/wireguard/peers': typeof PrivateWireguardPeersIndexLazyRoute
+  '/wireguard/servers': typeof PrivateWireguardServersIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/call': typeof PrivateCallLazyRoute
+  '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/': typeof PrivateIndexLazyRoute
+  '/users/$userId': typeof PrivateUsersUserIdLazyRoute
+  '/wireguard/stats': typeof PrivateWireguardStatsLazyRoute
+  '/users': typeof PrivateUsersIndexLazyRoute
+  '/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
+  '/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
+  '/wireguard/peers': typeof PrivateWireguardPeersIndexLazyRoute
+  '/wireguard/servers': typeof PrivateWireguardServersIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_private': typeof PrivateRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/_private/call': typeof PrivateCallLazyRoute
+  '/_private/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/_private/': typeof PrivateIndexLazyRoute
+  '/_private/users/$userId': typeof PrivateUsersUserIdLazyRoute
+  '/_private/wireguard/stats': typeof PrivateWireguardStatsLazyRoute
+  '/_private/users/': typeof PrivateUsersIndexLazyRoute
+  '/_private/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
+  '/_private/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
+  '/_private/wireguard/peers/': typeof PrivateWireguardPeersIndexLazyRoute
+  '/_private/wireguard/servers/': typeof PrivateWireguardServersIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
     | '/reset-password'
-    | '/call'
+    | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
     | '/auth/signUp'
     | '/'
+    | '/users/$userId'
+    | '/wireguard/stats'
+    | '/users'
+    | '/wireguard/peers/$peerId'
+    | '/wireguard/servers/$serverId'
+    | '/wireguard/peers'
+    | '/wireguard/servers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
     | '/reset-password'
-    | '/call'
+    | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
     | '/auth/signUp'
     | '/'
+    | '/users/$userId'
+    | '/wireguard/stats'
+    | '/users'
+    | '/wireguard/peers/$peerId'
+    | '/wireguard/servers/$serverId'
+    | '/wireguard/peers'
+    | '/wireguard/servers'
   id:
     | '__root__'
     | '/_private'
     | '/auth'
     | '/reset-password'
-    | '/_private/call'
+    | '/_private/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
     | '/auth/signUp'
     | '/_private/'
+    | '/_private/users/$userId'
+    | '/_private/wireguard/stats'
+    | '/_private/users/'
+    | '/_private/wireguard/peers/$peerId'
+    | '/_private/wireguard/servers/$serverId'
+    | '/_private/wireguard/peers/'
+    | '/_private/wireguard/servers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,24 +308,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRecoveryPasswordLazyRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_private/call': {
-      id: '/_private/call'
-      path: '/call'
-      fullPath: '/call'
-      preLoaderRoute: typeof PrivateCallLazyRouteImport
+    '/_private/settings': {
+      id: '/_private/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof PrivateSettingsLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/users/': {
+      id: '/_private/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof PrivateUsersIndexLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/wireguard/stats': {
+      id: '/_private/wireguard/stats'
+      path: '/wireguard/stats'
+      fullPath: '/wireguard/stats'
+      preLoaderRoute: typeof PrivateWireguardStatsLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/users/$userId': {
+      id: '/_private/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof PrivateUsersUserIdLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/wireguard/servers/': {
+      id: '/_private/wireguard/servers/'
+      path: '/wireguard/servers'
+      fullPath: '/wireguard/servers'
+      preLoaderRoute: typeof PrivateWireguardServersIndexLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/wireguard/peers/': {
+      id: '/_private/wireguard/peers/'
+      path: '/wireguard/peers'
+      fullPath: '/wireguard/peers'
+      preLoaderRoute: typeof PrivateWireguardPeersIndexLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/wireguard/servers/$serverId': {
+      id: '/_private/wireguard/servers/$serverId'
+      path: '/wireguard/servers/$serverId'
+      fullPath: '/wireguard/servers/$serverId'
+      preLoaderRoute: typeof PrivateWireguardServersServerIdLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/wireguard/peers/$peerId': {
+      id: '/_private/wireguard/peers/$peerId'
+      path: '/wireguard/peers/$peerId'
+      fullPath: '/wireguard/peers/$peerId'
+      preLoaderRoute: typeof PrivateWireguardPeersPeerIdLazyRouteImport
       parentRoute: typeof PrivateRoute
     }
   }
 }
 
 interface PrivateRouteChildren {
-  PrivateCallLazyRoute: typeof PrivateCallLazyRoute
+  PrivateSettingsLazyRoute: typeof PrivateSettingsLazyRoute
   PrivateIndexLazyRoute: typeof PrivateIndexLazyRoute
+  PrivateUsersUserIdLazyRoute: typeof PrivateUsersUserIdLazyRoute
+  PrivateWireguardStatsLazyRoute: typeof PrivateWireguardStatsLazyRoute
+  PrivateUsersIndexLazyRoute: typeof PrivateUsersIndexLazyRoute
+  PrivateWireguardPeersPeerIdLazyRoute: typeof PrivateWireguardPeersPeerIdLazyRoute
+  PrivateWireguardServersServerIdLazyRoute: typeof PrivateWireguardServersServerIdLazyRoute
+  PrivateWireguardPeersIndexLazyRoute: typeof PrivateWireguardPeersIndexLazyRoute
+  PrivateWireguardServersIndexLazyRoute: typeof PrivateWireguardServersIndexLazyRoute
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
-  PrivateCallLazyRoute: PrivateCallLazyRoute,
+  PrivateSettingsLazyRoute: PrivateSettingsLazyRoute,
   PrivateIndexLazyRoute: PrivateIndexLazyRoute,
+  PrivateUsersUserIdLazyRoute: PrivateUsersUserIdLazyRoute,
+  PrivateWireguardStatsLazyRoute: PrivateWireguardStatsLazyRoute,
+  PrivateUsersIndexLazyRoute: PrivateUsersIndexLazyRoute,
+  PrivateWireguardPeersPeerIdLazyRoute: PrivateWireguardPeersPeerIdLazyRoute,
+  PrivateWireguardServersServerIdLazyRoute:
+    PrivateWireguardServersServerIdLazyRoute,
+  PrivateWireguardPeersIndexLazyRoute: PrivateWireguardPeersIndexLazyRoute,
+  PrivateWireguardServersIndexLazyRoute: PrivateWireguardServersIndexLazyRoute,
 }
 
 const PrivateRouteWithChildren =
