@@ -17,11 +17,122 @@ import {
   useConfirm,
   useToast,
 } from "~@components";
+import { PeerModel } from "~@models";
 import { usePeersDataStore, useServersDataStore } from "~@store";
 
+import { useWgPeer } from "../../../socket";
 import { PeerForm } from "./components/PeerForm";
 import { PeerStatusBadge } from "./components/PeerStatusBadge";
 import { QrCodeModal } from "./components/QrCodeModal";
+
+// ─── PeerRow — subscribes to live socket status per peer ──────────────────────
+
+interface PeerRowProps {
+  peer: PeerModel;
+  loading: string | undefined;
+  onToggle: (id: string, enabled: boolean) => void;
+  onDelete: (id: string, name: string) => void;
+  onView: (id: string) => void;
+  onQr: (id: string, name: string) => void;
+}
+
+const PeerRow: FC<PeerRowProps> = ({
+  peer,
+  loading,
+  onToggle,
+  onDelete,
+  onView,
+  onQr,
+}) => {
+  const { status: liveStatus } = useWgPeer(peer.data.id);
+
+  return (
+    <tr className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] transition-colors">
+      <td className="px-4 py-3">
+        <p className="font-medium text-[var(--text-primary)]">{peer.name}</p>
+        <CopyableText
+          text={peer.data.publicKey}
+          displayText={peer.shortPublicKey}
+          className="mt-0.5 text-[var(--text-muted)]"
+        />
+      </td>
+      <td className="px-4 py-3 font-mono text-xs text-[var(--text-secondary)]">
+        {peer.data.allowedIPs}
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <PeerStatusBadge enabled={peer.enabled} isExpired={peer.isExpired} />
+          {liveStatus?.isActive && (
+            <Badge variant="success" dot>
+              Online
+            </Badge>
+          )}
+        </div>
+        {liveStatus?.endpoint && (
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+            {liveStatus.endpoint}
+          </p>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {peer.data.hasPresharedKey ? (
+          <Badge variant="info" dot>
+            Yes
+          </Badge>
+        ) : (
+          <span className="text-xs text-[var(--text-muted)]">No</span>
+        )}
+      </td>
+      <td className="px-4 py-3 text-xs text-[var(--text-muted)]">
+        {peer.expiresAtFormatted ?? (
+          <span className="text-[var(--text-muted)]">Never</span>
+        )}
+      </td>
+      <td className="px-4 py-3 text-xs text-[var(--text-muted)]">
+        {liveStatus?.lastHandshake
+          ? new Date(liveStatus.lastHandshake).toLocaleString()
+          : peer.createdAtFormatted}
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onQr(peer.data.id, peer.name)}
+          >
+            QR
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            loading={loading === "toggle"}
+            onClick={() => onToggle(peer.data.id, peer.enabled)}
+          >
+            {peer.enabled ? "Disable" : "Enable"}
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onView(peer.data.id)}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-[#ef4444]"
+            loading={loading === "delete"}
+            onClick={() => onDelete(peer.data.id, peer.name)}
+          >
+            Del
+          </Button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
+// ─── PeersList ────────────────────────────────────────────────────────────────
 
 export const PeersList: FC = observer(() => {
   const store = usePeersDataStore();
@@ -46,7 +157,6 @@ export const PeersList: FC = observer(() => {
     if (serverFilter) {
       store.loadPeersByServer(serverFilter);
     } else {
-      // Load all peers by loading from each server
       if (serversStore.servers.length > 0) {
         store.loadPeersByServer(serversStore.servers[0].id);
       }
@@ -177,7 +287,7 @@ export const PeersList: FC = observer(() => {
                       Expires
                     </th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Created
+                      Last handshake
                     </th>
                     <th className="text-right px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                       Actions
@@ -185,102 +295,22 @@ export const PeersList: FC = observer(() => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map(peer => {
-                    const loading = actionLoading[peer.data.id];
-                    return (
-                      <tr
-                        key={peer.data.id}
-                        className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] transition-colors"
-                      >
-                        <td className="px-4 py-3">
-                          <p className="font-medium text-[var(--text-primary)]">
-                            {peer.name}
-                          </p>
-                          <CopyableText
-                            text={peer.data.publicKey}
-                            displayText={peer.shortPublicKey}
-                            className="mt-0.5 text-[var(--text-muted)]"
-                          />
-                        </td>
-                        <td className="px-4 py-3 font-mono text-xs text-[var(--text-secondary)]">
-                          {peer.data.allowedIPs}
-                        </td>
-                        <td className="px-4 py-3">
-                          <PeerStatusBadge
-                            enabled={peer.enabled}
-                            isExpired={peer.isExpired}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          {peer.data.hasPresharedKey ? (
-                            <Badge variant="info" dot>
-                              Yes
-                            </Badge>
-                          ) : (
-                            <span className="text-xs text-[var(--text-muted)]">
-                              No
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-xs text-[var(--text-muted)]">
-                          {peer.expiresAtFormatted ?? (
-                            <span className="text-[var(--text-muted)]">
-                              Never
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-xs text-[var(--text-muted)]">
-                          {peer.createdAtFormatted}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-1">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() =>
-                                setQrPeer({ id: peer.data.id, name: peer.name })
-                              }
-                            >
-                              QR
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              loading={loading === "toggle"}
-                              onClick={() =>
-                                handleToggle(peer.data.id, peer.enabled)
-                              }
-                            >
-                              {peer.enabled ? "Disable" : "Enable"}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() =>
-                                navigate({
-                                  to: "/wireguard/peers/$peerId",
-                                  params: { peerId: peer.data.id },
-                                })
-                              }
-                            >
-                              View
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-[#ef4444]"
-                              loading={loading === "delete"}
-                              onClick={() =>
-                                handleDelete(peer.data.id, peer.name)
-                              }
-                            >
-                              Del
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {filtered.map(peer => (
+                    <PeerRow
+                      key={peer.data.id}
+                      peer={peer}
+                      loading={actionLoading[peer.data.id]}
+                      onToggle={handleToggle}
+                      onDelete={handleDelete}
+                      onView={id =>
+                        navigate({
+                          to: "/wireguard/peers/$peerId",
+                          params: { peerId: id },
+                        })
+                      }
+                      onQr={(id, name) => setQrPeer({ id, name })}
+                    />
+                  ))}
                 </tbody>
               </table>
             </div>

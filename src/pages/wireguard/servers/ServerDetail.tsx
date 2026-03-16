@@ -4,6 +4,8 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -16,12 +18,14 @@ import {
   Drawer,
   PageHeader,
   Spinner,
+  StatCard,
   Tabs,
   useToast,
 } from "~@components";
 import { useServersDataStore, useStatsDataStore } from "~@store";
 
-import { formatBytes } from "../../dashboard";
+import { useWgServer } from "../../../socket";
+import { formatBytes, formatSpeed } from "../../dashboard";
 import { ServerForm } from "./components/ServerForm";
 import { ServerStatusBadge } from "./components/ServerStatusBadge";
 
@@ -36,6 +40,10 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   const toast = useToast();
   const [editOpen, setEditOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState("");
+  const { stats: liveStats, status: liveSocketStatus } = useWgServer(serverId);
+  const [liveSpeedPoints, setLiveSpeedPoints] = useState<
+    { t: string; rx: number; tx: number }[]
+  >([]);
 
   useEffect(() => {
     store.loadServer(serverId).then();
@@ -44,8 +52,24 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverId]);
 
+  useEffect(() => {
+    if (!liveStats) return;
+    const t = new Date().toLocaleTimeString("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    setLiveSpeedPoints(prev => [
+      ...prev.slice(-59),
+      { t, rx: liveStats.rxSpeedBps, tx: liveStats.txSpeedBps },
+    ]);
+  }, [liveStats]);
+
   const server = store.server;
   const liveStatus = store.liveStatus;
+  const effectiveStatus = liveSocketStatus?.status ?? server?.status ?? "unknown";
+  const peerCount = liveSocketStatus?.peerCount ?? liveStatus?.peerCount;
+  const activePeerCount = liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;
 
   if (store.isLoading) {
     return (
@@ -108,7 +132,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
               variant="secondary"
               loading={actionLoading === "start"}
               onClick={() => handleAction("start")}
-              disabled={server.status === "up"}
+              disabled={effectiveStatus === "up"}
             >
               Start
             </Button>
@@ -117,7 +141,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
               variant="secondary"
               loading={actionLoading === "stop"}
               onClick={() => handleAction("stop")}
-              disabled={server.status === "down"}
+              disabled={effectiveStatus === "down"}
             >
               Stop
             </Button>
@@ -140,7 +164,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
               Status
             </p>
-            <ServerStatusBadge status={server.status} />
+            <ServerStatusBadge status={effectiveStatus} />
           </Card>
           <Card padding="md">
             <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
@@ -155,7 +179,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
               Total peers
             </p>
             <p className="text-2xl font-bold text-[var(--text-primary)]">
-              {liveStatus?.peerCount ?? "—"}
+              {peerCount ?? "—"}
             </p>
           </Card>
           <Card padding="md">
@@ -163,20 +187,61 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
               Active peers
             </p>
             <p className="text-2xl font-bold text-green-500">
-              {liveStatus?.activePeerCount ?? "—"}
+              {activePeerCount ?? "—"}
             </p>
           </Card>
         </div>
 
+        {/* Live speed stat cards */}
+        {liveStats && (
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+            <StatCard title="RX Speed" value={formatSpeed(liveStats.rxSpeedBps)} subtitle="Download" color="info" />
+            <StatCard title="TX Speed" value={formatSpeed(liveStats.txSpeedBps)} subtitle="Upload" color="success" />
+            <StatCard title="Total RX" value={formatBytes(liveStats.totalRxBytes)} subtitle="Downloaded" color="purple" />
+            <StatCard title="Total TX" value={formatBytes(liveStats.totalTxBytes)} subtitle="Uploaded" color="warning" />
+          </div>
+        )}
+
         <Tabs
           items={[
             {
+              key: "live",
+              label: "Live speed",
+              children: (
+                <Card title="Live speed" subtitle="Real-time RX / TX">
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height={192}>
+                      <LineChart data={liveSpeedPoints}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                        <XAxis dataKey="t" tick={{ fontSize: 11, fill: "var(--text-muted)" }} />
+                        <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickFormatter={v => formatSpeed(v)} />
+                        <Tooltip
+                          contentStyle={{ background: "var(--bg-surface)", border: "1px solid var(--border-color)", borderRadius: 8, fontSize: 12 }}
+                          formatter={(v: number, name: string) => [formatSpeed(v), name === "rx" ? "Download" : "Upload"]}
+                        />
+                        <Line type="monotone" dataKey="rx" stroke="#6366f1" strokeWidth={2} dot={false} name="rx" />
+                        <Line type="monotone" dataKey="tx" stroke="#22c55e" strokeWidth={2} dot={false} name="tx" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex gap-4 mt-2">
+                    <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
+                    </span>
+                  </div>
+                </Card>
+              ),
+            },
+            {
               key: "overview",
-              label: "Traffic",
+              label: "Traffic history",
               children: (
                 <Card title="Traffic history (24h)">
                   <div className="h-56">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={224}>
                       <AreaChart data={trafficData}>
                         <CartesianGrid
                           strokeDasharray="3 3"

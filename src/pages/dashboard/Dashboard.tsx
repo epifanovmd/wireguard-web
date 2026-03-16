@@ -13,22 +13,14 @@ import {
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { Badge, Card, PageHeader, Spinner, StatCard } from "~@components";
-import { useServersDataStore, useStatsDataStore } from "~@store";
+import { useServersDataStore } from "~@store";
 
-import { IWgSocketService } from "../../socket";
+import { useWgOverview } from "../../socket";
 import { formatSpeed } from "./dashboard.helpers";
 
 export const Dashboard: FC = observer(() => {
   const servers = useServersDataStore();
-  const stats = useStatsDataStore();
-  const [overviewStats, setOverviewStats] = useState({
-    totalServers: 0,
-    activeServers: 0,
-    totalPeers: 0,
-    activePeers: 0,
-    rxSpeedBps: 0,
-    txSpeedBps: 0,
-  });
+  const overview = useWgOverview();
   const [livePoints, setLivePoints] = useState<
     { t: string; rx: number; tx: number }[]
   >([]);
@@ -39,28 +31,17 @@ export const Dashboard: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    let unsub: (() => void) | undefined;
-    try {
-      const wgSocket = IWgSocketService.getInstance();
-      unsub = wgSocket.subscribeOverview({
-        onStats: data => {
-          setOverviewStats(data as any);
-          const t = new Date().toLocaleTimeString("en", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          });
-          setLivePoints(prev => [
-            ...prev.slice(-59),
-            { t, rx: data.rxSpeedBps, tx: data.txSpeedBps },
-          ]);
-        },
-      });
-    } catch {
-      //
-    }
-    return () => unsub?.();
-  }, []);
+    if (!overview) return;
+    const t = new Date().toLocaleTimeString("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    setLivePoints(prev => [
+      ...prev.slice(-59),
+      { t, rx: overview.rxSpeedBps, tx: overview.txSpeedBps },
+    ]);
+  }, [overview]);
 
   const activeServers = servers.servers.filter(
     s => s.status === EWgServerStatus.Up,
@@ -81,21 +62,21 @@ export const Dashboard: FC = observer(() => {
           />
           <StatCard
             title="Total peers"
-            value={overviewStats.totalPeers}
-            subtitle={`${overviewStats.activePeers} active`}
+            value={overview?.totalPeers ?? 0}
+            subtitle={`${overview?.activePeers ?? 0} active`}
             color="success"
             icon={<Zap size={20} />}
           />
           <StatCard
             title="RX Speed"
-            value={formatSpeed(overviewStats.rxSpeedBps)}
+            value={formatSpeed(overview?.rxSpeedBps ?? 0)}
             subtitle="Download speed"
             color="purple"
             icon={<Download size={20} />}
           />
           <StatCard
             title="TX Speed"
-            value={formatSpeed(overviewStats.txSpeedBps)}
+            value={formatSpeed(overview?.txSpeedBps ?? 0)}
             subtitle="Upload speed"
             color="warning"
             icon={<Upload size={20} />}
@@ -105,7 +86,7 @@ export const Dashboard: FC = observer(() => {
         {/* Live speed chart */}
         <Card title="Live speed" subtitle="Real-time download / upload">
           <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={192}>
               <LineChart data={livePoints}>
                 <CartesianGrid
                   strokeDasharray="3 3"

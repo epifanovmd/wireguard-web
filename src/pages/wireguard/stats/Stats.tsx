@@ -222,7 +222,7 @@ export const Stats: FC = observer(() => {
               subtitle="Cumulative bytes transferred over time"
             >
               <div className="h-56">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={224}>
                   <AreaChart data={trafficData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -278,7 +278,7 @@ export const Stats: FC = observer(() => {
               subtitle="Instantaneous transfer speed over time"
             >
               <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={192}>
                   <AreaChart data={speedData}>
                     <CartesianGrid
                       strokeDasharray="3 3"

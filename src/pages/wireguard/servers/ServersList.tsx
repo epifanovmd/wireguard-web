@@ -14,10 +14,116 @@ import {
   useConfirm,
 } from "~@components";
 import { useToast } from "~@components";
+import { ServerModel } from "~@models";
 import { useServersDataStore } from "~@store";
 
+import { useWgServer } from "../../../socket";
 import { ServerForm } from "./components/ServerForm";
 import { ServerStatusBadge } from "./components/ServerStatusBadge";
+
+// ─── ServerCard — subscribes to live socket status per server ─────────────────
+
+interface ServerCardProps {
+  server: ServerModel;
+  loading: string | undefined;
+  onAction: (id: string, action: "start" | "stop" | "restart" | "delete") => void;
+  onView: (id: string) => void;
+}
+
+const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) => {
+  const { status: liveStatus } = useWgServer(server.data.id);
+  const effectiveStatus = liveStatus?.status ?? server.data.status;
+  const isDown = effectiveStatus === "down" || effectiveStatus === "error";
+
+  return (
+    <Card padding="md" className="hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="font-semibold text-[var(--text-primary)] truncate">
+              {server.name}
+            </h3>
+            <ServerStatusBadge status={effectiveStatus} />
+            {!server.data.enabled && (
+              <Badge variant="warning">Disabled</Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--text-muted)]">
+            <span className="font-mono">{server.data.interface}</span>
+            <span>·</span>
+            <span>:{server.data.listenPort}</span>
+            {server.data.address && (
+              <>
+                <span>·</span>
+                <span>{server.data.address}</span>
+              </>
+            )}
+            {liveStatus && (
+              <>
+                <span>·</span>
+                <span>{liveStatus.activePeerCount}/{liveStatus.peerCount} peers</span>
+              </>
+            )}
+          </div>
+          {server.data.endpoint && (
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              {server.data.endpoint}
+            </p>
+          )}
+          {server.data.description && (
+            <p className="text-xs text-[var(--text-secondary)] mt-1 truncate">
+              {server.data.description}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 mt-4 flex-wrap">
+        {isDown ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            loading={loading === "start"}
+            onClick={() => onAction(server.data.id, "start")}
+          >
+            Start
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            variant="secondary"
+            loading={loading === "stop"}
+            onClick={() => onAction(server.data.id, "stop")}
+          >
+            Stop
+          </Button>
+        )}
+        <Button
+          size="sm"
+          variant="secondary"
+          loading={loading === "restart"}
+          onClick={() => onAction(server.data.id, "restart")}
+        >
+          Restart
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => onView(server.data.id)}>
+          View
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="text-[#ef4444]"
+          loading={loading === "delete"}
+          onClick={() => onAction(server.data.id, "delete")}
+        >
+          Delete
+        </Button>
+      </div>
+    </Card>
+  );
+};
+
+// ─── ServersList ──────────────────────────────────────────────────────────────
 
 export const ServersList: FC = observer(() => {
   const store = useServersDataStore();
@@ -25,9 +131,7 @@ export const ServersList: FC = observer(() => {
   const confirm = useConfirm();
   const toast = useToast();
   const [createOpen, setCreateOpen] = useState(false);
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
-    {},
-  );
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
 
   useEffect(() => {
     store.loadServers().then();
@@ -95,104 +199,20 @@ export const ServersList: FC = observer(() => {
           />
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            {store.models.map(server => {
-              const loading = actionLoading[server.data.id];
-              return (
-                <Card
-                  key={server.data.id}
-                  padding="md"
-                  className="hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-[var(--text-primary)] truncate">
-                          {server.name}
-                        </h3>
-                        <ServerStatusBadge status={server.statusLabel} />
-                        {!server.data.enabled && (
-                          <Badge variant="warning">Disabled</Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--text-muted)]">
-                        <span className="font-mono">
-                          {server.data.interface}
-                        </span>
-                        <span>·</span>
-                        <span>:{server.data.listenPort}</span>
-                        {server.data.address && (
-                          <>
-                            <span>·</span>
-                            <span>{server.data.address}</span>
-                          </>
-                        )}
-                      </div>
-                      {server.data.endpoint && (
-                        <p className="text-xs text-[var(--text-muted)] mt-1">
-                          {server.data.endpoint}
-                        </p>
-                      )}
-                      {server.data.description && (
-                        <p className="text-xs text-[var(--text-secondary)] mt-1 truncate">
-                          {server.data.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 mt-4 flex-wrap">
-                    {server.isDown || server.isError ? (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        loading={loading === "start"}
-                        onClick={() => handleAction(server.data.id, "start")}
-                      >
-                        Start
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        loading={loading === "stop"}
-                        onClick={() => handleAction(server.data.id, "stop")}
-                      >
-                        Stop
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      loading={loading === "restart"}
-                      onClick={() => handleAction(server.data.id, "restart")}
-                    >
-                      Restart
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() =>
-                        navigate({
-                          to: "/wireguard/servers/$serverId",
-                          params: { serverId: server.data.id },
-                        })
-                      }
-                    >
-                      View
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-[#ef4444]"
-                      loading={loading === "delete"}
-                      onClick={() => handleAction(server.data.id, "delete")}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </Card>
-              );
-            })}
+            {store.models.map(server => (
+              <ServerCard
+                key={server.data.id}
+                server={server}
+                loading={actionLoading[server.data.id]}
+                onAction={handleAction}
+                onView={id =>
+                  navigate({
+                    to: "/wireguard/servers/$serverId",
+                    params: { serverId: id },
+                  })
+                }
+              />
+            ))}
           </div>
         )}
       </div>
