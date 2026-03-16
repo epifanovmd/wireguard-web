@@ -6,7 +6,7 @@ import {
   IUserUpdateRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
-import { UserModel } from "~@models";
+import { PublicUserModel, UserModel } from "~@models";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();
 
@@ -14,7 +14,7 @@ export interface IUsersDataStore {
   listHolder: DataHolder<IUserListDto>;
   userHolder: DataHolder<UserDto>;
   users: any[];
-  models: UserModel[];
+  models: PublicUserModel[];
   total: number;
   isLoading: boolean;
   user: UserDto | undefined;

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -37,7 +37,6 @@ export const SignIn = observer(() => {
     }
   };
 
-  const onForgotPassword = () => navigate({ to: "/auth/recovery-password" });
   const onSuccess = () => navigate({ to: "/" });
 
   return (
@@ -85,13 +84,12 @@ export const SignIn = observer(() => {
           />
 
           <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onForgotPassword}
+            <Link
               className="text-sm text-[#6366f1] hover:underline"
+              to={"/auth/recovery-password"}
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           <Button type="submit" loading={session.isLoading}>

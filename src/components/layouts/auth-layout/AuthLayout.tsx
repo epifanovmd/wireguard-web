@@ -15,7 +15,9 @@ export const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
             <ShieldCheck className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-[var(--text-primary)] leading-none">WireGuard</h1>
+            <p className="text-3xl mb-1 font-bold text-[var(--text-primary)] leading-none">
+              WireGuard
+            </p>
             <p className="text-xs text-[var(--text-muted)]">Admin Panel</p>
           </div>
         </div>

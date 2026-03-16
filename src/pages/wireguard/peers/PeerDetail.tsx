@@ -137,14 +137,14 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             <div className="flex items-center gap-1">
               <button
                 title="QR / Config"
-                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
                 onClick={() => setQrOpen(true)}
               >
                 <QrCode size={17} />
               </button>
               <button
                 title={peer.enabled ? "Disable" : "Enable"}
-                className={`p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
                 disabled={toggling}
                 onClick={handleToggle}
               >
@@ -152,14 +152,14 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               </button>
               <button
                 title="Edit"
-                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
                 onClick={() => setEditOpen(true)}
               >
                 <Pencil size={17} />
               </button>
               <button
                 title="Delete"
-                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
                 onClick={async () => {
                   const ok = await confirm({
                     title: "Delete peer",
@@ -189,7 +189,9 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               isExpired={model.isExpired}
             />
             {(liveStatus?.isActive ?? false) && (
-              <Badge variant="success" dot>Connected</Badge>
+              <Badge variant="success" dot>
+                Connected
+              </Badge>
             )}
             {peer.hasPresharedKey && (
               <Badge variant="info" dot>
@@ -206,7 +208,8 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             )}
             {liveStatus?.lastHandshake && (
               <span className="text-xs text-[var(--text-muted)]">
-                Last handshake: {new Date(liveStatus.lastHandshake).toLocaleTimeString()}
+                Last handshake:{" "}
+                {new Date(liveStatus.lastHandshake).toLocaleTimeString()}
               </span>
             )}
           </div>
@@ -227,13 +230,17 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             />
             <StatCard
               title="RX Speed"
-              value={formatSpeed(liveStats?.rxSpeedBps ?? latest?.rxSpeedBps ?? 0)}
+              value={formatSpeed(
+                liveStats?.rxSpeedBps ?? latest?.rxSpeedBps ?? 0,
+              )}
               subtitle="Download speed"
               color="purple"
             />
             <StatCard
               title="TX Speed"
-              value={formatSpeed(liveStats?.txSpeedBps ?? latest?.txSpeedBps ?? 0)}
+              value={formatSpeed(
+                liveStats?.txSpeedBps ?? latest?.txSpeedBps ?? 0,
+              )}
               subtitle="Upload speed"
               color="warning"
             />
@@ -249,24 +256,57 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                     <div className="h-48">
                       <ResponsiveContainer width="100%" height={192}>
                         <LineChart data={liveSpeedPoints}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                          <XAxis dataKey="t" tick={{ fontSize: 11, fill: "var(--text-muted)" }} />
-                          <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickFormatter={v => formatSpeed(v)} />
-                          <Tooltip
-                            contentStyle={{ background: "var(--bg-surface)", border: "1px solid var(--border-color)", borderRadius: 8, fontSize: 12 }}
-                            formatter={(v: number, name: string) => [formatSpeed(v), name === "rx" ? "Download" : "Upload"]}
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="var(--border-color)"
                           />
-                          <Line type="monotone" dataKey="rx" stroke="#6366f1" strokeWidth={2} dot={false} name="rx" />
-                          <Line type="monotone" dataKey="tx" stroke="#22c55e" strokeWidth={2} dot={false} name="tx" />
+                          <XAxis
+                            dataKey="t"
+                            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                            tickFormatter={v => formatSpeed(v)}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              background: "var(--bg-surface)",
+                              border: "1px solid var(--border-color)",
+                              borderRadius: 8,
+                              fontSize: 12,
+                            }}
+                            formatter={(v: number, name: string) => [
+                              formatSpeed(v),
+                              name === "rx" ? "Download" : "Upload",
+                            ]}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="rx"
+                            stroke="#6366f1"
+                            strokeWidth={2}
+                            dot={false}
+                            name="rx"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="tx"
+                            stroke="#22c55e"
+                            strokeWidth={2}
+                            dot={false}
+                            name="tx"
+                          />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
                     <div className="flex gap-4 mt-2">
                       <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                        <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
+                        <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
+                        Download
                       </span>
                       <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                        <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
+                        <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
+                        Upload
                       </span>
                     </div>
                   </Card>

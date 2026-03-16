@@ -5,8 +5,7 @@ import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
-import { Button, Drawer, Input, Select } from "~@components";
-import { useToast } from "~@components";
+import { Button, Input, Modal, Select, useToast } from "~@components";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
 
@@ -32,7 +31,7 @@ interface CreateUserDrawerProps {
   onCreated: () => void;
 }
 
-export const CreateUserDrawer: FC<CreateUserDrawerProps> = ({
+export const CreateUserModal: FC<CreateUserDrawerProps> = ({
   open,
   onClose,
   onCreated,
@@ -79,10 +78,11 @@ export const CreateUserDrawer: FC<CreateUserDrawerProps> = ({
   };
 
   return (
-    <Drawer
+    <Modal
       open={open}
       onClose={onClose}
       title="Create user"
+      size="lg"
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>
@@ -138,6 +138,6 @@ export const CreateUserDrawer: FC<CreateUserDrawerProps> = ({
           <PermissionsEditor value={permissions} onChange={setPermissions} />
         </div>
       </form>
-    </Drawer>
+    </Modal>
   );
 };

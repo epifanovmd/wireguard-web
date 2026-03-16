@@ -8,7 +8,7 @@ import {
   IUserUpdateRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
-import { UserModel } from "~@models";
+import { PublicUserModel, UserModel } from "~@models";
 
 import { IUsersDataStore } from "./UsersData.types";
 
@@ -32,7 +32,7 @@ export class UsersDataStore implements IUsersDataStore {
   }
 
   get models() {
-    return this.users.map(u => new UserModel(u as unknown as UserDto));
+    return this.users.map(u => new PublicUserModel(u));
   }
 
   get isLoading() {

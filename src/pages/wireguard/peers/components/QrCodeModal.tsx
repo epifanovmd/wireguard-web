@@ -11,7 +11,12 @@ interface QrCodeModalProps {
   onClose: () => void;
 }
 
-export const QrCodeModal: FC<QrCodeModalProps> = ({ peerId, peerName, open, onClose }) => {
+export const QrCodeModal: FC<QrCodeModalProps> = ({
+  peerId,
+  peerName,
+  open,
+  onClose,
+}) => {
   const api = useApi();
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,6 +31,7 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({ peerId, peerName, open, onCl
         setLoading(false);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, peerId]);
 
   const handleDownload = async () => {
@@ -48,7 +54,9 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({ peerId, peerName, open, onCl
       title={`QR Code — ${peerName}`}
       footer={
         <>
-          <Button variant="secondary" onClick={handleDownload}>Download .conf</Button>
+          <Button variant="secondary" onClick={handleDownload}>
+            Download .conf
+          </Button>
           <Button onClick={onClose}>Close</Button>
         </>
       }
@@ -59,15 +67,25 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({ peerId, peerName, open, onCl
             <Spinner size="lg" />
           </div>
         ) : qrUrl ? (
-          <img src={qrUrl} alt="QR Code" className="w-48 h-48 rounded-lg border border-[var(--border-color)]" />
+          <img
+            src={qrUrl}
+            alt="QR Code"
+            className="w-48 h-48 rounded-lg border border-[var(--border-color)]"
+          />
         ) : (
           <div className="w-48 h-48 flex items-center justify-center bg-[var(--bg-surface-2)] rounded-lg">
-            <p className="text-sm text-[var(--text-muted)]">QR code unavailable</p>
+            <p className="text-sm text-[var(--text-muted)]">
+              QR code unavailable
+            </p>
           </div>
         )}
         <div className="text-center">
-          <p className="text-sm text-[var(--text-secondary)]">Scan this QR code with the WireGuard app</p>
-          <p className="text-xs text-[var(--text-muted)] mt-1">Available for iOS, Android, Windows, macOS, Linux</p>
+          <p className="text-sm text-[var(--text-secondary)]">
+            Scan this QR code with the WireGuard app
+          </p>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Available for iOS, Android, Windows, macOS, Linux
+          </p>
         </div>
       </div>
     </Modal>

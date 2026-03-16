@@ -1,7 +1,4 @@
-import {
-  Skeleton,
-  Table as MantineTable,
-} from "@mantine/core";
+import { Skeleton, Table as MantineTable } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 import { Empty } from "../empty/Empty";
@@ -32,7 +29,11 @@ export interface TableProps<T = any> {
   skeletonRows?: number;
 }
 
-function getRowKey<T>(record: T, idx: number, rowKey: TableProps<T>["rowKey"]): string {
+function getRowKey<T>(
+  record: T,
+  idx: number,
+  rowKey: TableProps<T>["rowKey"],
+): string {
   if (!rowKey) return String(idx);
   if (typeof rowKey === "function") return String(rowKey(record));
   return String((record as any)[rowKey] ?? idx);
@@ -52,25 +53,11 @@ export function Table<T>({
 }: TableProps<T>) {
   return (
     <MantineTable.ScrollContainer minWidth={500} className={className}>
-      <MantineTable
-        highlightOnHover={!!onRowClick}
-        withTableBorder
-        withColumnBorders={false}
-        styles={{ table: { "--table-border-color": "var(--border-color)" } as any }}
-      >
+      <MantineTable highlightOnHover={!!onRowClick}>
         <MantineTable.Thead>
           <MantineTable.Tr>
             {columns.map(col => (
-              <MantineTable.Th
-                key={col.key}
-                style={{
-                  width: col.width,
-                  textAlign: col.align ?? "left",
-                }}
-                className={col.headerClassName}
-              >
-                {col.title}
-              </MantineTable.Th>
+              <MantineTable.Th key={col.key}>{col.title}</MantineTable.Th>
             ))}
           </MantineTable.Tr>
         </MantineTable.Thead>
@@ -112,11 +99,7 @@ export function Table<T>({
                         : undefined;
 
                     return (
-                      <MantineTable.Td
-                        key={col.key}
-                        style={{ textAlign: col.align ?? "left" }}
-                        className={col.className}
-                      >
+                      <MantineTable.Td key={col.key}>
                         {col.render
                           ? col.render(value, record, idx)
                           : value != null

@@ -27,11 +27,19 @@ import { ServerStatusBadge } from "./components/ServerStatusBadge";
 interface ServerCardProps {
   server: ServerModel;
   loading: string | undefined;
-  onAction: (id: string, action: "start" | "stop" | "restart" | "delete") => void;
+  onAction: (
+    id: string,
+    action: "start" | "stop" | "restart" | "delete",
+  ) => void;
   onView: (id: string) => void;
 }
 
-const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) => {
+const ServerCard: FC<ServerCardProps> = ({
+  server,
+  loading,
+  onAction,
+  onView,
+}) => {
   const { status: liveStatus } = useWgServer(server.data.id);
   const effectiveStatus = liveStatus?.status ?? server.data.status;
   const isDown = effectiveStatus === "down" || effectiveStatus === "error";
@@ -49,9 +57,7 @@ const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) 
               {server.name}
             </h3>
             <ServerStatusBadge status={effectiveStatus} />
-            {!server.data.enabled && (
-              <Badge variant="warning">Disabled</Badge>
-            )}
+            {!server.data.enabled && <Badge variant="warning">Disabled</Badge>}
           </div>
           <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--text-muted)]">
             <span className="font-mono">{server.data.interface}</span>
@@ -66,7 +72,9 @@ const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) 
             {liveStatus && (
               <>
                 <span>·</span>
-                <span>{liveStatus.activePeerCount}/{liveStatus.peerCount} peers</span>
+                <span>
+                  {liveStatus.activePeerCount}/{liveStatus.peerCount} peers
+                </span>
               </>
             )}
           </div>
@@ -83,42 +91,45 @@ const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) 
         </div>
       </div>
 
-      <div className="flex items-center gap-1 mt-4" onClick={e => e.stopPropagation()}>
+      <div
+        className="flex items-center gap-1 mt-4"
+        onClick={e => e.stopPropagation()}
+      >
         {isDown ? (
-          <button
-            title="Start"
-            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] transition-colors disabled:opacity-50"
-            disabled={loading === "start"}
+          <Button
+            loading={loading === "start"}
+            size="compact-sm"
+            variant={"light"}
             onClick={() => onAction(server.data.id, "start")}
           >
-            <Play size={15} />
-          </button>
+            <Play className={"hover:text-[#16a34a]"} size={15} />
+          </Button>
         ) : (
-          <button
-            title="Stop"
-            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] transition-colors disabled:opacity-50"
-            disabled={loading === "stop"}
+          <Button
+            loading={loading === "stop"}
+            size="compact-sm"
+            variant={"light"}
             onClick={() => onAction(server.data.id, "stop")}
           >
-            <Square size={15} />
-          </button>
+            <Square className={"hover:text-[#ca8a04]"} size={15} />
+          </Button>
         )}
-        <button
-          title="Restart"
-          className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors disabled:opacity-50"
-          disabled={loading === "restart"}
+        <Button
+          loading={loading === "restart"}
+          size="compact-sm"
+          variant={"light"}
           onClick={() => onAction(server.data.id, "restart")}
         >
           <RotateCcw size={15} />
-        </button>
-        <button
-          title="Delete"
-          className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors disabled:opacity-50"
-          disabled={loading === "delete"}
+        </Button>
+        <Button
+          loading={loading === "delete"}
+          size="compact-sm"
+          variant={"light"}
           onClick={() => onAction(server.data.id, "delete")}
         >
-          <Trash2 size={15} />
-        </button>
+          <Trash2 className={"hover:text-[#ef4444]"} size={15} />
+        </Button>
       </div>
     </Card>
   );
@@ -132,7 +143,9 @@ export const ServersList: FC = observer(() => {
   const confirm = useConfirm();
   const toast = useToast();
   const [createOpen, setCreateOpen] = useState(false);
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
+    {},
+  );
 
   useEffect(() => {
     store.loadServers().then();

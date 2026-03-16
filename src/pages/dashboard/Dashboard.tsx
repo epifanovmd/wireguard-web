@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Download, Server, Upload, Zap } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   CartesianGrid,
   Line,
@@ -12,8 +12,16 @@ import {
   YAxis,
 } from "recharts";
 
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { Badge, Card, PageHeader, Spinner, StatCard } from "~@components";
+import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
+import {
+  Badge,
+  Card,
+  PageHeader,
+  Spinner,
+  StatCard,
+  Table,
+  TableColumn,
+} from "~@components";
 import { useServersDataStore } from "~@store";
 
 import { useWgOverview } from "../../socket";
@@ -48,6 +56,46 @@ export const Dashboard: FC = observer(() => {
   const activeServers = servers.servers.filter(
     s => s.status === EWgServerStatus.Up,
   );
+
+  const serverColumns: TableColumn<WgServerDto>[] = [
+    {
+      key: "name",
+      title: "Name",
+      render: (_, s) => (
+        <span className="font-medium text-[var(--text-primary)]">{s.name}</span>
+      ),
+    },
+    {
+      key: "interface",
+      title: "Interface",
+      render: (_, s) => (
+        <span className="font-mono text-[var(--text-secondary)] text-xs">
+          {s.interface}
+        </span>
+      ),
+    },
+    {
+      key: "status",
+      title: "Status",
+      render: (_, s) => <ServerStatusBadge status={s.status} />,
+    },
+    {
+      key: "port",
+      title: "Port",
+      render: (_, s) => (
+        <span className="text-[var(--text-secondary)]">{s.listenPort}</span>
+      ),
+    },
+    {
+      key: "endpoint",
+      title: "Endpoint",
+      render: (_, s) => (
+        <span className="text-[var(--text-muted)] text-xs">
+          {s.endpoint ?? "—"}
+        </span>
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col h-full">
@@ -151,71 +199,25 @@ export const Dashboard: FC = observer(() => {
               {activeServers.length} / {servers.total} active
             </Badge>
           }
+          padding="none"
         >
           {servers.isLoading ? (
             <div className="flex justify-center py-8">
               <Spinner />
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--border-color)]">
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Interface
-                    </th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Port
-                    </th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                      Endpoint
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {servers.servers.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="text-center py-8 text-[var(--text-muted)] text-sm"
-                      >
-                        No servers configured
-                      </td>
-                    </tr>
-                  ) : (
-                    servers.servers.map(server => (
-                      <tr
-                        key={server.id}
-                        className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)] cursor-pointer"
-                        onClick={() => navigate({ to: "/wireguard/servers/$serverId", params: { serverId: server.id } })}
-                      >
-                        <td className="px-3 py-3 font-medium text-[var(--text-primary)]">
-                          {server.name}
-                        </td>
-                        <td className="px-3 py-3 font-mono text-[var(--text-secondary)] text-xs">
-                          {server.interface}
-                        </td>
-                        <td className="px-3 py-3">
-                          <ServerStatusBadge status={server.status} />
-                        </td>
-                        <td className="px-3 py-3 text-[var(--text-secondary)]">
-                          {server.listenPort}
-                        </td>
-                        <td className="px-3 py-3 text-[var(--text-muted)] text-xs">
-                          {server.endpoint ?? "—"}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <Table
+              columns={serverColumns}
+              data={servers.servers}
+              rowKey={s => s.id}
+              emptyText="No servers configured"
+              onRowClick={s =>
+                navigate({
+                  to: "/wireguard/servers/$serverId",
+                  params: { serverId: s.id },
+                })
+              }
+            />
           )}
         </Card>
       </div>

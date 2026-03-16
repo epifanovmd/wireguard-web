@@ -137,19 +137,20 @@ export const Stats: FC = observer(() => {
             size="sm"
             value={selectedServer}
             onChange={v => setSelectedServer(v ?? "")}
-            data={[
-              { value: "", label: "Select server..." },
-              ...serversStore.servers.map(s => ({
-                value: s.id,
-                label: s.name,
-              })),
-            ]}
+            data={serversStore.servers.map(s => ({
+              value: s.id,
+              label: s.name,
+            }))}
+            placeholder={"Выберете сервер"}
             className="w-56"
           />
           <SegmentedControl
             size="sm"
             data={PRESETS}
             value={preset}
+            className={
+              "!bg-[var(--mantine-color-white)] in-dark:!bg-[var(--mantine-color-dark-6)]"
+            }
             onChange={handlePresetChange}
           />
           {preset === "custom" && (

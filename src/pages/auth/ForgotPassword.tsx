@@ -56,7 +56,7 @@ export const ForgotPassword = observer(() => {
               If an account exists for this email, you will receive a password
               reset link shortly.
             </p>
-            <Button variant="outline" onClick={onBack}>
+            <Button type="button" variant="ghost" onClick={onBack}>
               Back to sign in
             </Button>
           </div>
@@ -85,7 +85,7 @@ export const ForgotPassword = observer(() => {
               <Button type="submit" loading={loading}>
                 Send reset link
               </Button>
-              <Button type="button" variant="ghost" onClick={onBack}>
+              <Button type="button" variant="outline" onClick={onBack}>
                 Back to sign in
               </Button>
             </form>

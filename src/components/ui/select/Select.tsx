@@ -10,7 +10,14 @@ export interface ISelectProps
     ElementProps<"input", keyof SelectProps> {}
 
 export const Select = forwardRef<HTMLInputElement, ISelectProps>(
-  ({ size = "sm", ...props }, ref) => {
-    return <MantineSelect ref={ref} size={size} {...props} />;
+  ({ size = "sm", allowDeselect = false, ...props }, ref) => {
+    return (
+      <MantineSelect
+        ref={ref}
+        size={size}
+        allowDeselect={allowDeselect}
+        {...props}
+      />
+    );
   },
 );

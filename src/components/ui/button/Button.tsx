@@ -13,6 +13,6 @@ export interface IButtonProps
 
 export const Button = forwardRef<HTMLButtonElement, IButtonProps>(
   ({ variant = "primary", size = "sm", ...props }, ref) => {
-    return <MantineButton ref={ref} size={size} {...props} />;
+    return <MantineButton ref={ref} size={size} variant={variant} {...props} />;
   },
 );

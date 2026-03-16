@@ -1,6 +1,8 @@
 import { Pagination as MantinePagination } from "@mantine/core";
 import React, { FC } from "react";
 
+import { cn } from "../cn";
+
 export interface PaginationProps {
   total: number;
   offset: number;
@@ -22,7 +24,7 @@ export const Pagination: FC<PaginationProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={`flex justify-center py-3 ${className ?? ""}`}>
+    <div className={cn(`flex justify-end p-3`, className)}>
       <MantinePagination
         total={totalPages}
         value={currentPage}
