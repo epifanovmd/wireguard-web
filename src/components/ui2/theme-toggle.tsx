@@ -1,11 +1,12 @@
 import { Moon, Sun } from "lucide-react";
 import * as React from "react";
+import { memo } from "react";
 
 import { useTheme } from "~@theme";
 
 import { Button } from "./button";
 
-export const ThemeToggle = () => {
+export const ThemeToggle = memo(() => {
   const { toggleTheme } = useTheme();
 
   return (
@@ -20,4 +21,4 @@ export const ThemeToggle = () => {
       <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
     </Button>
   );
-};
+});

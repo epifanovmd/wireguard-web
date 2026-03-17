@@ -39,12 +39,11 @@ export type { TabItem, TabsListProps, TabsProps, TabsTriggerProps } from "./tabs
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 // Select
-export type { SelectProps, SelectTriggerProps } from "./select";
+export type { SelectOption, SelectOptionGroup, SelectOptions, SelectProps, SelectTriggerProps } from "./select";
 export {
   Select,
   SelectContent,
   SelectEmpty,
-  SelectGroup,
   SelectItem,
   SelectLabel,
   SelectLoading,
@@ -52,7 +51,6 @@ export {
   SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
-  SelectValue,
 } from "./select";
 
 // Date & Time Pickers

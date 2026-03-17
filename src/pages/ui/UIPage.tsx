@@ -48,12 +48,6 @@ import {
   Pagination,
   Segmented,
   Select,
-  SelectContent,
-  SelectEmpty,
-  SelectItem,
-  SelectLoading,
-  SelectTrigger,
-  SelectValue,
   Spinner,
   Switch,
   Table,
@@ -585,108 +579,83 @@ export const UIPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Select value={selectValue} onValueChange={setSelectValue}>
-                <SelectTrigger size="sm">
-                  <SelectValue placeholder="Выберите опцию" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="option1">Option 1</SelectItem>
-                  <SelectItem value="option2">Option 2</SelectItem>
-                  <SelectItem value="option3">Option 3</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Skeleton mode — flat options */}
+              <Select
+                options={[
+                  { value: "option1", label: "Option 1" },
+                  { value: "option2", label: "Option 2" },
+                  { value: "option3", label: "Option 3" },
+                ]}
+                placeholder="Выберите опцию"
+                triggerSize="sm"
+                value={selectValue}
+                onValueChange={setSelectValue}
+              />
+
               <div className="grid grid-cols-2 gap-2">
-                <Select>
-                  <SelectTrigger size="sm">
-                    <SelectValue placeholder="Фрукты" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="a">Apple</SelectItem>
-                    <SelectItem value="b">Banana</SelectItem>
-                    <SelectItem value="c">Cherry</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger size="sm">
-                    <SelectValue placeholder="Цвета" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="red">Red</SelectItem>
-                    <SelectItem value="green">Green</SelectItem>
-                    <SelectItem value="blue">Blue</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Skeleton mode — grouped options */}
+                <Select
+                  options={[
+                    { value: "a", label: "Apple" },
+                    { value: "b", label: "Banana" },
+                    { value: "c", label: "Cherry" },
+                  ]}
+                  placeholder="Фрукты"
+                  triggerSize="sm"
+                />
+                <Select
+                  options={[
+                    { value: "red", label: "Red" },
+                    { value: "green", label: "Green" },
+                    { value: "blue", label: "Blue" },
+                  ]}
+                  placeholder="Цвета"
+                  triggerSize="sm"
+                />
               </div>
+
               <div className="grid grid-cols-2 gap-2">
-                <Select>
-                  <SelectTrigger size="sm">
-                    <SelectValue placeholder="Страны" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries.length > 0 ? (
-                      countries.map(country => (
-                        <SelectItem key={country} value={country}>
-                          {country}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectLoading>Loading countries...</SelectLoading>
-                    )}
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger size="sm">
-                    <SelectValue placeholder="Города" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cities.length > 0 ? (
-                      cities.map(city => (
-                        <SelectItem key={city} value={city}>
-                          {city}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectLoading>Loading cities...</SelectLoading>
-                    )}
-                  </SelectContent>
-                </Select>
+                {/* Skeleton mode — async loading via options + loading prop */}
+                <Select
+                  options={countries.map(c => ({ value: c, label: c }))}
+                  loading={countries.length === 0}
+                  placeholder="Страны"
+                  triggerSize="sm"
+                />
+                <Select
+                  options={cities.map(c => ({ value: c, label: c }))}
+                  loading={cities.length === 0}
+                  placeholder="Города"
+                  triggerSize="sm"
+                />
               </div>
+
               <div className="grid grid-cols-2 gap-2">
-                <Select onOpenChange={handleDynamicOpen}>
-                  <SelectTrigger size="sm" loading={isLoadingDynamic}>
-                    <SelectValue placeholder="Load on Open" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isLoadingDynamic ? (
-                      <SelectLoading />
-                    ) : dynamicOptions.length > 0 ? (
-                      dynamicOptions.map(option => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectEmpty>No options available</SelectEmpty>
-                    )}
-                  </SelectContent>
-                </Select>
+                {/* Skeleton mode — load on open */}
+                <Select
+                  options={dynamicOptions.map(o => ({ value: o, label: o }))}
+                  loading={isLoadingDynamic}
+                  placeholder="Load on Open"
+                  triggerSize="sm"
+                  onOpenChange={handleDynamicOpen}
+                  empty="No options available"
+                />
+                {/* Manual mode — full control via sub-components */}
                 <Select onOpenChange={handleLazyOpen}>
-                  <SelectTrigger size="sm" loading={isLoadingLazy}>
-                    <SelectValue placeholder="Lazy Load" />
-                  </SelectTrigger>
-                  <SelectContent>
+                  <Select.Trigger size="sm" loading={isLoadingLazy}>
+                    <Select.Value placeholder="Lazy Load" />
+                  </Select.Trigger>
+                  <Select.Content>
                     {isLoadingLazy ? (
-                      <SelectLoading />
+                      <Select.Loading />
                     ) : lazyOptions.length > 0 ? (
-                      lazyOptions.map(option => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
+                      lazyOptions.map(o => (
+                        <Select.Item key={o} value={o}>{o}</Select.Item>
                       ))
                     ) : (
-                      <SelectEmpty>No items found</SelectEmpty>
+                      <Select.Empty>No items found</Select.Empty>
                     )}
-                  </SelectContent>
+                  </Select.Content>
                 </Select>
               </div>
             </CardContent>
