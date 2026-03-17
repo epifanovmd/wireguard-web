@@ -3,9 +3,9 @@ import { type VariantProps } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 
-import { cn } from "../cn";
-import { Spinner } from "../spinner";
-import { selectTriggerVariants } from "./selectVariants";
+import { cn } from "../../cn";
+import { Spinner } from "../../spinner";
+import { selectTriggerVariants } from "../selectVariants";
 
 export interface SelectTriggerProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>,

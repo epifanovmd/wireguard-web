@@ -1,7 +1,7 @@
 import * as SelectPrimitive from "@radix-ui/react-select";
 import * as React from "react";
 
-import { cn } from "../cn";
+import { cn } from "../../cn";
 
 export const SelectSeparator = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Separator>,

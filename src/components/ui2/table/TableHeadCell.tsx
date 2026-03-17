@@ -14,12 +14,12 @@ const SortIcon = ({ direction }: SortIconProps) => {
   return <ArrowUpDown className="h-3.5 w-3.5 shrink-0 opacity-40" />;
 };
 
-interface TableHeadCellProps {
-  header: Header<unknown, unknown>;
+interface TableHeadCellProps<TData = unknown> {
+  header: Header<TData, unknown>;
   sorting?: boolean;
 }
 
-export const TableHeadCell = ({ header, sorting }: TableHeadCellProps) => {
+export const TableHeadCell = <TData = unknown,>({ header, sorting }: TableHeadCellProps<TData>) => {
   if (header.isPlaceholder) {
     return <TableHead colSpan={header.colSpan} />;
   }

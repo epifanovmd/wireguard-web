@@ -39,8 +39,21 @@ export type { TabItem, TabsListProps, TabsProps, TabsTriggerProps } from "./tabs
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 // Select
-export type { SelectOption, SelectOptionGroup, SelectOptions, SelectProps, SelectTriggerProps } from "./select";
+export type {
+  AsyncSelectProps,
+  GroupedSelectProps,
+  SelectOption,
+  SelectOptionGroup,
+  SelectProps,
+  SelectRootProps,
+  SelectTriggerAppearance,
+  SelectTriggerProps,
+  UseAsyncSelectOptions,
+  UseAsyncSelectResult,
+} from "./select";
 export {
+  AsyncSelect,
+  GroupedSelect,
   Select,
   SelectContent,
   SelectEmpty,
@@ -51,6 +64,7 @@ export {
   SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
+  useAsyncSelect,
 } from "./select";
 
 // Date & Time Pickers

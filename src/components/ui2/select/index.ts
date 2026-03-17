@@ -1,12 +1,33 @@
-export type { SelectOption, SelectOptionGroup, SelectOptions, SelectProps } from "./Select";
+// Components
+export type { SelectProps } from "./Select";
 export { Select } from "./Select";
-export { SelectContent } from "./SelectContent";
-export { SelectEmpty } from "./SelectEmpty";
-export { SelectItem } from "./SelectItem";
-export { SelectLabel } from "./SelectLabel";
-export { SelectLoading } from "./SelectLoading";
-export { SelectScrollDownButton } from "./SelectScrollDownButton";
-export { SelectScrollUpButton } from "./SelectScrollUpButton";
-export { SelectSeparator } from "./SelectSeparator";
-export type { SelectTriggerProps } from "./SelectTrigger";
-export { SelectTrigger } from "./SelectTrigger";
+export type { GroupedSelectProps } from "./GroupedSelect";
+export { GroupedSelect } from "./GroupedSelect";
+export type { AsyncSelectProps } from "./AsyncSelect";
+export { AsyncSelect } from "./AsyncSelect";
+
+// Hooks
+export type { UseAsyncSelectOptions, UseAsyncSelectResult } from "./hooks";
+export { useAsyncSelect } from "./hooks";
+
+// Types
+export type {
+  SelectOption,
+  SelectOptionGroup,
+  SelectRootProps,
+  SelectTriggerAppearance,
+} from "./types";
+
+// Primitives (for manual/compound usage)
+export type { SelectTriggerProps } from "./primitives";
+export {
+  SelectContent,
+  SelectEmpty,
+  SelectItem,
+  SelectLabel,
+  SelectLoading,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+} from "./primitives";

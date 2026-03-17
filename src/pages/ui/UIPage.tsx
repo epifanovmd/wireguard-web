@@ -47,6 +47,8 @@ import {
   ModalTitle,
   Pagination,
   Segmented,
+  AsyncSelect,
+  GroupedSelect,
   Select,
   Spinner,
   Switch,
@@ -579,7 +581,7 @@ export const UIPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              {/* Skeleton mode — flat options */}
+              {/* Select — flat */}
               <Select
                 options={[
                   { value: "option1", label: "Option 1" },
@@ -593,57 +595,51 @@ export const UIPage = () => {
               />
 
               <div className="grid grid-cols-2 gap-2">
-                {/* Skeleton mode — grouped options */}
-                <Select
+                {/* GroupedSelect */}
+                <GroupedSelect
                   options={[
-                    { value: "a", label: "Apple" },
-                    { value: "b", label: "Banana" },
-                    { value: "c", label: "Cherry" },
+                    {
+                      group: "Fruits",
+                      options: [
+                        { value: "apple", label: "Apple" },
+                        { value: "banana", label: "Banana" },
+                      ],
+                    },
+                    {
+                      group: "Vegetables",
+                      options: [
+                        { value: "carrot", label: "Carrot" },
+                        { value: "broccoli", label: "Broccoli" },
+                      ],
+                    },
                   ]}
-                  placeholder="Фрукты"
+                  placeholder="Grouped"
                   triggerSize="sm"
                 />
-                <Select
-                  options={[
-                    { value: "red", label: "Red" },
-                    { value: "green", label: "Green" },
-                    { value: "blue", label: "Blue" },
-                  ]}
-                  placeholder="Цвета"
+
+                {/* AsyncSelect — lazy (fetch on first open) */}
+                <AsyncSelect
+                  fetchOptions={fetchCountries}
+                  getOption={c => ({ value: c, label: c })}
+                  placeholder="Async (lazy)"
                   triggerSize="sm"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                {/* Skeleton mode — async loading via options + loading prop */}
-                <Select
-                  options={countries.map(c => ({ value: c, label: c }))}
-                  loading={countries.length === 0}
-                  placeholder="Страны"
+                {/* AsyncSelect — fetch on mount */}
+                <AsyncSelect
+                  fetchOptions={fetchCities}
+                  getOption={c => ({ value: c, label: c })}
+                  placeholder="Async (on mount)"
                   triggerSize="sm"
+                  fetchOnMount
                 />
-                <Select
-                  options={cities.map(c => ({ value: c, label: c }))}
-                  loading={cities.length === 0}
-                  placeholder="Города"
-                  triggerSize="sm"
-                />
-              </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {/* Skeleton mode — load on open */}
-                <Select
-                  options={dynamicOptions.map(o => ({ value: o, label: o }))}
-                  loading={isLoadingDynamic}
-                  placeholder="Load on Open"
-                  triggerSize="sm"
-                  onOpenChange={handleDynamicOpen}
-                  empty="No options available"
-                />
-                {/* Manual mode — full control via sub-components */}
+                {/* Select — manual mode via Select.* sub-components */}
                 <Select onOpenChange={handleLazyOpen}>
                   <Select.Trigger size="sm" loading={isLoadingLazy}>
-                    <Select.Value placeholder="Lazy Load" />
+                    <Select.Value placeholder="Manual mode" />
                   </Select.Trigger>
                   <Select.Content>
                     {isLoadingLazy ? (
