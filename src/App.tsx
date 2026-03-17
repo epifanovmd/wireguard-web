@@ -2,6 +2,7 @@ import { disposer } from "@force-dev/utils";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode, useEffect } from "react";
 
+import { TooltipProvider } from "~@components/ui2";
 import { useAppDataStore } from "~@store";
 import { ThemeProvider } from "~@theme";
 
@@ -21,7 +22,9 @@ export const App = () => {
   return (
     <StrictMode>
       <ThemeProvider>
-        <RouterProvider router={router} />
+        <TooltipProvider>
+          <RouterProvider router={router} />
+        </TooltipProvider>
       </ThemeProvider>
     </StrictMode>
   );

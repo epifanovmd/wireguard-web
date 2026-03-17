@@ -119,5 +119,15 @@ export { Empty, emptyVariants } from "./empty";
 export type { SegmentedOption, SegmentedProps } from "./segmented";
 export { Segmented, segmentedVariants } from "./segmented";
 
+// Tooltip
+export type { TooltipContentProps, TooltipProps } from "./tooltip";
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  tooltipContentVariants,
+} from "./tooltip";
+
 // Theme Toggle
 export { ThemeToggle } from "./theme-toggle";
