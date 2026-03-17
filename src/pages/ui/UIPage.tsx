@@ -111,6 +111,53 @@ const fetchCities = (): Promise<string[]> => {
   });
 };
 
+// Table demo data
+type Transaction = {
+  id: string;
+  name: string;
+  email: string;
+  status: "paid" | "pending" | "failed";
+  amount: number;
+  date: string;
+};
+
+const statusVariant: Record<Transaction["status"], "success" | "warning" | "destructive"> = {
+  paid: "success",
+  pending: "warning",
+  failed: "destructive",
+};
+
+const tableData: Transaction[] = [
+  { id: "001", name: "John Doe", email: "john@example.com", status: "paid", amount: 250, date: "2024-01-15" },
+  { id: "002", name: "Jane Smith", email: "jane@example.com", status: "pending", amount: 150, date: "2024-01-16" },
+  { id: "003", name: "Bob Johnson", email: "bob@example.com", status: "failed", amount: 350, date: "2024-01-17" },
+  { id: "004", name: "Alice Brown", email: "alice@example.com", status: "paid", amount: 420, date: "2024-01-18" },
+  { id: "005", name: "Charlie Wilson", email: "charlie@example.com", status: "paid", amount: 180, date: "2024-01-19" },
+  { id: "006", name: "Diana Prince", email: "diana@example.com", status: "pending", amount: 560, date: "2024-01-20" },
+  { id: "007", name: "Edward Norton", email: "edward@example.com", status: "failed", amount: 90, date: "2024-01-21" },
+  { id: "008", name: "Fiona Green", email: "fiona@example.com", status: "paid", amount: 730, date: "2024-01-22" },
+];
+
+const tableColumns: ColumnDef<Transaction>[] = [
+  { accessorKey: "id", header: "ID", size: 60 },
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ getValue }) => {
+      const v = getValue<Transaction["status"]>();
+      return <Badge size="sm" variant={statusVariant[v]}>{v}</Badge>;
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ getValue }) => `$${getValue<number>().toFixed(2)}`,
+  },
+  { accessorKey: "date", header: "Date" },
+];
+
 export const UIPage = () => {
   const [buttonVariant, setButtonVariant] = useState<any>("default");
   const [inputValue, setInputValue] = useState("");
@@ -123,53 +170,6 @@ export const UIPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [segmentedValue, setSegmentedValue] = useState("list");
   const [segmentedNav, setSegmentedNav] = useState("home");
-
-  // Table demo data
-  type Transaction = {
-    id: string;
-    name: string;
-    email: string;
-    status: "paid" | "pending" | "failed";
-    amount: number;
-    date: string;
-  };
-
-  const tableData: Transaction[] = [
-    { id: "001", name: "John Doe", email: "john@example.com", status: "paid", amount: 250, date: "2024-01-15" },
-    { id: "002", name: "Jane Smith", email: "jane@example.com", status: "pending", amount: 150, date: "2024-01-16" },
-    { id: "003", name: "Bob Johnson", email: "bob@example.com", status: "failed", amount: 350, date: "2024-01-17" },
-    { id: "004", name: "Alice Brown", email: "alice@example.com", status: "paid", amount: 420, date: "2024-01-18" },
-    { id: "005", name: "Charlie Wilson", email: "charlie@example.com", status: "paid", amount: 180, date: "2024-01-19" },
-    { id: "006", name: "Diana Prince", email: "diana@example.com", status: "pending", amount: 560, date: "2024-01-20" },
-    { id: "007", name: "Edward Norton", email: "edward@example.com", status: "failed", amount: 90, date: "2024-01-21" },
-    { id: "008", name: "Fiona Green", email: "fiona@example.com", status: "paid", amount: 730, date: "2024-01-22" },
-  ];
-
-  const statusVariant: Record<Transaction["status"], "success" | "warning" | "destructive"> = {
-    paid: "success",
-    pending: "warning",
-    failed: "destructive",
-  };
-
-  const tableColumns: ColumnDef<Transaction>[] = [
-    { accessorKey: "id", header: "ID", size: 60 },
-    { accessorKey: "name", header: "Name" },
-    { accessorKey: "email", header: "Email" },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ getValue }) => {
-        const v = getValue<Transaction["status"]>();
-        return <Badge size="sm" variant={statusVariant[v]}>{v}</Badge>;
-      },
-    },
-    {
-      accessorKey: "amount",
-      header: "Amount",
-      cell: ({ getValue }) => `$${getValue<number>().toFixed(2)}`,
-    },
-    { accessorKey: "date", header: "Date" },
-  ];
 
   const variants = [
     "default",

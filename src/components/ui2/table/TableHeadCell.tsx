@@ -16,7 +16,7 @@ const SortIcon = ({ direction }: SortIconProps) => {
 };
 
 interface TableHeadCellProps {
-  header: Header<any, unknown>;
+  header: Header<unknown, unknown>;
   sorting?: boolean;
 }
 

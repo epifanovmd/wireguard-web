@@ -3,19 +3,19 @@ import * as React from "react";
 import { Pagination } from "../pagination";
 import { type TanstackTable } from "./TableTypes";
 
-interface TablePaginationBarProps {
-  table: TanstackTable<any>;
+interface TablePaginationBarProps<TData> {
+  table: TanstackTable<TData>;
   currentPage: number;
   totalPages: number;
   selection?: boolean;
 }
 
-export function TablePaginationBar({
+export function TablePaginationBar<TData>({
   table,
   currentPage,
   totalPages,
   selection,
-}: TablePaginationBarProps) {
+}: TablePaginationBarProps<TData>) {
   return (
     <div className="flex items-center justify-between px-1">
       <p className="text-xs text-muted-foreground">

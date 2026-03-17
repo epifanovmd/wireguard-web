@@ -4,11 +4,11 @@ import * as React from "react";
 import { TableFooter, TableHead, TableRow } from "./TablePrimitive";
 import { type TanstackTable } from "./TableTypes";
 
-interface TableFooterSectionProps {
-  table: TanstackTable<any>;
+interface TableFooterSectionProps<TData> {
+  table: TanstackTable<TData>;
 }
 
-export function TableFooterSection({ table }: TableFooterSectionProps) {
+export function TableFooterSection<TData>({ table }: TableFooterSectionProps<TData>) {
   return (
     <TableFooter>
       {table.getFooterGroups().map(footerGroup => (

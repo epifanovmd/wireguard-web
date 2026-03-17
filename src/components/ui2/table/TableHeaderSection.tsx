@@ -5,17 +5,17 @@ import { TableHeadCell } from "./TableHeadCell";
 import { TableHeader, TableRow } from "./TablePrimitive";
 import { type TanstackTable } from "./TableTypes";
 
-interface TableHeaderSectionProps {
-  table: TanstackTable<any>;
+interface TableHeaderSectionProps<TData> {
+  table: TanstackTable<TData>;
   sorting?: boolean;
   stickyHeader?: boolean;
 }
 
-export function TableHeaderSection({
+export function TableHeaderSection<TData>({
   table,
   sorting,
   stickyHeader,
-}: TableHeaderSectionProps) {
+}: TableHeaderSectionProps<TData>) {
   return (
     <TableHeader className={cn(stickyHeader && "sticky top-0 z-10")}>
       {table.getHeaderGroups().map(headerGroup => (

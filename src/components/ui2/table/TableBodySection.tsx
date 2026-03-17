@@ -6,21 +6,21 @@ import { Spinner } from "../spinner";
 import { TableDataRow } from "./TableDataRow";
 import { TableBody } from "./TablePrimitive";
 
-interface TableBodySectionProps {
-  rows: Row<any>[];
+interface TableBodySectionProps<TData> {
+  rows: Row<TData>[];
   totalColumns: number;
   loading?: boolean;
   empty?: React.ReactNode;
-  onRowClick?: (row: any, e: React.MouseEvent<HTMLTableRowElement>) => void;
+  onRowClick?: (row: TData, e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
-export function TableBodySection({
+export function TableBodySection<TData>({
   rows,
   totalColumns,
   loading,
   empty,
   onRowClick,
-}: TableBodySectionProps) {
+}: TableBodySectionProps<TData>) {
   if (loading) {
     return (
       <TableBody>
@@ -50,7 +50,12 @@ export function TableBodySection({
   return (
     <TableBody>
       {rows.map(row => (
-        <TableDataRow key={row.id} row={row} onRowClick={onRowClick} />
+        <TableDataRow
+          key={row.id}
+          row={row}
+          isSelected={row.getIsSelected()}
+          onRowClick={onRowClick}
+        />
       ))}
     </TableBody>
   );

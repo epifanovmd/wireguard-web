@@ -51,7 +51,7 @@ export function useTableInstance<TData>(
 
   const checkboxSize = size === "lg" ? "md" : "sm";
 
-  const selectionColumn = React.useMemo<ColumnDef<TData, any>>(
+  const selectionColumn = React.useMemo<ColumnDef<TData, unknown>>(
     () => ({
       id: "__selection__",
       header: ({ table }) => (
