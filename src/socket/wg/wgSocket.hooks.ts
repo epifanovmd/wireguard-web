@@ -1,12 +1,7 @@
 import { iocHook } from "@force-dev/react";
-import { format } from "date-fns";
-import { useEffect, useRef, useState } from "react";
-
-import { useApi } from "~@api";
-import { IChartPoint } from "~@components/SpeedChart/WGChart";
+import { useEffect, useState } from "react";
 
 import type {
-  WgOverviewStatsPayload,
   WgPeerStatsPayload,
   WgPeerStatusPayload,
   WgServerStatsPayload,
@@ -15,31 +10,6 @@ import type {
 import { IWgSocketService } from "./wgSocket.types";
 
 export const useWgSocket = iocHook(IWgSocketService);
-
-export function useWgOverview() {
-  const service = useWgSocket();
-  const [points, setPoints] = useState<IChartPoint[]>([]);
-  const [stats, setStats] = useState<WgOverviewStatsPayload | null>(null);
-
-  useEffect(() => {
-    return service.subscribeOverview({
-      onStats: s => {
-        setPoints(prev => [
-          ...prev.slice(-59),
-          {
-            t: format(s.timestamp, "HH:mm:ss"),
-            rx: s.rxSpeedBps,
-            tx: s.txSpeedBps,
-          },
-        ]);
-
-        setStats(s);
-      },
-    });
-  }, [service]);
-
-  return { stats, points };
-}
 
 // ─── useWgServer ──────────────────────────────────────────────────────────────
 
@@ -56,10 +26,6 @@ export function useWgServer(
     stats: null,
     status: null,
   });
-
-  // Keep latest handlers stable without re-subscribing on every render
-  const stateRef = useRef(state);
-  stateRef.current = state;
 
   useEffect(() => {
     if (!serverId) return;

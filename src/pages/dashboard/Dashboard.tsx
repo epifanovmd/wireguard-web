@@ -1,20 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Download, Server, Upload, Zap } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { FC, useEffect, useState } from "react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { FC, useEffect } from "react";
 
 import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
+import { OverviewSpeedChart } from "~@components/charts";
 import { PageHeader } from "~@components/layouts";
-import { WGChart } from "~@components/SpeedChart/WGChart";
 import {
   Badge,
   Card,
@@ -23,9 +14,8 @@ import {
   StatCard,
   Table,
 } from "~@components/ui2";
-import { useServersDataStore } from "~@store";
+import { useOverviewStatsStore, useServersDataStore } from "~@store";
 
-import { useWgOverview } from "../../socket";
 import { formatSpeed } from "./dashboard.helpers";
 
 function ServerStatusBadge({ status }: { status: string }) {
@@ -89,7 +79,7 @@ const serverColumns: ColumnDef<WgServerDto>[] = [
 
 export const Dashboard: FC = observer(() => {
   const servers = useServersDataStore();
-  const { stats, points } = useWgOverview();
+  const overview = useOverviewStatsStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -116,21 +106,21 @@ export const Dashboard: FC = observer(() => {
           />
           <StatCard
             title="Total peers"
-            value={stats?.totalPeers ?? 0}
-            subtitle={`${stats?.activePeers ?? 0} active`}
+            value={overview.stats?.totalPeers ?? 0}
+            subtitle={`${overview.stats?.activePeers ?? 0} active`}
             color="success"
             icon={<Zap size={20} />}
           />
           <StatCard
             title="RX Speed"
-            value={formatSpeed(stats?.rxSpeedBps ?? 0)}
+            value={formatSpeed(overview.stats?.rxSpeedBps ?? 0)}
             subtitle="Download speed"
             color="purple"
             icon={<Download size={20} />}
           />
           <StatCard
             title="TX Speed"
-            value={formatSpeed(stats?.txSpeedBps ?? 0)}
+            value={formatSpeed(overview.stats?.txSpeedBps ?? 0)}
             subtitle="Upload speed"
             color="warning"
             icon={<Upload size={20} />}
@@ -138,11 +128,7 @@ export const Dashboard: FC = observer(() => {
         </div>
 
         {/* Live speed chart */}
-        <WGChart
-          title="Live speed"
-          description="Real-time download / upload"
-          points={points}
-        />
+        <OverviewSpeedChart />
 
         {/* Servers table */}
         <Card
