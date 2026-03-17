@@ -48,7 +48,9 @@ const PeerStatusCell: FC<{ peer: PeerModel }> = ({ peer }) => {
       <div className="flex items-center gap-1.5 flex-wrap">
         <PeerStatusBadge enabled={peer.enabled} isExpired={peer.isExpired} />
         {liveStatus?.isActive && (
-          <Badge variant="success" dot>Online</Badge>
+          <Badge variant="success" dot>
+            Online
+          </Badge>
         )}
       </div>
       {liveStatus?.endpoint && (
@@ -131,8 +133,12 @@ export const PeersList: FC = observer(() => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
-  const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(null);
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
+  const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
+    null,
+  );
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
+    {},
+  );
 
   useEffect(() => {
     serversStore.loadServers();
@@ -221,7 +227,9 @@ export const PeersList: FC = observer(() => {
       header: "PSK",
       cell: ({ row }) =>
         row.original.data.hasPresharedKey ? (
-          <Badge variant="info" dot>Yes</Badge>
+          <Badge variant="info" dot>
+            Yes
+          </Badge>
         ) : (
           <span className="text-xs text-[var(--muted-foreground)]">No</span>
         ),
@@ -317,7 +325,10 @@ export const PeersList: FC = observer(() => {
         </Card>
       </div>
 
-      <Modal open={createOpen} onOpenChange={open => !open && setCreateOpen(false)}>
+      <Modal
+        open={createOpen}
+        onOpenChange={open => !open && setCreateOpen(false)}
+      >
         <ModalOverlay />
         <ModalContent className="max-w-lg">
           <ModalHeader>

@@ -77,7 +77,9 @@ export const Dashboard: FC = observer(() => {
       accessorKey: "name",
       header: "Name",
       cell: ({ row }) => (
-        <span className="font-medium text-[var(--foreground)]">{row.original.name}</span>
+        <span className="font-medium text-[var(--foreground)]">
+          {row.original.name}
+        </span>
       ),
     },
     {
@@ -98,7 +100,9 @@ export const Dashboard: FC = observer(() => {
       accessorKey: "listenPort",
       header: "Port",
       cell: ({ row }) => (
-        <span className="text-[var(--muted-foreground)]">{row.original.listenPort}</span>
+        <span className="text-[var(--muted-foreground)]">
+          {row.original.listenPort}
+        </span>
       ),
     },
     {
@@ -149,59 +153,55 @@ export const Dashboard: FC = observer(() => {
         </div>
 
         {/* Live speed chart */}
-        <Card title="Live speed" description="Real-time download / upload" className="p-0">
-          <div className="p-5">
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height={192}>
-                <LineChart data={livePoints}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                  <XAxis
-                    dataKey="t"
-                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                    tickFormatter={v => formatSpeed(v)}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                    formatter={(v: number, name: string) => [
-                      formatSpeed(v),
-                      name === "rx" ? "Download" : "Upload",
-                    ]}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="rx"
-                    stroke="#6366f1"
-                    strokeWidth={2}
-                    dot={false}
-                    name="rx"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="tx"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={false}
-                    name="tx"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex gap-4 mt-2">
-              <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
-              </span>
-            </div>
+        <Card title="Live speed" description="Real-time download / upload">
+          <ResponsiveContainer width="100%" height={192}>
+            <LineChart data={livePoints}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis
+                dataKey="t"
+                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                tickFormatter={v => formatSpeed(v)}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+                formatter={(v: number, name: string) => [
+                  formatSpeed(v),
+                  name === "rx" ? "Download" : "Upload",
+                ]}
+              />
+              <Line
+                type="monotone"
+                dataKey="rx"
+                stroke="#6366f1"
+                strokeWidth={2}
+                dot={false}
+                name="rx"
+              />
+              <Line
+                type="monotone"
+                dataKey="tx"
+                stroke="#22c55e"
+                strokeWidth={2}
+                dot={false}
+                name="tx"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex gap-4 mt-2">
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+              <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+              <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
+            </span>
           </div>
         </Card>
 
@@ -223,7 +223,11 @@ export const Dashboard: FC = observer(() => {
               columns={serverColumns}
               data={servers.servers}
               getRowId={s => s.id}
-              empty={<div className="text-center py-8 text-[var(--muted-foreground)] text-sm">No servers configured</div>}
+              empty={
+                <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+                  No servers configured
+                </div>
+              }
               onRowClick={s =>
                 navigate({
                   to: "/wireguard/servers/$serverId",

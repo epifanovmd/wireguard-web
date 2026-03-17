@@ -374,8 +374,16 @@ export const UIPage = () => {
                 size="sm"
               />
               <Input placeholder="Filled variant" variant="filled" size="sm" />
-              <Input placeholder="Filled error" variant="filled-error" size="sm" />
-              <Input placeholder="Filled success" variant="filled-success" size="sm" />
+              <Input
+                placeholder="Filled error"
+                variant="filled-error"
+                size="sm"
+              />
+              <Input
+                placeholder="Filled success"
+                variant="filled-success"
+                size="sm"
+              />
               <Input placeholder="Error state" variant="error" size="sm" />
               <Input placeholder="Success state" variant="success" size="sm" />
               <Input type="password" placeholder="Password" size="sm" />
@@ -445,11 +453,17 @@ export const UIPage = () => {
             <CardContent className="space-y-4">
               {/* Switch sizes */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Switch — размеры</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Switch — размеры
+                </p>
                 <div className="flex items-center gap-4 flex-wrap">
                   {(["sm", "md", "lg"] as const).map(s => (
                     <div key={s} className="flex items-center gap-2">
-                      <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} size={s} />
+                      <Switch
+                        checked={switchChecked}
+                        onCheckedChange={setSwitchChecked}
+                        size={s}
+                      />
                       <span className="text-xs">{s}</span>
                     </div>
                   ))}
@@ -457,29 +471,48 @@ export const UIPage = () => {
               </div>
               {/* Switch variants */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Switch — варианты</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Switch — варианты
+                </p>
                 <div className="flex items-center gap-4 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} />
+                    <Switch
+                      checked={switchChecked}
+                      onCheckedChange={setSwitchChecked}
+                    />
                     <span className="text-xs">default</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Switch checked={false} variant="error" onCheckedChange={() => {}} />
+                    <Switch
+                      checked={false}
+                      variant="error"
+                      onCheckedChange={() => {}}
+                    />
                     <span className="text-xs">error</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Switch checked={true} variant="success" onCheckedChange={() => {}} />
+                    <Switch
+                      checked={true}
+                      variant="success"
+                      onCheckedChange={() => {}}
+                    />
                     <span className="text-xs">success</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} disabled />
+                    <Switch
+                      checked={switchChecked}
+                      onCheckedChange={setSwitchChecked}
+                      disabled
+                    />
                     <span className="text-xs">disabled</span>
                   </div>
                 </div>
               </div>
               {/* Checkbox sizes + indeterminate */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Checkbox — размеры</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Checkbox — размеры
+                </p>
                 <div className="flex items-center gap-4 flex-wrap">
                   {(["sm", "md", "lg"] as const).map(s => (
                     <div key={s} className="flex items-center gap-2">
@@ -499,10 +532,15 @@ export const UIPage = () => {
               </div>
               {/* Checkbox variants */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Checkbox — варианты</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Checkbox — варианты
+                </p>
                 <div className="flex items-center gap-4 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <Checkbox checked={checkboxChecked} onCheckedChange={c => setCheckboxChecked(c as boolean)} />
+                    <Checkbox
+                      checked={checkboxChecked}
+                      onCheckedChange={c => setCheckboxChecked(c as boolean)}
+                    />
                     <span className="text-xs">default</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -514,7 +552,11 @@ export const UIPage = () => {
                     <span className="text-xs">success</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Checkbox checked={checkboxChecked} onCheckedChange={c => setCheckboxChecked(c as boolean)} disabled />
+                    <Checkbox
+                      checked={checkboxChecked}
+                      onCheckedChange={c => setCheckboxChecked(c as boolean)}
+                      disabled
+                    />
                     <span className="text-xs">disabled</span>
                   </div>
                 </div>
@@ -652,7 +694,9 @@ export const UIPage = () => {
 
               {/* Grouped + Async */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Grouped и Async</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Grouped и Async
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   <GroupedSelect
                     options={[
@@ -686,7 +730,9 @@ export const UIPage = () => {
 
               {/* Manual mode */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">Manual mode</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Manual mode
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   <AsyncSelect
                     fetchOptions={fetchCities}
@@ -965,7 +1011,7 @@ export const UIPage = () => {
                     Scrollable
                   </Button>
                 </Modal.Trigger>
-                <ModalContent scrollable size="lg">
+                <ModalContent size="lg">
                   <ModalHeader>
                     <ModalTitle>Long Content</ModalTitle>
                     <ModalDescription>

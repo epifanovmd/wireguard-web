@@ -262,9 +262,8 @@ const SuccessView = ({
     <div>
       <p className="text-lg font-semibold">Account created!</p>
       <p className="text-sm text-muted-foreground mt-1">
-        Welcome,{" "}
-        <span className="font-medium text-foreground">{username}</span>. Your
-        account is ready.
+        Welcome, <span className="font-medium text-foreground">{username}</span>
+        . Your account is ready.
       </p>
     </div>
     <Button variant="primary" onClick={onClose} className="mt-2">
@@ -295,7 +294,6 @@ export const FormDemo = () => {
 
       <ModalContent
         size="lg"
-        scrollable
         disableInteractOutside={!successUser}
         title={successUser ? undefined : "Create new user"}
         description={

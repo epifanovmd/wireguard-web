@@ -13,7 +13,8 @@ import {
 
 const CLOSE_ANIMATION_DURATION = 200;
 
-const generateId = () => `modal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+const generateId = () =>
+  `modal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [modals, setModals] = React.useState<ModalEntry[]>([]);
@@ -63,9 +64,14 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     <ModalContext.Provider value={value}>
       {children}
       {modals.map(({ id, open, options }) => {
-        const renderProps: ModalRenderProps = { id, onClose: () => closeModal(id) };
+        const renderProps: ModalRenderProps = {
+          id,
+          onClose: () => closeModal(id),
+        };
         const content =
-          typeof options.content === "function" ? options.content(renderProps) : options.content;
+          typeof options.content === "function"
+            ? options.content(renderProps)
+            : options.content;
 
         return (
           <Modal
@@ -83,7 +89,6 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
               position={options.position}
               disableInteractOutside={options.disableInteractOutside}
               hideCloseButton={options.hideCloseButton}
-              scrollable={options.scrollable}
               title={options.title}
               description={options.description}
               footer={options.footer}

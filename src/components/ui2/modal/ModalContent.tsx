@@ -25,7 +25,6 @@ export interface ModalContentProps extends ContentProps, ModalVariantProps {
   // Layout
   disableInteractOutside?: boolean;
   hideCloseButton?: boolean;
-  scrollable?: boolean;
 
   // Skeleton mode — triggered when any of these are provided
   title?: React.ReactNode;
@@ -54,7 +53,6 @@ export const ModalContent = React.forwardRef<
       size,
       disableInteractOutside,
       hideCloseButton,
-      scrollable,
       title,
       description,
       footer,
@@ -124,7 +122,7 @@ export const ModalContent = React.forwardRef<
           ref={ref}
           className={cn(
             modalContentVariants({ position, size }),
-            scrollable && "flex max-h-[85vh] flex-col",
+            "flex max-h-[85vh] flex-col",
             className,
           )}
           onPointerDownOutside={e => {

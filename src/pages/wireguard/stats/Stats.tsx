@@ -52,7 +52,7 @@ export const Stats: FC = observer(() => {
   const serversStore = useServersDataStore();
   const stats = useStatsDataStore();
   const [selectedServer, setSelectedServer] = useState("");
-  const [preset, setPreset] = useState<Preset>("24h");
+  const [preset, setPreset] = useState<Preset>("1h");
   const [customRange, setCustomRange] = useState<DateRange | undefined>(
     undefined,
   );

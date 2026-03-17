@@ -7,7 +7,9 @@ export interface ModalRenderProps {
   onClose: () => void;
 }
 
-export type ModalContent = React.ReactNode | ((props: ModalRenderProps) => React.ReactNode);
+export type ModalContent =
+  | React.ReactNode
+  | ((props: ModalRenderProps) => React.ReactNode);
 
 export interface ModalOptions {
   /** Body content — ReactNode or render prop receiving { id, onClose }. */
@@ -18,7 +20,6 @@ export interface ModalOptions {
   position?: "center" | "top" | "bottom";
   disableInteractOutside?: boolean;
   hideCloseButton?: boolean;
-  scrollable?: boolean;
 
   // Skeleton mode
   title?: React.ReactNode;
