@@ -30,13 +30,11 @@ import {
   DatePicker,
   DateRangePicker,
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
   Empty,
   IconButton,
   Input,
@@ -964,11 +962,11 @@ export const UIPage = () => {
 
               {/* Default Drawer */}
               <Drawer>
-                <DrawerTrigger asChild>
+                <Drawer.Trigger asChild>
                   <Button variant="outline" size="sm">
                     Default Drawer
                   </Button>
-                </DrawerTrigger>
+                </Drawer.Trigger>
                 <DrawerContent>
                   <DrawerHeader>
                     <DrawerTitle>Default Drawer</DrawerTitle>
@@ -982,11 +980,11 @@ export const UIPage = () => {
                     </p>
                   </div>
                   <DrawerFooter>
-                    <DrawerClose asChild>
+                    <Drawer.Close asChild>
                       <Button variant="outline" size="sm">
                         Cancel
                       </Button>
-                    </DrawerClose>
+                    </Drawer.Close>
                     <Button size="sm">Submit</Button>
                   </DrawerFooter>
                 </DrawerContent>
@@ -994,11 +992,11 @@ export const UIPage = () => {
 
               {/* Scrollable drawer */}
               <Drawer>
-                <DrawerTrigger asChild>
+                <Drawer.Trigger asChild>
                   <Button variant="outline" size="sm">
                     Scrollable Drawer
                   </Button>
-                </DrawerTrigger>
+                </Drawer.Trigger>
                 <DrawerContent className="max-h-[80vh]">
                   <DrawerHeader>
                     <DrawerTitle>Long Content</DrawerTitle>
@@ -1014,11 +1012,11 @@ export const UIPage = () => {
                     ))}
                   </div>
                   <DrawerFooter>
-                    <DrawerClose asChild>
+                    <Drawer.Close asChild>
                       <Button variant="outline" size="sm">
                         Close
                       </Button>
-                    </DrawerClose>
+                    </Drawer.Close>
                     <Button size="sm">Submit</Button>
                   </DrawerFooter>
                 </DrawerContent>

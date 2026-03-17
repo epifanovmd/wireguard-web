@@ -67,15 +67,12 @@ export { Pagination } from "./pagination";
 // Modals & Drawers
 export {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerPortal,
   DrawerTitle,
-  DrawerTrigger,
 } from "./drawer";
 export type { ConfirmOptions, ModalContentProps, ModalOptions } from "./modal";
 export {

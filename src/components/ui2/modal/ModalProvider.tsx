@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { Modal } from "./Modal";
+import { ModalContent } from "./ModalContent";
 import {
   type ConfirmOptions,
   ModalContext,
@@ -8,8 +10,6 @@ import {
   type ModalOptions,
   type ModalRenderProps,
 } from "./ModalContext";
-import { Modal } from "./Modal";
-import { ModalContent } from "./ModalContent";
 
 const CLOSE_ANIMATION_DURATION = 200;
 
