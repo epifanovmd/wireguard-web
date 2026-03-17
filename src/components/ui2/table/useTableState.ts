@@ -25,7 +25,7 @@ export interface TableState {
   onPaginationChange: OnChangeFn<PaginationState>;
 }
 
-export function useTableState({
+export const useTableState = ({
   sortingState,
   onSortingChange,
   rowSelection,
@@ -33,7 +33,7 @@ export function useTableState({
   paginationState,
   onPaginationChange,
   pageSize = 10,
-}: UseTableStateOptions): TableState {
+}: UseTableStateOptions): TableState => {
   const [internalSorting, setInternalSorting] = React.useState<SortingState>([]);
   const [internalRowSelection, setInternalRowSelection] = React.useState<RowSelectionState>({});
   const [internalPagination, setInternalPagination] = React.useState<PaginationState>({

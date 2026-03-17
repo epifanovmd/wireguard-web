@@ -14,13 +14,13 @@ interface TableBodySectionProps<TData> {
   onRowClick?: (row: TData, e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
-export function TableBodySection<TData>({
+export const TableBodySection = <TData,>({
   rows,
   totalColumns,
   loading,
   empty,
   onRowClick,
-}: TableBodySectionProps<TData>) {
+}: TableBodySectionProps<TData>) => {
   if (loading) {
     return (
       <TableBody>

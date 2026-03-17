@@ -11,11 +11,11 @@ interface TableHeaderSectionProps<TData> {
   stickyHeader?: boolean;
 }
 
-export function TableHeaderSection<TData>({
+export const TableHeaderSection = <TData,>({
   table,
   sorting,
   stickyHeader,
-}: TableHeaderSectionProps<TData>) {
+}: TableHeaderSectionProps<TData>) => {
   return (
     <TableHeader className={cn(stickyHeader && "sticky top-0 z-10")}>
       {table.getHeaderGroups().map(headerGroup => (

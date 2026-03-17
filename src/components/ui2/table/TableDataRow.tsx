@@ -13,11 +13,11 @@ interface TableDataRowProps<TData = unknown> {
   ) => void;
 }
 
-function TableDataRowInner<TData = unknown>({
+const TableDataRowInner = <TData = unknown,>({
   row,
   isSelected,
   onRowClick,
-}: TableDataRowProps<TData>) {
+}: TableDataRowProps<TData>) => {
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLTableRowElement>) => onRowClick?.(row.original, e),
     [onRowClick, row.original],

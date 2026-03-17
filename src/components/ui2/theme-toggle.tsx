@@ -5,7 +5,7 @@ import { useTheme } from "~@theme";
 
 import { Button } from "./button";
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const { toggleTheme } = useTheme();
 
   return (
@@ -20,4 +20,4 @@ export function ThemeToggle() {
       <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
     </Button>
   );
-}
+};

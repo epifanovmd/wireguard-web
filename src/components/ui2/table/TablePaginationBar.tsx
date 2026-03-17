@@ -10,12 +10,12 @@ interface TablePaginationBarProps<TData> {
   selection?: boolean;
 }
 
-export function TablePaginationBar<TData>({
+export const TablePaginationBar = <TData,>({
   table,
   currentPage,
   totalPages,
   selection,
-}: TablePaginationBarProps<TData>) {
+}: TablePaginationBarProps<TData>) => {
   return (
     <div className="flex items-center justify-between px-1">
       <p className="text-xs text-muted-foreground">

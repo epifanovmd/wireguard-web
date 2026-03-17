@@ -19,7 +19,7 @@ interface TableHeadCellProps {
   sorting?: boolean;
 }
 
-export function TableHeadCell({ header, sorting }: TableHeadCellProps) {
+export const TableHeadCell = ({ header, sorting }: TableHeadCellProps) => {
   if (header.isPlaceholder) {
     return <TableHead colSpan={header.colSpan} />;
   }

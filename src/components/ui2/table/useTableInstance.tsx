@@ -13,9 +13,9 @@ import { type TableProps } from "./Table";
 import { type TableInstanceResult } from "./TableTypes";
 import { useTableState } from "./useTableState";
 
-export function useTableInstance<TData>(
+export const useTableInstance = <TData,>(
   props: TableProps<TData>,
-): TableInstanceResult<TData> {
+): TableInstanceResult<TData> => {
   const {
     data,
     columns,

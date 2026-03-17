@@ -73,7 +73,7 @@ export interface TableProps<TData> {
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
 
-function TableComponent<TData>(props: TableProps<TData>) {
+const TableComponent = <TData,>(props: TableProps<TData>) => {
   const {
     variant = "default",
     size = "md",
