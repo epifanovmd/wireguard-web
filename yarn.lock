@@ -1829,6 +1829,13 @@
     "@tanstack/store" "0.7.2"
     use-sync-external-store "^1.5.0"
 
+"@tanstack/react-table@^8.21.3":
+  version "8.21.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.21.3.tgz#2c38c747a5731c1a07174fda764b9c2b1fb5e91b"
+  integrity sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==
+  dependencies:
+    "@tanstack/table-core" "8.21.3"
+
 "@tanstack/router-core@1.130.12":
   version "1.130.12"
   resolved "https://registry.yarnpkg.com/@tanstack/router-core/-/router-core-1.130.12.tgz#9ad8158c403543211db43335fbb12c7785812168"
@@ -1892,6 +1899,11 @@
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.7.2.tgz#2e04dac17f7d904539eeb797d8ba0058cee4edf7"
   integrity sha512-RP80Z30BYiPX2Pyo0Nyw4s1SJFH2jyM6f9i3HfX4pA+gm5jsnYryscdq2aIQLnL4TaGuQMO+zXmN9nh1Qck+Pg==
+
+"@tanstack/table-core@8.21.3":
+  version "8.21.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.21.3.tgz#2977727d8fc8dfa079112d9f4d4c019110f1732c"
+  integrity sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==
 
 "@tanstack/virtual-file-routes@1.129.7":
   version "1.129.7"

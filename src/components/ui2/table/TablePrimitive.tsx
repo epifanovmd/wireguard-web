@@ -1,37 +1,28 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-import { cn } from "./cn";
+import { cn } from "../cn";
+import { TableContext } from "./TableContext";
+import {
+  tableCellVariants,
+  tableHeadVariants,
+  tableVariants,
+} from "./tableVariants";
 
-const tableVariants = cva("w-full caption-bottom text-sm", {
-  variants: {
-    variant: {
-      default: "",
-      striped: "[&_tbody_tr:nth-child(even)]:bg-muted/50",
-      bordered: "border",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
+const TableRoot = React.forwardRef<
+  HTMLTableElement,
+  React.HTMLAttributes<HTMLTableElement>
+>(({ className, ...props }, ref) => {
+  const { variant } = React.useContext(TableContext);
+
+  return (
+    <table
+      ref={ref}
+      className={cn(tableVariants({ variant }), className)}
+      {...props}
+    />
+  );
 });
-
-export interface TableProps
-  extends React.HTMLAttributes<HTMLTableElement>,
-    VariantProps<typeof tableVariants> {}
-
-const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, variant, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
-      <table
-        ref={ref}
-        className={cn(tableVariants({ variant, className }))}
-        {...props}
-      />
-    </div>
-  ),
-);
-Table.displayName = "Table";
+TableRoot.displayName = "TableRoot";
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
@@ -51,7 +42,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("[&_tr:last-child]:border-0 relative", className)}
     {...props}
   />
 ));
@@ -74,12 +65,13 @@ TableFooter.displayName = "TableFooter";
 
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLTableRowElement> & { selected?: boolean }
+>(({ className, selected, ...props }, ref) => (
   <tr
     ref={ref}
+    data-state={selected ? "selected" : undefined}
     className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-primary/5",
       className,
     )}
     {...props}
@@ -90,28 +82,33 @@ TableRow.displayName = "TableRow";
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-      className,
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { size } = React.useContext(TableContext);
+
+  return (
+    <th
+      ref={ref}
+      className={cn(tableHeadVariants({ size }), className)}
+      {...props}
+    />
+  );
+});
 TableHead.displayName = "TableHead";
 
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { size } = React.useContext(TableContext);
+
+  return (
+    <td
+      ref={ref}
+      className={cn(tableCellVariants({ size }), className)}
+      {...props}
+    />
+  );
+});
 TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<
@@ -127,12 +124,12 @@ const TableCaption = React.forwardRef<
 TableCaption.displayName = "TableCaption";
 
 export {
-  Table,
   TableBody,
   TableCaption,
   TableCell,
   TableFooter,
   TableHead,
   TableHeader,
+  TableRoot,
   TableRow,
 };

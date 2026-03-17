@@ -50,6 +50,7 @@
     "@simplewebauthn/browser": "^13.1.0",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-router": "^1.115.2",
+    "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-plugin": "^1.115.2",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",

@@ -26,6 +26,7 @@ import {
   CardTitle,
   Checkbox,
   Chips,
+  type ColumnDef,
   DatePicker,
   DateRangePicker,
   Drawer,
@@ -60,13 +61,6 @@ import {
   Spinner,
   Switch,
   Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
   Tabs,
   TabsContent,
   TabsList,
@@ -129,6 +123,53 @@ export const UIPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [segmentedValue, setSegmentedValue] = useState("list");
   const [segmentedNav, setSegmentedNav] = useState("home");
+
+  // Table demo data
+  type Transaction = {
+    id: string;
+    name: string;
+    email: string;
+    status: "paid" | "pending" | "failed";
+    amount: number;
+    date: string;
+  };
+
+  const tableData: Transaction[] = [
+    { id: "001", name: "John Doe", email: "john@example.com", status: "paid", amount: 250, date: "2024-01-15" },
+    { id: "002", name: "Jane Smith", email: "jane@example.com", status: "pending", amount: 150, date: "2024-01-16" },
+    { id: "003", name: "Bob Johnson", email: "bob@example.com", status: "failed", amount: 350, date: "2024-01-17" },
+    { id: "004", name: "Alice Brown", email: "alice@example.com", status: "paid", amount: 420, date: "2024-01-18" },
+    { id: "005", name: "Charlie Wilson", email: "charlie@example.com", status: "paid", amount: 180, date: "2024-01-19" },
+    { id: "006", name: "Diana Prince", email: "diana@example.com", status: "pending", amount: 560, date: "2024-01-20" },
+    { id: "007", name: "Edward Norton", email: "edward@example.com", status: "failed", amount: 90, date: "2024-01-21" },
+    { id: "008", name: "Fiona Green", email: "fiona@example.com", status: "paid", amount: 730, date: "2024-01-22" },
+  ];
+
+  const statusVariant: Record<Transaction["status"], "success" | "warning" | "destructive"> = {
+    paid: "success",
+    pending: "warning",
+    failed: "destructive",
+  };
+
+  const tableColumns: ColumnDef<Transaction>[] = [
+    { accessorKey: "id", header: "ID", size: 60 },
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "email", header: "Email" },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ getValue }) => {
+        const v = getValue<Transaction["status"]>();
+        return <Badge size="sm" variant={statusVariant[v]}>{v}</Badge>;
+      },
+    },
+    {
+      accessorKey: "amount",
+      header: "Amount",
+      cell: ({ getValue }) => `$${getValue<number>().toFixed(2)}`,
+    },
+    { accessorKey: "date", header: "Date" },
+  ];
 
   const variants = [
     "default",
@@ -841,61 +882,51 @@ export const UIPage = () => {
             <CardHeader>
               <CardTitle className="text-base">Table</CardTitle>
               <CardDescription className="text-xs">
-                Таблицы данных
+                TanStack Table — сортировка, выбор строк, пагинация
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Table variant="default" size="sm">
-                <TableCaption className="text-xs">
-                  Recent transactions
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">ID</TableHead>
-                    <TableHead className="text-xs">Name</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                    <TableHead className="text-xs text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="text-xs">001</TableCell>
-                    <TableCell className="text-xs">John Doe</TableCell>
-                    <TableCell>
-                      <Badge size="sm" variant="success">
-                        Paid
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-right">
-                      $250.00
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-xs">002</TableCell>
-                    <TableCell className="text-xs">Jane Smith</TableCell>
-                    <TableCell>
-                      <Badge size="sm" variant="warning">
-                        Pending
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-right">
-                      $150.00
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="text-xs">003</TableCell>
-                    <TableCell className="text-xs">Bob Johnson</TableCell>
-                    <TableCell>
-                      <Badge size="sm" variant="destructive">
-                        Failed
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-right">
-                      $350.00
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Default + sorting + selection + pagination</p>
+                <Table
+                  data={tableData}
+                  columns={tableColumns}
+                  size="sm"
+                  sorting
+                  selection
+                  pagination
+                  pageSize={4}
+                  onRowClick={row => console.log("clicked", row)}
+                  caption="Recent transactions"
+                />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Striped variant</p>
+                <Table
+                  data={tableData}
+                  columns={tableColumns}
+                  size="sm"
+                  variant="striped"
+                  sorting
+                />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Loading state</p>
+                <Table
+                  data={[]}
+                  columns={tableColumns}
+                  size="sm"
+                  loading
+                />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Empty state</p>
+                <Table
+                  data={[]}
+                  columns={tableColumns}
+                  size="sm"
+                />
+              </div>
             </CardContent>
           </Card>
 

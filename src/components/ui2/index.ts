@@ -92,7 +92,7 @@ export {
 } from "./modal";
 
 // Tables
-export type { TableProps } from "./table";
+export type { ColumnDef, TableProps } from "./table";
 export {
   Table,
   TableBody,
@@ -101,6 +101,7 @@ export {
   TableFooter,
   TableHead,
   TableHeader,
+  TableRoot,
   TableRow,
 } from "./table";
 
