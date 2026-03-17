@@ -1,8 +1,5 @@
 import * as React from "react";
 
-import { ConfirmModal } from "./ConfirmModal";
-import { Modal } from "./Modal";
-import { ModalContent } from "./ModalContent";
 import {
   type ConfirmOptions,
   ModalContext,
@@ -11,6 +8,8 @@ import {
   type ModalOptions,
   type ModalRenderProps,
 } from "./ModalContext";
+import { Modal } from "./Modal";
+import { ModalContent } from "./ModalContent";
 
 const CLOSE_ANIMATION_DURATION = 200;
 
@@ -43,7 +42,13 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
         size: options.size ?? "sm",
         disableInteractOutside: true,
         hideCloseButton: true,
-        content: ({ onClose }) => <ConfirmModal {...options} onClose={onClose} />,
+        title: options.title,
+        description: options.description,
+        onConfirm: options.onConfirm,
+        confirmLabel: options.confirmLabel,
+        confirmVariant: options.confirmVariant,
+        onCancel: options.onCancel,
+        cancelLabel: options.cancelLabel,
       });
     },
     [openModal],
@@ -79,6 +84,14 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
               disableInteractOutside={options.disableInteractOutside}
               hideCloseButton={options.hideCloseButton}
               scrollable={options.scrollable}
+              title={options.title}
+              description={options.description}
+              footer={options.footer}
+              onConfirm={options.onConfirm}
+              confirmLabel={options.confirmLabel}
+              confirmVariant={options.confirmVariant}
+              onCancel={options.onCancel}
+              cancelLabel={options.cancelLabel}
             >
               {content}
             </ModalContent>

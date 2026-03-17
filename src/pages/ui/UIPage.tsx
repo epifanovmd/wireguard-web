@@ -874,38 +874,62 @@ export const UIPage = () => {
                 </ModalContent>
               </Modal>
 
-              {/* Global modal via useModal */}
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() =>
-                  modal.confirm({
-                    title: "Delete item?",
-                    description: "This action cannot be undone.",
-                    confirmLabel: "Delete",
-                    confirmVariant: "destructive",
-                    onConfirm: () => new Promise(res => setTimeout(res, 1200)),
-                  })
-                }
-              >
-                Confirm Delete
-              </Button>
+              {/* Skeleton props on Modal.Content directly */}
+              <Modal>
+                <Modal.Trigger asChild>
+                  <Button size="sm" variant="destructive">
+                    Skeleton Delete
+                  </Button>
+                </Modal.Trigger>
+                <Modal.Content
+                  title="Delete item?"
+                  description="This action cannot be undone."
+                  confirmLabel="Delete"
+                  confirmVariant="destructive"
+                  onConfirm={() => new Promise(res => setTimeout(res, 1000))}
+                  onCancel={() => {}}
+                />
+              </Modal>
 
+              <Modal>
+                <Modal.Trigger asChild>
+                  <Button size="sm" variant="primary">
+                    Skeleton with body
+                  </Button>
+                </Modal.Trigger>
+                <Modal.Content
+                  title="Edit profile"
+                  description="Update your account information."
+                  size="md"
+                  confirmLabel="Save"
+                  onConfirm={() => new Promise(res => setTimeout(res, 800))}
+                  onCancel={() => {}}
+                >
+                  <p className="text-sm text-muted-foreground">
+                    Form fields would go here as children.
+                  </p>
+                </Modal.Content>
+              </Modal>
+
+              {/* Global modal via useModal — skeleton props */}
               <Button
                 size="sm"
-                variant="primary"
+                variant="warning"
                 onClick={() =>
-                  modal.confirm({
+                  modal.openModal({
                     title: "Publish changes?",
                     description: "Your changes will be visible to all users.",
                     confirmLabel: "Publish",
+                    confirmVariant: "warning",
                     onConfirm: () => new Promise(res => setTimeout(res, 800)),
+                    onCancel: () => {},
                   })
                 }
               >
-                Confirm Action
+                Global skeleton
               </Button>
 
+              {/* Global modal — render prop for full control */}
               <Button
                 size="sm"
                 variant="secondary"
@@ -916,17 +940,13 @@ export const UIPage = () => {
                       <>
                         <ModalHeader>
                           <ModalTitle>Custom Modal</ModalTitle>
-                          <p className="text-sm text-muted-foreground">
-                            Opened programmatically via useModal
-                          </p>
                         </ModalHeader>
                         <ModalBody className="py-4">
                           <p className="text-sm text-muted-foreground">
-                            This modal was opened using{" "}
+                            Full control via render prop —{" "}
                             <code className="rounded bg-muted px-1">
-                              modal.openModal()
+                              content: ({"{ onClose }"}) =&gt; ...
                             </code>
-                            . You can pass any content here.
                           </p>
                         </ModalBody>
                         <ModalFooter>
@@ -939,7 +959,7 @@ export const UIPage = () => {
                   })
                 }
               >
-                Open Custom
+                Global render prop
               </Button>
 
               {/* Default Drawer */}

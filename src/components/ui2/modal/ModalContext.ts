@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { type ButtonProps } from "../button";
+
 export interface ModalRenderProps {
   id: string;
   onClose: () => void;
@@ -8,12 +10,28 @@ export interface ModalRenderProps {
 export type ModalContent = React.ReactNode | ((props: ModalRenderProps) => React.ReactNode);
 
 export interface ModalOptions {
-  content: ModalContent;
+  /** Body content — ReactNode or render prop receiving { id, onClose }. */
+  content?: ModalContent;
+
+  // Appearance
   size?: "sm" | "md" | "lg" | "xl" | "full";
   position?: "center" | "top" | "bottom";
   disableInteractOutside?: boolean;
   hideCloseButton?: boolean;
   scrollable?: boolean;
+
+  // Skeleton mode
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  /** Custom footer. Takes precedence over onConfirm/onCancel buttons. */
+  footer?: React.ReactNode;
+  onConfirm?: () => void | Promise<void>;
+  confirmLabel?: string;
+  confirmVariant?: ButtonProps["variant"];
+  onCancel?: () => void;
+  cancelLabel?: string;
+
+  // Lifecycle
   onClose?: () => void;
 }
 
@@ -22,7 +40,7 @@ export interface ConfirmOptions {
   description?: React.ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
-  confirmVariant?: "default" | "destructive" | "primary" | "warning";
+  confirmVariant?: ButtonProps["variant"];
   size?: "sm" | "md";
   onConfirm: () => void | Promise<void>;
   onCancel?: () => void;
@@ -35,7 +53,7 @@ export interface ModalEntry {
 }
 
 export interface ModalContextValue {
-  /** Open a modal with arbitrary content. Returns the modal id. */
+  /** Open a modal. Returns the modal id. */
   openModal: (options: ModalOptions) => string;
   /** Close a modal by id. */
   closeModal: (id: string) => void;
