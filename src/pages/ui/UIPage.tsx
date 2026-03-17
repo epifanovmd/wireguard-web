@@ -634,18 +634,18 @@ export const UIPage = () => {
           </Card>
 
           {/* Date Pickers */}
-          <Card>
+          <Card className={"col-span-2"}>
             <CardHeader>
               <CardTitle className="text-base">Date Pickers</CardTitle>
               <CardDescription className="text-xs">
                 Выбор даты и диапазона — размеры, варианты, clearable
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 grid grid-cols-2">
               {/* Sizes */}
               <div>
                 <p className="text-xs text-muted-foreground mb-3">Размеры</p>
-                <div className="space-y-2 max-w-xs">
+                <div className="flex flex-col gap-2 space-y-2 max-w-xs">
                   <DatePicker
                     value={date}
                     onChange={setDate}
@@ -670,7 +670,7 @@ export const UIPage = () => {
               {/* Variants */}
               <div>
                 <p className="text-xs text-muted-foreground mb-3">Варианты</p>
-                <div className="space-y-2 max-w-xs">
+                <div className="flex flex-col gap-2 space-y-2 max-w-xs">
                   <DatePicker
                     value={date}
                     onChange={setDate}
@@ -718,7 +718,7 @@ export const UIPage = () => {
                 <p className="text-xs text-muted-foreground mb-3">
                   Диапазон дат
                 </p>
-                <div className="space-y-2 max-w-xs">
+                <div className="flex flex-col gap-2 space-y-2 max-w-xs">
                   <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
@@ -755,7 +755,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Pagination */}
-          <Card>
+          <Card className={"col-span-2"}>
             <CardHeader>
               <CardTitle className="text-base">Pagination</CardTitle>
               <CardDescription className="text-xs">
