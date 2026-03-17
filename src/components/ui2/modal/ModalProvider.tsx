@@ -9,6 +9,7 @@ import {
   type ModalContextValue,
   type ModalEntry,
   type ModalOptions,
+  type ModalRenderProps,
 } from "./ModalContext";
 
 const CLOSE_ANIMATION_DURATION = 200;
@@ -38,17 +39,14 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 
   const confirm = React.useCallback(
     (options: ConfirmOptions) => {
-      let id: string;
-      const close = () => closeModal(id);
-
-      id = openModal({
+      openModal({
         size: options.size ?? "sm",
         disableInteractOutside: true,
         hideCloseButton: true,
-        content: <ConfirmModal {...options} onClose={close} />,
+        content: ({ onClose }) => <ConfirmModal {...options} onClose={onClose} />,
       });
     },
-    [openModal, closeModal],
+    [openModal],
   );
 
   const value = React.useMemo<ModalContextValue>(
@@ -59,28 +57,34 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ModalContext.Provider value={value}>
       {children}
-      {modals.map(({ id, open, options }) => (
-        <Modal
-          key={id}
-          open={open}
-          onOpenChange={isOpen => {
-            if (!isOpen) {
-              options.onClose?.();
-              closeModal(id);
-            }
-          }}
-        >
-          <ModalContent
-            size={options.size}
-            position={options.position}
-            disableInteractOutside={options.disableInteractOutside}
-            hideCloseButton={options.hideCloseButton}
-            scrollable={options.scrollable}
+      {modals.map(({ id, open, options }) => {
+        const renderProps: ModalRenderProps = { id, onClose: () => closeModal(id) };
+        const content =
+          typeof options.content === "function" ? options.content(renderProps) : options.content;
+
+        return (
+          <Modal
+            key={id}
+            open={open}
+            onOpenChange={isOpen => {
+              if (!isOpen) {
+                options.onClose?.();
+                closeModal(id);
+              }
+            }}
           >
-            {options.content}
-          </ModalContent>
-        </Modal>
-      ))}
+            <ModalContent
+              size={options.size}
+              position={options.position}
+              disableInteractOutside={options.disableInteractOutside}
+              hideCloseButton={options.hideCloseButton}
+              scrollable={options.scrollable}
+            >
+              {content}
+            </ModalContent>
+          </Modal>
+        );
+      })}
     </ModalContext.Provider>
   );
 };

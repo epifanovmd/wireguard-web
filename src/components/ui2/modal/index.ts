@@ -1,5 +1,11 @@
 // Context & types
-export type { ConfirmOptions, ModalContextValue, ModalEntry, ModalOptions } from "./ModalContext";
+export type {
+  ConfirmOptions,
+  ModalContextValue,
+  ModalEntry,
+  ModalOptions,
+  ModalRenderProps,
+} from "./ModalContext";
 export { ModalContext } from "./ModalContext";
 
 // Provider & hook

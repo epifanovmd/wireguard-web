@@ -846,10 +846,10 @@ export const UIPage = () => {
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() => {
-                  const id = modal.openModal({
+                onClick={() =>
+                  modal.openModal({
                     size: "md",
-                    content: (
+                    content: ({ onClose }) => (
                       <>
                         <ModalHeader>
                           <ModalTitle>Custom Modal</ModalTitle>
@@ -865,14 +865,14 @@ export const UIPage = () => {
                           </p>
                         </ModalBody>
                         <ModalFooter>
-                          <Button variant="outline" size="sm" onClick={() => modal.closeModal(id)}>
+                          <Button variant="outline" size="sm" onClick={onClose}>
                             Close
                           </Button>
                         </ModalFooter>
                       </>
                     ),
-                  });
-                }}
+                  })
+                }
               >
                 Open Custom
               </Button>

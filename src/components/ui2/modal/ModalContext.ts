@@ -1,7 +1,14 @@
 import * as React from "react";
 
+export interface ModalRenderProps {
+  id: string;
+  onClose: () => void;
+}
+
+export type ModalContent = React.ReactNode | ((props: ModalRenderProps) => React.ReactNode);
+
 export interface ModalOptions {
-  content: React.ReactNode;
+  content: ModalContent;
   size?: "sm" | "md" | "lg" | "xl" | "full";
   position?: "center" | "top" | "bottom";
   disableInteractOutside?: boolean;
