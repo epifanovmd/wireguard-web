@@ -14,9 +14,10 @@ import {
   Trash2,
   User,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
+  AsyncSelect,
   Badge,
   Button,
   Card,
@@ -36,6 +37,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   Empty,
+  GroupedSelect,
   IconButton,
   Input,
   Modal,
@@ -47,8 +49,6 @@ import {
   ModalTitle,
   Pagination,
   Segmented,
-  AsyncSelect,
-  GroupedSelect,
   Select,
   Spinner,
   Switch,
@@ -215,8 +215,6 @@ const tableColumns: ColumnDef<Transaction>[] = [
 ];
 
 export const UIPage = () => {
-  const [buttonVariant, setButtonVariant] = useState<any>("default");
-  const [inputValue, setInputValue] = useState("");
   const [switchChecked, setSwitchChecked] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [selectedTab, setSelectedTab] = useState("tab1");
@@ -240,36 +238,6 @@ export const UIPage = () => {
     "outline",
     "ghost",
   ];
-
-  const [countries, setCountries] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetchCountries().then(setCountries);
-    fetchCities().then(setCities);
-  }, []);
-
-  // Dynamic loading example
-  const [dynamicOptions, setDynamicOptions] = useState<string[]>([]);
-  const [isLoadingDynamic, setIsLoadingDynamic] = useState(false);
-  const [hasLoadedDynamic, setHasLoadedDynamic] = useState(false);
-
-  const handleDynamicOpen = (open: boolean) => {
-    if (open && !hasLoadedDynamic) {
-      setIsLoadingDynamic(true);
-      setTimeout(() => {
-        setDynamicOptions([
-          "Option A",
-          "Option B",
-          "Option C",
-          "Option D",
-          "Option E",
-        ]);
-        setIsLoadingDynamic(false);
-        setHasLoadedDynamic(true);
-      }, 1500);
-    }
-  };
 
   // Load on first open
   const [lazyOptions, setLazyOptions] = useState<string[]>([]);
@@ -580,7 +548,7 @@ export const UIPage = () => {
                 Выпадающие списки
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="flex flex-col gap-2">
               {/* Select — flat */}
               <Select
                 options={[
@@ -646,7 +614,9 @@ export const UIPage = () => {
                       <Select.Loading />
                     ) : lazyOptions.length > 0 ? (
                       lazyOptions.map(o => (
-                        <Select.Item key={o} value={o}>{o}</Select.Item>
+                        <Select.Item key={o} value={o}>
+                          {o}
+                        </Select.Item>
                       ))
                     ) : (
                       <Select.Empty>No items found</Select.Empty>
