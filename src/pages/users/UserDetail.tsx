@@ -64,7 +64,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
       }
     };
 
-    if (store.userHolder.isLoading) {
+    if (!store.userHolder.isReady && !store.userHolder.isError) {
       return (
         <div className="flex flex-col h-full">
           <PageHeader

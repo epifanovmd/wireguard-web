@@ -84,7 +84,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     const peer = store.peer;
     const model = store.peerModel;
 
-    if (store.peerHolder.isLoading) {
+    if (!store.peerHolder.isReady && !store.peerHolder.isError) {
       return (
         <div className="flex flex-col h-full">
           <PageHeader

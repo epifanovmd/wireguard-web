@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { type LinkProps } from "@tanstack/react-router";
 import {
   BarChart3,
   Grid2x2,
@@ -15,11 +15,14 @@ import { observer } from "mobx-react-lite";
 import React, { FC, ReactNode, useState } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
-import { ThemeToggle } from "~@components/ui2";
+import { Button, ThemeToggle } from "~@components/ui2";
+import { cn } from "~@components/ui2/cn";
 import { useProfileDataStore } from "~@store";
 
+import { ButtonLink } from "../../ui2/button";
+
 interface NavItem {
-  to: string;
+  to: LinkProps["to"];
   label: string;
   icon: ReactNode;
   badge?: number;
@@ -32,78 +35,64 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    items: [{ to: "/", label: "Dashboard", icon: <Grid2x2 size={18} /> }],
+    items: [{ to: "/", label: "Dashboard", icon: <Grid2x2 size={17} /> }],
   },
   {
     label: "Management",
-    items: [{ to: "/users", label: "Users", icon: <Users size={18} /> }],
+    items: [{ to: "/users", label: "Users", icon: <Users size={17} /> }],
   },
   {
     label: "WireGuard VPN",
     items: [
-      { to: "/wireguard/servers", label: "Servers", icon: <Server size={18} /> },
-      { to: "/wireguard/peers", label: "Peers", icon: <Zap size={18} /> },
-      { to: "/wireguard/stats", label: "Statistics", icon: <BarChart3 size={18} /> },
+      {
+        to: "/wireguard/servers",
+        label: "Servers",
+        icon: <Server size={17} />,
+      },
+      { to: "/wireguard/peers", label: "Peers", icon: <Zap size={17} /> },
+      {
+        to: "/wireguard/stats",
+        label: "Statistics",
+        icon: <BarChart3 size={17} />,
+      },
     ],
   },
   {
     items: [
-      { to: "/settings", label: "Settings", icon: <Settings size={18} /> },
+      { to: "/settings", label: "Settings", icon: <Settings size={17} /> },
     ],
   },
 ];
 
-const NavItemComponent: FC<{ item: NavItem; onClick?: () => void }> = ({ item, onClick }) => {
-  const state = useRouterState();
-  const currentPath = state.location.pathname;
-  const isActive =
-    item.to === "/" ? currentPath === "/" : currentPath.startsWith(item.to);
-
-  return (
-    <Link
-      to={item.to as any}
-      onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
-        isActive
-          ? "bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)] font-medium"
-          : "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-primary-foreground)]"
-      }`}
-    >
-      <span className="flex-shrink-0">{item.icon}</span>
-      <span>{item.label}</span>
-      {item.badge !== undefined && item.badge > 0 && (
-        <span className="ml-auto bg-[#6366f1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-          {item.badge > 99 ? "99+" : item.badge}
-        </span>
-      )}
-    </Link>
-  );
-};
-
 interface NavContentProps {
   onSignOut: () => void;
-  onNavClick?: () => void;
   displayName: string;
   initials: string;
 }
 
-export const NavContent: FC<NavContentProps> = ({ onSignOut, onNavClick, displayName, initials }) => (
+export const NavContent: FC<NavContentProps> = ({
+  onSignOut,
+  displayName,
+  initials,
+}) => (
   <div className="flex flex-col h-full">
     {/* Logo */}
-    <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[rgba(255,255,255,0.06)]">
-      <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0">
-        <ShieldCheck size={16} className="text-white" />
+    <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[var(--sidebar-border)]">
+      <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+        <ShieldCheck size={15} className="text-white" />
       </div>
       <div>
-        <p className="text-[var(--sidebar-primary-foreground)] text-sm font-semibold leading-none">
+        <p className="text-[var(--sidebar-foreground)] text-sm font-semibold leading-none">
           WireGuard
         </p>
-        <p className="text-[var(--muted-foreground)] text-xs mt-0.5">Admin Panel</p>
+        <p className="text-[var(--muted-foreground)] text-[11px] mt-0.5">
+          Admin Panel
+        </p>
       </div>
     </div>
 
     {/* Nav */}
-    <nav className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-5">
+    <nav className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-4">
       {NAV_GROUPS.map((group, gi) => (
         <div key={gi} className="flex flex-col gap-0.5">
           {group.label && (
@@ -112,7 +101,14 @@ export const NavContent: FC<NavContentProps> = ({ onSignOut, onNavClick, display
             </p>
           )}
           {group.items.map(item => (
-            <NavItemComponent key={item.to} item={item} onClick={onNavClick} />
+            <ButtonLink
+              to={item.to}
+              size="sm"
+              leftIcon={item.icon}
+              className={"justify-start"}
+            >
+              {item.label}
+            </ButtonLink>
           ))}
         </div>
       ))}
@@ -120,24 +116,29 @@ export const NavContent: FC<NavContentProps> = ({ onSignOut, onNavClick, display
     </nav>
 
     {/* User area */}
-    <div className="px-3 py-3 border-t border-[rgba(255,255,255,0.06)]">
-      <div className="flex items-center gap-2.5 px-2 py-2">
+    <div className="px-2 py-2 border-t border-[var(--sidebar-border)]">
+      <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg mb-0.5">
         <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
           {initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-[var(--sidebar-primary-foreground)] truncate">
+          <p className="text-xs font-medium text-[var(--sidebar-foreground)] truncate">
             {displayName}
           </p>
         </div>
       </div>
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={onSignOut}
-        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[#ef4444] transition-all duration-150 mt-0.5 cursor-pointer"
+        className={cn(
+          "w-full justify-start gap-2.5 font-normal",
+          "hover:bg-[var(--sidebar-accent)] hover:text-destructive",
+        )}
       >
-        <LogOut size={18} />
+        <LogOut size={15} className="opacity-70" />
         <span>Sign out</span>
-      </button>
+      </Button>
     </div>
   </div>
 );
@@ -151,7 +152,8 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const displayName =
-    [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") || "Admin";
+    [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") ||
+    "Admin";
   const initials =
     [profile?.firstName, profile?.lastName]
       .filter(Boolean)
@@ -162,7 +164,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="w-56 flex-shrink-0 h-screen hidden md:flex flex-col bg-[var(--sidebar)] border-r border-[rgba(255,255,255,0.06)]">
+      <aside className="w-56 flex-shrink-0 h-screen hidden md:flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)]">
         <NavContent
           onSignOut={onSignOut}
           displayName={displayName}
@@ -171,13 +173,20 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
       </aside>
 
       {/* Mobile hamburger */}
-      <button
-        className="md:hidden fixed top-3 left-3 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--sidebar)] border border-[rgba(255,255,255,0.1)] text-[var(--sidebar-foreground)] shadow-md cursor-pointer"
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "md:hidden fixed top-3 left-3 z-50 w-9 h-9 p-0",
+          "bg-[var(--sidebar)] border border-[var(--sidebar-border)]",
+          "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+          "shadow-sm",
+        )}
         onClick={() => setMobileOpen(true)}
         aria-label="Open menu"
       >
         <Menu size={18} />
-      </button>
+      </Button>
 
       {/* Mobile drawer (left-side) */}
       <DrawerPrimitive.Root
@@ -190,22 +199,27 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
             className="fixed inset-0 z-40 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-[var(--sidebar)] border-r border-[rgba(255,255,255,0.06)] outline-none">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(255,255,255,0.06)]">
-              <p className="text-[var(--sidebar-primary-foreground)] text-sm font-semibold">
+          <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] outline-none">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--sidebar-border)]">
+              <p className="text-[var(--sidebar-foreground)] text-sm font-semibold">
                 WireGuard Admin
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "w-7 h-7 p-0",
+                  "text-[var(--sidebar-foreground)]",
+                  "hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+                )}
                 onClick={() => setMobileOpen(false)}
-                className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] transition-colors cursor-pointer"
               >
-                <X size={16} />
-              </button>
+                <X size={15} />
+              </Button>
             </div>
             <div className="flex-1 overflow-y-auto">
               <NavContent
                 onSignOut={onSignOut}
-                onNavClick={() => setMobileOpen(false)}
                 displayName={displayName}
                 initials={initials}
               />

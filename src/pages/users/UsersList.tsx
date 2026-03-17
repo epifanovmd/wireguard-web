@@ -124,7 +124,7 @@ export const UsersList: FC = observer(() => {
             columns={columns}
             data={filtered}
             getRowId={u => u.data.userId}
-            loading={store.isLoading}
+            loading={!store.listHolder.isReady && !store.listHolder.isError}
             empty={
               <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
                 No users found

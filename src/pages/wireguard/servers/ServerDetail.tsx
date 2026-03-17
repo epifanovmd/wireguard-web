@@ -95,7 +95,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   const peerCount = liveSocketStatus?.peerCount ?? liveStatus?.peerCount;
   const activePeerCount = liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;
 
-  if (store.isLoading) {
+  if (!store.serverHolder.isReady && !store.serverHolder.isError) {
     return (
       <div className="flex flex-col h-full">
         <PageHeader

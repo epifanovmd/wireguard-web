@@ -301,7 +301,7 @@ export const PeersList: FC = observer(() => {
             columns={columns}
             data={filtered}
             getRowId={p => p.data.id}
-            loading={store.isLoading}
+            loading={!store.listHolder.isReady && !store.listHolder.isError}
             empty={
               <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
                 No peers found — add peers or adjust filters

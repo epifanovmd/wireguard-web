@@ -192,7 +192,7 @@ export const ServersList: FC = observer(() => {
         }
       />
       <div className="p-4 sm:p-6">
-        {store.isLoading ? (
+        {!store.listHolder.isReady && !store.listHolder.isError ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>
