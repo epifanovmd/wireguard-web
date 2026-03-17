@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 
-import { Badge } from "~@components";
+import { Badge } from "~@components/ui2";
 
 interface PeerStatusBadgeProps {
   enabled: boolean;

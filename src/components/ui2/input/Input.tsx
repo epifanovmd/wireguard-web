@@ -3,6 +3,7 @@ import { Eye, EyeOff, Loader2, X } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../cn";
+import { Field } from "../form/Field";
 import { inputVariants } from "./inputVariants";
 
 export interface InputProps
@@ -13,6 +14,11 @@ export interface InputProps
   clearable?: boolean;
   onClear?: () => void;
   loading?: boolean;
+  label?: React.ReactNode;
+  error?: string;
+  hint?: string;
+  description?: string;
+  wrapperClassName?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -29,6 +35,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       loading,
       value,
       onChange,
+      label,
+      error,
+      hint,
+      description,
+      wrapperClassName,
+      required,
       ...props
     },
     ref,
@@ -58,7 +70,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const showClearButton = clearable && internalValue && !loading;
     const showPasswordToggle = isPassword && internalValue;
 
-    return (
+    const inputEl = (
       <div className="relative w-full">
         {leftIcon && (
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -70,12 +82,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             inputVariants({ size, variant }),
             leftIcon && "pl-10",
-            (rightIcon || showClearButton || showPasswordToggle || loading) &&
-              "pr-10",
+            (rightIcon || showClearButton || showPasswordToggle || loading) && "pr-10",
+            error && "border-destructive focus:ring-destructive/30",
             className,
           )}
           ref={ref}
           value={value}
+          required={required}
           onChange={handleChange}
           {...props}
         />
@@ -113,6 +126,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
       </div>
     );
+
+    if (label || error || hint || description) {
+      return (
+        <Field
+          label={label}
+          error={error}
+          hint={hint}
+          description={description}
+          required={required}
+          className={wrapperClassName}
+        >
+          {inputEl}
+        </Field>
+      );
+    }
+
+    return wrapperClassName ? (
+      <div className={wrapperClassName}>{inputEl}</div>
+    ) : inputEl;
   },
 );
 Input.displayName = "Input";

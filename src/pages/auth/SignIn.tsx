@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { AuthLayout, Button, Card, Input } from "~@components";
+import { AuthLayout } from "~@components/layouts";
+import { Button, Card, Input } from "~@components/ui2";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
@@ -18,8 +18,6 @@ type FormData = z.infer<typeof schema>;
 
 export const SignIn = observer(() => {
   const session = useSessionDataStore();
-  const [showPassword, setShowPassword] = React.useState(false);
-
   const navigate = useNavigate();
 
   const {
@@ -33,29 +31,23 @@ export const SignIn = observer(() => {
   const onSubmit = async (data: FormData) => {
     await session.signIn({ login: data.login, password: data.password });
     if (session.isAuthorized) {
-      onSuccess();
+      navigate({ to: "/" });
     }
   };
 
-  const onSuccess = () => navigate({ to: "/" });
-
   return (
     <AuthLayout>
-      <Card>
+      <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">
-            Sign in
-          </h2>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">Sign in</h2>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
             Enter your credentials to access the admin panel
           </p>
         </div>
 
         {session.lastError && (
-          <div className="mb-4 px-4 py-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {session.lastError}
-            </p>
+          <div className="mb-4 px-4 py-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-sm text-destructive">{session.lastError}</p>
           </div>
         )}
 
@@ -68,18 +60,9 @@ export const SignIn = observer(() => {
           />
           <Input
             label="Password"
-            type={showPassword ? "text" : "password"}
+            type="password"
             placeholder="••••••••"
             error={errors.password?.message}
-            rightIcon={
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            }
             {...register("password")}
           />
 
@@ -92,7 +75,7 @@ export const SignIn = observer(() => {
             </Link>
           </div>
 
-          <Button type="submit" loading={session.isLoading}>
+          <Button type="submit" loading={session.isLoading} className="w-full">
             Sign in
           </Button>
         </form>

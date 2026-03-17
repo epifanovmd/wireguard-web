@@ -13,19 +13,34 @@ import {
 } from "recharts";
 
 import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
+import { PageHeader } from "~@components/layouts";
 import {
   Badge,
   Card,
-  PageHeader,
+  type ColumnDef,
   Spinner,
   StatCard,
   Table,
-  TableColumn,
-} from "~@components";
+} from "~@components/ui2";
 import { useServersDataStore } from "~@store";
 
 import { useWgOverview } from "../../socket";
 import { formatSpeed } from "./dashboard.helpers";
+
+function ServerStatusBadge({ status }: { status: string }) {
+  const map: Record<string, { variant: any; label: string }> = {
+    up: { variant: "success", label: "Up" },
+    down: { variant: "gray", label: "Down" },
+    error: { variant: "danger", label: "Error" },
+    unknown: { variant: "default", label: "Unknown" },
+  };
+  const cfg = map[status] ?? map.unknown;
+  return (
+    <Badge variant={cfg.variant} dot>
+      {cfg.label}
+    </Badge>
+  );
+}
 
 export const Dashboard: FC = observer(() => {
   const servers = useServersDataStore();
@@ -57,41 +72,41 @@ export const Dashboard: FC = observer(() => {
     s => s.status === EWgServerStatus.Up,
   );
 
-  const serverColumns: TableColumn<WgServerDto>[] = [
+  const serverColumns: ColumnDef<WgServerDto>[] = [
     {
-      key: "name",
-      title: "Name",
-      render: (_, s) => (
-        <span className="font-medium text-[var(--foreground)]">{s.name}</span>
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <span className="font-medium text-[var(--foreground)]">{row.original.name}</span>
       ),
     },
     {
-      key: "interface",
-      title: "Interface",
-      render: (_, s) => (
+      accessorKey: "interface",
+      header: "Interface",
+      cell: ({ row }) => (
         <span className="font-mono text-[var(--muted-foreground)] text-xs">
-          {s.interface}
+          {row.original.interface}
         </span>
       ),
     },
     {
-      key: "status",
-      title: "Status",
-      render: (_, s) => <ServerStatusBadge status={s.status} />,
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => <ServerStatusBadge status={row.original.status} />,
     },
     {
-      key: "port",
-      title: "Port",
-      render: (_, s) => (
-        <span className="text-[var(--muted-foreground)]">{s.listenPort}</span>
+      accessorKey: "listenPort",
+      header: "Port",
+      cell: ({ row }) => (
+        <span className="text-[var(--muted-foreground)]">{row.original.listenPort}</span>
       ),
     },
     {
-      key: "endpoint",
-      title: "Endpoint",
-      render: (_, s) => (
+      accessorKey: "endpoint",
+      header: "Endpoint",
+      cell: ({ row }) => (
         <span className="text-[var(--muted-foreground)] text-xs">
-          {s.endpoint ?? "—"}
+          {row.original.endpoint ?? "—"}
         </span>
       ),
     },
@@ -100,9 +115,9 @@ export const Dashboard: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader title="Dashboard" subtitle="WireGuard VPN overview" />
-      <div className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
+      <div className="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
         {/* Stat cards */}
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             title="Total servers"
             value={servers.total}
@@ -134,60 +149,59 @@ export const Dashboard: FC = observer(() => {
         </div>
 
         {/* Live speed chart */}
-        <Card title="Live speed" subtitle="Real-time download / upload">
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height={192}>
-              <LineChart data={livePoints}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--border)"
-                />
-                <XAxis
-                  dataKey="t"
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                  tickFormatter={v => formatSpeed(v)}
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--card)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  formatter={(v: number, name: string) => [
-                    formatSpeed(v),
-                    name === "rx" ? "Download" : "Upload",
-                  ]}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="rx"
-                  stroke="#6366f1"
-                  strokeWidth={2}
-                  dot={false}
-                  name="rx"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="tx"
-                  stroke="#22c55e"
-                  strokeWidth={2}
-                  dot={false}
-                  name="tx"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex gap-4 mt-2">
-            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-              <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
-            </span>
-            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-              <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
-            </span>
+        <Card title="Live speed" description="Real-time download / upload" className="p-0">
+          <div className="p-5">
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height={192}>
+                <LineChart data={livePoints}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis
+                    dataKey="t"
+                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                    tickFormatter={v => formatSpeed(v)}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    formatter={(v: number, name: string) => [
+                      formatSpeed(v),
+                      name === "rx" ? "Download" : "Upload",
+                    ]}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="rx"
+                    stroke="#6366f1"
+                    strokeWidth={2}
+                    dot={false}
+                    name="rx"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="tx"
+                    stroke="#22c55e"
+                    strokeWidth={2}
+                    dot={false}
+                    name="tx"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex gap-4 mt-2">
+              <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+                <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+                <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
+              </span>
+            </div>
           </div>
         </Card>
 
@@ -199,7 +213,6 @@ export const Dashboard: FC = observer(() => {
               {activeServers.length} / {servers.total} active
             </Badge>
           }
-          padding="none"
         >
           {servers.isLoading ? (
             <div className="flex justify-center py-8">
@@ -209,8 +222,8 @@ export const Dashboard: FC = observer(() => {
             <Table
               columns={serverColumns}
               data={servers.servers}
-              rowKey={s => s.id}
-              emptyText="No servers configured"
+              getRowId={s => s.id}
+              empty={<div className="text-center py-8 text-[var(--muted-foreground)] text-sm">No servers configured</div>}
               onRowClick={s =>
                 navigate({
                   to: "/wireguard/servers/$serverId",
@@ -224,18 +237,3 @@ export const Dashboard: FC = observer(() => {
     </div>
   );
 });
-
-function ServerStatusBadge({ status }: { status: string }) {
-  const map: Record<string, { variant: any; label: string }> = {
-    up: { variant: "success", label: "Up" },
-    down: { variant: "gray", label: "Down" },
-    error: { variant: "danger", label: "Error" },
-    unknown: { variant: "default", label: "Unknown" },
-  };
-  const cfg = map[status] ?? map.unknown;
-  return (
-    <Badge variant={cfg.variant} dot>
-      {cfg.label}
-    </Badge>
-  );
-}

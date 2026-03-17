@@ -6,16 +6,23 @@ import { badgeVariants } from "./badgeVariants";
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  dot?: boolean;
+}
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, dot, children, ...props }, ref) => {
     return (
       <div
         className={cn(badgeVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {dot && (
+          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 flex-shrink-0" />
+        )}
+        {children}
+      </div>
     );
   },
 );

@@ -4,25 +4,28 @@ import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import { PageHeader } from "~@components/layouts";
 import {
   Badge,
   Button,
   Card,
   Empty,
   Modal,
-  PageHeader,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
   Spinner,
   useConfirm,
-} from "~@components";
-import { useToast } from "~@components";
+  useToast,
+} from "~@components/ui2";
 import { ServerModel } from "~@models";
 import { useServersDataStore } from "~@store";
 
 import { useWgServer } from "../../../socket";
 import { ServerForm } from "./components/ServerForm";
 import { ServerStatusBadge } from "./components/ServerStatusBadge";
-
-// ─── ServerCard — subscribes to live socket status per server ─────────────────
 
 interface ServerCardProps {
   server: ServerModel;
@@ -34,20 +37,14 @@ interface ServerCardProps {
   onView: (id: string) => void;
 }
 
-const ServerCard: FC<ServerCardProps> = ({
-  server,
-  loading,
-  onAction,
-  onView,
-}) => {
+const ServerCard: FC<ServerCardProps> = ({ server, loading, onAction, onView }) => {
   const { status: liveStatus } = useWgServer(server.data.id);
   const effectiveStatus = liveStatus?.status ?? server.data.status;
   const isDown = effectiveStatus === "down" || effectiveStatus === "error";
 
   return (
     <Card
-      padding="md"
-      className="hover:shadow-md transition-shadow cursor-pointer"
+      className="hover:shadow-md transition-shadow cursor-pointer p-5"
       onClick={() => onView(server.data.id)}
     >
       <div className="flex items-start justify-between gap-3">
@@ -72,9 +69,7 @@ const ServerCard: FC<ServerCardProps> = ({
             {liveStatus && (
               <>
                 <span>·</span>
-                <span>
-                  {liveStatus.activePeerCount}/{liveStatus.peerCount} peers
-                </span>
+                <span>{liveStatus.activePeerCount}/{liveStatus.peerCount} peers</span>
               </>
             )}
           </div>
@@ -98,44 +93,42 @@ const ServerCard: FC<ServerCardProps> = ({
         {isDown ? (
           <Button
             loading={loading === "start"}
-            size="compact-sm"
-            variant={"light"}
+            size="sm"
+            variant="ghost"
             onClick={() => onAction(server.data.id, "start")}
           >
-            <Play className={"hover:text-[#16a34a]"} size={15} />
+            <Play size={15} className="text-success" />
           </Button>
         ) : (
           <Button
             loading={loading === "stop"}
-            size="compact-sm"
-            variant={"light"}
+            size="sm"
+            variant="ghost"
             onClick={() => onAction(server.data.id, "stop")}
           >
-            <Square className={"hover:text-[#ca8a04]"} size={15} />
+            <Square size={15} className="text-warning" />
           </Button>
         )}
         <Button
           loading={loading === "restart"}
-          size="compact-sm"
-          variant={"light"}
+          size="sm"
+          variant="ghost"
           onClick={() => onAction(server.data.id, "restart")}
         >
           <RotateCcw size={15} />
         </Button>
         <Button
           loading={loading === "delete"}
-          size="compact-sm"
-          variant={"light"}
+          size="sm"
+          variant="ghost"
           onClick={() => onAction(server.data.id, "delete")}
         >
-          <Trash2 className={"hover:text-[#ef4444]"} size={15} />
+          <Trash2 size={15} className="text-destructive" />
         </Button>
       </div>
     </Card>
   );
 };
-
-// ─── ServersList ──────────────────────────────────────────────────────────────
 
 export const ServersList: FC = observer(() => {
   const store = useServersDataStore();
@@ -143,9 +136,7 @@ export const ServersList: FC = observer(() => {
   const confirm = useConfirm();
   const toast = useToast();
   const [createOpen, setCreateOpen] = useState(false);
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
-    {},
-  );
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
 
   useEffect(() => {
     store.loadServers().then();
@@ -200,7 +191,7 @@ export const ServersList: FC = observer(() => {
           <Button onClick={() => setCreateOpen(true)}>Add server</Button>
         }
       />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {store.isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />
@@ -209,7 +200,7 @@ export const ServersList: FC = observer(() => {
           <Empty
             title="No servers"
             description="Add your first WireGuard server to get started"
-            action={{ label: "Add server", onClick: () => setCreateOpen(true) }}
+            action={<Button onClick={() => setCreateOpen(true)}>Add server</Button>}
           />
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -231,25 +222,28 @@ export const ServersList: FC = observer(() => {
         )}
       </div>
 
-      <Modal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        title="Add server"
-        size="lg"
-      >
-        <ServerForm
-          loading={false}
-          onCancel={() => setCreateOpen(false)}
-          onSubmit={async data => {
-            const res = await store.createServer(data as any);
-            if (res.error) {
-              toast.error(res.error.message);
-            } else {
-              toast.success("Server created");
-              setCreateOpen(false);
-            }
-          }}
-        />
+      <Modal open={createOpen} onOpenChange={open => !open && setCreateOpen(false)}>
+        <ModalOverlay />
+        <ModalContent className="max-w-lg">
+          <ModalHeader>
+            <ModalTitle>Add server</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
+            <ServerForm
+              loading={false}
+              onCancel={() => setCreateOpen(false)}
+              onSubmit={async data => {
+                const res = await store.createServer(data as any);
+                if (res.error) {
+                  toast.error(res.error.message);
+                } else {
+                  toast.success("Server created");
+                  setCreateOpen(false);
+                }
+              }}
+            />
+          </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   );

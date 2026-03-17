@@ -5,7 +5,19 @@ import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
-import { Button, Input, Modal, Select, useToast } from "~@components";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
+  Select,
+  useToast,
+} from "~@components/ui2";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
 
@@ -25,13 +37,13 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-interface CreateUserDrawerProps {
+interface CreateUserModalProps {
   open: boolean;
   onClose: () => void;
   onCreated: () => void;
 }
 
-export const CreateUserModal: FC<CreateUserDrawerProps> = ({
+export const CreateUserModal: FC<CreateUserModalProps> = ({
   open,
   onClose,
   onCreated,
@@ -78,66 +90,67 @@ export const CreateUserModal: FC<CreateUserDrawerProps> = ({
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Create user"
-      size="lg"
-      footer={
-        <>
-          <Button variant="secondary" onClick={onClose}>
+    <Modal open={open} onOpenChange={open => !open && onClose()}>
+      <ModalOverlay />
+      <ModalContent className="max-w-lg">
+        <ModalHeader>
+          <ModalTitle>Create user</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <form className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="First name" {...register("firstName")} />
+              <Input label="Last name" {...register("lastName")} />
+            </div>
+            <Input
+              label="Email"
+              type="email"
+              placeholder="user@example.com"
+              error={errors.email?.message}
+              {...register("email")}
+            />
+            <Input label="Phone" placeholder="+1234567890" {...register("phone")} />
+            <Input
+              label="Password"
+              type="password"
+              required
+              error={errors.password?.message}
+              {...register("password")}
+            />
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  options={[
+                    { value: ERole.Admin, label: "Admin" },
+                    { value: ERole.User, label: "User" },
+                    { value: ERole.Guest, label: "Guest" },
+                  ]}
+                  value={field.value}
+                  onValueChange={v => field.onChange(v ?? ERole.User)}
+                  placeholder="Select role"
+                />
+              )}
+            />
+
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)] mb-3">
+                Permissions
+              </p>
+              <PermissionsEditor value={permissions} onChange={setPermissions} />
+            </div>
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button loading={loading} onClick={handleSubmit(onSubmit)}>
             Create
           </Button>
-        </>
-      }
-    >
-      <form className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3">
-          <Input label="First name" {...register("firstName")} />
-          <Input label="Last name" {...register("lastName")} />
-        </div>
-        <Input
-          label="Email"
-          type="email"
-          placeholder="user@example.com"
-          error={errors.email?.message}
-          {...register("email")}
-        />
-        <Input label="Phone" placeholder="+1234567890" {...register("phone")} />
-        <Input
-          label="Password"
-          type="password"
-          required
-          error={errors.password?.message}
-          {...register("password")}
-        />
-        <Controller
-          name="role"
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="Role"
-              data={[
-                { value: ERole.Admin, label: "Admin" },
-                { value: ERole.User, label: "User" },
-                { value: ERole.Guest, label: "Guest" },
-              ]}
-              value={field.value}
-              onChange={v => field.onChange(v ?? ERole.User)}
-            />
-          )}
-        />
-
-        <div>
-          <p className="text-sm font-medium text-[var(--foreground)] mb-3">
-            Permissions
-          </p>
-          <PermissionsEditor value={permissions} onChange={setPermissions} />
-        </div>
-      </form>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 };

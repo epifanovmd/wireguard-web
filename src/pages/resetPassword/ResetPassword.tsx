@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
-import { AuthLayout, Button, Card, Input } from "~@components";
+import { AuthLayout } from "~@components/layouts";
+import { Button, Card, Input } from "~@components/ui2";
 
 const schema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -71,7 +72,7 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
             error={errors.confirmPassword?.message}
             {...register("confirmPassword")}
           />
-          <Button type="submit" fullWidth loading={loading}>
+          <Button type="submit" className="w-full" loading={loading}>
             Set new password
           </Button>
         </form>

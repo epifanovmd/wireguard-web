@@ -5,7 +5,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { AuthLayout, Button, Card, Input } from "~@components";
+import { AuthLayout } from "~@components/layouts";
+import { Button, Card, Input } from "~@components/ui2";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
@@ -37,7 +38,7 @@ export const SignUp = observer(() => {
 
   return (
     <AuthLayout>
-      <Card>
+      <Card className="p-6">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
             Create account
@@ -62,7 +63,7 @@ export const SignUp = observer(() => {
             error={errors.password?.message}
             {...register("password")}
           />
-          <Button type="submit" loading={session.isLoading}>
+          <Button type="submit" loading={session.isLoading} className="w-full">
             Create account
           </Button>
         </form>

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import React, { memo } from "react";
 
-import { AppLayout } from "~@components";
+import { AppLayout } from "~@components/layouts";
 import { ISessionDataStore } from "~@store";
 
 const Component = memo(() => (

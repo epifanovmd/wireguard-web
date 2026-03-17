@@ -1,5 +1,3 @@
-import { SegmentedControl } from "@mantine/core";
-import { DatesRangeValue } from "@mantine/dates";
 import { formatISO, subDays, subHours } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
@@ -14,14 +12,17 @@ import {
   YAxis,
 } from "recharts";
 
+import { PageHeader } from "~@components/layouts";
 import {
   Button,
   Card,
+  type DateRange,
   DateRangePicker,
-  PageHeader,
+  Segmented,
   Select,
   Spinner,
-} from "~@components";
+  StatCard,
+} from "~@components/ui2";
 import { useServersDataStore, useStatsDataStore } from "~@store";
 
 import { formatBytes, formatSpeed } from "../../dashboard";
@@ -52,14 +53,13 @@ export const Stats: FC = observer(() => {
   const stats = useStatsDataStore();
   const [selectedServer, setSelectedServer] = useState("");
   const [preset, setPreset] = useState<Preset>("24h");
-  const [customRange, setCustomRange] = useState<DatesRangeValue<string>>([
-    null,
-    null,
-  ]);
+  const [customRange, setCustomRange] = useState<DateRange | undefined>(
+    undefined,
+  );
   const [loading, setLoading] = useState(false);
 
   const activeFrom =
-    preset !== "custom" ? getPresetRange(preset)[0] : customRange[0];
+    preset !== "custom" ? getPresetRange(preset)[0] : customRange?.from;
 
   useEffect(() => {
     serversStore.loadServers().then();
@@ -90,7 +90,7 @@ export const Stats: FC = observer(() => {
   const handlePresetChange = (val: string) => {
     setPreset(val as Preset);
     if (val !== "custom") {
-      setCustomRange([null, null]);
+      setCustomRange(undefined);
     }
   };
 
@@ -130,38 +130,32 @@ export const Stats: FC = observer(() => {
         title="Statistics"
         subtitle="WireGuard traffic and speed analytics"
       />
-      <div className="p-6 flex flex-col gap-6">
+      <div className="p-4 sm:p-6 flex flex-col gap-6">
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
           <Select
-            size="sm"
-            value={selectedServer}
-            onChange={v => setSelectedServer(v ?? "")}
-            data={serversStore.servers.map(s => ({
+            options={serversStore.servers.map(s => ({
               value: s.id,
               label: s.name,
             }))}
-            placeholder={"Выберете сервер"}
-            className="w-56"
+            value={selectedServer}
+            onValueChange={v => setSelectedServer(v ?? "")}
+            placeholder="Select server"
+            triggerClassName="w-48"
           />
-          <SegmentedControl
-            size="sm"
-            data={PRESETS}
+          <Segmented
+            options={PRESETS}
             value={preset}
-            className={
-              "!bg-[var(--mantine-color-white)] in-dark:!bg-[var(--mantine-color-dark-6)]"
-            }
             onChange={handlePresetChange}
           />
           {preset === "custom" && (
             <DateRangePicker
-              size="sm"
               value={customRange}
               onChange={setCustomRange}
-              maxDate={new Date()}
+              clearable
             />
           )}
-          <Button size="sm" variant="secondary" onClick={loadStats}>
+          <Button size="sm" variant="outline" onClick={loadStats}>
             Refresh
           </Button>
         </div>
@@ -177,50 +171,38 @@ export const Stats: FC = observer(() => {
         ) : (
           <>
             {/* Summary cards */}
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-              {[
-                {
-                  title: "Total RX",
-                  value: formatBytes(totalRx),
-                  subtitle: "selected period",
-                },
-                {
-                  title: "Total TX",
-                  value: formatBytes(totalTx),
-                  subtitle: "selected period",
-                },
-                {
-                  title: "Peak RX Speed",
-                  value: formatSpeed(maxRxSpeed),
-                  subtitle: "Max download",
-                },
-                {
-                  title: "Peak TX Speed",
-                  value: formatSpeed(maxTxSpeed),
-                  subtitle: "Max upload",
-                },
-              ].map(item => (
-                <div
-                  key={item.title}
-                  className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5"
-                >
-                  <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">
-                    {item.title}
-                  </p>
-                  <p className="text-2xl font-bold text-[var(--foreground)] mt-2">
-                    {item.value}
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)] mt-1">
-                    {item.subtitle}
-                  </p>
-                </div>
-              ))}
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+              <StatCard
+                title="Total RX"
+                value={formatBytes(totalRx)}
+                subtitle="Selected period"
+                color="info"
+              />
+              <StatCard
+                title="Total TX"
+                value={formatBytes(totalTx)}
+                subtitle="Selected period"
+                color="success"
+              />
+              <StatCard
+                title="Peak RX Speed"
+                value={formatSpeed(maxRxSpeed)}
+                subtitle="Max download"
+                color="purple"
+              />
+              <StatCard
+                title="Peak TX Speed"
+                value={formatSpeed(maxTxSpeed)}
+                subtitle="Max upload"
+                color="warning"
+              />
             </div>
 
             {/* Traffic chart */}
             <Card
               title="Traffic"
-              subtitle="Cumulative bytes transferred over time"
+              description="Cumulative bytes transferred over time"
+              className="p-5"
             >
               <div className="h-56">
                 <ResponsiveContainer width="100%" height={224}>
@@ -276,7 +258,8 @@ export const Stats: FC = observer(() => {
             {/* Speed chart */}
             <Card
               title="Speed"
-              subtitle="Instantaneous transfer speed over time"
+              description="Instantaneous transfer speed over time"
+              className="p-5"
             >
               <div className="h-48">
                 <ResponsiveContainer width="100%" height={192}>

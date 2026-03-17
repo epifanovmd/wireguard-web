@@ -13,19 +13,28 @@ import {
   YAxis,
 } from "recharts";
 
+import { PageHeader } from "~@components/layouts";
 import {
   Badge,
   Button,
   Card,
   CopyableText,
+  IconButton,
   Modal,
-  PageHeader,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
   Spinner,
   StatCard,
   Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   useConfirm,
   useToast,
-} from "~@components";
+} from "~@components/ui2";
 import { usePeersDataStore, useStatsDataStore } from "~@store";
 
 import { useWgPeer } from "../../../socket";
@@ -135,31 +144,38 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           ]}
           actions={
             <div className="flex items-center gap-1">
-              <button
+              <IconButton
                 title="QR / Config"
-                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
+                variant="ghost"
+                size="sm"
                 onClick={() => setQrOpen(true)}
               >
-                <QrCode size={17} />
-              </button>
-              <button
+                <QrCode size={17} className="text-[#6366f1]" />
+              </IconButton>
+              <IconButton
                 title={peer.enabled ? "Disable" : "Enable"}
-                className={`cursor-pointer p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--muted-foreground)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--muted-foreground)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+                variant="ghost"
+                size="sm"
                 disabled={toggling}
                 onClick={handleToggle}
               >
-                <Power size={17} />
-              </button>
-              <button
+                <Power
+                  size={17}
+                  className={peer.enabled ? "text-warning" : "text-success"}
+                />
+              </IconButton>
+              <IconButton
                 title="Edit"
-                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--foreground)] transition-colors"
+                variant="ghost"
+                size="sm"
                 onClick={() => setEditOpen(true)}
               >
                 <Pencil size={17} />
-              </button>
-              <button
+              </IconButton>
+              <IconButton
                 title="Delete"
-                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+                variant="ghost"
+                size="sm"
                 onClick={async () => {
                   const ok = await confirm({
                     title: "Delete peer",
@@ -175,13 +191,13 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                   }
                 }}
               >
-                <Trash2 size={17} />
-              </button>
+                <Trash2 size={17} className="text-destructive" />
+              </IconButton>
             </div>
           }
         />
 
-        <div className="p-6 flex flex-col gap-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
           {/* Status strip */}
           <div className="flex items-center gap-3 flex-wrap">
             <PeerStatusBadge
@@ -214,8 +230,8 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             )}
           </div>
 
-          {/* Live stat cards — prefer socket data, fallback to REST latest */}
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+          {/* Live stat cards */}
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Total RX"
               value={formatBytes(liveStats?.rxBytes ?? latest?.rxBytes ?? 0)}
@@ -246,269 +262,266 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             />
           </div>
 
-          <Tabs
-            items={[
-              {
-                key: "live",
-                label: "Live speed",
-                children: (
-                  <Card title="Live speed" subtitle="Real-time RX / TX">
-                    <div className="h-48">
-                      <ResponsiveContainer width="100%" height={192}>
-                        <LineChart data={liveSpeedPoints}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="var(--border)"
-                          />
-                          <XAxis
-                            dataKey="t"
-                            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                            tickFormatter={v => formatSpeed(v)}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              background: "var(--card)",
-                              border: "1px solid var(--border)",
-                              borderRadius: 8,
-                              fontSize: 12,
-                            }}
-                            formatter={(v: number, name: string) => [
-                              formatSpeed(v),
-                              name === "rx" ? "Download" : "Upload",
-                            ]}
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="rx"
-                            stroke="#6366f1"
-                            strokeWidth={2}
-                            dot={false}
-                            name="rx"
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="tx"
-                            stroke="#22c55e"
-                            strokeWidth={2}
-                            dot={false}
-                            name="tx"
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="flex gap-4 mt-2">
-                      <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                        <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
-                        Download
-                      </span>
-                      <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                        <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
-                        Upload
-                      </span>
-                    </div>
-                  </Card>
-                ),
-              },
-              {
-                key: "traffic",
-                label: "Traffic",
-                children: (
-                  <div className="flex flex-col gap-4">
-                    <Card title="Traffic history">
-                      <div className="h-48">
-                        <ResponsiveContainer width="100%" height={192}>
-                          <AreaChart data={trafficData}>
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                              stroke="var(--border)"
-                            />
-                            <XAxis
-                              dataKey="time"
-                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                            />
-                            <YAxis
-                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                              tickFormatter={v => formatBytes(v)}
-                            />
-                            <Tooltip
-                              contentStyle={{
-                                background: "var(--card)",
-                                border: "1px solid var(--border)",
-                                borderRadius: 8,
-                                fontSize: 12,
-                              }}
-                              formatter={(v: number, name: string) => [
-                                formatBytes(v),
-                                name === "rx" ? "Download" : "Upload",
-                              ]}
-                            />
-                            <Area
-                              type="monotone"
-                              dataKey="rx"
-                              stroke="#6366f1"
-                              fill="#6366f120"
-                              strokeWidth={2}
-                              name="rx"
-                            />
-                            <Area
-                              type="monotone"
-                              dataKey="tx"
-                              stroke="#22c55e"
-                              fill="#22c55e20"
-                              strokeWidth={2}
-                              name="tx"
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </Card>
-                    <Card title="Speed history">
-                      <div className="h-40">
-                        <ResponsiveContainer width="100%" height={160}>
-                          <LineChart data={speedData}>
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                              stroke="var(--border)"
-                            />
-                            <XAxis
-                              dataKey="time"
-                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                            />
-                            <YAxis
-                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                              tickFormatter={v => formatSpeed(v)}
-                            />
-                            <Tooltip
-                              contentStyle={{
-                                background: "var(--card)",
-                                border: "1px solid var(--border)",
-                                borderRadius: 8,
-                                fontSize: 12,
-                              }}
-                              formatter={(v: number, name: string) => [
-                                formatSpeed(v),
-                                name === "rx" ? "Download" : "Upload",
-                              ]}
-                            />
-                            <Line
-                              type="monotone"
-                              dataKey="rx"
-                              stroke="#6366f1"
-                              strokeWidth={2}
-                              dot={false}
-                              name="rx"
-                            />
-                            <Line
-                              type="monotone"
-                              dataKey="tx"
-                              stroke="#22c55e"
-                              strokeWidth={2}
-                              dot={false}
-                              name="tx"
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </Card>
-                  </div>
-                ),
-              },
-              {
-                key: "config",
-                label: "Configuration",
-                children: (
-                  <Card title="Peer configuration" padding="md">
-                    <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                      {[
-                        ["Allowed IPs", peer.allowedIPs],
-                        ["Client IPs", peer.clientAllowedIPs],
-                        ["Endpoint", peer.endpoint ?? "—"],
-                        [
-                          "Keepalive",
-                          peer.persistentKeepalive
-                            ? `${peer.persistentKeepalive}s`
-                            : "—",
-                        ],
-                        ["DNS", peer.dns ?? "—"],
-                        ["MTU", peer.mtu ? String(peer.mtu) : "—"],
-                        ["PSK", peer.hasPresharedKey ? "Yes" : "No"],
-                        ["Expires", model.expiresAtFormatted ?? "Never"],
-                      ].map(([k, v]) => (
-                        <div key={k}>
-                          <dt className="text-xs text-[var(--muted-foreground)]">
-                            {k}
-                          </dt>
-                          <dd className="font-medium text-[var(--foreground)] mt-0.5">
-                            {v}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                    <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                      <p className="text-xs text-[var(--muted-foreground)] mb-1">
-                        Public Key
-                      </p>
-                      <CopyableText
-                        text={peer.publicKey}
-                        truncate={false}
-                        className="text-[var(--muted-foreground)]"
+          <Tabs defaultValue="live">
+            <TabsList>
+              <TabsTrigger value="live">Live speed</TabsTrigger>
+              <TabsTrigger value="traffic">Traffic</TabsTrigger>
+              <TabsTrigger value="config">Configuration</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="live">
+              <Card title="Live speed" description="Real-time RX / TX" className="mt-2 p-5">
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height={192}>
+                    <LineChart data={liveSpeedPoints}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="var(--border)"
                       />
+                      <XAxis
+                        dataKey="t"
+                        tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                        tickFormatter={v => formatSpeed(v)}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "var(--card)",
+                          border: "1px solid var(--border)",
+                          borderRadius: 8,
+                          fontSize: 12,
+                        }}
+                        formatter={(v: number, name: string) => [
+                          formatSpeed(v),
+                          name === "rx" ? "Download" : "Upload",
+                        ]}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="rx"
+                        stroke="#6366f1"
+                        strokeWidth={2}
+                        dot={false}
+                        name="rx"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="tx"
+                        stroke="#22c55e"
+                        strokeWidth={2}
+                        dot={false}
+                        name="tx"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex gap-4 mt-2">
+                  <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+                    <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
+                    Download
+                  </span>
+                  <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+                    <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
+                    Upload
+                  </span>
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="traffic">
+              <div className="flex flex-col gap-4 mt-2">
+                <Card title="Traffic history" className="p-5">
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height={192}>
+                      <AreaChart data={trafficData}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="var(--border)"
+                        />
+                        <XAxis
+                          dataKey="time"
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tickFormatter={v => formatBytes(v)}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
+                            borderRadius: 8,
+                            fontSize: 12,
+                          }}
+                          formatter={(v: number, name: string) => [
+                            formatBytes(v),
+                            name === "rx" ? "Download" : "Upload",
+                          ]}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="rx"
+                          stroke="#6366f1"
+                          fill="#6366f120"
+                          strokeWidth={2}
+                          name="rx"
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="tx"
+                          stroke="#22c55e"
+                          fill="#22c55e20"
+                          strokeWidth={2}
+                          name="tx"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+                <Card title="Speed history" className="p-5">
+                  <div className="h-40">
+                    <ResponsiveContainer width="100%" height={160}>
+                      <LineChart data={speedData}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="var(--border)"
+                        />
+                        <XAxis
+                          dataKey="time"
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tickFormatter={v => formatSpeed(v)}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
+                            borderRadius: 8,
+                            fontSize: 12,
+                          }}
+                          formatter={(v: number, name: string) => [
+                            formatSpeed(v),
+                            name === "rx" ? "Download" : "Upload",
+                          ]}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="rx"
+                          stroke="#6366f1"
+                          strokeWidth={2}
+                          dot={false}
+                          name="rx"
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="tx"
+                          stroke="#22c55e"
+                          strokeWidth={2}
+                          dot={false}
+                          name="tx"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="config">
+              <Card title="Peer configuration" className="mt-2 p-5">
+                <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                  {[
+                    ["Allowed IPs", peer.allowedIPs],
+                    ["Client IPs", peer.clientAllowedIPs],
+                    ["Endpoint", peer.endpoint ?? "—"],
+                    [
+                      "Keepalive",
+                      peer.persistentKeepalive
+                        ? `${peer.persistentKeepalive}s`
+                        : "—",
+                    ],
+                    ["DNS", peer.dns ?? "—"],
+                    ["MTU", peer.mtu ? String(peer.mtu) : "—"],
+                    ["PSK", peer.hasPresharedKey ? "Yes" : "No"],
+                    ["Expires", model.expiresAtFormatted ?? "Never"],
+                  ].map(([k, v]) => (
+                    <div key={k}>
+                      <dt className="text-xs text-[var(--muted-foreground)]">
+                        {k}
+                      </dt>
+                      <dd className="font-medium text-[var(--foreground)] mt-0.5">
+                        {v}
+                      </dd>
                     </div>
-                    {peer.hasPresharedKey && (
-                      <div className="mt-4 flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={async () => {
-                            const res = await store.rotatePsk(peerId);
-                            if (res.error) toast.error(res.error.message);
-                            else toast.success("PSK rotated");
-                          }}
-                        >
-                          Rotate PSK
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={async () => {
-                            const res = await store.removePsk(peerId);
-                            if (res.error) toast.error(res.error.message);
-                            else toast.success("PSK removed");
-                          }}
-                        >
-                          Remove PSK
-                        </Button>
-                      </div>
-                    )}
-                  </Card>
-                ),
-              },
-            ]}
-          />
+                  ))}
+                </dl>
+                <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                  <p className="text-xs text-[var(--muted-foreground)] mb-1">
+                    Public Key
+                  </p>
+                  <CopyableText
+                    text={peer.publicKey}
+                    truncate={false}
+                    className="text-[var(--muted-foreground)]"
+                  />
+                </div>
+                {peer.hasPresharedKey && (
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={async () => {
+                        const res = await store.rotatePsk(peerId);
+                        if (res.error) toast.error(res.error.message);
+                        else toast.success("PSK rotated");
+                      }}
+                    >
+                      Rotate PSK
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={async () => {
+                        const res = await store.removePsk(peerId);
+                        if (res.error) toast.error(res.error.message);
+                        else toast.success("PSK removed");
+                      }}
+                    >
+                      Remove PSK
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
-        <Modal
-          open={editOpen}
-          onClose={() => setEditOpen(false)}
-          title="Edit peer"
-          size="lg"
-        >
-          <PeerForm
-            isEdit
-            defaultValues={peer}
-            onCancel={() => setEditOpen(false)}
-            onSubmit={async data => {
-              const res = await store.updatePeer(peerId, data as any);
-              if (res.error) toast.error(res.error.message);
-              else {
-                toast.success("Peer updated");
-                setEditOpen(false);
-              }
-            }}
-          />
+        <Modal open={editOpen} onOpenChange={open => !open && setEditOpen(false)}>
+          <ModalOverlay />
+          <ModalContent className="max-w-lg">
+            <ModalHeader>
+              <ModalTitle>Edit peer</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <PeerForm
+                isEdit
+                defaultValues={peer}
+                onCancel={() => setEditOpen(false)}
+                onSubmit={async data => {
+                  const res = await store.updatePeer(peerId, data as any);
+                  if (res.error) toast.error(res.error.message);
+                  else {
+                    toast.success("Peer updated");
+                    setEditOpen(false);
+                  }
+                }}
+              />
+            </ModalBody>
+          </ModalContent>
         </Modal>
 
         <QrCodeModal

@@ -76,6 +76,7 @@
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.55.0",
+    "react-hot-toast": "^2.6.0",
     "recharts": "^2.15.3",
     "reflect-metadata": "^0.2.2",
     "socket.io-client": "^4.8.1",

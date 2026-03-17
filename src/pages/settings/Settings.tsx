@@ -3,22 +3,33 @@ import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { useApi } from "~@api/hooks";
-import { Badge, Button, Card, Input, PageHeader, Tabs, Toggle, useToast } from "~@components";
-import { useProfileDataStore, useSessionDataStore } from "~@store";
+import { PageHeader } from "~@components/layouts";
+import {
+  Badge,
+  Card,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  useToast,
+} from "~@components/ui2";
 import { useTheme } from "~@theme";
 
 export const Settings: FC = observer(() => {
-  const profileStore = useProfileDataStore();
-  const session = useSessionDataStore();
-  const api = useApi();
   const toast = useToast();
-
   const { isDark, setTheme } = useTheme();
-  const [health, setHealth] = useState<{ uptime: number; dbStatus: string; version: string } | null>(null);
+  const [health, setHealth] = useState<{
+    uptime: number;
+    dbStatus: string;
+    version: string;
+  } | null>(null);
 
   useEffect(() => {
-    fetch("/health").then(r => r.json()).then(data => setHealth(data)).catch(() => {});
+    fetch("/health")
+      .then(r => r.json())
+      .then(data => setHealth(data))
+      .catch(() => {});
   }, []);
 
   const formatUptime = (seconds: number) => {
@@ -48,109 +59,171 @@ export const Settings: FC = observer(() => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Settings" subtitle="System configuration and information" />
-      <div className="p-6">
-        <Tabs items={[
-          {
-            key: "system",
-            label: "System",
-            children: (
-              <div className="flex flex-col gap-6 max-w-2xl">
-                {/* Theme */}
-                <Card title="Appearance" padding="md">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-[var(--foreground)]">Dark mode</p>
-                      <p className="text-xs text-[var(--muted-foreground)]">Toggle between light and dark theme</p>
-                    </div>
-                    <Toggle checked={isDark} onChange={v => setTheme(v ? "dark" : "light")} />
-                  </div>
-                </Card>
+      <PageHeader
+        title="Settings"
+        subtitle="System configuration and information"
+      />
+      <div className="p-4 sm:p-6">
+        <Tabs defaultValue="system">
+          <TabsList>
+            <TabsTrigger value="system">System</TabsTrigger>
+            <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
+          </TabsList>
 
-                {/* Health */}
-                <Card title="System health" padding="md">
-                  {health ? (
-                    <dl className="flex flex-col gap-3">
+          <TabsContent value="system">
+            <div className="flex flex-col gap-6 max-w-2xl mt-4">
+              {/* Theme */}
+              <Card title="Appearance" className="p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[var(--foreground)]">
+                      Dark mode
+                    </p>
+                    <p className="text-xs text-[var(--muted-foreground)]">
+                      Toggle between light and dark theme
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isDark}
+                    onCheckedChange={v => setTheme(v ? "dark" : "light")}
+                  />
+                </div>
+              </Card>
+
+              {/* Health */}
+              <Card title="System health" className="p-5">
+                {health ? (
+                  <dl className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <dt className="text-sm text-[var(--muted-foreground)]">
+                        Database
+                      </dt>
+                      <dd>
+                        <Badge
+                          variant={
+                            health.dbStatus === "ok" ? "success" : "danger"
+                          }
+                          dot
+                        >
+                          {health.dbStatus ?? "unknown"}
+                        </Badge>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-sm text-[var(--muted-foreground)]">
+                        Uptime
+                      </dt>
+                      <dd className="text-sm text-[var(--foreground)] font-medium">
+                        {formatUptime(health.uptime ?? 0)}
+                      </dd>
+                    </div>
+                    {health.version && (
                       <div className="flex items-center justify-between">
-                        <dt className="text-sm text-[var(--muted-foreground)]">Database</dt>
-                        <dd>
-                          <Badge variant={health.dbStatus === "ok" ? "success" : "danger"} dot>
-                            {health.dbStatus ?? "unknown"}
-                          </Badge>
+                        <dt className="text-sm text-[var(--muted-foreground)]">
+                          Version
+                        </dt>
+                        <dd className="text-sm text-[var(--foreground)] font-mono">
+                          {health.version}
                         </dd>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-sm text-[var(--muted-foreground)]">Uptime</dt>
-                        <dd className="text-sm text-[var(--foreground)] font-medium">{formatUptime(health.uptime ?? 0)}</dd>
-                      </div>
-                      {health.version && (
-                        <div className="flex items-center justify-between">
-                          <dt className="text-sm text-[var(--muted-foreground)]">Version</dt>
-                          <dd className="text-sm text-[var(--foreground)] font-mono">{health.version}</dd>
-                        </div>
-                      )}
-                    </dl>
-                  ) : (
-                    <p className="text-sm text-[var(--muted-foreground)]">Loading health data...</p>
-                  )}
-                </Card>
-              </div>
-            ),
-          },
-          {
-            key: "roles",
-            label: "Roles & Permissions",
-            children: (
-              <div className="flex flex-col gap-6 max-w-3xl">
-                <Card title="Permissions matrix" subtitle="Default permissions per role" padding="none">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-[var(--surface-1)] border-b border-[var(--border)]">
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Permission</th>
-                          <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">Admin</th>
-                          <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">User</th>
-                          <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Guest</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {PERMISSIONS_MATRIX.map(row => (
-                          <tr key={row.permission} className="border-b border-[var(--border)] hover:bg-[var(--accent)]">
-                            <td className="px-4 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">{row.permission}</td>
-                            {[row.admin, row.user, row.guest].map((has, i) => (
-                              <td key={i} className="px-4 py-2.5 text-center">
-                                {has ? (
-                                  <Check size={16} className="inline text-green-500" strokeWidth={2.5} />
-                                ) : (
-                                  <X size={16} className="inline text-[var(--surface-3)]" />
-                                )}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </Card>
+                    )}
+                  </dl>
+                ) : (
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    Loading health data...
+                  </p>
+                )}
+              </Card>
+            </div>
+          </TabsContent>
 
-                <Card title="Available roles" padding="md">
-                  <div className="flex gap-3 flex-wrap">
-                    {[
-                      { role: ERole.Admin, desc: "Full access to all features", variant: "purple" as const },
-                      { role: ERole.User, desc: "Standard user access", variant: "info" as const },
-                      { role: ERole.Guest, desc: "Read-only minimal access", variant: "gray" as const },
-                    ].map(r => (
-                      <div key={r.role} className="flex-1 min-w-[160px] bg-[var(--surface-1)] rounded-lg p-3">
-                        <Badge variant={r.variant}>{r.role}</Badge>
-                        <p className="text-xs text-[var(--muted-foreground)] mt-2">{r.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </div>
-            ),
-          },
-        ]} />
+          <TabsContent value="roles">
+            <div className="flex flex-col gap-6 max-w-3xl mt-4">
+              <Card title="Permissions matrix" className="overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[var(--muted)] border-b border-[var(--border)]">
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+                          Permission
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">
+                          Admin
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">
+                          User
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+                          Guest
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {PERMISSIONS_MATRIX.map(row => (
+                        <tr
+                          key={row.permission}
+                          className="border-b border-[var(--border)] hover:bg-[var(--accent)]"
+                        >
+                          <td className="px-4 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">
+                            {row.permission}
+                          </td>
+                          {[row.admin, row.user, row.guest].map((has, i) => (
+                            <td key={i} className="px-4 py-2.5 text-center">
+                              {has ? (
+                                <Check
+                                  size={16}
+                                  className="inline text-success"
+                                  strokeWidth={2.5}
+                                />
+                              ) : (
+                                <X
+                                  size={16}
+                                  className="inline text-[var(--muted-foreground)] opacity-30"
+                                />
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+
+              <Card title="Available roles" className="p-5">
+                <div className="flex gap-3 flex-wrap">
+                  {[
+                    {
+                      role: ERole.Admin,
+                      desc: "Full access to all features",
+                      variant: "purple" as const,
+                    },
+                    {
+                      role: ERole.User,
+                      desc: "Standard user access",
+                      variant: "info" as const,
+                    },
+                    {
+                      role: ERole.Guest,
+                      desc: "Read-only minimal access",
+                      variant: "gray" as const,
+                    },
+                  ].map(r => (
+                    <div
+                      key={r.role}
+                      className="flex-1 min-w-[160px] bg-[var(--muted)] rounded-lg p-3"
+                    >
+                      <Badge variant={r.variant}>{r.role}</Badge>
+                      <p className="text-xs text-[var(--muted-foreground)] mt-2">
+                        {r.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

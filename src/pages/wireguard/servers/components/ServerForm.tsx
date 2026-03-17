@@ -1,17 +1,27 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight } from "lucide-react";
+import { Terminal } from "lucide-react";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { IWgServerCreateRequestDto, IWgServerUpdateRequestDto, WgServerDto } from "~@api/api-gen/data-contracts";
-import { Button, Input, Select, Textarea, Toggle } from "~@components";
+import {
+  IWgServerCreateRequestDto,
+  IWgServerUpdateRequestDto,
+  WgServerDto,
+} from "~@api/api-gen/data-contracts";
+import { Button, Collapse, Input, Switch, Textarea } from "~@components/ui2";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
-  interface: z.string().min(1, "Interface name is required").regex(/^[a-z0-9]+$/, "Lowercase letters and numbers only"),
+  interface: z
+    .string()
+    .min(1, "Interface name is required")
+    .regex(/^[a-z0-9]+$/, "Lowercase letters and numbers only"),
   listenPort: z.coerce.number().int().min(1).max(65535),
-  address: z.string().min(1, "CIDR address required").regex(/^\d+\.\d+\.\d+\.\d+\/\d+$/, "Must be CIDR format e.g. 10.0.0.1/24"),
+  address: z
+    .string()
+    .min(1, "CIDR address required")
+    .regex(/^\d+\.\d+\.\d+\.\d+\/\d+$/, "Must be CIDR format e.g. 10.0.0.1/24"),
   endpoint: z.string().optional().or(z.literal("")),
   dns: z.string().optional().or(z.literal("")),
   mtu: z.coerce.number().optional().nullable(),
@@ -29,14 +39,26 @@ interface ServerFormProps {
   defaultValues?: Partial<WgServerDto>;
   isEdit?: boolean;
   loading?: boolean;
-  onSubmit: (data: IWgServerCreateRequestDto | IWgServerUpdateRequestDto) => Promise<void>;
+  onSubmit: (
+    data: IWgServerCreateRequestDto | IWgServerUpdateRequestDto,
+  ) => Promise<void>;
   onCancel: () => void;
 }
 
-export const ServerForm: FC<ServerFormProps> = ({ defaultValues, isEdit, loading, onSubmit, onCancel }) => {
-  const [showAdvanced, setShowAdvanced] = React.useState(false);
-
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<ServerFormData>({
+export const ServerForm: FC<ServerFormProps> = ({
+  defaultValues,
+  isEdit,
+  loading,
+  onSubmit,
+  onCancel,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<ServerFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: defaultValues?.name ?? "",
@@ -79,8 +101,16 @@ export const ServerForm: FC<ServerFormProps> = ({ defaultValues, isEdit, loading
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
-      <Input label="Server name" required error={errors.name?.message} {...register("name")} />
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="flex flex-col gap-4"
+    >
+      <Input
+        label="Server name"
+        required
+        error={errors.name?.message}
+        {...register("name")}
+      />
 
       {!isEdit && (
         <Input
@@ -119,38 +149,50 @@ export const ServerForm: FC<ServerFormProps> = ({ defaultValues, isEdit, loading
 
       <div className="grid grid-cols-2 gap-3">
         <Input label="DNS" placeholder="1.1.1.1" {...register("dns")} />
-        <Input label="MTU" type="number" placeholder="1420" {...register("mtu")} />
+        <Input
+          label="MTU"
+          type="number"
+          placeholder="1420"
+          {...register("mtu")}
+        />
       </div>
 
       <Textarea label="Description" rows={2} {...register("description")} />
 
       <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--foreground)]">Enabled</span>
-        <Toggle checked={enabled} onChange={v => setValue("enabled", v)} />
+        <span className="text-sm font-medium text-[var(--foreground)]">
+          Enabled
+        </span>
+        <Switch
+          checked={enabled}
+          onCheckedChange={v => setValue("enabled", v)}
+        />
       </div>
 
-      {/* Advanced */}
-      <button
-        type="button"
-        className="flex items-center gap-1.5 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-        onClick={() => setShowAdvanced(v => !v)}
-      >
-        <ChevronRight size={16} className={`transition-transform ${showAdvanced ? "rotate-90" : ""}`} />
-        Advanced settings (scripts)
-      </button>
-
-      {showAdvanced && (
-        <div className="flex flex-col gap-3 pl-3 border-l-2 border-[var(--border)]">
-          <Textarea label="PreUp" placeholder="iptables -A FORWARD ..." rows={2} {...register("preUp")} />
+      <Collapse variant="ghost">
+        <Collapse.Trigger leadingIcon={<Terminal size={15} />}>
+          Advanced settings (scripts)
+        </Collapse.Trigger>
+        <Collapse.Content innerClassName="px-3 pb-3 flex flex-col gap-3">
+          <Textarea
+            label="PreUp"
+            placeholder="iptables -A FORWARD ..."
+            rows={2}
+            {...register("preUp")}
+          />
           <Textarea label="PostUp" rows={2} {...register("postUp")} />
           <Textarea label="PreDown" rows={2} {...register("preDown")} />
           <Textarea label="PostDown" rows={2} {...register("postDown")} />
-        </div>
-      )}
+        </Collapse.Content>
+      </Collapse>
 
       <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" loading={loading}>{isEdit ? "Save changes" : "Create server"}</Button>
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" loading={loading}>
+          {isEdit ? "Save changes" : "Create server"}
+        </Button>
       </div>
     </form>
   );

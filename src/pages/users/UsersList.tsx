@@ -3,17 +3,17 @@ import { Search, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
+import { PageHeader } from "~@components/layouts";
 import {
   Button,
   Card,
+  type ColumnDef,
   Input,
-  PageHeader,
   Pagination,
   Table,
-  TableColumn,
   useConfirm,
   useToast,
-} from "~@components";
+} from "~@components/ui2";
 import { PublicUserModel } from "~@models";
 import { useUsersDataStore } from "~@store";
 
@@ -56,41 +56,40 @@ export const UsersList: FC = observer(() => {
     }
   };
 
-  const columns: TableColumn<PublicUserModel>[] = [
+  const columns: ColumnDef<PublicUserModel>[] = [
     {
-      key: "user",
-      title: "User",
-      render: (_, user) => (
+      accessorKey: "displayName",
+      header: "User",
+      cell: ({ row }) => (
         <div className="flex items-center gap-2.5">
-          <UserAvatar name={user.displayName} />
+          <UserAvatar name={row.original.displayName} />
           <span className="font-medium text-[var(--foreground)]">
-            {user.displayName}
+            {row.original.displayName}
           </span>
         </div>
       ),
     },
     {
-      key: "email",
-      title: "Email",
-      render: (_, user) => (
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => (
         <span className="text-[var(--muted-foreground)]">
-          {user.data.email ?? "—"}
+          {row.original.data.email ?? "—"}
         </span>
       ),
     },
     {
-      key: "actions",
-      title: "",
-      align: "right",
-      render: (_, user) => (
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
         <div
           className="flex items-center justify-end gap-1"
           onClick={e => e.stopPropagation()}
         >
           <button
             title="Delete"
-            className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
-            onClick={() => handleDelete(user.data.userId, user.displayName)}
+            className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-destructive/10 hover:text-destructive transition-colors"
+            onClick={() => handleDelete(row.original.data.userId, row.original.displayName)}
           >
             <Trash2 size={15} />
           </button>
@@ -99,6 +98,9 @@ export const UsersList: FC = observer(() => {
     },
   ];
 
+  const totalPages = Math.ceil(store.total / store.limit);
+  const currentPage = Math.floor(store.offset / store.limit) + 1;
+
   return (
     <div className="flex flex-col h-full">
       <PageHeader
@@ -106,7 +108,7 @@ export const UsersList: FC = observer(() => {
         subtitle={`${store.total} total`}
         actions={<Button onClick={() => setCreateOpen(true)}>Add user</Button>}
       />
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-4 sm:p-6 flex flex-col gap-4">
         <div className="flex gap-3 flex-wrap">
           <Input
             placeholder="Search by name or email..."
@@ -117,14 +119,17 @@ export const UsersList: FC = observer(() => {
           />
         </div>
 
-        <Card padding="none">
+        <Card>
           <Table
             columns={columns}
             data={filtered}
-            rowKey={u => u.data.userId}
+            getRowId={u => u.data.userId}
             loading={store.isLoading}
-            emptyText="No users found"
-            emptyDescription="Try adjusting your search or filters"
+            empty={
+              <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+                No users found
+              </div>
+            }
             onRowClick={record =>
               navigate({
                 to: "/users/$userId",
@@ -132,15 +137,18 @@ export const UsersList: FC = observer(() => {
               })
             }
           />
-          <Pagination
-            total={store.total}
-            offset={store.offset}
-            limit={store.limit}
-            onChange={offset => {
-              store.setOffset(offset);
-              store.loadUsers();
-            }}
-          />
+          {totalPages > 1 && (
+            <div className="flex justify-center py-3 border-t border-[var(--border)]">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={page => {
+                  store.setOffset((page - 1) * store.limit);
+                  store.loadUsers();
+                }}
+              />
+            </div>
+          )}
         </Card>
       </div>
 

@@ -3,20 +3,25 @@ import { Power, QrCode, Search, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useEffect, useState } from "react";
 
+import { PageHeader } from "~@components/layouts";
 import {
   Badge,
   Button,
   Card,
+  type ColumnDef,
   CopyableText,
   Input,
   Modal,
-  PageHeader,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
   Select,
   Table,
-  TableColumn,
   useConfirm,
   useToast,
-} from "~@components";
+} from "~@components/ui2";
 import { PeerModel } from "~@models";
 import { usePeersDataStore, useServersDataStore } from "~@store";
 
@@ -24,8 +29,6 @@ import { useWgPeer } from "../../../socket";
 import { PeerForm } from "./components/PeerForm";
 import { PeerStatusBadge } from "./components/PeerStatusBadge";
 import { QrCodeModal } from "./components/QrCodeModal";
-
-// ─── Cell components with live socket data ────────────────────────────────────
 
 const PeerNameCell: FC<{ peer: PeerModel }> = ({ peer }) => (
   <div>
@@ -45,9 +48,7 @@ const PeerStatusCell: FC<{ peer: PeerModel }> = ({ peer }) => {
       <div className="flex items-center gap-1.5 flex-wrap">
         <PeerStatusBadge enabled={peer.enabled} isExpired={peer.isExpired} />
         {liveStatus?.isActive && (
-          <Badge variant="success" dot>
-            Online
-          </Badge>
+          <Badge variant="success" dot>Online</Badge>
         )}
       </div>
       {liveStatus?.endpoint && (
@@ -91,14 +92,18 @@ const PeerActionsCell: FC<PeerActionsCellProps> = ({
   >
     <button
       title="QR Code"
-      className="cursor-pointer p-1.5 rounded-md hover:bg-[var(--bg-hover,rgba(99,102,241,0.1))] text-[var(--muted-foreground)] hover:text-[#6366f1] transition-colors"
+      className="cursor-pointer p-1.5 rounded-md hover:bg-[var(--accent)] text-[var(--muted-foreground)] hover:text-[#6366f1] transition-colors"
       onClick={() => onQr(peer.data.id, peer.name)}
     >
       <QrCode size={15} />
     </button>
     <button
       title={peer.enabled ? "Disable" : "Enable"}
-      className={`cursor-pointer p-1.5 rounded-md transition-colors ${peer.enabled ? "text-[var(--muted-foreground)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--muted-foreground)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+      className={`cursor-pointer p-1.5 rounded-md transition-colors ${
+        peer.enabled
+          ? "text-[var(--muted-foreground)] hover:bg-warning/10 hover:text-warning"
+          : "text-[var(--muted-foreground)] hover:bg-success/10 hover:text-success"
+      }`}
       onClick={() => onToggle(peer.data.id, peer.enabled)}
       disabled={loading === "toggle"}
     >
@@ -106,7 +111,7 @@ const PeerActionsCell: FC<PeerActionsCellProps> = ({
     </button>
     <button
       title="Delete"
-      className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+      className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-destructive/10 hover:text-destructive transition-colors"
       disabled={loading === "delete"}
       onClick={() => onDelete(peer.data.id, peer.name)}
     >
@@ -114,8 +119,6 @@ const PeerActionsCell: FC<PeerActionsCellProps> = ({
     </button>
   </div>
 );
-
-// ─── PeersList ────────────────────────────────────────────────────────────────
 
 export const PeersList: FC = observer(() => {
   const store = usePeersDataStore();
@@ -128,12 +131,8 @@ export const PeersList: FC = observer(() => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
-  const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
-    null,
-  );
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
-    {},
-  );
+  const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(null);
+  const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
 
   useEffect(() => {
     serversStore.loadServers();
@@ -197,60 +196,57 @@ export const PeersList: FC = observer(() => {
     else toast.success("Peer deleted");
   };
 
-  const columns: TableColumn<PeerModel>[] = [
+  const columns: ColumnDef<PeerModel>[] = [
     {
-      key: "name",
-      title: "Name",
-      render: (_, peer) => <PeerNameCell peer={peer} />,
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <PeerNameCell peer={row.original} />,
     },
     {
-      key: "ip",
-      title: "IP",
-      render: (_, peer) => (
+      accessorKey: "allowedIPs",
+      header: "IP",
+      cell: ({ row }) => (
         <span className="font-mono text-xs text-[var(--muted-foreground)]">
-          {peer.data.allowedIPs}
+          {row.original.data.allowedIPs}
         </span>
       ),
     },
     {
-      key: "status",
-      title: "Status",
-      render: (_, peer) => <PeerStatusCell peer={peer} />,
+      id: "status",
+      header: "Status",
+      cell: ({ row }) => <PeerStatusCell peer={row.original} />,
     },
     {
-      key: "psk",
-      title: "PSK",
-      render: (_, peer) =>
-        peer.data.hasPresharedKey ? (
-          <Badge variant="info" dot>
-            Yes
-          </Badge>
+      id: "psk",
+      header: "PSK",
+      cell: ({ row }) =>
+        row.original.data.hasPresharedKey ? (
+          <Badge variant="info" dot>Yes</Badge>
         ) : (
           <span className="text-xs text-[var(--muted-foreground)]">No</span>
         ),
     },
     {
-      key: "expires",
-      title: "Expires",
-      render: (_, peer) => (
+      accessorKey: "expiresAt",
+      header: "Expires",
+      cell: ({ row }) => (
         <span className="text-xs text-[var(--muted-foreground)]">
-          {peer.expiresAtFormatted ?? "Never"}
+          {row.original.expiresAtFormatted ?? "Never"}
         </span>
       ),
     },
     {
-      key: "handshake",
-      title: "Last handshake",
-      render: (_, peer) => <PeerHandshakeCell peer={peer} />,
+      id: "handshake",
+      header: "Last handshake",
+      cell: ({ row }) => <PeerHandshakeCell peer={row.original} />,
     },
     {
-      key: "actions",
-      title: "",
-      align: "right",
-      render: (_, peer) => (
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
         <PeerActionsCell
-          peer={peer}
-          loading={actionLoading[peer.data.id]}
+          peer={row.original}
+          loading={actionLoading[row.original.data.id]}
           onToggle={handleToggle}
           onDelete={handleDelete}
           onQr={(id, name) => setQrPeer({ id, name })}
@@ -266,7 +262,7 @@ export const PeersList: FC = observer(() => {
         subtitle={`${store.total} total`}
         actions={<Button onClick={() => setCreateOpen(true)}>Add peer</Button>}
       />
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-4 sm:p-6 flex flex-col gap-4">
         <div className="flex gap-3 flex-wrap">
           <Input
             placeholder="Search by name..."
@@ -276,38 +272,41 @@ export const PeersList: FC = observer(() => {
             leftIcon={<Search size={16} />}
           />
           <Select
-            value={serverFilter}
-            onChange={v => setServerFilter(v ?? "")}
-            data={[
-              { value: "", label: "All servers" },
+            options={[
+              { value: "all", label: "All servers" },
               ...serversStore.servers.map(s => ({
                 value: s.id,
                 label: s.name,
               })),
             ]}
-            className="w-44"
+            value={serverFilter || "all"}
+            onValueChange={v => setServerFilter(v === "all" ? "" : (v ?? ""))}
+            triggerClassName="w-44"
           />
           <Select
-            value={statusFilter}
-            onChange={v => setStatusFilter(v ?? "")}
-            data={[
-              { value: "", label: "All statuses" },
+            options={[
+              { value: "all", label: "All statuses" },
               { value: "enabled", label: "Enabled" },
               { value: "disabled", label: "Disabled" },
               { value: "expired", label: "Expired" },
             ]}
-            className="w-36"
+            value={statusFilter || "all"}
+            onValueChange={v => setStatusFilter(v === "all" ? "" : (v ?? ""))}
+            triggerClassName="w-36"
           />
         </div>
 
-        <Card padding="none">
+        <Card>
           <Table
             columns={columns}
             data={filtered}
-            rowKey={p => p.data.id}
+            getRowId={p => p.data.id}
             loading={store.isLoading}
-            emptyText="No peers found"
-            emptyDescription="Add peers or adjust filters"
+            empty={
+              <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+                No peers found — add peers or adjust filters
+              </div>
+            }
             onRowClick={peer =>
               navigate({
                 to: "/wireguard/peers/$peerId",
@@ -318,29 +317,32 @@ export const PeersList: FC = observer(() => {
         </Card>
       </div>
 
-      <Modal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        title="Add peer"
-        size="lg"
-      >
-        <PeerForm
-          servers={serversStore.servers}
-          selectedServerId={serverFilter || serversStore.servers[0]?.id}
-          onCancel={() => setCreateOpen(false)}
-          onSubmit={async (data, serverId) => {
-            if (!serverId) {
-              toast.error("Select a server");
-              return;
-            }
-            const res = await store.createPeer(serverId, data as any);
-            if (res.error) toast.error(res.error.message);
-            else {
-              toast.success("Peer created");
-              setCreateOpen(false);
-            }
-          }}
-        />
+      <Modal open={createOpen} onOpenChange={open => !open && setCreateOpen(false)}>
+        <ModalOverlay />
+        <ModalContent className="max-w-lg">
+          <ModalHeader>
+            <ModalTitle>Add peer</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
+            <PeerForm
+              servers={serversStore.servers}
+              selectedServerId={serverFilter || serversStore.servers[0]?.id}
+              onCancel={() => setCreateOpen(false)}
+              onSubmit={async (data, serverId) => {
+                if (!serverId) {
+                  toast.error("Select a server");
+                  return;
+                }
+                const res = await store.createPeer(serverId, data as any);
+                if (res.error) toast.error(res.error.message);
+                else {
+                  toast.success("Peer created");
+                  setCreateOpen(false);
+                }
+              }}
+            />
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       {qrPeer && (

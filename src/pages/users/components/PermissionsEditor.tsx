@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import { EPermissions } from "~@api/api-gen/data-contracts";
-import { Checkbox } from "~@components";
+import { Checkbox } from "~@components/ui2";
 
 const PERMISSION_GROUPS = [
   {
@@ -55,7 +55,9 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({ value, onChange 
     <div className="flex flex-col gap-4">
       {PERMISSION_GROUPS.map(group => (
         <div key={group.label}>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">{group.label}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">
+            {group.label}
+          </p>
           <div className="flex flex-col gap-2 pl-1">
             {group.items.map(item => (
               <Checkbox
@@ -63,7 +65,7 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({ value, onChange 
                 label={item.label}
                 description={item.description}
                 checked={value.includes(item.value)}
-                onChange={() => toggle(item.value)}
+                onCheckedChange={() => toggle(item.value)}
               />
             ))}
           </div>

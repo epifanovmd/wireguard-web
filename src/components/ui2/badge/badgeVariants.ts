@@ -1,17 +1,21 @@
 import { cva } from "class-variance-authority";
 
 export const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200",
+  "inline-flex items-center gap-1.5 justify-center rounded-full font-semibold transition-all duration-200",
   {
     variants: {
       variant: {
         default: "bg-secondary text-secondary-foreground",
         primary: "bg-primary text-primary-foreground",
         secondary: "bg-secondary text-secondary-foreground",
-        destructive: "bg-destructive text-destructive-foreground",
-        success: "bg-success text-success-foreground",
-        warning: "bg-warning text-warning-foreground",
-        info: "bg-info text-info-foreground",
+        destructive: "bg-destructive/15 text-destructive",
+        // aliases
+        danger: "bg-destructive/15 text-destructive",
+        gray: "bg-secondary text-secondary-foreground",
+        purple: "bg-[oklch(0.55_0.2_280)/15] text-[oklch(0.55_0.2_280)]",
+        success: "bg-success/15 text-success",
+        warning: "bg-warning/15 text-warning",
+        info: "bg-info/15 text-info",
         outline: "border border-border bg-background text-foreground",
       },
       size: {
@@ -22,7 +26,7 @@ export const badgeVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      size: "md",
+      size: "sm",
     },
   },
 );

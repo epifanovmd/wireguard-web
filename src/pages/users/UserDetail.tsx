@@ -5,18 +5,20 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
+import { PageHeader } from "~@components/layouts";
 import {
   Badge,
   Button,
   Card,
-  Input,
-  PageHeader,
   Select,
   Spinner,
   Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   useConfirm,
-} from "~@components";
-import { useToast } from "~@components";
+  useToast,
+} from "~@components/ui2";
 import { usePeersDataStore, useUsersDataStore } from "~@store";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
@@ -95,7 +97,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
           ]}
           actions={
             <Button
-              variant="danger"
+              variant="destructive"
               size="sm"
               onClick={async () => {
                 const ok = await confirm({
@@ -117,10 +119,10 @@ export const UserDetail: FC<UserDetailProps> = observer(
             </Button>
           }
         />
-        <div className="p-6 flex gap-6 flex-wrap xl:flex-nowrap">
+        <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap">
           {/* Sidebar - user info */}
           <div className="w-full xl:w-64 flex-shrink-0 flex flex-col gap-4">
-            <Card padding="md">
+            <Card className="p-5">
               <div className="flex flex-col items-center text-center gap-2.5">
                 <UserAvatar name={model?.displayName ?? "?"} size="lg" />
                 <div>
@@ -147,9 +149,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                 </div>
                 {user.profile?.lastOnline && (
                   <div className="flex justify-between">
-                    <span className="text-[var(--muted-foreground)]">
-                      Last online
-                    </span>
+                    <span className="text-[var(--muted-foreground)]">Last online</span>
                     <span className="text-[var(--muted-foreground)]">
                       {new Date(user.profile.lastOnline).toLocaleDateString()}
                     </span>
@@ -161,108 +161,80 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            <Tabs
-              items={[
-                {
-                  key: "privileges",
-                  label: "Privileges",
-                  children: (
-                    <div className="flex flex-col gap-6">
-                      <Card title="Role" padding="md">
-                        <Select
-                          label="Role"
-                          value={selectedRole}
-                          onChange={v =>
-                            setSelectedRole((v ?? ERole.User) as ERole)
-                          }
-                          data={[
-                            { value: ERole.Admin, label: "Admin" },
-                            { value: ERole.User, label: "User" },
-                            { value: ERole.Guest, label: "Guest" },
-                          ]}
-                        />
-                      </Card>
-                      <Card title="Permissions" padding="md">
-                        <PermissionsEditor
-                          value={selectedPerms}
-                          onChange={setSelectedPerms}
-                        />
-                      </Card>
-                      <div className="flex justify-end">
-                        <Button
-                          loading={savingPrivileges}
-                          onClick={handleSavePrivileges}
-                        >
-                          Save privileges
-                        </Button>
-                      </div>
+            <Tabs defaultValue="privileges">
+              <TabsList>
+                <TabsTrigger value="privileges">Privileges</TabsTrigger>
+                <TabsTrigger value="peers">VPN Peers</TabsTrigger>
+              </TabsList>
+              <TabsContent value="privileges">
+                <div className="flex flex-col gap-6 mt-4">
+                  <Card title="Role" className="p-5">
+                    <Select
+                      options={[
+                        { value: ERole.Admin, label: "Admin" },
+                        { value: ERole.User, label: "User" },
+                        { value: ERole.Guest, label: "Guest" },
+                      ]}
+                      value={selectedRole}
+                      onValueChange={v => setSelectedRole((v ?? ERole.User) as ERole)}
+                    />
+                  </Card>
+                  <Card title="Permissions" className="p-5">
+                    <PermissionsEditor
+                      value={selectedPerms}
+                      onChange={setSelectedPerms}
+                    />
+                  </Card>
+                  <div className="flex justify-end">
+                    <Button loading={savingPrivileges} onClick={handleSavePrivileges}>
+                      Save privileges
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+              <TabsContent value="peers">
+                <div className="mt-4">
+                  {peersStore.isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Spinner />
                     </div>
-                  ),
-                },
-                {
-                  key: "peers",
-                  label: "VPN Peers",
-                  children: (
-                    <div>
-                      {peersStore.isLoading ? (
-                        <div className="flex justify-center py-8">
-                          <Spinner />
-                        </div>
-                      ) : peersStore.peers.length === 0 ? (
-                        <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
-                          No peers assigned to this user
-                        </div>
-                      ) : (
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-[var(--border)]">
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                                Name
-                              </th>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                                IP
-                              </th>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                                Status
-                              </th>
-                              <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                                Expires
-                              </th>
+                  ) : peersStore.peers.length === 0 ? (
+                    <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+                      No peers assigned to this user
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-[var(--border)] bg-[var(--muted)]/30">
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Name</th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">IP</th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Status</th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Expires</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {peersStore.models.map(peer => (
+                            <tr key={peer.data.id} className="border-b border-[var(--border)] hover:bg-[var(--accent)]">
+                              <td className="px-3 py-2.5 font-medium text-[var(--foreground)]">{peer.name}</td>
+                              <td className="px-3 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">{peer.data.allowedIPs}</td>
+                              <td className="px-3 py-2.5">
+                                <Badge variant={peer.enabled ? "success" : "gray"} dot>
+                                  {peer.statusLabel}
+                                </Badge>
+                              </td>
+                              <td className="px-3 py-2.5 text-xs text-[var(--muted-foreground)]">
+                                {peer.expiresAtFormatted ?? "No expiry"}
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {peersStore.models.map(peer => (
-                              <tr
-                                key={peer.data.id}
-                                className="border-b border-[var(--border)] hover:bg-[var(--accent)]"
-                              >
-                                <td className="px-3 py-2.5 font-medium text-[var(--foreground)]">
-                                  {peer.name}
-                                </td>
-                                <td className="px-3 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">
-                                  {peer.data.allowedIPs}
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <Badge
-                                    variant={peer.enabled ? "success" : "gray"}
-                                    dot
-                                  >
-                                    {peer.statusLabel}
-                                  </Badge>
-                                </td>
-                                <td className="px-3 py-2.5 text-xs text-[var(--muted-foreground)]">
-                                  {peer.expiresAtFormatted ?? "No expiry"}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  ),
-                },
-              ]}
-            />
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>

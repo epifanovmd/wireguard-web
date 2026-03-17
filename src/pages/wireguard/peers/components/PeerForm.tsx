@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DatePicker, DatePickerInput } from "@mantine/dates";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,12 +11,11 @@ import {
 } from "~@api/api-gen/data-contracts";
 import {
   Button,
-  Checkbox,
   Input,
   Select,
+  Switch,
   Textarea,
-  Toggle,
-} from "~@components";
+} from "~@components/ui2";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -113,14 +111,13 @@ export const PeerForm: FC<PeerFormProps> = ({
     >
       {!isEdit && servers && servers.length > 0 && (
         <Select
-          label="Server"
-          required
-          value={serverId}
-          onChange={v => setServerId(v ?? "")}
-          data={servers.map(s => ({
+          options={servers.map(s => ({
             value: s.id,
             label: `${s.name} (${s.interface})`,
           }))}
+          value={serverId}
+          onValueChange={v => setServerId(v ?? "")}
+          placeholder="Select server"
         />
       )}
 
@@ -139,17 +136,8 @@ export const PeerForm: FC<PeerFormProps> = ({
       />
 
       <div className="grid grid-cols-2 gap-3">
-        <Input
-          label="DNS override"
-          placeholder="1.1.1.1"
-          {...register("dns")}
-        />
-        <Input
-          label="MTU"
-          type="number"
-          placeholder="1420"
-          {...register("mtu")}
-        />
+        <Input label="DNS override" placeholder="1.1.1.1" {...register("dns")} />
+        <Input label="MTU" type="number" placeholder="1420" {...register("mtu")} />
       </div>
 
       <Input
@@ -163,11 +151,7 @@ export const PeerForm: FC<PeerFormProps> = ({
         placeholder="host:port"
         {...register("endpoint")}
       />
-      <Input
-        label="Expires at"
-        type="datetime-local"
-        {...register("expiresAt")}
-      />
+      <Input label="Expires at" type="datetime-local" {...register("expiresAt")} />
 
       <div className="flex items-center justify-between py-1">
         <div>
@@ -178,21 +162,19 @@ export const PeerForm: FC<PeerFormProps> = ({
             Adds additional layer of symmetric encryption
           </p>
         </div>
-        <Toggle
+        <Switch
           checked={presharedKey}
-          onChange={v => setValue("presharedKey", v)}
+          onCheckedChange={v => setValue("presharedKey", v)}
         />
       </div>
 
       <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--foreground)]">
-          Enabled
-        </span>
-        <Toggle checked={enabled} onChange={v => setValue("enabled", v)} />
+        <span className="text-sm font-medium text-[var(--foreground)]">Enabled</span>
+        <Switch checked={enabled} onCheckedChange={v => setValue("enabled", v)} />
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         <Button type="submit" loading={loading}>

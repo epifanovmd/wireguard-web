@@ -1,56 +1,59 @@
-import { typedFormField } from "@force-dev/react";
-import React, { FC, memo, PropsWithChildren } from "react";
-import { FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { AsyncButton, FieldWrapper, Input } from "~@components";
+import { useApi } from "~@api/hooks";
+import { AuthLayout } from "~@components/layouts";
+import { Button, Card, Input } from "~@components/ui2";
 
-import { useRecoveryPassword } from "./hooks/useRecoveryPassword";
-import { TRecoveryPasswordForm } from "./validations";
+const schema = z.object({
+  login: z.string().min(1, "Email or phone is required"),
+  password: z.string().min(6, "Min 6 characters"),
+});
 
-export type IRecoveryPasswordProps = object;
+type FormData = z.infer<typeof schema>;
 
-const Field = typedFormField<TRecoveryPasswordForm>();
+export const RecoveryPassword = observer(() => {
+  const api = useApi();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-export const RecoveryPassword: FC<PropsWithChildren<IRecoveryPasswordProps>> =
-  memo(() => {
-    const { form, handleSubmit } = useRecoveryPassword();
+  const onSubmit = async (data: FormData) => {
+    await api.requestResetPassword({ login: data.login });
+    navigate({ to: "/auth/signIn" });
+  };
 
-    return (
-      <div className={"flex items-center justify-center flex-col h-screen"}>
-        <FormProvider {...form}>
-          <form
-            className={
-              "w-full max-w-[500px] p-8 rounded-2xl shadow-[3px_4px_18px_0_rgba(34,60,80,0.2)]"
-            }
-          >
-            <div className={"flex justify-between"}>
-              <div className={"text-xl mb-4"}>{"Востановление пароля"}</div>
-            </div>
-
-            <Field
-              name={"login"}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <FieldWrapper error={error}>
-                  <Input
-                    name={"login"}
-                    className={"mt-2"}
-                    placeholder={"Введите ваш Email для востановления пароля"}
-                    value={value}
-                    onChange={onChange}
-                    type={"email"}
-                    autoComplete={"email"}
-                  />
-                </FieldWrapper>
-              )}
-            />
-            <div className={"flex justify-between mt-4"}>
-              <AsyncButton onClick={handleSubmit}>{"Востановить"}</AsyncButton>
-            </div>
-          </form>
-        </FormProvider>
-      </div>
-    );
-  });
+  return (
+    <AuthLayout>
+      <Card className="p-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-[var(--foreground)]">
+            Recovery password
+          </h2>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">
+            Enter your email to receive a reset link
+          </p>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <Input
+            label="Email or phone"
+            type="email"
+            placeholder="email@example.com"
+            error={errors.login?.message}
+            {...register("login")}
+          />
+          <Button type="submit" className="w-full">
+            Send reset link
+          </Button>
+        </form>
+      </Card>
+    </AuthLayout>
+  );
+});

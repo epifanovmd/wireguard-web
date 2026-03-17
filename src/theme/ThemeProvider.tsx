@@ -1,11 +1,5 @@
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-
-import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
 import React, { FC, PropsWithChildren, useEffect, useState } from "react";
 
-import { cssVariablesResolver, mantineTheme } from "./mantineTheme";
 import { ThemeContext, ThemeMode } from "./ThemeContext";
 
 function getInitialTheme(): ThemeMode {
@@ -44,14 +38,7 @@ export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
         toggleTheme,
       }}
     >
-      <MantineProvider
-        theme={mantineTheme}
-        cssVariablesResolver={cssVariablesResolver}
-        forceColorScheme={theme}
-      >
-        <Notifications position="bottom-right" zIndex={9999} />
-        {children}
-      </MantineProvider>
+      {children}
     </ThemeContext.Provider>
   );
 };

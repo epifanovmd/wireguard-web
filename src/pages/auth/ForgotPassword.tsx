@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
-import { AuthLayout, Button, Card, Input } from "~@components";
+import { AuthLayout } from "~@components/layouts";
+import { Button, Card, Input } from "~@components/ui2";
 
 const schema = z.object({
   login: z.string().min(1, "Email or phone is required"),
@@ -19,7 +20,6 @@ export const ForgotPassword = observer(() => {
   const api = useApi();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-
   const navigate = useNavigate();
 
   const {
@@ -43,11 +43,11 @@ export const ForgotPassword = observer(() => {
 
   return (
     <AuthLayout>
-      <Card>
+      <Card className="p-6">
         {sent ? (
           <div className="text-center py-4">
-            <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
-              <Check className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="w-12 h-12 rounded-full bg-success/15 flex items-center justify-center mx-auto mb-4">
+              <Check className="w-6 h-6 text-success" />
             </div>
             <h2 className="text-lg font-bold text-[var(--foreground)] mb-2">
               Email sent
@@ -82,10 +82,10 @@ export const ForgotPassword = observer(() => {
                 {...register("login")}
               />
 
-              <Button type="submit" loading={loading}>
+              <Button type="submit" loading={loading} className="w-full">
                 Send reset link
               </Button>
-              <Button type="button" variant="outline" onClick={onBack}>
+              <Button type="button" variant="outline" onClick={onBack} className="w-full">
                 Back to sign in
               </Button>
             </form>
