@@ -1,17 +1,21 @@
 import * as React from "react";
 import {
   type Control,
-  Controller,
   type ControllerFieldState,
   type ControllerRenderProps,
   type FieldValues,
   type Path,
 } from "react-hook-form";
 
-import { Field } from "./Field";
+import { FormField } from "./FormField";
 import type { FieldProps } from "./types";
 
 type FieldOwnProps = Omit<FieldProps, "children" | "error" | "htmlFor">;
+
+// Cast to allow `ref` in props — forwardRef components need this at the JSX level.
+type ComponentWithRef<P> = React.ComponentType<
+  P & { ref?: React.Ref<unknown> }
+>;
 
 /**
  * Factory that wraps any UI component into a fully-typed FormField.
@@ -24,7 +28,7 @@ type FieldOwnProps = Omit<FieldProps, "children" | "error" | "htmlFor">;
  *                    set of the component's own props (value, onChange, ref, …)
  *
  * @returns A generic component `CreatedFormField<TFormData>` that accepts:
- *   - `name: Path<TFormData>`       — strictly typed field path
+ *   - `name: Path<TFormData>`        — strictly typed field path
  *   - `control?: Control<TFormData>` — optional; falls back to FormProvider context
  *   - All FieldProps (label, hint, description, required, fieldClassName)
  *   - All remaining component props
@@ -56,6 +60,8 @@ export function createFormField<TComponentProps extends object>(
     fieldState: ControllerFieldState,
   ) => Partial<TComponentProps>,
 ) {
+  const C = Component as ComponentWithRef<TComponentProps>;
+
   function CreatedFormField<TFormData extends FieldValues>({
     name,
     control,
@@ -71,37 +77,26 @@ export function createFormField<TComponentProps extends object>(
     control?: Control<TFormData>;
   } & FieldOwnProps &
     Partial<TComponentProps>): React.ReactElement {
-    return React.createElement(Controller, {
-      name,
-      // undefined → Controller falls back to FormProvider context automatically
-      control: control as unknown as Control<FieldValues> | undefined,
-      render: ({ field, fieldState }) =>
-        React.createElement(
-          Field,
-          {
-            label,
-            hint,
-            description,
-            error: fieldState.error?.message,
-            required,
-            htmlFor: name,
-            fieldClassName,
-          },
-          React.createElement(
-            // Cast to allow ref in the props (forwardRef components need this)
-            Component as React.ComponentType<
-              TComponentProps & { ref?: React.Ref<unknown> }
-            >,
-            {
-              ...(componentProps as unknown as TComponentProps),
-              ...mapToProps(
-                field as ControllerRenderProps<FieldValues, string>,
-                fieldState,
-              ),
-            },
-          ),
-        ),
-    });
+    return (
+      <FormField<TFormData>
+        name={name}
+        control={control}
+        label={label}
+        hint={hint}
+        description={description}
+        required={required}
+        fieldClassName={fieldClassName}
+        render={(field, fieldState) => (
+          <C
+            {...(componentProps as TComponentProps)}
+            {...mapToProps(
+              field as unknown as ControllerRenderProps<FieldValues, string>,
+              fieldState,
+            )}
+          />
+        )}
+      />
+    );
   }
 
   CreatedFormField.displayName = `${
