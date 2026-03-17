@@ -220,7 +220,7 @@ export const UIPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Buttons */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Buttons</CardTitle>
               <CardDescription className="text-xs">
@@ -275,7 +275,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Inputs */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Inputs</CardTitle>
               <CardDescription className="text-xs">
@@ -302,7 +302,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Tags & Badges */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Tags & Badges</CardTitle>
               <CardDescription className="text-xs">
@@ -353,7 +353,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Switch & Checkbox */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Controls</CardTitle>
               <CardDescription className="text-xs">
@@ -417,7 +417,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Tabs */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Tabs</CardTitle>
               <CardDescription className="text-xs">Вкладки</CardDescription>
@@ -471,7 +471,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Select */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Select</CardTitle>
               <CardDescription className="text-xs">
@@ -587,7 +587,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Date Pickers */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Date Pickers</CardTitle>
               <CardDescription className="text-xs">
@@ -605,7 +605,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Pagination */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Pagination</CardTitle>
               <CardDescription className="text-xs">
@@ -932,7 +932,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Spinner */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Spinner</CardTitle>
               <CardDescription className="text-xs">
@@ -957,7 +957,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Empty State */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Empty State</CardTitle>
               <CardDescription className="text-xs">
@@ -1022,7 +1022,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Segmented */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Segmented</CardTitle>
               <CardDescription className="text-xs">
@@ -1115,7 +1115,7 @@ export const UIPage = () => {
           </Card>
 
           {/* Segmented Block */}
-          <Card style={{ background: "var(--surface-2)" }}>
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">Segmented Block</CardTitle>
               <CardDescription className="text-xs">

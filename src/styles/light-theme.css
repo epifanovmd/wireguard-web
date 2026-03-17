@@ -1,8 +1,11 @@
 :root {
-  --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
+  --surface-1: #f9f9fb;
+  --surface-2: #f3f3f5;
+  --surface-3: #ececf0;
+  --overlay: rgba(0, 0, 0, 0.5);
+  --card: var(--surface-2);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -43,8 +46,5 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --surface-1: #f9f9fb;
-  --surface-2: #f3f3f5;
-  --surface-3: #ececf0;
-  --overlay: rgba(0, 0, 0, 0.5);
+  --shadow-color: rgb(0 0 0 / 0.06);
 }

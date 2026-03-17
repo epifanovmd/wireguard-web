@@ -53,13 +53,13 @@ const ServerCard: FC<ServerCardProps> = ({
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-semibold text-[var(--text-primary)] truncate">
+            <h3 className="font-semibold text-[var(--foreground)] truncate">
               {server.name}
             </h3>
             <ServerStatusBadge status={effectiveStatus} />
             {!server.data.enabled && <Badge variant="warning">Disabled</Badge>}
           </div>
-          <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--text-muted)]">
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-[var(--muted-foreground)]">
             <span className="font-mono">{server.data.interface}</span>
             <span>·</span>
             <span>:{server.data.listenPort}</span>
@@ -79,12 +79,12 @@ const ServerCard: FC<ServerCardProps> = ({
             )}
           </div>
           {server.data.endpoint && (
-            <p className="text-xs text-[var(--text-muted)] mt-1">
+            <p className="text-xs text-[var(--muted-foreground)] mt-1">
               {server.data.endpoint}
             </p>
           )}
           {server.data.description && (
-            <p className="text-xs text-[var(--text-secondary)] mt-1 truncate">
+            <p className="text-xs text-[var(--muted-foreground)] mt-1 truncate">
               {server.data.description}
             </p>
           )}

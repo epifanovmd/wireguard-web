@@ -93,7 +93,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     }
 
     if (!peer || !model)
-      return <div className="p-6 text-[var(--text-muted)]">Peer not found</div>;
+      return <div className="p-6 text-[var(--muted-foreground)]">Peer not found</div>;
 
     const handleToggle = async () => {
       setToggling(true);
@@ -137,14 +137,14 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             <div className="flex items-center gap-1">
               <button
                 title="QR / Config"
-                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors"
                 onClick={() => setQrOpen(true)}
               >
                 <QrCode size={17} />
               </button>
               <button
                 title={peer.enabled ? "Disable" : "Enable"}
-                className={`cursor-pointer p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${peer.enabled ? "text-[var(--muted-foreground)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--muted-foreground)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
                 disabled={toggling}
                 onClick={handleToggle}
               >
@@ -152,14 +152,14 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               </button>
               <button
                 title="Edit"
-                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--foreground)] transition-colors"
                 onClick={() => setEditOpen(true)}
               >
                 <Pencil size={17} />
               </button>
               <button
                 title="Delete"
-                className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+                className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
                 onClick={async () => {
                   const ok = await confirm({
                     title: "Delete peer",
@@ -207,7 +207,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               <Badge variant="default">{liveStatus.endpoint}</Badge>
             )}
             {liveStatus?.lastHandshake && (
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-xs text-[var(--muted-foreground)]">
                 Last handshake:{" "}
                 {new Date(liveStatus.lastHandshake).toLocaleTimeString()}
               </span>
@@ -258,20 +258,20 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                         <LineChart data={liveSpeedPoints}>
                           <CartesianGrid
                             strokeDasharray="3 3"
-                            stroke="var(--border-color)"
+                            stroke="var(--border)"
                           />
                           <XAxis
                             dataKey="t"
-                            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                           />
                           <YAxis
-                            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                             tickFormatter={v => formatSpeed(v)}
                           />
                           <Tooltip
                             contentStyle={{
-                              background: "var(--bg-surface)",
-                              border: "1px solid var(--border-color)",
+                              background: "var(--card)",
+                              border: "1px solid var(--border)",
                               borderRadius: 8,
                               fontSize: 12,
                             }}
@@ -300,11 +300,11 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                       </ResponsiveContainer>
                     </div>
                     <div className="flex gap-4 mt-2">
-                      <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
                         <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
                         Download
                       </span>
-                      <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
                         <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
                         Upload
                       </span>
@@ -323,20 +323,20 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                           <AreaChart data={trafficData}>
                             <CartesianGrid
                               strokeDasharray="3 3"
-                              stroke="var(--border-color)"
+                              stroke="var(--border)"
                             />
                             <XAxis
                               dataKey="time"
-                              tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                             />
                             <YAxis
-                              tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                               tickFormatter={v => formatBytes(v)}
                             />
                             <Tooltip
                               contentStyle={{
-                                background: "var(--bg-surface)",
-                                border: "1px solid var(--border-color)",
+                                background: "var(--card)",
+                                border: "1px solid var(--border)",
                                 borderRadius: 8,
                                 fontSize: 12,
                               }}
@@ -371,20 +371,20 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                           <LineChart data={speedData}>
                             <CartesianGrid
                               strokeDasharray="3 3"
-                              stroke="var(--border-color)"
+                              stroke="var(--border)"
                             />
                             <XAxis
                               dataKey="time"
-                              tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                             />
                             <YAxis
-                              tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                              tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                               tickFormatter={v => formatSpeed(v)}
                             />
                             <Tooltip
                               contentStyle={{
-                                background: "var(--bg-surface)",
-                                border: "1px solid var(--border-color)",
+                                background: "var(--card)",
+                                border: "1px solid var(--border)",
                                 borderRadius: 8,
                                 fontSize: 12,
                               }}
@@ -438,23 +438,23 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                         ["Expires", model.expiresAtFormatted ?? "Never"],
                       ].map(([k, v]) => (
                         <div key={k}>
-                          <dt className="text-xs text-[var(--text-muted)]">
+                          <dt className="text-xs text-[var(--muted-foreground)]">
                             {k}
                           </dt>
-                          <dd className="font-medium text-[var(--text-primary)] mt-0.5">
+                          <dd className="font-medium text-[var(--foreground)] mt-0.5">
                             {v}
                           </dd>
                         </div>
                       ))}
                     </dl>
-                    <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
-                      <p className="text-xs text-[var(--text-muted)] mb-1">
+                    <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                      <p className="text-xs text-[var(--muted-foreground)] mb-1">
                         Public Key
                       </p>
                       <CopyableText
                         text={peer.publicKey}
                         truncate={false}
-                        className="text-[var(--text-secondary)]"
+                        className="text-[var(--muted-foreground)]"
                       />
                     </div>
                     {peer.hasPresharedKey && (

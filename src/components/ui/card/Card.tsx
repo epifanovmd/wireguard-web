@@ -53,17 +53,17 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
           <div
             className={cn(
               "flex items-center justify-between px-5 py-3",
-              bordered && "border-b border-[var(--border-color)]",
+              bordered && "border-b border-[var(--border)]",
             )}
           >
             <div className="min-w-0 flex-1">
               {title && (
-                <p className="m-0 font-semibold text-sm text-[var(--text-primary)] leading-snug">
+                <p className="m-0 font-semibold text-sm text-[var(--foreground)] leading-snug">
                   {title}
                 </p>
               )}
               {subtitle && (
-                <p className="m-0 mt-0.5 text-xs text-[var(--text-muted)] leading-snug">
+                <p className="m-0 mt-0.5 text-xs text-[var(--muted-foreground)] leading-snug">
                   {subtitle}
                 </p>
               )}

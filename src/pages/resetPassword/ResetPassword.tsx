@@ -46,8 +46,8 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">Reset password</h2>
-          <p className="text-sm text-[var(--text-muted)] mt-1">Enter your new password</p>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">Reset password</h2>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">Enter your new password</p>
         </div>
 
         {error && (

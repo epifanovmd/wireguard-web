@@ -63,7 +63,7 @@ export const UsersList: FC = observer(() => {
       render: (_, user) => (
         <div className="flex items-center gap-2.5">
           <UserAvatar name={user.displayName} />
-          <span className="font-medium text-[var(--text-primary)]">
+          <span className="font-medium text-[var(--foreground)]">
             {user.displayName}
           </span>
         </div>
@@ -73,7 +73,7 @@ export const UsersList: FC = observer(() => {
       key: "email",
       title: "Email",
       render: (_, user) => (
-        <span className="text-[var(--text-secondary)]">
+        <span className="text-[var(--muted-foreground)]">
           {user.data.email ?? "—"}
         </span>
       ),
@@ -89,7 +89,7 @@ export const UsersList: FC = observer(() => {
         >
           <button
             title="Delete"
-            className="cursor-pointer p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+            className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
             onClick={() => handleDelete(user.data.userId, user.displayName)}
           >
             <Trash2 size={15} />

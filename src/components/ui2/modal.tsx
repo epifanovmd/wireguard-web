@@ -19,7 +19,7 @@ interface ModalOverlayProps
 }
 
 const ModalOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentRef<typeof DialogPrimitive.Overlay>,
   ModalOverlayProps
 >(({ className, disableInteractOutside, ...props }, ref) => {
   const [isPulsing, setIsPulsing] = React.useState(false);
@@ -82,7 +82,7 @@ interface ModalContentProps
 }
 
 const ModalContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentRef<typeof DialogPrimitive.Content>,
   ModalContentProps
 >(
   (
@@ -176,7 +176,7 @@ const ModalFooter = ({
 ModalFooter.displayName = "ModalFooter";
 
 const ModalTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
@@ -191,7 +191,7 @@ const ModalTitle = React.forwardRef<
 ModalTitle.displayName = DialogPrimitive.Title.displayName;
 
 const ModalDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description

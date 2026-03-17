@@ -167,7 +167,7 @@ export const Stats: FC = observer(() => {
         </div>
 
         {!selectedServer ? (
-          <div className="flex justify-center py-16 text-[var(--text-muted)]">
+          <div className="flex justify-center py-16 text-[var(--muted-foreground)]">
             Select a server to view statistics
           </div>
         ) : loading ? (
@@ -202,15 +202,15 @@ export const Stats: FC = observer(() => {
               ].map(item => (
                 <div
                   key={item.title}
-                  className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-5"
+                  className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5"
                 >
-                  <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider">
+                  <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">
                     {item.title}
                   </p>
-                  <p className="text-2xl font-bold text-[var(--text-primary)] mt-2">
+                  <p className="text-2xl font-bold text-[var(--foreground)] mt-2">
                     {item.value}
                   </p>
-                  <p className="text-xs text-[var(--text-muted)] mt-1">
+                  <p className="text-xs text-[var(--muted-foreground)] mt-1">
                     {item.subtitle}
                   </p>
                 </div>
@@ -227,20 +227,20 @@ export const Stats: FC = observer(() => {
                   <AreaChart data={trafficData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke="var(--border-color)"
+                      stroke="var(--border)"
                     />
                     <XAxis
                       dataKey="time"
-                      tick={{ fontSize: 10, fill: "var(--text-muted)" }}
+                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     />
                     <YAxis
-                      tick={{ fontSize: 10, fill: "var(--text-muted)" }}
+                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                       tickFormatter={v => formatBytes(v)}
                     />
                     <Tooltip
                       contentStyle={{
-                        background: "var(--bg-surface)",
-                        border: "1px solid var(--border-color)",
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                         fontSize: 12,
                       }}
@@ -283,20 +283,20 @@ export const Stats: FC = observer(() => {
                   <AreaChart data={speedData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke="var(--border-color)"
+                      stroke="var(--border)"
                     />
                     <XAxis
                       dataKey="time"
-                      tick={{ fontSize: 10, fill: "var(--text-muted)" }}
+                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     />
                     <YAxis
-                      tick={{ fontSize: 10, fill: "var(--text-muted)" }}
+                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                       tickFormatter={v => formatSpeed(v)}
                     />
                     <Tooltip
                       contentStyle={{
-                        background: "var(--bg-surface)",
-                        border: "1px solid var(--border-color)",
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                         fontSize: 12,
                       }}

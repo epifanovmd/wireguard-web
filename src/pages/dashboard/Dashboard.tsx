@@ -62,14 +62,14 @@ export const Dashboard: FC = observer(() => {
       key: "name",
       title: "Name",
       render: (_, s) => (
-        <span className="font-medium text-[var(--text-primary)]">{s.name}</span>
+        <span className="font-medium text-[var(--foreground)]">{s.name}</span>
       ),
     },
     {
       key: "interface",
       title: "Interface",
       render: (_, s) => (
-        <span className="font-mono text-[var(--text-secondary)] text-xs">
+        <span className="font-mono text-[var(--muted-foreground)] text-xs">
           {s.interface}
         </span>
       ),
@@ -83,14 +83,14 @@ export const Dashboard: FC = observer(() => {
       key: "port",
       title: "Port",
       render: (_, s) => (
-        <span className="text-[var(--text-secondary)]">{s.listenPort}</span>
+        <span className="text-[var(--muted-foreground)]">{s.listenPort}</span>
       ),
     },
     {
       key: "endpoint",
       title: "Endpoint",
       render: (_, s) => (
-        <span className="text-[var(--text-muted)] text-xs">
+        <span className="text-[var(--muted-foreground)] text-xs">
           {s.endpoint ?? "—"}
         </span>
       ),
@@ -140,20 +140,20 @@ export const Dashboard: FC = observer(() => {
               <LineChart data={livePoints}>
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="var(--border-color)"
+                  stroke="var(--border)"
                 />
                 <XAxis
                   dataKey="t"
-                  tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   tickFormatter={v => formatSpeed(v)}
                 />
                 <Tooltip
                   contentStyle={{
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--border-color)",
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
                     borderRadius: 8,
                     fontSize: 12,
                   }}
@@ -182,10 +182,10 @@ export const Dashboard: FC = observer(() => {
             </ResponsiveContainer>
           </div>
           <div className="flex gap-4 mt-2">
-            <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
               <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
             </span>
-            <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
               <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
             </span>
           </div>

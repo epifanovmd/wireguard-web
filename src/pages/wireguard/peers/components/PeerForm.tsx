@@ -171,10 +171,10 @@ export const PeerForm: FC<PeerFormProps> = ({
 
       <div className="flex items-center justify-between py-1">
         <div>
-          <p className="text-sm font-medium text-[var(--text-primary)]">
+          <p className="text-sm font-medium text-[var(--foreground)]">
             Preshared key
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-[var(--muted-foreground)]">
             Adds additional layer of symmetric encryption
           </p>
         </div>
@@ -185,7 +185,7 @@ export const PeerForm: FC<PeerFormProps> = ({
       </div>
 
       <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--text-primary)]">
+        <span className="text-sm font-medium text-[var(--foreground)]">
           Enabled
         </span>
         <Toggle checked={enabled} onChange={v => setValue("enabled", v)} />

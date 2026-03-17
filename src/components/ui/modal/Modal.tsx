@@ -52,7 +52,7 @@ export const Modal: FC<ModalProps> = ({
     >
       {children}
       {footer && (
-        <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-[var(--border-color)]">
+        <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-[var(--border)]">
           {footer}
         </div>
       )}

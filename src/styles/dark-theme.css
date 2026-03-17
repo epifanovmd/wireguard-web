@@ -1,7 +1,11 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
+  --surface-1: oklch(0.18 0 0);
+  --surface-2: oklch(0.21 0 0);
+  --surface-3: oklch(0.25 0 0);
+  --overlay: rgba(0, 0, 0, 0.7);
+  --card: var(--surface-2);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -41,8 +45,5 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
-  --surface-1: oklch(0.18 0 0);
-  --surface-2: oklch(0.21 0 0);
-  --surface-3: oklch(0.25 0 0);
-  --overlay: rgba(0, 0, 0, 0.7);
+  --shadow-color: rgb(0 0 0 / 0.2);
 }

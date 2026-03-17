@@ -46,7 +46,7 @@ export const StatCard: FC<StatCardProps> = ({
       p="lg"
       className={className}
       shadow="xs"
-      style={{ backgroundColor: "var(--bg-surface)", borderColor: "var(--border-color)" }}
+      style={{ backgroundColor: "var(--card)", borderColor: "var(--border)" }}
     >
       <Group justify="space-between" align="flex-start" gap="sm">
         <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
@@ -55,15 +55,15 @@ export const StatCard: FC<StatCardProps> = ({
             fw={600}
             tt="uppercase"
             c="dimmed"
-            style={{ letterSpacing: "0.06em", color: "var(--text-muted)" }}
+            style={{ letterSpacing: "0.06em", color: "var(--muted-foreground)" }}
           >
             {title}
           </Text>
-          <Text size="xl" fw={700} truncate style={{ color: "var(--text-primary)" }}>
+          <Text size="xl" fw={700} truncate style={{ color: "var(--foreground)" }}>
             {value}
           </Text>
           {subtitle && (
-            <Text size="xs" style={{ color: "var(--text-muted)" }}>
+            <Text size="xs" style={{ color: "var(--muted-foreground)" }}>
               {subtitle}
             </Text>
           )}

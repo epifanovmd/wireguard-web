@@ -1,9 +1,6 @@
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { cva } from "class-variance-authority";
 
-import { cn } from "./cn";
-
-const iconButtonVariants = cva(
+export const iconButtonVariants = cva(
   "inline-flex items-center justify-center rounded-md transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
@@ -31,26 +28,3 @@ const iconButtonVariants = cva(
     },
   },
 );
-
-export interface IconButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof iconButtonVariants> {
-  asChild?: boolean;
-}
-
-const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ className, variant, size, children, ...props }, ref) => {
-    return (
-      <button
-        className={cn(iconButtonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  },
-);
-IconButton.displayName = "IconButton";
-
-export { IconButton, iconButtonVariants };

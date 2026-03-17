@@ -49,10 +49,10 @@ export const ForgotPassword = observer(() => {
             <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
               <Check className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
-            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">
+            <h2 className="text-lg font-bold text-[var(--foreground)] mb-2">
               Email sent
             </h2>
-            <p className="text-sm text-[var(--text-muted)] mb-6">
+            <p className="text-sm text-[var(--muted-foreground)] mb-6">
               If an account exists for this email, you will receive a password
               reset link shortly.
             </p>
@@ -63,10 +63,10 @@ export const ForgotPassword = observer(() => {
         ) : (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-[var(--text-primary)]">
+              <h2 className="text-xl font-bold text-[var(--foreground)]">
                 Forgot password
               </h2>
-              <p className="text-sm text-[var(--text-muted)] mt-1">
+              <p className="text-sm text-[var(--muted-foreground)] mt-1">
                 Enter your email or phone to receive a reset link
               </p>
             </div>

@@ -94,12 +94,12 @@ export const ConfirmModalProvider: FC<{ children: ReactNode }> = ({
         >
           <div className="flex flex-col gap-1.5">
             {state.opts.message && (
-              <p className="m-0 text-sm text-[var(--text-primary)]">
+              <p className="m-0 text-sm text-[var(--foreground)]">
                 {state.opts.message}
               </p>
             )}
             {state.opts.description && (
-              <p className="m-0 text-xs text-[var(--text-muted)] leading-relaxed">
+              <p className="m-0 text-xs text-[var(--muted-foreground)] leading-relaxed">
                 {state.opts.description}
               </p>
             )}

@@ -56,7 +56,7 @@ export const Drawer: FC<DrawerProps> = ({
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">{children}</div>
         {footer && (
-          <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-[var(--border-color)] sticky bottom-0 bg-[var(--bg-surface)]">
+          <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-[var(--border)] sticky bottom-0 bg-[var(--card)]">
             {footer}
           </div>
         )}

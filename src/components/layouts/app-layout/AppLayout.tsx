@@ -12,7 +12,7 @@ export const AppLayout: FC<AppLayoutProps> = ({ children }) => {
   const session = useSessionDataStore();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-base)]">
+    <div className="flex h-screen overflow-hidden bg-[var(--background)]">
       <Sidebar onSignOut={() => session.clear()} />
       <main className="flex-1 overflow-y-auto min-w-0">
         {children}

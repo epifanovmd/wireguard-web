@@ -132,7 +132,7 @@ export const CreateUserModal: FC<CreateUserDrawerProps> = ({
         />
 
         <div>
-          <p className="text-sm font-medium text-[var(--text-primary)] mb-3">
+          <p className="text-sm font-medium text-[var(--foreground)] mb-3">
             Permissions
           </p>
           <PermissionsEditor value={permissions} onChange={setPermissions} />

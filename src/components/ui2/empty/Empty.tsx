@@ -1,37 +1,9 @@
-import { cva, type VariantProps } from "class-variance-authority";
+import { type VariantProps } from "class-variance-authority";
 import { Database, FileQuestion, Inbox, Package, Search } from "lucide-react";
 import * as React from "react";
 
-import { cn } from "./cn";
-
-const emptyVariants = cva(
-  "flex flex-col items-center justify-center text-center py-12 px-4",
-  {
-    variants: {
-      size: {
-        sm: "py-8 gap-2",
-        md: "py-12 gap-3",
-        lg: "py-16 gap-4",
-      },
-    },
-    defaultVariants: {
-      size: "md",
-    },
-  },
-);
-
-const emptyIconVariants = cva("text-muted-foreground/50", {
-  variants: {
-    size: {
-      sm: "h-12 w-12",
-      md: "h-16 w-16",
-      lg: "h-24 w-24",
-    },
-  },
-  defaultVariants: {
-    size: "md",
-  },
-});
+import { cn } from "../cn";
+import { emptyIconVariants, emptyVariants } from "./emptyVariants";
 
 export interface EmptyProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -106,4 +78,4 @@ const Empty = React.forwardRef<HTMLDivElement, EmptyProps>(
 );
 Empty.displayName = "Empty";
 
-export { Empty, emptyVariants };
+export { Empty };

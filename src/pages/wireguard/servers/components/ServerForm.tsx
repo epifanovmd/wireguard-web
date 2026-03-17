@@ -125,14 +125,14 @@ export const ServerForm: FC<ServerFormProps> = ({ defaultValues, isEdit, loading
       <Textarea label="Description" rows={2} {...register("description")} />
 
       <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--text-primary)]">Enabled</span>
+        <span className="text-sm font-medium text-[var(--foreground)]">Enabled</span>
         <Toggle checked={enabled} onChange={v => setValue("enabled", v)} />
       </div>
 
       {/* Advanced */}
       <button
         type="button"
-        className="flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+        className="flex items-center gap-1.5 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
         onClick={() => setShowAdvanced(v => !v)}
       >
         <ChevronRight size={16} className={`transition-transform ${showAdvanced ? "rotate-90" : ""}`} />
@@ -140,7 +140,7 @@ export const ServerForm: FC<ServerFormProps> = ({ defaultValues, isEdit, loading
       </button>
 
       {showAdvanced && (
-        <div className="flex flex-col gap-3 pl-3 border-l-2 border-[var(--border-color)]">
+        <div className="flex flex-col gap-3 pl-3 border-l-2 border-[var(--border)]">
           <Textarea label="PreUp" placeholder="iptables -A FORWARD ..." rows={2} {...register("preUp")} />
           <Textarea label="PostUp" rows={2} {...register("postUp")} />
           <Textarea label="PreDown" rows={2} {...register("preDown")} />

@@ -60,8 +60,8 @@ export const Settings: FC = observer(() => {
                 <Card title="Appearance" padding="md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[var(--text-primary)]">Dark mode</p>
-                      <p className="text-xs text-[var(--text-muted)]">Toggle between light and dark theme</p>
+                      <p className="text-sm font-medium text-[var(--foreground)]">Dark mode</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">Toggle between light and dark theme</p>
                     </div>
                     <Toggle checked={isDark} onChange={v => setTheme(v ? "dark" : "light")} />
                   </div>
@@ -72,7 +72,7 @@ export const Settings: FC = observer(() => {
                   {health ? (
                     <dl className="flex flex-col gap-3">
                       <div className="flex items-center justify-between">
-                        <dt className="text-sm text-[var(--text-muted)]">Database</dt>
+                        <dt className="text-sm text-[var(--muted-foreground)]">Database</dt>
                         <dd>
                           <Badge variant={health.dbStatus === "ok" ? "success" : "danger"} dot>
                             {health.dbStatus ?? "unknown"}
@@ -80,18 +80,18 @@ export const Settings: FC = observer(() => {
                         </dd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <dt className="text-sm text-[var(--text-muted)]">Uptime</dt>
-                        <dd className="text-sm text-[var(--text-primary)] font-medium">{formatUptime(health.uptime ?? 0)}</dd>
+                        <dt className="text-sm text-[var(--muted-foreground)]">Uptime</dt>
+                        <dd className="text-sm text-[var(--foreground)] font-medium">{formatUptime(health.uptime ?? 0)}</dd>
                       </div>
                       {health.version && (
                         <div className="flex items-center justify-between">
-                          <dt className="text-sm text-[var(--text-muted)]">Version</dt>
-                          <dd className="text-sm text-[var(--text-primary)] font-mono">{health.version}</dd>
+                          <dt className="text-sm text-[var(--muted-foreground)]">Version</dt>
+                          <dd className="text-sm text-[var(--foreground)] font-mono">{health.version}</dd>
                         </div>
                       )}
                     </dl>
                   ) : (
-                    <p className="text-sm text-[var(--text-muted)]">Loading health data...</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">Loading health data...</p>
                   )}
                 </Card>
               </div>
@@ -106,23 +106,23 @@ export const Settings: FC = observer(() => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-[var(--table-header-bg)] border-b border-[var(--border-color)]">
-                          <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Permission</th>
+                        <tr className="bg-[var(--surface-1)] border-b border-[var(--border)]">
+                          <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Permission</th>
                           <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">Admin</th>
                           <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">User</th>
-                          <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Guest</th>
+                          <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Guest</th>
                         </tr>
                       </thead>
                       <tbody>
                         {PERMISSIONS_MATRIX.map(row => (
-                          <tr key={row.permission} className="border-b border-[var(--border-color)] hover:bg-[var(--table-row-hover)]">
-                            <td className="px-4 py-2.5 font-mono text-xs text-[var(--text-secondary)]">{row.permission}</td>
+                          <tr key={row.permission} className="border-b border-[var(--border)] hover:bg-[var(--accent)]">
+                            <td className="px-4 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">{row.permission}</td>
                             {[row.admin, row.user, row.guest].map((has, i) => (
                               <td key={i} className="px-4 py-2.5 text-center">
                                 {has ? (
                                   <Check size={16} className="inline text-green-500" strokeWidth={2.5} />
                                 ) : (
-                                  <X size={16} className="inline text-[var(--border-color-2)]" />
+                                  <X size={16} className="inline text-[var(--surface-3)]" />
                                 )}
                               </td>
                             ))}
@@ -140,9 +140,9 @@ export const Settings: FC = observer(() => {
                       { role: ERole.User, desc: "Standard user access", variant: "info" as const },
                       { role: ERole.Guest, desc: "Read-only minimal access", variant: "gray" as const },
                     ].map(r => (
-                      <div key={r.role} className="flex-1 min-w-[160px] bg-[var(--bg-surface-2)] rounded-lg p-3">
+                      <div key={r.role} className="flex-1 min-w-[160px] bg-[var(--surface-1)] rounded-lg p-3">
                         <Badge variant={r.variant}>{r.role}</Badge>
-                        <p className="text-xs text-[var(--text-muted)] mt-2">{r.desc}</p>
+                        <p className="text-xs text-[var(--muted-foreground)] mt-2">{r.desc}</p>
                       </div>
                     ))}
                   </div>

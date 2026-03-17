@@ -70,20 +70,20 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
           <img
             src={qrUrl}
             alt="QR Code"
-            className="w-48 h-48 rounded-lg border border-[var(--border-color)]"
+            className="w-48 h-48 rounded-lg border border-[var(--border)]"
           />
         ) : (
-          <div className="w-48 h-48 flex items-center justify-center bg-[var(--bg-surface-2)] rounded-lg">
-            <p className="text-sm text-[var(--text-muted)]">
+          <div className="w-48 h-48 flex items-center justify-center bg-[var(--surface-1)] rounded-lg">
+            <p className="text-sm text-[var(--muted-foreground)]">
               QR code unavailable
             </p>
           </div>
         )}
         <div className="text-center">
-          <p className="text-sm text-[var(--text-secondary)]">
+          <p className="text-sm text-[var(--muted-foreground)]">
             Scan this QR code with the WireGuard app
           </p>
-          <p className="text-xs text-[var(--text-muted)] mt-1">
+          <p className="text-xs text-[var(--muted-foreground)] mt-1">
             Available for iOS, Android, Windows, macOS, Linux
           </p>
         </div>

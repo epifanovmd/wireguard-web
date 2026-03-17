@@ -17,7 +17,7 @@ export type { TagProps } from "./tag";
 export { Tag, tagVariants } from "./tag";
 
 // Cards
-export type { CardProps } from "./card";
+export type { CardHeaderProps, CardProps } from "./card";
 export {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
+  cardVariants,
 } from "./card";
 
 // Form Controls
@@ -34,7 +35,7 @@ export type { SwitchProps } from "./switch";
 export { Switch } from "./switch";
 
 // Tabs
-export type { TabsListProps, TabsProps, TabsTriggerProps } from "./tabs";
+export type { TabItem, TabsListProps, TabsProps, TabsTriggerProps } from "./tabs";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 // Select

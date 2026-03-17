@@ -43,10 +43,10 @@ export const SignIn = observer(() => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">
+          <h2 className="text-xl font-bold text-[var(--foreground)]">
             Sign in
           </h2>
-          <p className="text-sm text-[var(--text-muted)] mt-1">
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">
             Enter your credentials to access the admin panel
           </p>
         </div>
@@ -75,7 +75,7 @@ export const SignIn = observer(() => {
               <button
                 type="button"
                 onClick={() => setShowPassword(v => !v)}
-                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>

@@ -105,7 +105,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   }
 
   if (!server)
-    return <div className="p-6 text-[var(--text-muted)]">Server not found</div>;
+    return <div className="p-6 text-[var(--muted-foreground)]">Server not found</div>;
 
   const handleAction = async (action: "start" | "stop" | "restart") => {
     setActionLoading(action);
@@ -131,7 +131,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       key: "name",
       title: "Name",
       render: (_, peer) => (
-        <span className="font-medium text-[var(--text-primary)]">
+        <span className="font-medium text-[var(--foreground)]">
           {peer.name}
         </span>
       ),
@@ -140,7 +140,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       key: "ip",
       title: "IP",
       render: (_, peer) => (
-        <span className="font-mono text-xs text-[var(--text-secondary)]">
+        <span className="font-mono text-xs text-[var(--muted-foreground)]">
           {peer.data.allowedIPs}
         </span>
       ),
@@ -156,7 +156,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       key: "expires",
       title: "Expires",
       render: (_, peer) => (
-        <span className="text-xs text-[var(--text-muted)]">
+        <span className="text-xs text-[var(--muted-foreground)]">
           {peer.expiresAtFormatted ?? "Never"}
         </span>
       ),
@@ -165,7 +165,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       key: "created",
       title: "Created",
       render: (_, peer) => (
-        <span className="text-xs text-[var(--text-muted)]">
+        <span className="text-xs text-[var(--muted-foreground)]">
           {peer.createdAtFormatted}
         </span>
       ),
@@ -184,14 +184,14 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
           <div className="flex items-center gap-1">
             <button
               title="Edit"
-              className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--text-primary)] transition-colors"
+              className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[var(--bg-hover,rgba(255,255,255,0.06))] hover:text-[var(--foreground)] transition-colors"
               onClick={() => setEditOpen(true)}
             >
               <Pencil size={17} />
             </button>
             <button
               title="Start"
-              className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] transition-colors disabled:opacity-40"
+              className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] transition-colors disabled:opacity-40"
               disabled={actionLoading === "start" || effectiveStatus === "up"}
               onClick={() => handleAction("start")}
             >
@@ -199,7 +199,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             </button>
             <button
               title="Stop"
-              className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] transition-colors disabled:opacity-40"
+              className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] transition-colors disabled:opacity-40"
               disabled={actionLoading === "stop" || effectiveStatus === "down"}
               onClick={() => handleAction("stop")}
             >
@@ -207,7 +207,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             </button>
             <button
               title="Restart"
-              className="cursor-pointer p-2 rounded-lg text-[var(--text-muted)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors disabled:opacity-40"
+              className="cursor-pointer p-2 rounded-lg text-[var(--muted-foreground)] hover:bg-[rgba(99,102,241,0.1)] hover:text-[#6366f1] transition-colors disabled:opacity-40"
               disabled={actionLoading === "restart"}
               onClick={() => handleAction("restart")}
             >
@@ -221,29 +221,29 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         {/* Status cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
           <Card padding="md">
-            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
+            <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
               Status
             </p>
             <ServerStatusBadge status={effectiveStatus} />
           </Card>
           <Card padding="md">
-            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
+            <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
               Interface
             </p>
-            <p className="font-mono text-sm font-semibold text-[var(--text-primary)]">
+            <p className="font-mono text-sm font-semibold text-[var(--foreground)]">
               {server.interface}
             </p>
           </Card>
           <Card padding="md">
-            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
+            <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
               Total peers
             </p>
-            <p className="text-2xl font-bold text-[var(--text-primary)]">
+            <p className="text-2xl font-bold text-[var(--foreground)]">
               {peerCount ?? "—"}
             </p>
           </Card>
           <Card padding="md">
-            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1">
+            <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
               Active peers
             </p>
             <p className="text-2xl font-bold text-green-500">
@@ -294,20 +294,20 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                       <LineChart data={liveSpeedPoints}>
                         <CartesianGrid
                           strokeDasharray="3 3"
-                          stroke="var(--border-color)"
+                          stroke="var(--border)"
                         />
                         <XAxis
                           dataKey="t"
-                          tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                         />
                         <YAxis
-                          tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                           tickFormatter={v => formatSpeed(v)}
                         />
                         <Tooltip
                           contentStyle={{
-                            background: "var(--bg-surface)",
-                            border: "1px solid var(--border-color)",
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
                             borderRadius: 8,
                             fontSize: 12,
                           }}
@@ -336,11 +336,11 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                     </ResponsiveContainer>
                   </div>
                   <div className="flex gap-4 mt-2">
-                    <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                    <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
                       <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
                       Download
                     </span>
-                    <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                    <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
                       <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
                       Upload
                     </span>
@@ -358,20 +358,20 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                       <AreaChart data={trafficData}>
                         <CartesianGrid
                           strokeDasharray="3 3"
-                          stroke="var(--border-color)"
+                          stroke="var(--border)"
                         />
                         <XAxis
                           dataKey="time"
-                          tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                         />
                         <YAxis
-                          tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                           tickFormatter={v => formatBytes(v)}
                         />
                         <Tooltip
                           contentStyle={{
-                            background: "var(--bg-surface)",
-                            border: "1px solid var(--border-color)",
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
                             borderRadius: 8,
                             fontSize: 12,
                           }}
@@ -419,22 +419,22 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                       ["Enabled", server.enabled ? "Yes" : "No"],
                     ].map(([k, v]) => (
                       <div key={k}>
-                        <dt className="text-xs text-[var(--text-muted)]">
+                        <dt className="text-xs text-[var(--muted-foreground)]">
                           {k}
                         </dt>
-                        <dd className="font-medium text-[var(--text-primary)] mt-0.5">
+                        <dd className="font-medium text-[var(--foreground)] mt-0.5">
                           {v}
                         </dd>
                       </div>
                     ))}
                   </dl>
                   {server.publicKey && (
-                    <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
-                      <p className="text-xs text-[var(--text-muted)] mb-1">
+                    <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                      <p className="text-xs text-[var(--muted-foreground)] mb-1">
                         Public Key
                       </p>
                       <CopyableText
-                        className={"text-[var(--text-secondary)]"}
+                        className={"text-[var(--muted-foreground)]"}
                         truncate={false}
                         text={server.publicKey}
                       />

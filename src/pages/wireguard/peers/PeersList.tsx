@@ -29,11 +29,11 @@ import { QrCodeModal } from "./components/QrCodeModal";
 
 const PeerNameCell: FC<{ peer: PeerModel }> = ({ peer }) => (
   <div>
-    <p className="font-medium text-[var(--text-primary)]">{peer.name}</p>
+    <p className="font-medium text-[var(--foreground)]">{peer.name}</p>
     <CopyableText
       text={peer.data.publicKey}
       displayText={peer.shortPublicKey}
-      className="mt-0.5 text-[var(--text-muted)]"
+      className="mt-0.5 text-[var(--muted-foreground)]"
     />
   </div>
 );
@@ -51,7 +51,7 @@ const PeerStatusCell: FC<{ peer: PeerModel }> = ({ peer }) => {
         )}
       </div>
       {liveStatus?.endpoint && (
-        <p className="text-xs text-[var(--text-muted)] mt-0.5">
+        <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
           {liveStatus.endpoint}
         </p>
       )}
@@ -62,7 +62,7 @@ const PeerStatusCell: FC<{ peer: PeerModel }> = ({ peer }) => {
 const PeerHandshakeCell: FC<{ peer: PeerModel }> = ({ peer }) => {
   const { status: liveStatus } = useWgPeer(peer.data.id);
   return (
-    <span className="text-xs text-[var(--text-muted)]">
+    <span className="text-xs text-[var(--muted-foreground)]">
       {liveStatus?.lastHandshake
         ? new Date(liveStatus.lastHandshake).toLocaleString()
         : peer.createdAtFormatted}
@@ -91,14 +91,14 @@ const PeerActionsCell: FC<PeerActionsCellProps> = ({
   >
     <button
       title="QR Code"
-      className="cursor-pointer p-1.5 rounded-md hover:bg-[var(--bg-hover,rgba(99,102,241,0.1))] text-[var(--text-muted)] hover:text-[#6366f1] transition-colors"
+      className="cursor-pointer p-1.5 rounded-md hover:bg-[var(--bg-hover,rgba(99,102,241,0.1))] text-[var(--muted-foreground)] hover:text-[#6366f1] transition-colors"
       onClick={() => onQr(peer.data.id, peer.name)}
     >
       <QrCode size={15} />
     </button>
     <button
       title={peer.enabled ? "Disable" : "Enable"}
-      className={`cursor-pointer p-1.5 rounded-md transition-colors ${peer.enabled ? "text-[var(--text-muted)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--text-muted)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
+      className={`cursor-pointer p-1.5 rounded-md transition-colors ${peer.enabled ? "text-[var(--muted-foreground)] hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04]" : "text-[var(--muted-foreground)] hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a]"}`}
       onClick={() => onToggle(peer.data.id, peer.enabled)}
       disabled={loading === "toggle"}
     >
@@ -106,7 +106,7 @@ const PeerActionsCell: FC<PeerActionsCellProps> = ({
     </button>
     <button
       title="Delete"
-      className="cursor-pointer p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
+      className="cursor-pointer p-1.5 rounded-md text-[var(--muted-foreground)] hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] transition-colors"
       disabled={loading === "delete"}
       onClick={() => onDelete(peer.data.id, peer.name)}
     >
@@ -207,7 +207,7 @@ export const PeersList: FC = observer(() => {
       key: "ip",
       title: "IP",
       render: (_, peer) => (
-        <span className="font-mono text-xs text-[var(--text-secondary)]">
+        <span className="font-mono text-xs text-[var(--muted-foreground)]">
           {peer.data.allowedIPs}
         </span>
       ),
@@ -226,14 +226,14 @@ export const PeersList: FC = observer(() => {
             Yes
           </Badge>
         ) : (
-          <span className="text-xs text-[var(--text-muted)]">No</span>
+          <span className="text-xs text-[var(--muted-foreground)]">No</span>
         ),
     },
     {
       key: "expires",
       title: "Expires",
       render: (_, peer) => (
-        <span className="text-xs text-[var(--text-muted)]">
+        <span className="text-xs text-[var(--muted-foreground)]">
           {peer.expiresAtFormatted ?? "Never"}
         </span>
       ),

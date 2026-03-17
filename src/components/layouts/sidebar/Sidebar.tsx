@@ -72,8 +72,8 @@ const NavItemComponent: FC<{ item: NavItem }> = ({ item }) => {
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150",
         isActive
-          ? "bg-[var(--bg-sidebar-item-active)] text-[var(--text-sidebar-active)] font-medium"
-          : "text-[var(--text-sidebar)] hover:bg-[var(--bg-sidebar-item-hover)] hover:text-[var(--text-sidebar-active)]",
+          ? "bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)] font-medium"
+          : "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-primary-foreground)]",
       )}
     >
       <span className="flex-shrink-0">{item.icon}</span>
@@ -106,17 +106,17 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
       .toUpperCase() || "A";
 
   return (
-    <aside className="w-56 flex-shrink-0 h-screen flex flex-col bg-[var(--bg-sidebar)] border-r border-[rgba(255,255,255,0.06)]">
+    <aside className="w-56 flex-shrink-0 h-screen flex flex-col bg-[var(--sidebar)] border-r border-[rgba(255,255,255,0.06)]">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[rgba(255,255,255,0.06)]">
         <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0">
           <ShieldCheck size={16} className="text-white" />
         </div>
         <div>
-          <p className="text-[var(--text-sidebar-active)] text-sm font-semibold leading-none">
+          <p className="text-[var(--sidebar-primary-foreground)] text-sm font-semibold leading-none">
             WireGuard
           </p>
-          <p className="text-[var(--text-muted)] text-xs mt-0.5">Admin Panel</p>
+          <p className="text-[var(--muted-foreground)] text-xs mt-0.5">Admin Panel</p>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi} className="flex flex-col gap-0.5">
             {group.label && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)] px-3 mb-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted-foreground)] px-3 mb-1">
                 {group.label}
               </p>
             )}
@@ -144,14 +144,14 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-[var(--text-sidebar-active)] truncate">
+            <p className="text-xs font-medium text-[var(--sidebar-primary-foreground)] truncate">
               {displayName}
             </p>
           </div>
         </div>
         <button
           onClick={onSignOut}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[var(--text-sidebar)] hover:bg-[var(--bg-sidebar-item-hover)] hover:text-[#ef4444] transition-all duration-150 mt-0.5"
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[#ef4444] transition-all duration-150 mt-0.5"
         >
           <LogOut size={18} />
           <span>Sign out</span>
