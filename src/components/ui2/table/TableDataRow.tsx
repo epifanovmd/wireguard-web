@@ -38,12 +38,6 @@ function TableDataRowInner<TData = unknown>({
   );
 }
 
-// Cast needed: React.memo doesn't support generic components directly
-export const TableDataRow = React.memo(TableDataRowInner, (prev, next) => {
-  return (
-    prev.row.id === next.row.id &&
-    prev.row.original === next.row.original &&
-    prev.isSelected === next.isSelected &&
-    prev.onRowClick === next.onRowClick
-  );
-}) as typeof TableDataRowInner;
+export const TableDataRow = React.memo(
+  TableDataRowInner,
+) as typeof TableDataRowInner;

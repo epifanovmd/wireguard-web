@@ -1,6 +1,5 @@
-import { flexRender,type Header } from "@tanstack/react-table";
+import { flexRender, type Header } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import * as React from "react";
 
 import { TableHead } from "./TablePrimitive";
 
@@ -20,10 +19,7 @@ interface TableHeadCellProps {
   sorting?: boolean;
 }
 
-export const TableHeadCell = React.memo(function TableHeadCell({
-  header,
-  sorting,
-}: TableHeadCellProps) {
+export function TableHeadCell({ header, sorting }: TableHeadCellProps) {
   if (header.isPlaceholder) {
     return <TableHead colSpan={header.colSpan} />;
   }
@@ -47,4 +43,4 @@ export const TableHeadCell = React.memo(function TableHeadCell({
       )}
     </TableHead>
   );
-});
+}
