@@ -53,30 +53,37 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
 
     return (
       <Popover>
-        <Popover.Trigger asChild>
-          <DatePickerTrigger
-            ref={ref}
-            size={size}
-            variant={variant}
-            disabled={disabled}
-            className={cn(!value && "text-muted-foreground", className)}
-          >
-            <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
-            <span className="flex-1 truncate text-left">
-              {value ? format(value, dateFormat) : placeholder}
-            </span>
-            {clearable && value && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="shrink-0 opacity-50 hover:opacity-100 transition-opacity"
-                tabIndex={-1}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </DatePickerTrigger>
-        </Popover.Trigger>
+        <div className="relative w-full">
+          <Popover.Trigger asChild>
+            <DatePickerTrigger
+              ref={ref}
+              size={size}
+              variant={variant}
+              disabled={disabled}
+              className={cn(
+                !value && "text-muted-foreground",
+                clearable && value && "pr-7",
+                className,
+              )}
+            >
+              <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+              <span className="flex-1 truncate text-left">
+                {value ? format(value, dateFormat) : placeholder}
+              </span>
+            </DatePickerTrigger>
+          </Popover.Trigger>
+          {clearable && value && (
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={disabled}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
+              tabIndex={-1}
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
         <Popover.Content size="auto" align="start" className="p-0" {...contentProps}>
           <Calendar selected={value} onSelect={onChange} {...calendarProps} />
         </Popover.Content>

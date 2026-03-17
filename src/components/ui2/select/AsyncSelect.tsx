@@ -37,7 +37,10 @@ export const AsyncSelect = <TData, TValue extends string = string>({
   placeholder,
   empty,
   triggerSize,
+  triggerVariant,
   triggerClassName,
+  clearable,
+  onClear,
   onOpenChange,
   value,
   defaultValue,
@@ -66,7 +69,15 @@ export const AsyncSelect = <TData, TValue extends string = string>({
       onOpenChange={handleOpen}
       {...props}
     >
-      <SelectTrigger size={triggerSize} className={triggerClassName} loading={loading}>
+      <SelectTrigger
+        size={triggerSize}
+        variant={triggerVariant}
+        className={triggerClassName}
+        loading={loading}
+        value={value}
+        clearable={clearable}
+        onClear={onClear}
+      >
         <SelectPrimitive.Value placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

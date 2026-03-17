@@ -31,7 +31,10 @@ export const GroupedSelect = <TValue extends string = string>({
   loading,
   empty,
   triggerSize,
+  triggerVariant,
   triggerClassName,
+  clearable,
+  onClear,
   value,
   defaultValue,
   onValueChange,
@@ -46,7 +49,15 @@ export const GroupedSelect = <TValue extends string = string>({
       onValueChange={onValueChange as ((v: string) => void) | undefined}
       {...props}
     >
-      <SelectTrigger size={triggerSize} className={triggerClassName} loading={loading}>
+      <SelectTrigger
+        size={triggerSize}
+        variant={triggerVariant}
+        className={triggerClassName}
+        loading={loading}
+        value={value}
+        clearable={clearable}
+        onClear={onClear}
+      >
         <SelectPrimitive.Value placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

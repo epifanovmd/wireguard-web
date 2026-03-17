@@ -67,41 +67,37 @@ export const DateRangePicker = React.forwardRef<
 
     return (
       <Popover>
-        <Popover.Trigger asChild>
-          <DatePickerTrigger
-            ref={ref}
-            size={size}
-            variant={variant}
-            disabled={disabled}
-            className={cn(!hasValue && "text-muted-foreground", className)}
-          >
-            <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
-            <span className="flex-1 truncate text-left">
-              {label ?? placeholder}
-            </span>
-            {clearable && hasValue && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="cursor-pointer shrink-0 opacity-50 hover:opacity-100 transition-opacity"
-                tabIndex={-1}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </DatePickerTrigger>
-        </Popover.Trigger>
-        <Popover.Content
-          size="auto"
-          align="start"
-          className="p-0"
-          {...contentProps}
-        >
-          <RangeCalendar
-            selected={value}
-            onSelect={onChange}
-            {...calendarProps}
-          />
+        <div className="relative w-full">
+          <Popover.Trigger asChild>
+            <DatePickerTrigger
+              ref={ref}
+              size={size}
+              variant={variant}
+              disabled={disabled}
+              className={cn(
+                !hasValue && "text-muted-foreground",
+                clearable && hasValue && "pr-7",
+                className,
+              )}
+            >
+              <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+              <span className="flex-1 truncate text-left">{label ?? placeholder}</span>
+            </DatePickerTrigger>
+          </Popover.Trigger>
+          {clearable && hasValue && (
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={disabled}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
+              tabIndex={-1}
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+        <Popover.Content size="auto" align="start" className="p-0" {...contentProps}>
+          <RangeCalendar selected={value} onSelect={onChange} {...calendarProps} />
         </Popover.Content>
       </Popover>
     );

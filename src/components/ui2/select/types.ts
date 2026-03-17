@@ -21,7 +21,10 @@ export interface SelectOptionGroup<TValue extends string = string> {
 export interface SelectTriggerAppearance {
   placeholder?: string;
   triggerSize?: SelectTriggerProps["size"];
+  triggerVariant?: SelectTriggerProps["variant"];
   triggerClassName?: string;
+  clearable?: boolean;
+  onClear?: () => void;
 }
 
 // ─── Base root props (re-typed with generic value) ────────────────────────────

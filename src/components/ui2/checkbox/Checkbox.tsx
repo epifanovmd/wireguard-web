@@ -15,10 +15,10 @@ export interface CheckboxProps
 const Checkbox = React.forwardRef<
   React.ComponentRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
->(({ className, size, indeterminate, ...props }, ref) => (
+>(({ className, size, variant, indeterminate, ...props }, ref) => (
   <CheckboxPrimitive.Root
     ref={ref}
-    className={cn(checkboxVariants({ size, className }))}
+    className={cn(checkboxVariants({ size, variant, className }))}
     {...props}
     checked={indeterminate ? "indeterminate" : props.checked}
   >

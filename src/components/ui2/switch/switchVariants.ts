@@ -1,7 +1,13 @@
 import { cva } from "class-variance-authority";
 
 export const switchVariants = cva(
-  "peer inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-switch-background",
+  [
+    "peer inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent",
+    "transition-all duration-200",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    "data-[state=checked]:bg-primary data-[state=unchecked]:bg-switch-background",
+  ],
   {
     variants: {
       size: {
@@ -9,9 +15,17 @@ export const switchVariants = cva(
         md: "h-6 w-11",
         lg: "h-7 w-14",
       },
+      variant: {
+        default: "",
+        error:
+          "ring-2 ring-destructive ring-offset-1 ring-offset-background focus-visible:ring-destructive",
+        success:
+          "ring-2 ring-success ring-offset-1 ring-offset-background focus-visible:ring-success",
+      },
     },
     defaultVariants: {
       size: "md",
+      variant: "default",
     },
   },
 );

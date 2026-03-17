@@ -368,10 +368,12 @@ export const UIPage = () => {
               <Input
                 placeholder="Clearable input"
                 clearable
-                onClear={() => console.log("cleared")}
+                onClear={() => {}}
                 size="sm"
               />
               <Input placeholder="Filled variant" variant="filled" size="sm" />
+              <Input placeholder="Error state" variant="error" size="sm" />
+              <Input placeholder="Success state" variant="success" size="sm" />
               <Input type="password" placeholder="Password" size="sm" />
               <Input placeholder="Loading..." loading size="sm" />
             </CardContent>
@@ -433,60 +435,84 @@ export const UIPage = () => {
             <CardHeader>
               <CardTitle className="text-base">Controls</CardTitle>
               <CardDescription className="text-xs">
-                Switch и Checkbox
+                Switch и Checkbox — размеры, варианты состояния
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={switchChecked}
-                    onCheckedChange={setSwitchChecked}
-                    size="sm"
-                  />
-                  <span className="text-xs">Small</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={switchChecked}
-                    onCheckedChange={setSwitchChecked}
-                    size="md"
-                  />
-                  <span className="text-xs">Medium</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={switchChecked}
-                    onCheckedChange={setSwitchChecked}
-                    size="lg"
-                  />
-                  <span className="text-xs">Large</span>
+            <CardContent className="space-y-4">
+              {/* Switch sizes */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Switch — размеры</p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  {(["sm", "md", "lg"] as const).map(s => (
+                    <div key={s} className="flex items-center gap-2">
+                      <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} size={s} />
+                      <span className="text-xs">{s}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    checked={checkboxChecked}
-                    onCheckedChange={checked =>
-                      setCheckboxChecked(checked as boolean)
-                    }
-                    size="sm"
-                  />
-                  <span className="text-xs">Small</span>
+              {/* Switch variants */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Switch — варианты</p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} />
+                    <span className="text-xs">default</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={false} variant="error" onCheckedChange={() => {}} />
+                    <span className="text-xs">error</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={true} variant="success" onCheckedChange={() => {}} />
+                    <span className="text-xs">success</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={switchChecked} onCheckedChange={setSwitchChecked} disabled />
+                    <span className="text-xs">disabled</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    checked={checkboxChecked}
-                    onCheckedChange={checked =>
-                      setCheckboxChecked(checked as boolean)
-                    }
-                    size="md"
-                  />
-                  <span className="text-xs">Medium</span>
+              </div>
+              {/* Checkbox sizes + indeterminate */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Checkbox — размеры</p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  {(["sm", "md", "lg"] as const).map(s => (
+                    <div key={s} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={checkboxChecked}
+                        onCheckedChange={c => setCheckboxChecked(c as boolean)}
+                        size={s}
+                      />
+                      <span className="text-xs">{s}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2">
+                    <Checkbox indeterminate size="md" />
+                    <span className="text-xs">indeterminate</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox indeterminate size="md" />
-                  <span className="text-xs">Indeterminate</span>
+              </div>
+              {/* Checkbox variants */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Checkbox — варианты</p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Checkbox checked={checkboxChecked} onCheckedChange={c => setCheckboxChecked(c as boolean)} />
+                    <span className="text-xs">default</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox checked={false} variant="error" />
+                    <span className="text-xs">error</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox checked={true} variant="success" />
+                    <span className="text-xs">success</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox checked={checkboxChecked} onCheckedChange={c => setCheckboxChecked(c as boolean)} disabled />
+                    <span className="text-xs">disabled</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -551,84 +577,112 @@ export const UIPage = () => {
             <CardHeader>
               <CardTitle className="text-base">Select</CardTitle>
               <CardDescription className="text-xs">
-                Выпадающие списки
+                Выпадающие списки — варианты, clearable, async
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              {/* Select — flat */}
-              <Select
-                options={[
-                  { value: "option1", label: "Option 1" },
-                  { value: "option2", label: "Option 2" },
-                  { value: "option3", label: "Option 3" },
-                ]}
-                placeholder="Выберите опцию"
-                triggerSize="sm"
-                value={selectValue}
-                onValueChange={setSelectValue}
-              />
-
-              <div className="grid grid-cols-2 gap-2">
-                {/* GroupedSelect */}
-                <GroupedSelect
-                  options={[
-                    {
-                      group: "Fruits",
-                      options: [
-                        { value: "apple", label: "Apple" },
-                        { value: "banana", label: "Banana" },
-                      ],
-                    },
-                    {
-                      group: "Vegetables",
-                      options: [
-                        { value: "carrot", label: "Carrot" },
-                        { value: "broccoli", label: "Broccoli" },
-                      ],
-                    },
-                  ]}
-                  placeholder="Grouped"
-                  triggerSize="sm"
-                />
-
-                {/* AsyncSelect — lazy (fetch on first open) */}
-                <AsyncSelect
-                  fetchOptions={fetchCountries}
-                  getOption={c => ({ value: c, label: c })}
-                  placeholder="Async (lazy)"
-                  triggerSize="sm"
-                />
+            <CardContent className="flex flex-col gap-3">
+              {/* Variants */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Варианты</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <Select
+                    options={[
+                      { value: "option1", label: "Option 1" },
+                      { value: "option2", label: "Option 2" },
+                      { value: "option3", label: "Option 3" },
+                    ]}
+                    placeholder="default"
+                    triggerSize="sm"
+                    value={selectValue}
+                    onValueChange={setSelectValue}
+                    clearable
+                    onClear={() => setSelectValue("")}
+                  />
+                  <Select
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    placeholder="error state"
+                    triggerSize="sm"
+                    triggerVariant="error"
+                  />
+                  <Select
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    placeholder="success state"
+                    triggerSize="sm"
+                    triggerVariant="success"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {/* AsyncSelect — fetch on mount */}
-                <AsyncSelect
-                  fetchOptions={fetchCities}
-                  getOption={c => ({ value: c, label: c })}
-                  placeholder="Async (on mount)"
-                  triggerSize="sm"
-                  fetchOnMount
-                />
+              {/* Grouped + Async */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Grouped и Async</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <GroupedSelect
+                    options={[
+                      {
+                        group: "Fruits",
+                        options: [
+                          { value: "apple", label: "Apple" },
+                          { value: "banana", label: "Banana" },
+                        ],
+                      },
+                      {
+                        group: "Vegetables",
+                        options: [
+                          { value: "carrot", label: "Carrot" },
+                          { value: "broccoli", label: "Broccoli" },
+                        ],
+                      },
+                    ]}
+                    placeholder="Grouped"
+                    triggerSize="sm"
+                  />
 
-                {/* Select — manual mode via Select.* sub-components */}
-                <Select onOpenChange={handleLazyOpen}>
-                  <Select.Trigger size="sm" loading={isLoadingLazy}>
-                    <Select.Value placeholder="Manual mode" />
-                  </Select.Trigger>
-                  <Select.Content>
-                    {isLoadingLazy ? (
-                      <Select.Loading />
-                    ) : lazyOptions.length > 0 ? (
-                      lazyOptions.map(o => (
-                        <Select.Item key={o} value={o}>
-                          {o}
-                        </Select.Item>
-                      ))
-                    ) : (
-                      <Select.Empty>No items found</Select.Empty>
-                    )}
-                  </Select.Content>
-                </Select>
+                  <AsyncSelect
+                    fetchOptions={fetchCountries}
+                    getOption={c => ({ value: c, label: c })}
+                    placeholder="Async (lazy)"
+                    triggerSize="sm"
+                  />
+                </div>
+              </div>
+
+              {/* Manual mode */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Manual mode</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <AsyncSelect
+                    fetchOptions={fetchCities}
+                    getOption={c => ({ value: c, label: c })}
+                    placeholder="Async (on mount)"
+                    triggerSize="sm"
+                    fetchOnMount
+                  />
+                  <Select onOpenChange={handleLazyOpen}>
+                    <Select.Trigger size="sm" loading={isLoadingLazy}>
+                      <Select.Value placeholder="Manual mode" />
+                    </Select.Trigger>
+                    <Select.Content>
+                      {isLoadingLazy ? (
+                        <Select.Loading />
+                      ) : lazyOptions.length > 0 ? (
+                        lazyOptions.map(o => (
+                          <Select.Item key={o} value={o}>
+                            {o}
+                          </Select.Item>
+                        ))
+                      ) : (
+                        <Select.Empty>No items found</Select.Empty>
+                      )}
+                    </Select.Content>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
