@@ -74,7 +74,8 @@ export type { DateRangePickerProps } from "./date-range-picker";
 export { DateRangePicker } from "./date-range-picker";
 
 // Pagination
-export { Pagination } from "./pagination";
+export type { PageItem,PaginationProps, UsePaginationOptions, UsePaginationResult } from "./pagination";
+export { Pagination, usePagination } from "./pagination";
 
 // Modals & Drawers
 export {
@@ -115,7 +116,8 @@ export {
 } from "./table";
 
 // Popover
-export { Popover, PopoverContent, PopoverTrigger } from "./popover";
+export type { PopoverArrowProps, PopoverContentProps } from "./popover";
+export { Popover, PopoverArrow, PopoverContent, popoverContentVariants } from "./popover";
 
 // Spinner
 export type { SpinnerProps } from "./spinner";
