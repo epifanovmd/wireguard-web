@@ -1,5 +1,9 @@
 import { iocHook } from "@force-dev/react";
+import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
+
+import { useApi } from "~@api";
+import { IChartPoint } from "~@components/SpeedChart/WGChart";
 
 import type {
   WgOverviewStatsPayload,
@@ -12,15 +16,29 @@ import { IWgSocketService } from "./wgSocket.types";
 
 export const useWgSocket = iocHook(IWgSocketService);
 
-export function useWgOverview(): WgOverviewStatsPayload | null {
+export function useWgOverview() {
   const service = useWgSocket();
+  const [points, setPoints] = useState<IChartPoint[]>([]);
   const [stats, setStats] = useState<WgOverviewStatsPayload | null>(null);
 
   useEffect(() => {
-    return service.subscribeOverview({ onStats: setStats });
+    return service.subscribeOverview({
+      onStats: s => {
+        setPoints(prev => [
+          ...prev.slice(-59),
+          {
+            t: format(s.timestamp, "HH:mm:ss"),
+            rx: s.rxSpeedBps,
+            tx: s.txSpeedBps,
+          },
+        ]);
+
+        setStats(s);
+      },
+    });
   }, [service]);
 
-  return stats;
+  return { stats, points };
 }
 
 // ─── useWgServer ──────────────────────────────────────────────────────────────

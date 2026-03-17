@@ -14,6 +14,7 @@ import {
 
 import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
 import { PageHeader } from "~@components/layouts";
+import { WGChart } from "~@components/SpeedChart/WGChart";
 import {
   Badge,
   Card,
@@ -42,79 +43,63 @@ function ServerStatusBadge({ status }: { status: string }) {
   );
 }
 
+const serverColumns: ColumnDef<WgServerDto>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => (
+      <span className="font-medium text-[var(--foreground)]">
+        {row.original.name}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "interface",
+    header: "Interface",
+    cell: ({ row }) => (
+      <span className="font-mono text-[var(--muted-foreground)] text-xs">
+        {row.original.interface}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <ServerStatusBadge status={row.original.status} />,
+  },
+  {
+    accessorKey: "listenPort",
+    header: "Port",
+    cell: ({ row }) => (
+      <span className="text-[var(--muted-foreground)]">
+        {row.original.listenPort}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "endpoint",
+    header: "Endpoint",
+    cell: ({ row }) => (
+      <span className="text-[var(--muted-foreground)] text-xs">
+        {row.original.endpoint ?? "—"}
+      </span>
+    ),
+  },
+];
+
 export const Dashboard: FC = observer(() => {
   const servers = useServersDataStore();
-  const overview = useWgOverview();
+  const { stats, points } = useWgOverview();
   const navigate = useNavigate();
-  const [livePoints, setLivePoints] = useState<
-    { t: string; rx: number; tx: number }[]
-  >([]);
 
   useEffect(() => {
     servers.loadServers().then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!overview) return;
-    const t = new Date().toLocaleTimeString("en", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    setLivePoints(prev => [
-      ...prev.slice(-59),
-      { t, rx: overview.rxSpeedBps, tx: overview.txSpeedBps },
-    ]);
-  }, [overview]);
-
   const activeServers = servers.servers.filter(
     s => s.status === EWgServerStatus.Up,
   );
-
-  const serverColumns: ColumnDef<WgServerDto>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => (
-        <span className="font-medium text-[var(--foreground)]">
-          {row.original.name}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "interface",
-      header: "Interface",
-      cell: ({ row }) => (
-        <span className="font-mono text-[var(--muted-foreground)] text-xs">
-          {row.original.interface}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => <ServerStatusBadge status={row.original.status} />,
-    },
-    {
-      accessorKey: "listenPort",
-      header: "Port",
-      cell: ({ row }) => (
-        <span className="text-[var(--muted-foreground)]">
-          {row.original.listenPort}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "endpoint",
-      header: "Endpoint",
-      cell: ({ row }) => (
-        <span className="text-[var(--muted-foreground)] text-xs">
-          {row.original.endpoint ?? "—"}
-        </span>
-      ),
-    },
-  ];
 
   return (
     <div className="flex flex-col h-full">
@@ -131,21 +116,21 @@ export const Dashboard: FC = observer(() => {
           />
           <StatCard
             title="Total peers"
-            value={overview?.totalPeers ?? 0}
-            subtitle={`${overview?.activePeers ?? 0} active`}
+            value={stats?.totalPeers ?? 0}
+            subtitle={`${stats?.activePeers ?? 0} active`}
             color="success"
             icon={<Zap size={20} />}
           />
           <StatCard
             title="RX Speed"
-            value={formatSpeed(overview?.rxSpeedBps ?? 0)}
+            value={formatSpeed(stats?.rxSpeedBps ?? 0)}
             subtitle="Download speed"
             color="purple"
             icon={<Download size={20} />}
           />
           <StatCard
             title="TX Speed"
-            value={formatSpeed(overview?.txSpeedBps ?? 0)}
+            value={formatSpeed(stats?.txSpeedBps ?? 0)}
             subtitle="Upload speed"
             color="warning"
             icon={<Upload size={20} />}
@@ -153,57 +138,11 @@ export const Dashboard: FC = observer(() => {
         </div>
 
         {/* Live speed chart */}
-        <Card title="Live speed" description="Real-time download / upload">
-          <ResponsiveContainer width="100%" height={192}>
-            <LineChart data={livePoints}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis
-                dataKey="t"
-                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-              />
-              <YAxis
-                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                tickFormatter={v => formatSpeed(v)}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
-                formatter={(v: number, name: string) => [
-                  formatSpeed(v),
-                  name === "rx" ? "Download" : "Upload",
-                ]}
-              />
-              <Line
-                type="monotone"
-                dataKey="rx"
-                stroke="#6366f1"
-                strokeWidth={2}
-                dot={false}
-                name="rx"
-              />
-              <Line
-                type="monotone"
-                dataKey="tx"
-                stroke="#22c55e"
-                strokeWidth={2}
-                dot={false}
-                name="tx"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-          <div className="flex gap-4 mt-2">
-            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-              <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
-            </span>
-            <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-              <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
-            </span>
-          </div>
-        </Card>
+        <WGChart
+          title="Live speed"
+          description="Real-time download / upload"
+          points={points}
+        />
 
         {/* Servers table */}
         <Card
