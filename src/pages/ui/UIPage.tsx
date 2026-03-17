@@ -32,6 +32,7 @@ import {
   Chips,
   type ColumnDef,
   DatePicker,
+  DateRange,
   DateRangePicker,
   Drawer,
   DrawerContent,
@@ -225,7 +226,7 @@ export const UIPage = () => {
   const [selectedTab, setSelectedTab] = useState("tab1");
   const [selectValue, setSelectValue] = useState("");
   const [date, setDate] = useState<Date | undefined>();
-  const [dateRange, setDateRange] = useState<any>();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
   const [segmentedValue, setSegmentedValue] = useState("list");
   const [segmentedNav, setSegmentedNav] = useState("home");
@@ -637,16 +638,119 @@ export const UIPage = () => {
             <CardHeader>
               <CardTitle className="text-base">Date Pickers</CardTitle>
               <CardDescription className="text-xs">
-                Выбор даты и диапазона
+                Выбор даты и диапазона — размеры, варианты, clearable
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <DatePicker value={date} onChange={setDate} size="sm" />
-              <DateRangePicker
-                value={dateRange}
-                onChange={setDateRange}
-                size="sm"
-              />
+            <CardContent className="space-y-6">
+              {/* Sizes */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">Размеры</p>
+                <div className="space-y-2 max-w-xs">
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    size="sm"
+                    placeholder="sm — выберите дату"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    size="md"
+                    placeholder="md — выберите дату"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    size="lg"
+                    placeholder="lg — выберите дату"
+                  />
+                </div>
+              </div>
+
+              {/* Variants */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">Варианты</p>
+                <div className="space-y-2 max-w-xs">
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    variant="default"
+                    placeholder="default"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    variant="error"
+                    placeholder="error — ошибка валидации"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    variant="success"
+                    placeholder="success — успешно"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    disabled
+                    placeholder="disabled"
+                  />
+                </div>
+              </div>
+
+              {/* Clearable */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  С кнопкой очистки
+                </p>
+                <div className="space-y-2 max-w-xs">
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    clearable
+                    placeholder="Выберите дату"
+                  />
+                </div>
+              </div>
+
+              {/* DateRangePicker */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Диапазон дат
+                </p>
+                <div className="space-y-2 max-w-xs">
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    size="sm"
+                    placeholder="sm — период"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    size="md"
+                    placeholder="md — период"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    size="lg"
+                    placeholder="lg — период"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    variant="error"
+                    placeholder="error — ошибка"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    clearable
+                    placeholder="clearable"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 

@@ -68,10 +68,26 @@ export {
 } from "./select";
 
 // Date & Time Pickers
-export type { DatePickerProps } from "./date-picker";
-export { DatePicker } from "./date-picker";
-export type { DateRangePickerProps } from "./date-range-picker";
-export { DateRangePicker } from "./date-range-picker";
+export type {
+  CalendarProps,
+  DatePickerProps,
+  DatePickerTriggerProps,
+  DateRange,
+  DateRangePickerProps,
+  RangeCalendarProps,
+  UseCalendarOptions,
+  UseCalendarResult,
+  ViewMode,
+} from "./date-picker";
+export {
+  Calendar,
+  DatePicker,
+  DatePickerTrigger,
+  datePickerTriggerVariants,
+  DateRangePicker,
+  RangeCalendar,
+  useCalendar,
+} from "./date-picker";
 
 // Pagination
 export type { PageItem,PaginationProps, UsePaginationOptions, UsePaginationResult } from "./pagination";
