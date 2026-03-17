@@ -83,10 +83,16 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-4">
         <div className="grid grid-cols-2 gap-3">
-          <InputFormField<CreateUserFormData> name="firstName" label="First name" />
-          <InputFormField<CreateUserFormData> name="lastName" label="Last name" />
+          <InputFormField<CreateUserFormData>
+            name="firstName"
+            label="First name"
+          />
+          <InputFormField<CreateUserFormData>
+            name="lastName"
+            label="Last name"
+          />
         </div>
         <InputFormField<CreateUserFormData>
           name="email"
