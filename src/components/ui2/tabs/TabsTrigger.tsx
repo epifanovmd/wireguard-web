@@ -14,9 +14,10 @@ export interface TabsTriggerProps
 const TabsTrigger = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Trigger>,
   TabsTriggerProps
->(({ className, variant: variantProp, children, ...props }, ref) => {
-  const { layoutId, variant: contextVariant } = React.useContext(TabsContext);
+>(({ className, variant: variantProp, size: sizeProp, children, ...props }, ref) => {
+  const { layoutId, variant: contextVariant, size: contextSize } = React.useContext(TabsContext);
   const variant = variantProp || contextVariant;
+  const size = sizeProp || contextSize;
   const [isActive, setIsActive] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
@@ -43,7 +44,7 @@ const TabsTrigger = React.forwardRef<
   return (
     <TabsPrimitive.Trigger
       ref={triggerRef}
-      className={cn(tabsTriggerVariants({ variant, className }))}
+      className={cn(tabsTriggerVariants({ variant, size, className }))}
       {...props}
     >
       {isActive && (
