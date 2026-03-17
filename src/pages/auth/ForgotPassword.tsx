@@ -3,12 +3,12 @@ import { useNavigate } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, Input } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
   login: z.string().min(1, "Email or phone is required"),
@@ -22,13 +22,11 @@ export const ForgotPassword = observer(() => {
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const methods = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const { handleSubmit } = methods;
 
   const onBack = useCallback(() => {
     return navigate({ to: "/auth/signIn" });
@@ -71,24 +69,26 @@ export const ForgotPassword = observer(() => {
               </p>
             </div>
 
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <Input
-                label="Email or phone"
-                placeholder="email@example.com"
-                error={errors.login?.message}
-                {...register("login")}
-              />
-
-              <Button type="submit" loading={loading} className="w-full">
-                Send reset link
-              </Button>
-              <Button type="button" variant="outline" onClick={onBack} className="w-full">
-                Back to sign in
-              </Button>
-            </form>
+            <FormProvider {...methods}>
+              <div className="flex flex-col gap-4">
+                <InputFormField<FormData>
+                  name="login"
+                  label="Email or phone"
+                  placeholder="email@example.com"
+                />
+                <Button
+                  type="button"
+                  loading={loading}
+                  className="w-full"
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  Send reset link
+                </Button>
+                <Button type="button" variant="outline" onClick={onBack} className="w-full">
+                  Back to sign in
+                </Button>
+              </div>
+            </FormProvider>
           </>
         )}
       </Card>

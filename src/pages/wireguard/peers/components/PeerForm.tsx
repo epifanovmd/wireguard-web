@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { FC } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -11,10 +11,10 @@ import {
 } from "~@api/api-gen/data-contracts";
 import {
   Button,
-  Input,
+  InputFormField,
   Select,
-  Switch,
-  Textarea,
+  SwitchFormField,
+  TextareaFormField,
 } from "~@components/ui2";
 
 const schema = z.object({
@@ -58,13 +58,7 @@ export const PeerForm: FC<PeerFormProps> = ({
     selectedServerId ?? servers?.[0]?.id ?? "",
   );
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<PeerFormData>({
+  const methods = useForm<PeerFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: defaultValues?.name ?? "",
@@ -82,8 +76,7 @@ export const PeerForm: FC<PeerFormProps> = ({
     },
   });
 
-  const enabled = watch("enabled");
-  const presharedKey = watch("presharedKey");
+  const { handleSubmit } = methods;
 
   const handleFormSubmit = async (data: PeerFormData) => {
     const payload: any = {
@@ -105,82 +98,96 @@ export const PeerForm: FC<PeerFormProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="flex flex-col gap-4"
-    >
-      {!isEdit && servers && servers.length > 0 && (
-        <Select
-          options={servers.map(s => ({
-            value: s.id,
-            label: `${s.name} (${s.interface})`,
-          }))}
-          value={serverId}
-          onValueChange={v => setServerId(v ?? "")}
-          placeholder="Select server"
+    <FormProvider {...methods}>
+      <div className="flex flex-col gap-4 mb-4">
+        {!isEdit && servers && servers.length > 0 && (
+          <Select
+            options={servers.map(s => ({
+              value: s.id,
+              label: `${s.name} (${s.interface})`,
+            }))}
+            value={serverId}
+            onValueChange={v => setServerId(v ?? "")}
+            placeholder="Select server"
+          />
+        )}
+
+        <InputFormField<PeerFormData> name="name" label="Peer name" required />
+        <TextareaFormField<PeerFormData>
+          name="description"
+          label="Description"
+          rows={2}
         />
-      )}
 
-      <Input
-        label="Peer name"
-        required
-        error={errors.name?.message}
-        {...register("name")}
-      />
-      <Textarea label="Description" rows={2} {...register("description")} />
+        <InputFormField<PeerFormData>
+          name="clientAllowedIPs"
+          label="Client allowed IPs"
+          hint="Routes pushed to client (e.g. 0.0.0.0/0 for full tunnel)"
+        />
 
-      <Input
-        label="Client allowed IPs"
-        hint="Routes pushed to client (e.g. 0.0.0.0/0 for full tunnel)"
-        {...register("clientAllowedIPs")}
-      />
-
-      <div className="grid grid-cols-2 gap-3">
-        <Input label="DNS override" placeholder="1.1.1.1" {...register("dns")} />
-        <Input label="MTU" type="number" placeholder="1420" {...register("mtu")} />
-      </div>
-
-      <Input
-        label="Persistent keepalive (sec)"
-        type="number"
-        placeholder="25"
-        {...register("persistentKeepalive")}
-      />
-      <Input
-        label="Endpoint override"
-        placeholder="host:port"
-        {...register("endpoint")}
-      />
-      <Input label="Expires at" type="datetime-local" {...register("expiresAt")} />
-
-      <div className="flex items-center justify-between py-1">
-        <div>
-          <p className="text-sm font-medium text-[var(--foreground)]">
-            Preshared key
-          </p>
-          <p className="text-xs text-[var(--muted-foreground)]">
-            Adds additional layer of symmetric encryption
-          </p>
+        <div className="grid grid-cols-2 gap-3">
+          <InputFormField<PeerFormData>
+            name="dns"
+            label="DNS override"
+            placeholder="1.1.1.1"
+          />
+          <InputFormField<PeerFormData>
+            name="mtu"
+            label="MTU"
+            type="number"
+            placeholder="1420"
+          />
         </div>
-        <Switch
-          checked={presharedKey}
-          onCheckedChange={v => setValue("presharedKey", v)}
+
+        <InputFormField<PeerFormData>
+          name="persistentKeepalive"
+          label="Persistent keepalive (sec)"
+          type="number"
+          placeholder="25"
         />
-      </div>
+        <InputFormField<PeerFormData>
+          name="endpoint"
+          label="Endpoint override"
+          placeholder="host:port"
+        />
+        <InputFormField<PeerFormData>
+          name="expiresAt"
+          label="Expires at"
+          type="datetime-local"
+        />
 
-      <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--foreground)]">Enabled</span>
-        <Switch checked={enabled} onCheckedChange={v => setValue("enabled", v)} />
-      </div>
+        <div className="flex items-center justify-between py-1">
+          <div>
+            <p className="text-sm font-medium text-[var(--foreground)]">
+              Preshared key
+            </p>
+            <p className="text-xs text-[var(--muted-foreground)]">
+              Adds additional layer of symmetric encryption
+            </p>
+          </div>
+          <SwitchFormField<PeerFormData> name="presharedKey" />
+        </div>
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" loading={loading}>
-          {isEdit ? "Save changes" : "Create peer"}
-        </Button>
+        <div className="flex items-center justify-between py-1">
+          <span className="text-sm font-medium text-[var(--foreground)]">
+            Enabled
+          </span>
+          <SwitchFormField<PeerFormData> name="enabled" />
+        </div>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            loading={loading}
+            onClick={handleSubmit(handleFormSubmit)}
+          >
+            {isEdit ? "Save changes" : "Create peer"}
+          </Button>
+        </div>
       </div>
-    </form>
+    </FormProvider>
   );
 };

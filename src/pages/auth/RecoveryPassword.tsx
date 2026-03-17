@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, Input } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
   login: z.string().min(1, "Email or phone is required"),
@@ -19,11 +19,9 @@ type FormData = z.infer<typeof schema>;
 export const RecoveryPassword = observer(() => {
   const api = useApi();
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const methods = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { handleSubmit } = methods;
 
   const onSubmit = async (data: FormData) => {
     await api.requestResetPassword({ login: data.login });
@@ -41,18 +39,23 @@ export const RecoveryPassword = observer(() => {
             Enter your email to receive a reset link
           </p>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <Input
-            label="Email or phone"
-            type="email"
-            placeholder="email@example.com"
-            error={errors.login?.message}
-            {...register("login")}
-          />
-          <Button type="submit" className="w-full">
-            Send reset link
-          </Button>
-        </form>
+        <FormProvider {...methods}>
+          <div className="flex flex-col gap-4">
+            <InputFormField<FormData>
+              name="login"
+              label="Email or phone"
+              type="email"
+              placeholder="email@example.com"
+            />
+            <Button
+              type="button"
+              className="w-full"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Send reset link
+            </Button>
+          </div>
+        </FormProvider>
       </Card>
     </AuthLayout>
   );

@@ -208,4 +208,5 @@ export {
   InputFormField,
   SelectFormField,
   SwitchFormField,
+  TextareaFormField,
 } from "./form";

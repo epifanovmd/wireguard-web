@@ -80,7 +80,6 @@ export class SocketTransport implements ISocketTransport {
 
       // One-time connect/error for the Promise
       const onFirstConnect = () => {
-        console.log("onFirstConnect");
         socket.off("connect_error", onFirstError);
         resolve();
       };
@@ -179,18 +178,15 @@ export class SocketTransport implements ISocketTransport {
   private _flushEmitQueue(): void {
     const queue = this._emitQueue.splice(0);
 
-    console.log("queue", queue);
     queue.forEach(fn => fn());
   }
 
   private _onConnect = (): void => {
-    console.log("_onConnect");
     this._setState({ status: "connected", error: null });
     this._flushEmitQueue();
   };
 
   private _onDisconnect = (reason: string): void => {
-    console.log("_onDisconnect", reason);
     if (this._isManualDisconnect) return;
 
     this._setState({ status: "disconnected" });

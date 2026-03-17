@@ -2,11 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, Input } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui2";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
@@ -20,13 +20,11 @@ export const SignIn = observer(() => {
   const session = useSessionDataStore();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const methods = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const { handleSubmit } = methods;
 
   const onSubmit = async (data: FormData) => {
     await session.signIn({ login: data.login, password: data.password });
@@ -51,34 +49,39 @@ export const SignIn = observer(() => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <Input
-            label="Email or phone"
-            placeholder="email@example.com"
-            error={errors.login?.message}
-            {...register("login")}
-          />
-          <Input
-            label="Password"
-            type="password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            {...register("password")}
-          />
+        <FormProvider {...methods}>
+          <div className="flex flex-col gap-4">
+            <InputFormField<FormData>
+              name="login"
+              label="Email or phone"
+              placeholder="email@example.com"
+            />
+            <InputFormField<FormData>
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+            />
 
-          <div className="flex justify-end">
-            <Link
-              className="text-sm text-[#6366f1] hover:underline"
-              to={"/auth/recovery-password"}
+            <div className="flex justify-end">
+              <Link
+                className="text-sm text-[#6366f1] hover:underline"
+                to={"/auth/recovery-password"}
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button
+              type="button"
+              loading={session.isLoading}
+              className="w-full"
+              onClick={handleSubmit(onSubmit)}
             >
-              Forgot password?
-            </Link>
+              Sign in
+            </Button>
           </div>
-
-          <Button type="submit" loading={session.isLoading} className="w-full">
-            Sign in
-          </Button>
-        </form>
+        </FormProvider>
       </Card>
     </AuthLayout>
   );

@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { FC, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, Input } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -27,9 +27,11 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const methods = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const { handleSubmit } = methods;
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -57,25 +59,30 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <Input
-            label="New password"
-            type="password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            {...register("password")}
-          />
-          <Input
-            label="Confirm password"
-            type="password"
-            placeholder="••••••••"
-            error={errors.confirmPassword?.message}
-            {...register("confirmPassword")}
-          />
-          <Button type="submit" className="w-full" loading={loading}>
-            Set new password
-          </Button>
-        </form>
+        <FormProvider {...methods}>
+          <div className="flex flex-col gap-4">
+            <InputFormField<FormData>
+              name="password"
+              label="New password"
+              type="password"
+              placeholder="••••••••"
+            />
+            <InputFormField<FormData>
+              name="confirmPassword"
+              label="Confirm password"
+              type="password"
+              placeholder="••••••••"
+            />
+            <Button
+              type="button"
+              className="w-full"
+              loading={loading}
+              onClick={handleSubmit(onSubmit)}
+            >
+              Set new password
+            </Button>
+          </div>
+        </FormProvider>
       </Card>
     </AuthLayout>
   );

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Terminal } from "lucide-react";
 import React, { FC } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -9,7 +9,13 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
-import { Button, Collapse, Input, Switch, Textarea } from "~@components/ui2";
+import {
+  Button,
+  Collapse,
+  InputFormField,
+  SwitchFormField,
+  TextareaFormField,
+} from "~@components/ui2";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -52,13 +58,7 @@ export const ServerForm: FC<ServerFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<ServerFormData>({
+  const methods = useForm<ServerFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: defaultValues?.name ?? "",
@@ -77,7 +77,7 @@ export const ServerForm: FC<ServerFormProps> = ({
     },
   });
 
-  const enabled = watch("enabled");
+  const { handleSubmit } = methods;
 
   const handleFormSubmit = async (data: ServerFormData) => {
     const payload: any = {
@@ -101,99 +101,115 @@ export const ServerForm: FC<ServerFormProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="flex flex-col gap-4"
-    >
-      <Input
-        label="Server name"
-        required
-        error={errors.name?.message}
-        {...register("name")}
-      />
-
-      {!isEdit && (
-        <Input
-          label="Interface name"
-          placeholder="wg0"
+    <FormProvider {...methods}>
+      <div className="flex flex-col gap-4 mb-4">
+        <InputFormField<ServerFormData>
+          name="name"
+          label="Server name"
           required
-          hint="e.g. wg0, wg1 — cannot be changed after creation"
-          error={errors.interface?.message}
-          {...register("interface")}
         />
-      )}
 
-      <div className="grid grid-cols-2 gap-3">
-        <Input
-          label="Listen port"
-          type="number"
-          required
-          error={errors.listenPort?.message}
-          {...register("listenPort")}
-        />
-        <Input
-          label="Address (CIDR)"
-          placeholder="10.0.0.1/24"
-          required
-          error={errors.address?.message}
-          {...register("address")}
-        />
-      </div>
-
-      <Input
-        label="Endpoint"
-        placeholder="vpn.example.com:51820"
-        hint="Public host:port for client configs"
-        {...register("endpoint")}
-      />
-
-      <div className="grid grid-cols-2 gap-3">
-        <Input label="DNS" placeholder="1.1.1.1" {...register("dns")} />
-        <Input
-          label="MTU"
-          type="number"
-          placeholder="1420"
-          {...register("mtu")}
-        />
-      </div>
-
-      <Textarea label="Description" rows={2} {...register("description")} />
-
-      <div className="flex items-center justify-between py-1">
-        <span className="text-sm font-medium text-[var(--foreground)]">
-          Enabled
-        </span>
-        <Switch
-          checked={enabled}
-          onCheckedChange={v => setValue("enabled", v)}
-        />
-      </div>
-
-      <Collapse variant="ghost">
-        <Collapse.Trigger leadingIcon={<Terminal size={15} />}>
-          Advanced settings (scripts)
-        </Collapse.Trigger>
-        <Collapse.Content innerClassName="px-3 pb-3 flex flex-col gap-3">
-          <Textarea
-            label="PreUp"
-            placeholder="iptables -A FORWARD ..."
-            rows={2}
-            {...register("preUp")}
+        {!isEdit && (
+          <InputFormField<ServerFormData>
+            name="interface"
+            label="Interface name"
+            placeholder="wg0"
+            required
+            hint="e.g. wg0, wg1 — cannot be changed after creation"
           />
-          <Textarea label="PostUp" rows={2} {...register("postUp")} />
-          <Textarea label="PreDown" rows={2} {...register("preDown")} />
-          <Textarea label="PostDown" rows={2} {...register("postDown")} />
-        </Collapse.Content>
-      </Collapse>
+        )}
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" loading={loading}>
-          {isEdit ? "Save changes" : "Create server"}
-        </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <InputFormField<ServerFormData>
+            name="listenPort"
+            label="Listen port"
+            type="number"
+            required
+          />
+          <InputFormField<ServerFormData>
+            name="address"
+            label="Address (CIDR)"
+            placeholder="10.0.0.1/24"
+            required
+          />
+        </div>
+
+        <InputFormField<ServerFormData>
+          name="endpoint"
+          label="Endpoint"
+          placeholder="vpn.example.com:51820"
+          hint="Public host:port for client configs"
+        />
+
+        <div className="grid grid-cols-2 gap-3">
+          <InputFormField<ServerFormData>
+            name="dns"
+            label="DNS"
+            placeholder="1.1.1.1"
+          />
+          <InputFormField<ServerFormData>
+            name="mtu"
+            label="MTU"
+            type="number"
+            placeholder="1420"
+          />
+        </div>
+
+        <TextareaFormField<ServerFormData>
+          name="description"
+          label="Description"
+          rows={2}
+        />
+
+        <div className="flex items-center justify-between py-1">
+          <span className="text-sm font-medium text-[var(--foreground)]">
+            Enabled
+          </span>
+          <SwitchFormField<ServerFormData> name="enabled" />
+        </div>
+
+        <Collapse variant="ghost">
+          <Collapse.Trigger leadingIcon={<Terminal size={15} />}>
+            Advanced settings (scripts)
+          </Collapse.Trigger>
+          <Collapse.Content innerClassName="px-3 pb-3 flex flex-col gap-3">
+            <TextareaFormField<ServerFormData>
+              name="preUp"
+              label="PreUp"
+              placeholder="iptables -A FORWARD ..."
+              rows={2}
+            />
+            <TextareaFormField<ServerFormData>
+              name="postUp"
+              label="PostUp"
+              rows={2}
+            />
+            <TextareaFormField<ServerFormData>
+              name="preDown"
+              label="PreDown"
+              rows={2}
+            />
+            <TextareaFormField<ServerFormData>
+              name="postDown"
+              label="PostDown"
+              rows={2}
+            />
+          </Collapse.Content>
+        </Collapse>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            loading={loading}
+            onClick={handleSubmit(handleFormSubmit)}
+          >
+            {isEdit ? "Save changes" : "Create server"}
+          </Button>
+        </div>
       </div>
-    </form>
+    </FormProvider>
   );
 };
