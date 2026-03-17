@@ -91,20 +91,16 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
 
   const server = store.server;
   const liveStatus = store.liveStatus;
-  const effectiveStatus = liveSocketStatus?.status ?? server?.status ?? "unknown";
+  const effectiveStatus =
+    liveSocketStatus?.status ?? server?.status ?? "unknown";
   const peerCount = liveSocketStatus?.peerCount ?? liveStatus?.peerCount;
-  const activePeerCount = liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;
+  const activePeerCount =
+    liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;
 
-  if (!store.serverHolder.isReady && !store.serverHolder.isError) {
+  if (store.serverHolder.isLoading || !store.serverHolder.isReady) {
     return (
       <div className="flex flex-col h-full">
-        <PageHeader
-          title="Server"
-          breadcrumbs={[
-            { label: "Servers", href: "/wireguard/servers" },
-            { label: "..." },
-          ]}
-        />
+        <PageHeader title="Server" />
         <div className="flex justify-center py-12">
           <Spinner />
         </div>
@@ -113,7 +109,9 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   }
 
   if (!server)
-    return <div className="p-6 text-[var(--muted-foreground)]">Server not found</div>;
+    return (
+      <div className="p-6 text-[var(--muted-foreground)]">Server not found</div>
+    );
 
   const handleAction = async (action: "start" | "stop" | "restart") => {
     setActionLoading(action);
@@ -139,7 +137,9 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       accessorKey: "name",
       header: "Name",
       cell: ({ row }) => (
-        <span className="font-medium text-[var(--foreground)]">{row.original.name}</span>
+        <span className="font-medium text-[var(--foreground)]">
+          {row.original.name}
+        </span>
       ),
     },
     {
@@ -155,7 +155,10 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
       id: "status",
       header: "Status",
       cell: ({ row }) => (
-        <PeerStatusBadge enabled={row.original.enabled} isExpired={row.original.isExpired} />
+        <PeerStatusBadge
+          enabled={row.original.enabled}
+          isExpired={row.original.isExpired}
+        />
       ),
     },
     {
@@ -182,10 +185,6 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
     <div className="flex flex-col h-full">
       <PageHeader
         title={server.name}
-        breadcrumbs={[
-          { label: "Servers", href: "/wireguard/servers" },
-          { label: server.name },
-        ]}
         actions={
           <div className="flex items-center gap-1">
             <IconButton
@@ -265,10 +264,30 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         {/* Live speed stat cards */}
         {liveStats && (
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-            <StatCard title="RX Speed" value={formatSpeed(liveStats.rxSpeedBps)} subtitle="Download" color="info" />
-            <StatCard title="TX Speed" value={formatSpeed(liveStats.txSpeedBps)} subtitle="Upload" color="success" />
-            <StatCard title="Total RX" value={formatBytes(liveStats.totalRxBytes)} subtitle="Downloaded" color="purple" />
-            <StatCard title="Total TX" value={formatBytes(liveStats.totalTxBytes)} subtitle="Uploaded" color="warning" />
+            <StatCard
+              title="RX Speed"
+              value={formatSpeed(liveStats.rxSpeedBps)}
+              subtitle="Download"
+              color="info"
+            />
+            <StatCard
+              title="TX Speed"
+              value={formatSpeed(liveStats.txSpeedBps)}
+              subtitle="Upload"
+              color="success"
+            />
+            <StatCard
+              title="Total RX"
+              value={formatBytes(liveStats.totalRxBytes)}
+              subtitle="Downloaded"
+              color="purple"
+            />
+            <StatCard
+              title="Total TX"
+              value={formatBytes(liveStats.totalTxBytes)}
+              subtitle="Uploaded"
+              color="warning"
+            />
           </div>
         )}
 
@@ -279,28 +298,65 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             <TabsTrigger value="config">Configuration</TabsTrigger>
           </TabsList>
           <TabsContent value="live">
-            <Card title="Live speed" description="Real-time RX / TX" className="mt-2 p-5">
+            <Card
+              title="Live speed"
+              description="Real-time RX / TX"
+              className="mt-2 p-5"
+            >
               <div className="h-48">
                 <ResponsiveContainer width="100%" height={192}>
                   <LineChart data={liveSpeedPoints}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis dataKey="t" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickFormatter={v => formatSpeed(v)} />
-                    <Tooltip
-                      contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
-                      formatter={(v: number, name: string) => [formatSpeed(v), name === "rx" ? "Download" : "Upload"]}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
                     />
-                    <Line type="monotone" dataKey="rx" stroke="#6366f1" strokeWidth={2} dot={false} name="rx" />
-                    <Line type="monotone" dataKey="tx" stroke="#22c55e" strokeWidth={2} dot={false} name="tx" />
+                    <XAxis
+                      dataKey="t"
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      tickFormatter={v => formatSpeed(v)}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      formatter={(v: number, name: string) => [
+                        formatSpeed(v),
+                        name === "rx" ? "Download" : "Upload",
+                      ]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="rx"
+                      stroke="#6366f1"
+                      strokeWidth={2}
+                      dot={false}
+                      name="rx"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="tx"
+                      stroke="#22c55e"
+                      strokeWidth={2}
+                      dot={false}
+                      name="tx"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
               <div className="flex gap-4 mt-2">
                 <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                  <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> Download
+                  <span className="w-3 h-0.5 bg-[#6366f1] inline-block" />{" "}
+                  Download
                 </span>
                 <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-                  <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> Upload
+                  <span className="w-3 h-0.5 bg-[#22c55e] inline-block" />{" "}
+                  Upload
                 </span>
               </div>
             </Card>
@@ -310,15 +366,46 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
               <div className="h-56">
                 <ResponsiveContainer width="100%" height={224}>
                   <AreaChart data={trafficData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis dataKey="time" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickFormatter={v => formatBytes(v)} />
-                    <Tooltip
-                      contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
-                      formatter={(v: number, name: string) => [formatBytes(v), name === "rx" ? "Download" : "Upload"]}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
                     />
-                    <Area type="monotone" dataKey="rx" stroke="#6366f1" fill="#6366f120" strokeWidth={2} name="rx" />
-                    <Area type="monotone" dataKey="tx" stroke="#22c55e" fill="#22c55e20" strokeWidth={2} name="tx" />
+                    <XAxis
+                      dataKey="time"
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      tickFormatter={v => formatBytes(v)}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      formatter={(v: number, name: string) => [
+                        formatBytes(v),
+                        name === "rx" ? "Download" : "Upload",
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="rx"
+                      stroke="#6366f1"
+                      fill="#6366f120"
+                      strokeWidth={2}
+                      name="rx"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="tx"
+                      stroke="#22c55e"
+                      fill="#22c55e20"
+                      strokeWidth={2}
+                      name="tx"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -338,15 +425,25 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                   ["Enabled", server.enabled ? "Yes" : "No"],
                 ].map(([k, v]) => (
                   <div key={k}>
-                    <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>
-                    <dd className="font-medium text-[var(--foreground)] mt-0.5">{v}</dd>
+                    <dt className="text-xs text-[var(--muted-foreground)]">
+                      {k}
+                    </dt>
+                    <dd className="font-medium text-[var(--foreground)] mt-0.5">
+                      {v}
+                    </dd>
                   </div>
                 ))}
               </dl>
               {server.publicKey && (
                 <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                  <p className="text-xs text-[var(--muted-foreground)] mb-1">Public Key</p>
-                  <CopyableText className="text-[var(--muted-foreground)]" truncate={false} text={server.publicKey} />
+                  <p className="text-xs text-[var(--muted-foreground)] mb-1">
+                    Public Key
+                  </p>
+                  <CopyableText
+                    className="text-[var(--muted-foreground)]"
+                    truncate={false}
+                    text={server.publicKey}
+                  />
                 </div>
               )}
             </Card>
@@ -354,13 +451,20 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         </Tabs>
 
         {/* Peers list */}
-        <Card title="Peers" extra={<Badge variant="gray">{peersStore.total} total</Badge>}>
+        <Card
+          title="Peers"
+          extra={<Badge variant="gray">{peersStore.total} total</Badge>}
+        >
           <Table
             columns={peerColumns}
             data={peersStore.models}
             getRowId={p => p.data.id}
             loading={peersStore.isLoading}
-            empty={<div className="text-center py-6 text-[var(--muted-foreground)] text-sm">No peers configured for this server</div>}
+            empty={
+              <div className="text-center py-6 text-[var(--muted-foreground)] text-sm">
+                No peers configured for this server
+              </div>
+            }
             onRowClick={peer =>
               navigate({
                 to: "/wireguard/peers/$peerId",

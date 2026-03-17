@@ -13,6 +13,8 @@ export const IServersDataStore = createServiceDecorator<IServersDataStore>();
 
 export interface IServersDataStore {
   listHolder: DataHolder<IWgServerListDto>;
+  serverHolder: DataHolder<WgServerDto>;
+  statusHolder: DataHolder<IWgServerStatusDto>;
   servers: WgServerDto[];
   models: ServerModel[];
   total: number;

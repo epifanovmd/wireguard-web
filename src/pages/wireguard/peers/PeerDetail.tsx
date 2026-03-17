@@ -84,16 +84,10 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     const peer = store.peer;
     const model = store.peerModel;
 
-    if (!store.peerHolder.isReady && !store.peerHolder.isError) {
+    if (store.peerHolder.isLoading || !store.peerHolder.isReady) {
       return (
         <div className="flex flex-col h-full">
-          <PageHeader
-            title="Peer"
-            breadcrumbs={[
-              { label: "Peers", href: "/wireguard/peers" },
-              { label: "..." },
-            ]}
-          />
+          <PageHeader title="Peer" />
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
@@ -102,7 +96,9 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     }
 
     if (!peer || !model)
-      return <div className="p-6 text-[var(--muted-foreground)]">Peer not found</div>;
+      return (
+        <div className="p-6 text-[var(--muted-foreground)]">Peer not found</div>
+      );
 
     const handleToggle = async () => {
       setToggling(true);
@@ -138,10 +134,6 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
       <div className="flex flex-col h-full">
         <PageHeader
           title={peer.name}
-          breadcrumbs={[
-            { label: "Peers", href: "/wireguard/peers" },
-            { label: peer.name },
-          ]}
           actions={
             <div className="flex items-center gap-1">
               <IconButton
@@ -270,7 +262,11 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             </TabsList>
 
             <TabsContent value="live">
-              <Card title="Live speed" description="Real-time RX / TX" className="mt-2 p-5">
+              <Card
+                title="Live speed"
+                description="Real-time RX / TX"
+                className="mt-2 p-5"
+              >
                 <div className="h-48">
                   <ResponsiveContainer width="100%" height={192}>
                     <LineChart data={liveSpeedPoints}>
@@ -342,10 +338,16 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                         />
                         <XAxis
                           dataKey="time"
-                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tick={{
+                            fontSize: 11,
+                            fill: "var(--muted-foreground)",
+                          }}
                         />
                         <YAxis
-                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tick={{
+                            fontSize: 11,
+                            fill: "var(--muted-foreground)",
+                          }}
                           tickFormatter={v => formatBytes(v)}
                         />
                         <Tooltip
@@ -390,10 +392,16 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                         />
                         <XAxis
                           dataKey="time"
-                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tick={{
+                            fontSize: 11,
+                            fill: "var(--muted-foreground)",
+                          }}
                         />
                         <YAxis
-                          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                          tick={{
+                            fontSize: 11,
+                            fill: "var(--muted-foreground)",
+                          }}
                           tickFormatter={v => formatSpeed(v)}
                         />
                         <Tooltip
@@ -500,7 +508,10 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           </Tabs>
         </div>
 
-        <Modal open={editOpen} onOpenChange={open => !open && setEditOpen(false)}>
+        <Modal
+          open={editOpen}
+          onOpenChange={open => !open && setEditOpen(false)}
+        >
           <ModalOverlay />
           <ModalContent className="max-w-lg">
             <ModalHeader>

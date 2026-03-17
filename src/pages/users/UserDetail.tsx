@@ -67,10 +67,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
     if (!store.userHolder.isReady && !store.userHolder.isError) {
       return (
         <div className="flex flex-col h-full">
-          <PageHeader
-            title="User"
-            breadcrumbs={[{ label: "Users", href: "/users" }, { label: "..." }]}
-          />
+          <PageHeader title="User" />
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
@@ -82,16 +79,14 @@ export const UserDetail: FC<UserDetailProps> = observer(
     const model = store.userModel;
 
     if (!user)
-      return <div className="p-6 text-[var(--muted-foreground)]">User not found</div>;
+      return (
+        <div className="p-6 text-[var(--muted-foreground)]">User not found</div>
+      );
 
     return (
       <div className="flex flex-col h-full">
         <PageHeader
           title={model?.displayName ?? "User"}
-          breadcrumbs={[
-            { label: "Users", href: "/users" },
-            { label: model?.displayName ?? "User" },
-          ]}
           actions={
             <Button
               variant="destructive"
@@ -139,14 +134,18 @@ export const UserDetail: FC<UserDetailProps> = observer(
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--border)] flex flex-col gap-2 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-[var(--muted-foreground)]">Registered</span>
+                  <span className="text-[var(--muted-foreground)]">
+                    Registered
+                  </span>
                   <span className="text-[var(--muted-foreground)]">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </span>
                 </div>
                 {user.profile?.lastOnline && (
                   <div className="flex justify-between">
-                    <span className="text-[var(--muted-foreground)]">Last online</span>
+                    <span className="text-[var(--muted-foreground)]">
+                      Last online
+                    </span>
                     <span className="text-[var(--muted-foreground)]">
                       {new Date(user.profile.lastOnline).toLocaleDateString()}
                     </span>
@@ -173,7 +172,9 @@ export const UserDetail: FC<UserDetailProps> = observer(
                         { value: ERole.Guest, label: "Guest" },
                       ]}
                       value={selectedRole}
-                      onValueChange={v => setSelectedRole((v ?? ERole.User) as ERole)}
+                      onValueChange={v =>
+                        setSelectedRole((v ?? ERole.User) as ERole)
+                      }
                     />
                   </Card>
                   <Card title="Permissions" className="p-5">
@@ -183,7 +184,10 @@ export const UserDetail: FC<UserDetailProps> = observer(
                     />
                   </Card>
                   <div className="flex justify-end">
-                    <Button loading={savingPrivileges} onClick={handleSavePrivileges}>
+                    <Button
+                      loading={savingPrivileges}
+                      onClick={handleSavePrivileges}
+                    >
                       Save privileges
                     </Button>
                   </div>
@@ -204,19 +208,37 @@ export const UserDetail: FC<UserDetailProps> = observer(
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-[var(--border)] bg-[var(--muted)]/30">
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Name</th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">IP</th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Status</th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">Expires</th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
+                              Name
+                            </th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
+                              IP
+                            </th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
+                              Status
+                            </th>
+                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
+                              Expires
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           {peersStore.models.map(peer => (
-                            <tr key={peer.data.id} className="border-b border-[var(--border)] hover:bg-[var(--accent)]">
-                              <td className="px-3 py-2.5 font-medium text-[var(--foreground)]">{peer.name}</td>
-                              <td className="px-3 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">{peer.data.allowedIPs}</td>
+                            <tr
+                              key={peer.data.id}
+                              className="border-b border-[var(--border)] hover:bg-[var(--accent)]"
+                            >
+                              <td className="px-3 py-2.5 font-medium text-[var(--foreground)]">
+                                {peer.name}
+                              </td>
+                              <td className="px-3 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">
+                                {peer.data.allowedIPs}
+                              </td>
                               <td className="px-3 py-2.5">
-                                <Badge variant={peer.enabled ? "success" : "gray"} dot>
+                                <Badge
+                                  variant={peer.enabled ? "success" : "gray"}
+                                  dot
+                                >
                                   {peer.statusLabel}
                                 </Badge>
                               </td>
