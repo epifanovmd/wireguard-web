@@ -125,9 +125,9 @@ export type { TooltipContentProps, TooltipProps } from "./tooltip";
 export {
   Tooltip,
   TooltipContent,
+  tooltipContentVariants,
   TooltipProvider,
   TooltipTrigger,
-  tooltipContentVariants,
 } from "./tooltip";
 
 // Theme Toggle
