@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const selectTriggerVariants = cva(
-  "flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all duration-200 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer",
+  "flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all duration-200 focus:outline-none focus:shadow-focus disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer",
   {
     variants: {
       size: {
@@ -10,11 +10,14 @@ export const selectTriggerVariants = cva(
         lg: "h-12 text-lg px-4",
       },
       variant: {
-        default: "border-border bg-input-background focus:ring-ring",
-        error:
-          "border-destructive bg-input-background focus:ring-destructive",
-        success:
-          "border-success bg-input-background focus:ring-success",
+        default: "border-border bg-input-background",
+        filled: "border-0 bg-muted focus:bg-muted/70",
+        "filled-error":
+          "border-0 bg-destructive/5 shadow-state-error focus:shadow-focus-error",
+        "filled-success":
+          "border-0 bg-success/5 shadow-state-success focus:shadow-focus-success",
+        error: "border-destructive bg-input-background focus:shadow-focus-error",
+        success: "border-success bg-input-background focus:shadow-focus-success",
       },
     },
     defaultVariants: {

@@ -372,6 +372,8 @@ export const UIPage = () => {
                 size="sm"
               />
               <Input placeholder="Filled variant" variant="filled" size="sm" />
+              <Input placeholder="Filled error" variant="filled-error" size="sm" />
+              <Input placeholder="Filled success" variant="filled-success" size="sm" />
               <Input placeholder="Error state" variant="error" size="sm" />
               <Input placeholder="Success state" variant="success" size="sm" />
               <Input type="password" placeholder="Password" size="sm" />
@@ -584,7 +586,7 @@ export const UIPage = () => {
               {/* Variants */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Варианты</p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Select
                     options={[
                       { value: "option1", label: "Option 1" },
@@ -597,6 +599,33 @@ export const UIPage = () => {
                     onValueChange={setSelectValue}
                     clearable
                     onClear={() => setSelectValue("")}
+                  />
+                  <Select
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    placeholder="filled"
+                    triggerSize="sm"
+                    triggerVariant="filled"
+                  />
+                  <Select
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    placeholder="filled error"
+                    triggerSize="sm"
+                    triggerVariant="filled-error"
+                  />
+                  <Select
+                    options={[
+                      { value: "a", label: "Option A" },
+                      { value: "b", label: "Option B" },
+                    ]}
+                    placeholder="filled success"
+                    triggerSize="sm"
+                    triggerVariant="filled-success"
                   />
                   <Select
                     options={[
@@ -734,6 +763,24 @@ export const UIPage = () => {
                   <DatePicker
                     value={date}
                     onChange={setDate}
+                    variant="filled"
+                    placeholder="filled"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    variant="filled-error"
+                    placeholder="filled error"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
+                    variant="filled-success"
+                    placeholder="filled success"
+                  />
+                  <DatePicker
+                    value={date}
+                    onChange={setDate}
                     variant="error"
                     placeholder="error — ошибка валидации"
                   />
@@ -790,6 +837,24 @@ export const UIPage = () => {
                     onChange={setDateRange}
                     size="lg"
                     placeholder="lg — период"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    variant="filled"
+                    placeholder="filled"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    variant="filled-error"
+                    placeholder="filled error"
+                  />
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    variant="filled-success"
+                    placeholder="filled success"
                   />
                   <DateRangePicker
                     value={dateRange}

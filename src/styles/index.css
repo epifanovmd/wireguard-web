@@ -33,6 +33,16 @@
 }
 
 @theme inline {
+    --shadow-focus: 0 0 0 3px color-mix(in oklch, var(--ring) 20%, transparent);
+    --shadow-focus-error: 0 0 0 3px color-mix(in oklch, var(--destructive) 25%, transparent);
+    --shadow-focus-success: 0 0 0 3px color-mix(in oklch, var(--success) 25%, transparent);
+    --shadow-focus-offset: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in oklch, var(--ring) 25%, transparent);
+    --shadow-focus-error-offset: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in oklch, var(--destructive) 25%, transparent);
+    --shadow-focus-success-offset: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in oklch, var(--success) 25%, transparent);
+    --shadow-ring-error: 0 0 0 2px var(--background), 0 0 0 3.5px var(--destructive);
+    --shadow-ring-success: 0 0 0 2px var(--background), 0 0 0 3.5px var(--success);
+    --shadow-state-error: 0 0 0 2px color-mix(in oklch, var(--destructive) 35%, transparent);
+    --shadow-state-success: 0 0 0 2px color-mix(in oklch, var(--success) 35%, transparent);
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);

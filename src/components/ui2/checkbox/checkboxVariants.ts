@@ -2,9 +2,9 @@ import { cva } from "class-variance-authority";
 
 export const checkboxVariants = cva(
   [
-    "peer shrink-0 rounded border border-border bg-background ring-offset-background",
+    "peer shrink-0 rounded border border-border bg-background",
     "transition-all duration-200",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "focus-visible:outline-none focus-visible:shadow-focus-offset",
     "disabled:cursor-not-allowed disabled:opacity-50",
     "data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary",
     "data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=indeterminate]:border-primary",
@@ -19,8 +19,8 @@ export const checkboxVariants = cva(
       },
       variant: {
         default: "",
-        error: "border-destructive focus-visible:ring-destructive",
-        success: "border-success focus-visible:ring-success",
+        error: "border-destructive focus-visible:shadow-focus-error-offset",
+        success: "border-success focus-visible:shadow-focus-success-offset",
       },
     },
     defaultVariants: {
