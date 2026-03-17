@@ -42,13 +42,11 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalClose,
   ModalContent,
   ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalTitle,
-  ModalTrigger,
   Pagination,
   Segmented,
   Select,
@@ -70,6 +68,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  useModal,
 } from "~@components/ui2";
 
 // Mock API для демонстрации
@@ -170,6 +169,8 @@ export const UIPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [segmentedValue, setSegmentedValue] = useState("list");
   const [segmentedNav, setSegmentedNav] = useState("home");
+
+  const modal = useModal();
 
   const variants = [
     "default",
@@ -680,9 +681,9 @@ export const UIPage = () => {
             <CardContent className="flex gap-2 flex-wrap">
               {/* Default Modal */}
               <Modal>
-                <ModalTrigger asChild>
+                <Modal.Trigger asChild>
                   <Button size="sm">Default</Button>
-                </ModalTrigger>
+                </Modal.Trigger>
                 <ModalContent>
                   <ModalHeader>
                     <ModalTitle>Default Modal</ModalTitle>
@@ -706,11 +707,11 @@ export const UIPage = () => {
 
               {/* Modal with pulse on overlay click */}
               <Modal>
-                <ModalTrigger asChild>
+                <Modal.Trigger asChild>
                   <Button size="sm" variant="secondary">
                     No Close
                   </Button>
-                </ModalTrigger>
+                </Modal.Trigger>
                 <ModalContent disableInteractOutside>
                   <ModalHeader>
                     <ModalTitle>Required Action</ModalTitle>
@@ -724,20 +725,20 @@ export const UIPage = () => {
                     </p>
                   </div>
                   <ModalFooter>
-                    <ModalClose asChild>
+                    <Modal.Close asChild>
                       <Button size="sm">Close</Button>
-                    </ModalClose>
+                    </Modal.Close>
                   </ModalFooter>
                 </ModalContent>
               </Modal>
 
               {/* Scrollable Modal */}
               <Modal>
-                <ModalTrigger asChild>
+                <Modal.Trigger asChild>
                   <Button size="sm" variant="info">
                     Scrollable
                   </Button>
-                </ModalTrigger>
+                </Modal.Trigger>
                 <ModalContent scrollable size="lg">
                   <ModalHeader>
                     <ModalTitle>Long Content</ModalTitle>
@@ -764,11 +765,11 @@ export const UIPage = () => {
 
               {/* Top positioned modal */}
               <Modal>
-                <ModalTrigger asChild>
+                <Modal.Trigger asChild>
                   <Button size="sm" variant="success">
                     Top
                   </Button>
-                </ModalTrigger>
+                </Modal.Trigger>
                 <ModalContent position="top" size="sm">
                   <ModalHeader>
                     <ModalTitle>Top Modal</ModalTitle>
@@ -787,11 +788,11 @@ export const UIPage = () => {
 
               {/* Bottom positioned modal */}
               <Modal>
-                <ModalTrigger asChild>
+                <Modal.Trigger asChild>
                   <Button size="sm" variant="warning">
                     Bottom
                   </Button>
-                </ModalTrigger>
+                </Modal.Trigger>
                 <ModalContent position="bottom" size="sm">
                   <ModalHeader>
                     <ModalTitle>Bottom Modal</ModalTitle>
@@ -809,6 +810,72 @@ export const UIPage = () => {
                   </ModalFooter>
                 </ModalContent>
               </Modal>
+
+              {/* Global modal via useModal */}
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() =>
+                  modal.confirm({
+                    title: "Delete item?",
+                    description: "This action cannot be undone.",
+                    confirmLabel: "Delete",
+                    confirmVariant: "destructive",
+                    onConfirm: () => new Promise(res => setTimeout(res, 1200)),
+                  })
+                }
+              >
+                Confirm Delete
+              </Button>
+
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() =>
+                  modal.confirm({
+                    title: "Publish changes?",
+                    description: "Your changes will be visible to all users.",
+                    confirmLabel: "Publish",
+                    onConfirm: () => new Promise(res => setTimeout(res, 800)),
+                  })
+                }
+              >
+                Confirm Action
+              </Button>
+
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  const id = modal.openModal({
+                    size: "md",
+                    content: (
+                      <>
+                        <ModalHeader>
+                          <ModalTitle>Custom Modal</ModalTitle>
+                          <p className="text-sm text-muted-foreground">
+                            Opened programmatically via useModal
+                          </p>
+                        </ModalHeader>
+                        <ModalBody className="py-4">
+                          <p className="text-sm text-muted-foreground">
+                            This modal was opened using{" "}
+                            <code className="rounded bg-muted px-1">modal.openModal()</code>. You
+                            can pass any content here.
+                          </p>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button variant="outline" size="sm" onClick={() => modal.closeModal(id)}>
+                            Close
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    ),
+                  });
+                }}
+              >
+                Open Custom
+              </Button>
 
               {/* Default Drawer */}
               <Drawer>

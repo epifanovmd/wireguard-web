@@ -77,18 +77,18 @@ export {
   DrawerTitle,
   DrawerTrigger,
 } from "./drawer";
+export type { ConfirmOptions, ModalContentProps, ModalOptions } from "./modal";
 export {
   Modal,
   ModalBody,
-  ModalClose,
   ModalContent,
   ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalPortal,
+  ModalProvider,
   ModalTitle,
-  ModalTrigger,
+  useModal,
 } from "./modal";
 
 // Tables
