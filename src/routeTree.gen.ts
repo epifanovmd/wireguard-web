@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UiRouteImport } from './routes/ui'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PrivateRouteImport } from './routes/_private'
@@ -42,6 +43,11 @@ const PrivateWireguardPeersPeerIdLazyRouteImport = createFileRoute(
   '/_private/wireguard/peers/$peerId',
 )()
 
+const UiRoute = UiRouteImport.update({
+  id: '/ui',
+  path: '/ui',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -152,6 +158,7 @@ const PrivateWireguardPeersPeerIdLazyRoute =
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
+  '/ui': typeof UiRoute
   '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
+  '/ui': typeof UiRoute
   '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/_private': typeof PrivateRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
+  '/ui': typeof UiRoute
   '/_private/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/auth'
     | '/reset-password'
+    | '/ui'
     | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
   to:
     | '/auth'
     | '/reset-password'
+    | '/ui'
     | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/_private'
     | '/auth'
     | '/reset-password'
+    | '/ui'
     | '/_private/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -255,10 +267,18 @@ export interface RootRouteChildren {
   PrivateRoute: typeof PrivateRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
+  UiRoute: typeof UiRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ui': {
+      id: '/ui'
+      path: '/ui'
+      fullPath: '/ui'
+      preLoaderRoute: typeof UiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -413,6 +433,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivateRoute: PrivateRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
+  UiRoute: UiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

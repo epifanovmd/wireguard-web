@@ -1,6 +1,3 @@
-import "./styles/index.scss";
-import "./styles/tailwind.css";
-
 import { disposer } from "@force-dev/utils";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode, useEffect } from "react";

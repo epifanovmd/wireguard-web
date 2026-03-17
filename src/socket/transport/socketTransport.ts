@@ -135,14 +135,11 @@ export class SocketTransport implements ISocketTransport {
         ) => void
       )(event, ...args);
 
-    console.log("this._socket?.connected", this._socket?.connected, event);
     if (this._socket?.connected) {
       doEmit(this._socket);
     } else if (this._socket) {
-      // Queue — flush on next connect, not on every future connect
       const socket = this._socket;
       const queued = () => doEmit(socket);
-      console.log("this._emitQueue.push(queued);");
       this._emitQueue.push(queued);
     }
   }

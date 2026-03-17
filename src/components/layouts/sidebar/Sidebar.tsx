@@ -15,6 +15,8 @@ import React, { FC, ReactNode } from "react";
 
 import { useProfileDataStore } from "~@store";
 
+import { ThemeToggle } from "../../ui2";
+
 interface NavItem {
   to: string;
   label: string;
@@ -132,6 +134,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
             ))}
           </div>
         ))}
+        <ThemeToggle />
       </nav>
 
       {/* User area */}

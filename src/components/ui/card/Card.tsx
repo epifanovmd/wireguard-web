@@ -42,8 +42,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     return (
       <Paper
         ref={ref}
-        withBorder={bordered}
-        radius="md"
+        // withBorder={bordered}
+        radius="lg"
+        // variant={"red"}
         style={style}
         shadow="xs"
         {...(props as any)}
