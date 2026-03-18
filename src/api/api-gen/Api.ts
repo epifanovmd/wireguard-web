@@ -675,7 +675,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Start a peer (add to live WG interface, status → UP).
+   * @description Start a peer (add to live WG interface, status → UP). Requires peer to be enabled and server to be running.
    *
    * @tags WireGuard Peers
    * @name StartPeer
