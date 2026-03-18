@@ -1,5 +1,3 @@
-import { format, parseISO } from "date-fns";
-import { ru } from "date-fns/locale";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
@@ -119,15 +117,11 @@ export const UserDetail: FC<UserDetailProps> = observer(
           <div className="w-full xl:w-64 flex-shrink-0">
             <UserInfoCard
               displayName={model?.displayName ?? "?"}
-              login={user.email ?? user.phone}
+              login={model?.login}
               role={model?.roleLabel}
-              emailVerified={user.emailVerified}
-              registeredAt={format(parseISO(user.createdAt), "d MMMM yyyy", { locale: ru })}
-              lastOnline={
-                user.profile?.lastOnline
-                  ? format(parseISO(user.profile.lastOnline), "d MMMM yyyy", { locale: ru })
-                  : undefined
-              }
+              emailVerified={model?.emailVerified}
+              registeredAt={model?.createdAt}
+              lastOnline={model?.lastOnline}
             />
           </div>
 

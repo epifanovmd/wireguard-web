@@ -8,6 +8,7 @@ import { UserInfoCard } from "~@components/shared";
 import {
   Button,
   Card,
+  DatePickerFormField,
   InputFormField,
   SelectFormField,
   Spinner,
@@ -93,10 +94,11 @@ export const Profile: FC = observer(() => {
                       label="Пол"
                       placeholder="Мужской / Женский"
                     />
-                    <InputFormField<ProfileFormData>
+                    <DatePickerFormField<ProfileFormData>
                       name="birthDate"
                       label="Дата рождения"
-                      type="date"
+                      placeholder="Выберите дату"
+                      clearable
                     />
                   </div>
 

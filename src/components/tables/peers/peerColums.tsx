@@ -53,7 +53,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     header: "Истекает",
     cell: ({ row }) => (
       <span className="text-xs text-[var(--muted-foreground)]">
-        {row.original.expiresAtFormatted ?? "Никогда"}
+        {row.original.expiresAt ?? "Никогда"}
       </span>
     ),
   },

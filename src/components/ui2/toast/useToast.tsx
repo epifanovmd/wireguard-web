@@ -12,11 +12,51 @@ export interface ToastContextValue {
 
 export const useToast = (): ToastContextValue => ({
   success: (message, duration = 4000) =>
-    toast.custom(t => <CustomToast id={t.id} message={message} variant="success" />, { duration }),
+    toast.custom(
+      t => (
+        <CustomToast
+          id={t.id}
+          message={message}
+          variant="success"
+          visible={t.visible}
+        />
+      ),
+      { duration },
+    ),
   error: (message, duration = 5000) =>
-    toast.custom(t => <CustomToast id={t.id} message={message} variant="error" />, { duration }),
+    toast.custom(
+      t => (
+        <CustomToast
+          id={t.id}
+          message={message}
+          variant="error"
+          visible={t.visible}
+        />
+      ),
+      { duration },
+    ),
   warning: (message, duration = 4000) =>
-    toast.custom(t => <CustomToast id={t.id} message={message} variant="warning" />, { duration }),
+    toast.custom(
+      t => (
+        <CustomToast
+          id={t.id}
+          message={message}
+          variant="warning"
+          visible={t.visible}
+        />
+      ),
+      { duration },
+    ),
   info: (message, duration = 4000) =>
-    toast.custom(t => <CustomToast id={t.id} message={message} variant="info" />, { duration }),
+    toast.custom(
+      t => (
+        <CustomToast
+          id={t.id}
+          message={message}
+          variant="info"
+          visible={t.visible}
+        />
+      ),
+      { duration },
+    ),
 });

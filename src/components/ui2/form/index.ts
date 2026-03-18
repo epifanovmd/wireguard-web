@@ -14,6 +14,7 @@ export type {
 // Ready-made typed FormField components
 export {
   CheckboxFormField,
+  DatePickerFormField,
   InputFormField,
   SelectFormField,
   SwitchFormField,

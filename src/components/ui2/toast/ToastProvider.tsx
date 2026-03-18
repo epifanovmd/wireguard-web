@@ -14,28 +14,33 @@ const ICONS: Record<ToastVariant, React.ReactNode> = {
 };
 
 const VARIANT_CLASSES: Record<ToastVariant, string> = {
-  success: "border-success/30 text-success",
-  error: "border-destructive/30 text-destructive",
-  warning: "border-warning/30 text-warning",
-  info: "border-info/30 text-info",
+  success: "border-success/40 text-success",
+  error: "border-destructive/40 text-destructive",
+  warning: "border-warning/40 text-warning",
+  info: "border-info/40 text-info",
 };
 
 interface CustomToastProps {
   id: string;
   message: string;
   variant: ToastVariant;
+  visible: boolean;
 }
 
 export const CustomToast: React.FC<CustomToastProps> = ({
   id,
   message,
   variant,
+  visible,
 }) => (
   <div
     className={cn(
       "flex items-start gap-2.5 px-4 py-3 rounded-lg border shadow-lg",
       "min-w-[280px] max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)]",
       VARIANT_CLASSES[variant],
+      visible
+        ? "animate-in slide-in-from-right-5 fade-in duration-300 ease-out"
+        : "animate-out slide-out-to-right-5 fade-out duration-200 ease-in fill-mode-forwards",
     )}
   >
     <span className="flex-shrink-0 mt-0.5">{ICONS[variant]}</span>
@@ -43,7 +48,7 @@ export const CustomToast: React.FC<CustomToastProps> = ({
     <button
       type="button"
       onClick={() => toast.dismiss(id)}
-      className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity mt-0.5 cursor-pointer"
+      className="flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity mt-0.5 cursor-pointer"
     >
       <X size={14} />
     </button>
@@ -57,8 +62,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     {children}
     <Toaster
       position="top-right"
-      toastOptions={{ duration: 4000 }}
+      gutter={8}
       containerStyle={{ zIndex: 9999 }}
+      toastOptions={{
+        duration: 4000,
+        style: {
+          padding: 0,
+          background: "transparent",
+          boxShadow: "none",
+          maxWidth: "400px",
+        },
+      }}
     />
   </>
 );

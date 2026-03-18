@@ -1,6 +1,5 @@
 import { DataModelBase } from "@force-dev/utils";
 import { format, parseISO } from "date-fns";
-import { ru } from "date-fns/locale";
 
 import { ERole, ProfileDto } from "~@api/api-gen/data-contracts";
 
@@ -51,25 +50,19 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
   get registeredAt() {
     if (!this.data.user?.createdAt) return undefined;
 
-    return format(parseISO(this.data.user.createdAt), "d MMMM yyyy", {
-      locale: ru,
-    });
+    return format(parseISO(this.data.user.createdAt), "d MMMM yyyy");
   }
 
   get lastOnlineFormatted() {
     if (!this.data.lastOnline) return undefined;
 
-    return format(parseISO(this.data.lastOnline), "d MMMM yyyy", {
-      locale: ru,
-    });
+    return format(parseISO(this.data.lastOnline), "d MMMM yyyy");
   }
 
   get birthDateFormatted() {
     if (!this.data.birthDate) return undefined;
 
-    return format(parseISO(this.data.birthDate), "d MMMM yyyy", {
-      locale: ru,
-    });
+    return format(parseISO(this.data.birthDate), "d MMMM yyyy");
   }
 
   get birthDateInput() {

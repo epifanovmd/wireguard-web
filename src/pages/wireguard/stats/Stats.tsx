@@ -17,7 +17,7 @@ import { useServersListStore, useServerStatsStore } from "~@store";
 
 import { formatBytes, formatSpeed } from "../../dashboard";
 
-type Preset = "1h" | "6h" | "24h" | "7d" | "30d" | "custom";
+type Preset = "1h" | "6h" | "24h" | "7d" | "30d";
 
 const PRESETS: { value: Preset; label: string }[] = [
   { value: "1h", label: "1h" },
@@ -25,7 +25,6 @@ const PRESETS: { value: Preset; label: string }[] = [
   { value: "24h", label: "24h" },
   { value: "7d", label: "7d" },
   { value: "30d", label: "30d" },
-  { value: "custom", label: "Произвольный" },
 ];
 
 function getPresetRange(preset: Preset): [Date, Date] {
@@ -34,8 +33,7 @@ function getPresetRange(preset: Preset): [Date, Date] {
   if (preset === "6h") return [subHours(now, 6), now];
   if (preset === "24h") return [subHours(now, 24), now];
   if (preset === "7d") return [subDays(now, 7), now];
-  if (preset === "30d") return [subDays(now, 30), now];
-  return [subDays(now, 1), now];
+  return [subDays(now, 30), now];
 }
 
 export const Stats: FC = observer(() => {
@@ -47,8 +45,10 @@ export const Stats: FC = observer(() => {
     undefined,
   );
 
-  const activeFrom =
-    preset !== "custom" ? getPresetRange(preset)[0] : customRange?.from;
+  const [activeFrom, activeTo] =
+    customRange?.from && customRange?.to
+      ? [customRange.from, customRange.to]
+      : getPresetRange(preset);
 
   useEffect(() => {
     serversStore.load();
@@ -63,25 +63,29 @@ export const Stats: FC = observer(() => {
   }, [serversStore.listHolder.d.length]);
 
   useEffect(() => {
-    if (selectedServer && activeFrom) {
+    if (selectedServer) {
       loadStats().then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedServer, preset, customRange]);
 
   const loadStats = async () => {
-    if (!activeFrom) return;
-    const [from, to] = getPresetRange(preset);
     serverStatsStore
-      .loadServerStats(selectedServer, from.toISOString(), to.toISOString())
+      .loadServerStats(
+        selectedServer,
+        activeFrom.toISOString(),
+        activeTo.toISOString(),
+      )
       .then();
   };
 
   const handlePresetChange = (val: string) => {
     setPreset(val as Preset);
-    if (val !== "custom") {
-      setCustomRange(undefined);
-    }
+    setCustomRange(undefined);
+  };
+
+  const handleCustomRange = (range: DateRange | undefined) => {
+    setCustomRange(range);
   };
 
   const totalRx = serverStatsStore.stats?.totalRxBytes ?? 0;
@@ -116,16 +120,14 @@ export const Stats: FC = observer(() => {
           />
           <Segmented
             options={PRESETS}
-            value={preset}
+            value={customRange?.from ? undefined : preset}
             onChange={handlePresetChange}
           />
-          {preset === "custom" && (
-            <DateRangePicker
-              value={customRange}
-              onChange={setCustomRange}
-              clearable
-            />
-          )}
+          <DateRangePicker
+            value={customRange}
+            onChange={handleCustomRange}
+            clearable
+          />
           <Button size="sm" variant="outline" onClick={loadStats}>
             Обновить
           </Button>

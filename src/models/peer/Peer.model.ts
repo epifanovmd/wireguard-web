@@ -12,8 +12,8 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
     return this.data.enabled;
   }
 
-  get statusLabel() {
-    return this.data.enabled ? "Enabled" : "Disabled";
+  get enabledLabel() {
+    return this.data.enabled ? "Активен" : "Отключён";
   }
 
   get isExpired() {
@@ -22,14 +22,26 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
     return isAfter(new Date(), parseISO(this.data.expiresAt));
   }
 
-  get expiresAtFormatted() {
-    if (!this.data.expiresAt) return null;
-
-    return format(parseISO(this.data.expiresAt), "dd MMM yyyy HH:mm");
+  get description() {
+    return this.data.description ?? "—";
   }
 
-  get createdAtFormatted() {
-    return format(parseISO(this.data.createdAt), "dd MMM yyyy");
+  get endpoint() {
+    return this.data.endpoint ?? "—";
+  }
+
+  get expiresAt() {
+    return this.data.expiresAt
+      ? format(parseISO(this.data.expiresAt), "d MMMM yyyy, HH:mm")
+      : null;
+  }
+
+  get createdAt() {
+    return format(parseISO(this.data.createdAt), "d MMMM yyyy");
+  }
+
+  get updatedAt() {
+    return format(parseISO(this.data.updatedAt), "d MMMM yyyy, HH:mm");
   }
 
   get shortPublicKey() {

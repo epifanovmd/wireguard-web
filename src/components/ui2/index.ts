@@ -223,6 +223,7 @@ export type {
 export {
   CheckboxFormField,
   createFormField,
+  DatePickerFormField,
   Field,
   FormField,
   InputFormField,

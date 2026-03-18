@@ -12,7 +12,7 @@ export const PeerHandshakeCell: FC<{ row: PeerModel }> = ({ row }) => {
     <span className="text-xs text-[var(--muted-foreground)]">
       {liveStatus?.lastHandshake
         ? format(liveStatus.lastHandshake, "DD.MM.YYYY HH:mm:ss")
-        : row.createdAtFormatted}
+        : row.createdAt}
     </span>
   );
 };

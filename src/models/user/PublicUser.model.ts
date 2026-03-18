@@ -1,6 +1,7 @@
 import { DataModelBase } from "@force-dev/utils";
+import { format, parseISO } from "date-fns";
 
-import { PublicUserDto } from "~@api/api-gen/data-contracts";
+import { EProfileStatus, PublicUserDto } from "~@api/api-gen/data-contracts";
 
 export class PublicUserModel extends DataModelBase<PublicUserDto> {
   get id() {
@@ -25,5 +26,15 @@ export class PublicUserModel extends DataModelBase<PublicUserDto> {
         .toUpperCase();
 
     return (this.data.email?.[0] ?? "U").toUpperCase();
+  }
+
+  get isOnline() {
+    return this.data.profile?.status === EProfileStatus.Online;
+  }
+
+  get lastOnline() {
+    if (!this.data.profile?.lastOnline) return undefined;
+
+    return format(parseISO(this.data.profile.lastOnline), "d MMMM yyyy");
   }
 }

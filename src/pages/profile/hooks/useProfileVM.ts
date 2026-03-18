@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { parseISO } from "date-fns";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,7 +14,7 @@ export const profileSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   gender: z.string().optional(),
-  birthDate: z.string().optional(),
+  birthDate: z.date().optional(),
   status: z.nativeEnum(EProfileStatus).optional(),
 });
 
@@ -37,14 +38,14 @@ export const useProfileVM = () => {
   const { reset } = methods;
 
   useEffect(() => {
-    if (!model) return;
+    if (!profile) return;
 
     reset({
-      firstName: profile?.firstName ?? "",
-      lastName: profile?.lastName ?? "",
-      gender: profile?.gender ?? "",
-      birthDate: model.birthDateInput,
-      status: (profile?.status as EProfileStatus) ?? undefined,
+      firstName: profile.firstName ?? "",
+      lastName: profile.lastName ?? "",
+      gender: profile.gender ?? "",
+      birthDate: profile.birthDate ? parseISO(profile.birthDate) : undefined,
+      status: (profile.status as EProfileStatus) ?? undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
@@ -52,18 +53,13 @@ export const useProfileVM = () => {
   const onSubmit = async (data: ProfileFormData) => {
     setSaving(true);
 
-    const payload: Record<string, unknown> = {};
-
-    if (data.firstName !== undefined)
-      payload.firstName = data.firstName || undefined;
-    if (data.lastName !== undefined)
-      payload.lastName = data.lastName || undefined;
-    if (data.gender) payload.gender = data.gender;
-    if (data.birthDate)
-      payload.birthDate = new Date(data.birthDate).toISOString();
-    if (data.status) payload.status = data.status;
-
-    const res = await profileStore.updateProfile(payload as any);
+    const res = await profileStore.updateProfile({
+      firstName: data.firstName || undefined,
+      lastName: data.lastName || undefined,
+      gender: data.gender || undefined,
+      birthDate: data.birthDate?.toISOString(),
+      status: data.status,
+    });
 
     setSaving(false);
 
