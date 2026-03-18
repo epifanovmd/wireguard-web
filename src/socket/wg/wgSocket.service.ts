@@ -29,10 +29,14 @@ export class WgSocketService implements IWgSocketService {
     });
 
     return () => {
-      this._transport.emit("wg:unsubscribe:overview");
+      this.unsubscribeOverview();
       unsubStats();
       unsubConnect();
     };
+  }
+
+  unsubscribeOverview() {
+    this._transport.emit("wg:unsubscribe:overview");
   }
 
   subscribeServer(
@@ -61,11 +65,15 @@ export class WgSocketService implements IWgSocketService {
     });
 
     return () => {
-      this._transport.emit("wg:unsubscribe:server", serverId);
+      this.unsubscribeServer(serverId);
       unsubStats();
       unsubStatus();
       unsubConnect();
     };
+  }
+
+  unsubscribeServer(serverId: string) {
+    this._transport.emit("wg:unsubscribe:server", serverId);
   }
 
   subscribePeer(
@@ -94,10 +102,14 @@ export class WgSocketService implements IWgSocketService {
     });
 
     return () => {
-      this._transport.emit("wg:unsubscribe:peer", peerId);
+      this.unsubscribePeer(peerId);
       unsubStats();
       unsubStatus();
       unsubConnect();
     };
+  }
+
+  unsubscribePeer(peerId: string) {
+    this._transport.emit("wg:unsubscribe:peer", peerId);
   }
 }

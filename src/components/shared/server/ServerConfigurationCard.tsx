@@ -1,0 +1,49 @@
+import { memo } from "react";
+
+import { WgServerDto } from "~@api/api-gen/data-contracts";
+
+import { Card, CardProps, CopyableText } from "../../ui2";
+
+export interface IServerConfigurationCardProps extends CardProps {
+  server?: WgServerDto;
+}
+
+export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
+  ({ server, ...props }) => {
+    return (
+      <Card {...props}>
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+          {[
+            ["Interface", server?.interface],
+            ["Listen port", String(server?.listenPort)],
+            ["Address", server?.address],
+            ["Endpoint", server?.endpoint ?? "—"],
+            ["DNS", server?.dns ?? "—"],
+            ["MTU", server?.mtu ? String(server.mtu) : "—"],
+            ["Status", server?.status],
+            ["Enabled", server?.enabled ? "Yes" : "No"],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>
+              <dd className="font-medium text-[var(--foreground)] mt-0.5">
+                {v}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {server?.publicKey && (
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+            <p className="text-xs text-[var(--muted-foreground)] mb-1">
+              Public Key
+            </p>
+            <CopyableText
+              className="text-[var(--muted-foreground)]"
+              truncate={false}
+              text={server.publicKey}
+            />
+          </div>
+        )}
+      </Card>
+    );
+  },
+);

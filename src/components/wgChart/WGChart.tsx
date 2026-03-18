@@ -1,8 +1,9 @@
 import { observer } from "mobx-react-lite";
+import React from "react";
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -52,28 +53,29 @@ export const WGChart = observer<IWGChartProps>(
     return (
       <Card title={title} description={description}>
         <ResponsiveContainer width="100%" height={192}>
-          <LineChart data={points}>
+          <AreaChart data={points}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="t" tick={tickStyle} />
             <YAxis tick={tickStyle} tickFormatter={formatter} />
             <Tooltip contentStyle={tooltipStyle} formatter={tooltipFormatter} />
-            <Line
+
+            <Area
               type="monotone"
               dataKey="rx"
               stroke="#6366f1"
+              fill="#6366f115"
               strokeWidth={2}
-              dot={false}
               name="rx"
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="tx"
               stroke="#22c55e"
+              fill="#22c55e15"
               strokeWidth={2}
-              dot={false}
               name="tx"
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
         <div className="flex gap-4 mt-2">
           <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">

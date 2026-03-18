@@ -1,21 +1,11 @@
-import { formatISO, subDays, subHours } from "date-fns";
+import { subDays, subHours } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 
+import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
   Button,
-  Card,
   type DateRange,
   DateRangePicker,
   Segmented,
@@ -23,7 +13,7 @@ import {
   Spinner,
   StatCard,
 } from "~@components/ui2";
-import { useServersDataStore, useStatsDataStore } from "~@store";
+import { useServersListStore, useServerStatsStore } from "~@store";
 
 import { formatBytes, formatSpeed } from "../../dashboard";
 
@@ -49,29 +39,28 @@ function getPresetRange(preset: Preset): [Date, Date] {
 }
 
 export const Stats: FC = observer(() => {
-  const serversStore = useServersDataStore();
-  const stats = useStatsDataStore();
+  const serversStore = useServersListStore();
+  const serverStatsStore = useServerStatsStore();
   const [selectedServer, setSelectedServer] = useState("");
   const [preset, setPreset] = useState<Preset>("1h");
   const [customRange, setCustomRange] = useState<DateRange | undefined>(
     undefined,
   );
-  const [loading, setLoading] = useState(false);
 
   const activeFrom =
     preset !== "custom" ? getPresetRange(preset)[0] : customRange?.from;
 
   useEffect(() => {
-    serversStore.loadServers().then();
+    serversStore.load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (serversStore.servers.length > 0 && !selectedServer) {
-      setSelectedServer(serversStore.servers[0].id);
+    if (serversStore.listHolder.d.length > 0 && !selectedServer) {
+      setSelectedServer(serversStore.listHolder.d[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serversStore.servers.length]);
+  }, [serversStore.listHolder.d.length]);
 
   useEffect(() => {
     if (selectedServer && activeFrom) {
@@ -82,9 +71,10 @@ export const Stats: FC = observer(() => {
 
   const loadStats = async () => {
     if (!activeFrom) return;
-    setLoading(true);
-    await stats.loadServerStats(selectedServer, formatISO(activeFrom));
-    setLoading(false);
+    const [from, to] = getPresetRange(preset);
+    serverStatsStore
+      .loadServerStats(selectedServer, from.toISOString(), to.toISOString())
+      .then();
   };
 
   const handlePresetChange = (val: string) => {
@@ -94,35 +84,16 @@ export const Stats: FC = observer(() => {
     }
   };
 
-  const trafficData = (stats.serverStats?.traffic ?? []).map(t => ({
-    time: new Date(t.timestamp).toLocaleString("en", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    rx: t.rxBytes,
-    tx: t.txBytes,
-  }));
-
-  const speedData = (stats.serverStats?.speed ?? []).map(s => ({
-    time: new Date(s.timestamp).toLocaleTimeString("en", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }),
-    rx: s.rxSpeedBps,
-    tx: s.txSpeedBps,
-  }));
-
-  const totalRx =
-    trafficData.length > 0 ? trafficData[trafficData.length - 1].rx : 0;
-  const totalTx =
-    trafficData.length > 0 ? trafficData[trafficData.length - 1].tx : 0;
+  const totalRx = serverStatsStore.stats?.totalRxBytes ?? 0;
+  const totalTx = serverStatsStore.stats?.totalTxBytes ?? 0;
   const maxRxSpeed =
-    speedData.length > 0 ? Math.max(...speedData.map(d => d.rx)) : 0;
+    serverStatsStore.speedPoints.length > 0
+      ? Math.max(...serverStatsStore.speedPoints.map(d => d.rx))
+      : 0;
   const maxTxSpeed =
-    speedData.length > 0 ? Math.max(...speedData.map(d => d.tx)) : 0;
+    serverStatsStore.speedPoints.length > 0
+      ? Math.max(...serverStatsStore.speedPoints.map(d => d.tx))
+      : 0;
 
   return (
     <div className="flex flex-col h-full">
@@ -134,7 +105,7 @@ export const Stats: FC = observer(() => {
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
           <Select
-            options={serversStore.servers.map(s => ({
+            options={serversStore.listHolder.d.map(s => ({
               value: s.id,
               label: s.name,
             }))}
@@ -164,7 +135,7 @@ export const Stats: FC = observer(() => {
           <div className="flex justify-center py-16 text-[var(--muted-foreground)]">
             Select a server to view statistics
           </div>
-        ) : loading ? (
+        ) : serverStatsStore.speedPointsHolder.isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>
@@ -198,119 +169,17 @@ export const Stats: FC = observer(() => {
               />
             </div>
 
-            {/* Traffic chart */}
-            <Card
-              title="Traffic"
-              description="Cumulative bytes transferred over time"
-              className="p-5"
-            >
-              <div className="h-56">
-                <ResponsiveContainer width="100%" height={224}>
-                  <AreaChart data={trafficData}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="var(--border)"
-                    />
-                    <XAxis
-                      dataKey="time"
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                      tickFormatter={v => formatBytes(v)}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        background: "var(--card)",
-                        border: "1px solid var(--border)",
-                        borderRadius: 8,
-                        fontSize: 12,
-                      }}
-                      formatter={(v: number, name: string) => [
-                        formatBytes(v),
-                        name === "rx" ? "Download" : "Upload",
-                      ]}
-                    />
-                    <Legend
-                      formatter={v => (v === "rx" ? "Download" : "Upload")}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="rx"
-                      stroke="#6366f1"
-                      fill="#6366f115"
-                      strokeWidth={2}
-                      name="rx"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="tx"
-                      stroke="#22c55e"
-                      fill="#22c55e15"
-                      strokeWidth={2}
-                      name="tx"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-
-            {/* Speed chart */}
-            <Card
+            <ServerSpeedChart
               title="Speed"
               description="Instantaneous transfer speed over time"
-              className="p-5"
-            >
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height={192}>
-                  <AreaChart data={speedData}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="var(--border)"
-                    />
-                    <XAxis
-                      dataKey="time"
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                      tickFormatter={v => formatSpeed(v)}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        background: "var(--card)",
-                        border: "1px solid var(--border)",
-                        borderRadius: 8,
-                        fontSize: 12,
-                      }}
-                      formatter={(v: number, name: string) => [
-                        formatSpeed(v),
-                        name === "rx" ? "Download" : "Upload",
-                      ]}
-                    />
-                    <Legend
-                      formatter={v => (v === "rx" ? "Download" : "Upload")}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="rx"
-                      stroke="#6366f1"
-                      fill="#6366f115"
-                      strokeWidth={2}
-                      name="rx"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="tx"
-                      stroke="#22c55e"
-                      fill="#22c55e15"
-                      strokeWidth={2}
-                      name="tx"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
+              points={serverStatsStore.speedPoints}
+            />
+
+            <ServerTrafficChart
+              title="Traffic"
+              description="Cumulative bytes transferred over time"
+              points={serverStatsStore.trafficPoints}
+            />
           </>
         )}
       </div>

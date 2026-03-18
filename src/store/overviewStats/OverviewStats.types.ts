@@ -11,5 +11,6 @@ export interface IOverviewStatsStore {
   holder: DataHolder<WgOverviewStatsPayload>;
   stats: WgOverviewStatsPayload | undefined;
   speedPoints: IChartPoint[];
+  trafficPoints: IChartPoint[];
   subscribe(): () => void;
 }

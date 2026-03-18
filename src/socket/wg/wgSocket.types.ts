@@ -14,7 +14,7 @@ export interface IWgSocketService {
   subscribeOverview(handlers: {
     onStats: (data: WgOverviewStatsPayload) => void;
   }): () => void;
-
+  unsubscribeOverview(): void;
   subscribeServer(
     serverId: string,
     handlers: {
@@ -22,7 +22,7 @@ export interface IWgSocketService {
       onStatus?: (data: WgServerStatusPayload) => void;
     },
   ): () => void;
-
+  unsubscribeServer(serverId: string): void;
   subscribePeer(
     peerId: string,
     handlers: {
@@ -30,4 +30,5 @@ export interface IWgSocketService {
       onStatus?: (data: WgPeerStatusPayload) => void;
     },
   ): () => void;
+  unsubscribePeer(peerId: string): void;
 }

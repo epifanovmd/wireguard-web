@@ -1,0 +1,126 @@
+import { useNavigate } from "@tanstack/react-router";
+import { type OnChangeFn, type PaginationState } from "@tanstack/react-table";
+import { Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { userColumns } from "~@components/tables/users";
+import {
+  type ColumnDef,
+  IconButton,
+  useConfirm,
+  useToast,
+} from "~@components/ui2";
+import { PublicUserModel } from "~@models";
+import { useUsersDataStore } from "~@store";
+
+export const useUsersListVM = () => {
+  const store = useUsersDataStore();
+  const navigate = useNavigate();
+  const confirm = useConfirm();
+  const toast = useToast();
+
+  const [search, setSearch] = useState("");
+  const [paginationState, setPaginationState] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 20,
+  });
+
+  useEffect(() => {
+    store.load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
+    updater => {
+      const next =
+        typeof updater === "function" ? updater(paginationState) : updater;
+
+      setPaginationState(next);
+      store.load(next.pageIndex * next.pageSize);
+    },
+    [paginationState, store],
+  );
+
+  const filtered = useMemo(
+    () =>
+      store.models.filter(m => {
+        if (!search) return true;
+        const q = search.toLowerCase();
+
+        return (
+          m.displayName.toLowerCase().includes(q) ||
+          (m.data.email ?? "").toLowerCase().includes(q)
+        );
+      }),
+    [store.models, search],
+  );
+
+  const handleDelete = useCallback(
+    async (id: string, name: string) => {
+      const ok = await confirm({
+        title: "Delete user",
+        message: `Delete user "${name}"? This action cannot be undone.`,
+        variant: "danger",
+      });
+
+      if (!ok) return;
+      const res = await store.deleteUser(id);
+
+      if (res.error) toast.error(res.error.message);
+      else toast.success("User deleted");
+    },
+    [store, confirm, toast],
+  );
+
+  const handleRowClick = useCallback(
+    (user: PublicUserModel) => {
+      navigate({
+        to: "/users/$userId",
+        params: { userId: user.data.userId },
+      });
+    },
+    [navigate],
+  );
+
+  const columns: ColumnDef<PublicUserModel>[] = useMemo(
+    () => [
+      ...userColumns,
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <div
+            className="flex items-center justify-end gap-1"
+            onClick={e => e.stopPropagation()}
+          >
+            <IconButton
+              title="Delete"
+              onClick={() =>
+                handleDelete(row.original.data.userId, row.original.displayName)
+              }
+            >
+              <Trash2 size={15} className="text-destructive" />
+            </IconButton>
+          </div>
+        ),
+      },
+    ],
+    [handleDelete],
+  );
+
+  const pageCount = Math.ceil(store.total / paginationState.pageSize);
+
+  return {
+    data: filtered,
+    columns,
+    loading: store.listHolder.isLoading,
+    total: store.total,
+    paginationState,
+    onPaginationChange: handlePaginationChange,
+    pageCount,
+    search,
+    setSearch,
+    handleRowClick,
+    createUser: store.load,
+  };
+};

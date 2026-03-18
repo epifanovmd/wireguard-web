@@ -2,6 +2,7 @@ import { DataHolder } from "@force-dev/utils";
 import { format } from "date-fns";
 import { makeAutoObservable } from "mobx";
 
+import { IApiService } from "~@api";
 import { IChartPoint } from "~@components/wgChart";
 
 import { WgPeerStatsPayload, WgPeerStatusPayload } from "../../socket/events";
@@ -15,7 +16,10 @@ export class PeerStatsStore implements IPeerStatsStore {
   public speedPoints: IChartPoint[] = [];
   public trafficPoints: IChartPoint[] = [];
 
-  constructor(@IWgSocketService() private _wgSocket: IWgSocketService) {
+  constructor(
+    @IApiService() private _apiService: IApiService,
+    @IWgSocketService() private _wgSocket: IWgSocketService,
+  ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
@@ -27,9 +31,24 @@ export class PeerStatsStore implements IPeerStatsStore {
     return this.statusHolder.d;
   }
 
-  subscribe(peerId: string) {
+  subscribe(peerId: string, from?: string, to?: string) {
     this.speedPoints = [];
     this.trafficPoints = [];
+
+    this._apiService.getPeerStats({ peerId, from, to }).then(res => {
+      if (res.data) {
+        this.speedPoints = res.data.speed.slice(-60).map(s => ({
+          t: format(s.timestamp, "HH:mm:ss"),
+          rx: s.rxSpeedBps,
+          tx: s.txSpeedBps,
+        }));
+        this.trafficPoints = res.data.traffic.slice(-60).map(t => ({
+          t: format(t.timestamp, "HH:mm:ss"),
+          rx: t.rxBytes,
+          tx: t.txBytes,
+        }));
+      }
+    });
 
     return this._wgSocket.subscribePeer(peerId, {
       onStats: s => {

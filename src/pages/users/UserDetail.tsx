@@ -16,7 +16,7 @@ import {
   useConfirm,
   useToast,
 } from "~@components/ui2";
-import { usePeersDataStore, useUsersDataStore } from "~@store";
+import { usePeersListStore, useUsersDataStore } from "~@store";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
 import { UserAvatar } from "./components/UserAvatar";
@@ -30,7 +30,7 @@ interface UserDetailProps {
 export const UserDetail: FC<UserDetailProps> = observer(
   ({ userId, onBack }) => {
     const store = useUsersDataStore();
-    const peersStore = usePeersDataStore();
+    const peersStore = usePeersListStore();
     const confirm = useConfirm();
     const toast = useToast();
     const [selectedRole, setSelectedRole] = useState<ERole>(ERole.User);
@@ -39,7 +39,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     useEffect(() => {
       store.loadUser(userId);
-      peersStore.loadPeersByUser(userId);
+      peersStore.loadByUser(userId);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
@@ -199,7 +199,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                     <div className="flex justify-center py-8">
                       <Spinner />
                     </div>
-                  ) : peersStore.peers.length === 0 ? (
+                  ) : peersStore.models.length === 0 ? (
                     <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
                       No peers assigned to this user
                     </div>

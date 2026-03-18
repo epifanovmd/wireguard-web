@@ -13,5 +13,5 @@ export interface IPeerStatsStore {
   status: WgPeerStatusPayload | undefined;
   speedPoints: IChartPoint[];
   trafficPoints: IChartPoint[];
-  subscribe(peerId: string): () => void;
+  subscribe(peerId: string, from?: string, to?: string): () => void;
 }
