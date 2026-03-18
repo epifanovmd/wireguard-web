@@ -10,8 +10,8 @@ import { Button, Card, InputFormField } from "~@components/ui2";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Min 6 characters"),
+  email: z.string().email("Неверный email"),
+  password: z.string().min(6, "Минимум 6 символов"),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
 });
@@ -39,24 +39,25 @@ export const SignUp = observer(() => {
       <Card className="p-6">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            Create account
+            Создать аккаунт
           </h2>
         </div>
         <FormProvider {...methods}>
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-3">
-              <InputFormField<FormData> name="firstName" label="First name" />
-              <InputFormField<FormData> name="lastName" label="Last name" />
+              <InputFormField<FormData> name="firstName" label="Имя" />
+              <InputFormField<FormData> name="lastName" label="Фамилия" />
             </div>
             <InputFormField<FormData>
               name="email"
               label="Email"
+
               type="email"
               required
             />
             <InputFormField<FormData>
               name="password"
-              label="Password"
+              label="Пароль"
               type="password"
               required
             />
@@ -66,7 +67,7 @@ export const SignUp = observer(() => {
               className="w-full"
               onClick={handleSubmit(onSubmit)}
             >
-              Create account
+              Создать аккаунт
             </Button>
           </div>
         </FormProvider>

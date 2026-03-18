@@ -5,10 +5,10 @@ import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { Badge } from "../../ui2";
 
 const STATUS_CONFIG: Record<string, { variant: any; label: string }> = {
-  [EWgServerStatus.Up]: { variant: "success", label: "Up" },
-  [EWgServerStatus.Down]: { variant: "gray", label: "Down" },
-  [EWgServerStatus.Error]: { variant: "danger", label: "Error" },
-  [EWgServerStatus.Unknown]: { variant: "default", label: "Unknown" },
+  [EWgServerStatus.Up]: { variant: "success", label: "Запущен" },
+  [EWgServerStatus.Down]: { variant: "gray", label: "Остановлен" },
+  [EWgServerStatus.Error]: { variant: "danger", label: "Ошибка" },
+  [EWgServerStatus.Unknown]: { variant: "default", label: "Неизвестно" },
 };
 
 export const ServerStatusBadge: FC<{ status: string }> = ({ status }) => {

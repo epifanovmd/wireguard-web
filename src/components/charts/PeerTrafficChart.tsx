@@ -11,15 +11,15 @@ interface IPeerTrafficChartProps {
 
 export const PeerTrafficChart: FC<IPeerTrafficChartProps> = ({
   points,
-  title = "Peer traffic",
-  description = "Cumulative RX / TX bytes",
+  title = "Трафик пира",
+  description = "Накопленный RX / TX трафик",
 }) => (
   <WGChart
     title={title}
     description={description}
     points={points}
     formatter={formatBytes}
-    rxLabel="Received"
-    txLabel="Sent"
+    rxLabel="Получено"
+    txLabel="Отправлено"
   />
 );

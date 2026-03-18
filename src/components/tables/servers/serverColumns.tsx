@@ -7,7 +7,7 @@ import { ServerStatusCell } from "../../shared";
 export const serverColumns: ColumnDef<ServerModel>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Название",
     cell: ({ row }) => (
       <div className="flex items-center gap-2 mt-0.5 text-xs text-[var(--muted-foreground)]">
         <span className="font-mono">{row.original.name}</span>
@@ -22,12 +22,12 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Статус",
     cell: ({ row }) => <ServerStatusCell row={row.original} />,
   },
   {
     accessorKey: "interface",
-    header: "Interface",
+    header: "Интерфейс",
     cell: ({ row }) => (
       <span className="font-mono text-xs text-[var(--muted-foreground)]">
         {row.original.data.interface}
@@ -36,7 +36,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
   },
   {
     accessorKey: "listenPort",
-    header: "Port",
+    header: "Порт",
     cell: ({ row }) => (
       <span className="text-[var(--muted-foreground)]">
         {row.original.data.listenPort}
@@ -45,7 +45,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Created",
+    header: "Создан",
     cell: ({ row }) => (
       <span className="text-xs text-[var(--muted-foreground)]">
         {row.original.createdAtFormatted}

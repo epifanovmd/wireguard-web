@@ -34,25 +34,25 @@ export const ServerActions: FC<ServerActionsProps> = ({
       onClick={e => e.stopPropagation()}
     >
       {onEdit && (
-        <AsyncIconButton title="Edit" size={size} onClick={onEdit}>
+        <AsyncIconButton title="Редактировать" size={size} onClick={onEdit}>
           <Pencil size={15} />
         </AsyncIconButton>
       )}
       {isDown ? (
-        <AsyncIconButton title="Start" size={size} onClick={onStart}>
+        <AsyncIconButton title="Запустить" size={size} onClick={onStart}>
           <Play size={15} className="text-success" />
         </AsyncIconButton>
       ) : (
-        <AsyncIconButton title="Stop" size={size} onClick={onStop}>
+        <AsyncIconButton title="Остановить" size={size} onClick={onStop}>
           <Square size={15} className="text-warning" />
         </AsyncIconButton>
       )}
-      <AsyncIconButton title="Restart" size={size} onClick={onRestart}>
+      <AsyncIconButton title="Перезапустить" size={size} onClick={onRestart}>
         <RotateCcw size={15} />
       </AsyncIconButton>
       {onDelete && (
         <AsyncIconButton
-          title="Delete"
+          title="Удалить"
           size={size}
           variant="destructive"
           onClick={onDelete}

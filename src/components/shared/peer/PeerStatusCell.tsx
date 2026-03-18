@@ -14,7 +14,7 @@ export const PeerStatusCell: FC<{ row: PeerModel }> = ({ row }) => {
       <PeerStatusBadge enabled={row.enabled} isExpired={row.isExpired} />
       {liveStatus?.isActive && (
         <Badge variant="success" dot>
-          Online
+          Онлайн
         </Badge>
       )}
     </div>

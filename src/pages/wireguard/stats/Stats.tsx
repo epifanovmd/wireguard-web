@@ -25,7 +25,7 @@ const PRESETS: { value: Preset; label: string }[] = [
   { value: "24h", label: "24h" },
   { value: "7d", label: "7d" },
   { value: "30d", label: "30d" },
-  { value: "custom", label: "Custom" },
+  { value: "custom", label: "Произвольный" },
 ];
 
 function getPresetRange(preset: Preset): [Date, Date] {
@@ -98,8 +98,8 @@ export const Stats: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
-        title="Statistics"
-        subtitle="WireGuard traffic and speed analytics"
+        title="Статистика"
+        subtitle="Трафик и скорость WireGuard"
       />
       <div className="p-4 sm:p-6 flex flex-col gap-6">
         {/* Controls */}
@@ -111,7 +111,7 @@ export const Stats: FC = observer(() => {
             }))}
             value={selectedServer}
             onValueChange={v => setSelectedServer(v ?? "")}
-            placeholder="Select server"
+            placeholder="Выберите сервер"
             triggerClassName="w-48"
           />
           <Segmented
@@ -127,13 +127,13 @@ export const Stats: FC = observer(() => {
             />
           )}
           <Button size="sm" variant="outline" onClick={loadStats}>
-            Refresh
+            Обновить
           </Button>
         </div>
 
         {!selectedServer ? (
           <div className="flex justify-center py-16 text-[var(--muted-foreground)]">
-            Select a server to view statistics
+            Выберите сервер для просмотра статистики
           </div>
         ) : serverStatsStore.speedPointsHolder.isLoading ? (
           <div className="flex justify-center py-16">
@@ -144,40 +144,40 @@ export const Stats: FC = observer(() => {
             {/* Summary cards */}
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
               <StatCard
-                title="Total RX"
+                title="Всего RX"
                 value={formatBytes(totalRx)}
-                subtitle="Selected period"
+                subtitle="За период"
                 color="info"
               />
               <StatCard
-                title="Total TX"
+                title="Всего TX"
                 value={formatBytes(totalTx)}
-                subtitle="Selected period"
+                subtitle="За период"
                 color="success"
               />
               <StatCard
-                title="Peak RX Speed"
+                title="Пик скорости RX"
                 value={formatSpeed(maxRxSpeed)}
-                subtitle="Max download"
+                subtitle="Макс. загрузка"
                 color="purple"
               />
               <StatCard
-                title="Peak TX Speed"
+                title="Пик скорости TX"
                 value={formatSpeed(maxTxSpeed)}
-                subtitle="Max upload"
+                subtitle="Макс. отдача"
                 color="warning"
               />
             </div>
 
             <ServerSpeedChart
-              title="Speed"
-              description="Instantaneous transfer speed over time"
+              title="Скорость"
+              description="Мгновенная скорость передачи данных"
               points={serverStatsStore.speedPoints}
             />
 
             <ServerTrafficChart
-              title="Traffic"
-              description="Cumulative bytes transferred over time"
+              title="Трафик"
+              description="Накопленный объём переданных данных"
               points={serverStatsStore.trafficPoints}
             />
           </>

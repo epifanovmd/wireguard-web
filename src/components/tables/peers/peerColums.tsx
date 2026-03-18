@@ -8,7 +8,7 @@ import { Badge, CopyableText } from "../../ui2";
 export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Название",
     cell: ({ row }) => (
       <div>
         <p className="font-medium text-[var(--foreground)]">
@@ -24,7 +24,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   },
   {
     accessorKey: "allowedIPs",
-    header: "IP",
+    header: "IP-адрес",
     cell: ({ row }) => (
       <span className="font-mono text-xs text-[var(--muted-foreground)]">
         {row.original.data.allowedIPs}
@@ -33,7 +33,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   },
   {
     id: "status",
-    header: "Status",
+    header: "Статус",
     cell: ({ row }) => <PeerStatusCell row={row.original} />,
   },
   {
@@ -42,24 +42,24 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     cell: ({ row }) =>
       row.original.data.hasPresharedKey ? (
         <Badge variant="info" dot>
-          Yes
+          Да
         </Badge>
       ) : (
-        <span className="text-xs text-[var(--muted-foreground)]">No</span>
+        <span className="text-xs text-[var(--muted-foreground)]">Нет</span>
       ),
   },
   {
     accessorKey: "expiresAt",
-    header: "Expires",
+    header: "Истекает",
     cell: ({ row }) => (
       <span className="text-xs text-[var(--muted-foreground)]">
-        {row.original.expiresAtFormatted ?? "Never"}
+        {row.original.expiresAtFormatted ?? "Никогда"}
       </span>
     ),
   },
   {
     id: "handshake",
-    header: "Last handshake",
+    header: "Последнее рукопожатие",
     cell: ({ row }) => <PeerHandshakeCell row={row.original} />,
   },
 ];

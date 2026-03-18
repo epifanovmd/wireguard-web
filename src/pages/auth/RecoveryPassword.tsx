@@ -10,8 +10,8 @@ import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
-  login: z.string().min(1, "Email or phone is required"),
-  password: z.string().min(6, "Min 6 characters"),
+  login: z.string().min(1, "Email или телефон обязателен"),
+  password: z.string().min(6, "Минимум 6 символов"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -33,17 +33,17 @@ export const RecoveryPassword = observer(() => {
       <Card className="p-6">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            Recovery password
+            Восстановление пароля
           </h2>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
-            Enter your email to receive a reset link
+            Введите email для получения ссылки сброса
           </p>
         </div>
         <FormProvider {...methods}>
           <div className="flex flex-col gap-4">
             <InputFormField<FormData>
               name="login"
-              label="Email or phone"
+              label="Email или телефон"
               type="email"
               placeholder="email@example.com"
             />
@@ -52,7 +52,7 @@ export const RecoveryPassword = observer(() => {
               className="w-full"
               onClick={handleSubmit(onSubmit)}
             >
-              Send reset link
+              Отправить ссылку
             </Button>
           </div>
         </FormProvider>

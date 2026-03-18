@@ -58,8 +58,8 @@ export const useUsersListVM = () => {
   const handleDelete = useCallback(
     async (id: string, name: string) => {
       const ok = await confirm({
-        title: "Delete user",
-        message: `Delete user "${name}"? This action cannot be undone.`,
+        title: "Удалить пользователя",
+        message: `Удалить пользователя «${name}»? Это действие необратимо.`,
         variant: "danger",
       });
 
@@ -67,7 +67,7 @@ export const useUsersListVM = () => {
       const res = await store.deleteUser(id);
 
       if (res.error) toast.error(res.error.message);
-      else toast.success("User deleted");
+      else toast.success("Пользователь удалён");
     },
     [store, confirm, toast],
   );
@@ -94,7 +94,7 @@ export const useUsersListVM = () => {
             onClick={e => e.stopPropagation()}
           >
             <IconButton
-              title="Delete"
+              title="Удалить"
               onClick={() =>
                 handleDelete(row.original.data.userId, row.original.displayName)
               }

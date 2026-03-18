@@ -14,18 +14,18 @@ export const PeerStatusBadge: FC<PeerStatusBadgeProps> = ({
   if (isExpired)
     return (
       <Badge variant="warning" dot>
-        Expired
+        Истёк
       </Badge>
     );
   if (!enabled)
     return (
       <Badge variant="gray" dot>
-        Disabled
+        Отключён
       </Badge>
     );
   return (
     <Badge variant="success" dot>
-      Enabled
+      Включён
     </Badge>
   );
 };

@@ -16,19 +16,19 @@ export const UsersList: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
-        title="Users"
-        subtitle={`${vm.total} total`}
-        actions={<Button onClick={() => setCreateOpen(true)}>Add user</Button>}
+        title="Пользователи"
+        subtitle={`${vm.total} всего`}
+        actions={<Button onClick={() => setCreateOpen(true)}>Добавить пользователя</Button>}
       />
 
       <div className="p-4 sm:p-6 flex flex-col gap-4">
         <Card
-          title="Users"
-          extra={<Badge variant="gray">{vm.total} total</Badge>}
+          title="Пользователи"
+          extra={<Badge variant="gray">{vm.total} всего</Badge>}
         >
           <div className="mb-4">
             <Input
-              placeholder="Search by name or email..."
+              placeholder="Поиск по имени или email..."
               value={vm.search}
               onChange={e => vm.setSearch(e.target.value)}
               leftIcon={<Search size={16} />}

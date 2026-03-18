@@ -42,7 +42,7 @@ export const useServersListVM = () => {
       }
 
       if (res?.error) toast.error(res.error.message);
-      else if (action === "delete") toast.success("Server deleted");
+      else if (action === "delete") toast.success("Сервер удалён");
       else if (res?.data) listStore.updateServer(res.data);
     },
 

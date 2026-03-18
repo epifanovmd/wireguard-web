@@ -5,34 +5,34 @@ import { Checkbox } from "~@components/ui2";
 
 const PERMISSION_GROUPS = [
   {
-    label: "General",
+    label: "Общие",
     items: [
-      { value: EPermissions.Read, label: "Read", description: "View data" },
-      { value: EPermissions.Write, label: "Write", description: "Create and edit records" },
-      { value: EPermissions.Delete, label: "Delete", description: "Delete records" },
+      { value: EPermissions.Read, label: "Чтение", description: "Просмотр данных" },
+      { value: EPermissions.Write, label: "Запись", description: "Создание и редактирование записей" },
+      { value: EPermissions.Delete, label: "Удаление", description: "Удаление записей" },
     ],
   },
   {
-    label: "WireGuard Servers",
+    label: "Серверы WireGuard",
     items: [
-      { value: EPermissions.WgServerView, label: "View servers", description: "List and view server details" },
-      { value: EPermissions.WgServerManage, label: "Manage servers", description: "Create, edit, delete servers" },
-      { value: EPermissions.WgServerControl, label: "Control servers", description: "Start, stop, restart servers" },
+      { value: EPermissions.WgServerView, label: "Просмотр серверов", description: "Список и детали серверов" },
+      { value: EPermissions.WgServerManage, label: "Управление серверами", description: "Создание, редактирование, удаление серверов" },
+      { value: EPermissions.WgServerControl, label: "Контроль серверов", description: "Запуск, остановка, перезапуск серверов" },
     ],
   },
   {
-    label: "WireGuard Peers",
+    label: "Пиры WireGuard",
     items: [
-      { value: EPermissions.WgPeerView, label: "View peers", description: "List and view peer details" },
-      { value: EPermissions.WgPeerManage, label: "Manage peers", description: "Create, edit, delete peers" },
-      { value: EPermissions.WgPeerOwn, label: "Own peers only", description: "Access only own assigned peers" },
+      { value: EPermissions.WgPeerView, label: "Просмотр пиров", description: "Список и детали пиров" },
+      { value: EPermissions.WgPeerManage, label: "Управление пирами", description: "Создание, редактирование, удаление пиров" },
+      { value: EPermissions.WgPeerOwn, label: "Только свои пиры", description: "Доступ только к назначенным пирам" },
     ],
   },
   {
-    label: "Statistics",
+    label: "Статистика",
     items: [
-      { value: EPermissions.WgStatsView, label: "View statistics", description: "View traffic and speed data" },
-      { value: EPermissions.WgStatsExport, label: "Export statistics", description: "Download and export stats" },
+      { value: EPermissions.WgStatsView, label: "Просмотр статистики", description: "Просмотр трафика и скорости" },
+      { value: EPermissions.WgStatsExport, label: "Экспорт статистики", description: "Скачивание и экспорт данных" },
     ],
   },
 ];

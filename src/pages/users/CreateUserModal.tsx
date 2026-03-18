@@ -21,7 +21,7 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
 }) => (
   <Modal open={open} onOpenChange={open => !open && onClose()}>
     <ModalOverlay />
-    <ModalContent className="max-w-lg" title="Create user">
+    <ModalContent className="max-w-lg" title="Создать пользователя">
       <CreateUserForm onCancel={onClose} onCreated={onCreated} />
     </ModalContent>
   </Modal>

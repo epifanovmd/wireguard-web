@@ -27,17 +27,17 @@ export const ServersList: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
-        title="Servers"
-        subtitle={`${vm.total} total`}
+        title="Серверы"
+        subtitle={`${vm.total} всего`}
         actions={
-          <Button onClick={() => setCreateOpen(true)}>Add server</Button>
+          <Button onClick={() => setCreateOpen(true)}>Добавить сервер</Button>
         }
       />
 
       <div className="p-4 sm:p-6">
         <Card
-          title="Servers"
-          extra={<Badge variant="gray">{vm.total} total</Badge>}
+          title="Серверы"
+          extra={<Badge variant="gray">{vm.total} всего</Badge>}
         >
           <ServersTable
             data={vm.data}
@@ -55,7 +55,7 @@ export const ServersList: FC = observer(() => {
         <ModalOverlay />
         <ModalContent className="max-w-lg">
           <ModalHeader>
-            <ModalTitle>Add server</ModalTitle>
+            <ModalTitle>Добавить сервер</ModalTitle>
           </ModalHeader>
           <ModalBody>
             <ServerForm
@@ -67,7 +67,7 @@ export const ServersList: FC = observer(() => {
                 if (res.error) {
                   toast.error(res.error.message);
                 } else {
-                  toast.success("Server created");
+                  toast.success("Сервер создан");
                   setCreateOpen(false);
                 }
               }}

@@ -20,16 +20,16 @@ const schema = z
       .string()
       .refine(
         v => v === "" || z.string().email().safeParse(v).success,
-        "Invalid email",
+        "Неверный email",
       ),
     phone: z.string().optional(),
-    password: z.string().min(6, "Min 6 characters"),
+    password: z.string().min(6, "Минимум 6 символов"),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     role: z.nativeEnum(ERole),
   })
   .refine(d => d.email || d.phone, {
-    message: "Email or phone required",
+    message: "Email или телефон обязателен",
     path: ["email"],
   });
 
@@ -74,7 +74,7 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
         roleName: data.role,
         permissions,
       });
-      toast.success("User created");
+      toast.success("Пользователь создан");
       reset();
       onCreated();
     }
@@ -87,11 +87,11 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <InputFormField<CreateUserFormData>
             name="firstName"
-            label="First name"
+            label="Имя"
           />
           <InputFormField<CreateUserFormData>
             name="lastName"
-            label="Last name"
+            label="Фамилия"
           />
         </div>
         <InputFormField<CreateUserFormData>
@@ -102,39 +102,39 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
         />
         <InputFormField<CreateUserFormData>
           name="phone"
-          label="Phone"
+          label="Телефон"
           placeholder="+1234567890"
         />
         <InputFormField<CreateUserFormData>
           name="password"
-          label="Password"
+          label="Пароль"
           type="password"
           required
         />
         <SelectFormField<CreateUserFormData>
           name="role"
-          label="Role"
-          placeholder="Select role"
+          label="Роль"
+          placeholder="Выберите роль"
           options={[
-            { value: ERole.Admin, label: "Admin" },
-            { value: ERole.User, label: "User" },
-            { value: ERole.Guest, label: "Guest" },
+            { value: ERole.Admin, label: "Администратор" },
+            { value: ERole.User, label: "Пользователь" },
+            { value: ERole.Guest, label: "Гость" },
           ]}
         />
 
         <div>
           <p className="text-sm font-medium text-[var(--foreground)] mb-3">
-            Permissions
+            Права доступа
           </p>
           <PermissionsEditor value={permissions} onChange={setPermissions} />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="outline" onClick={onCancel}>
-            Cancel
+            Отмена
           </Button>
           <Button loading={loading} onClick={handleSubmit(onSubmit)}>
-            Create
+            Создать
           </Button>
         </div>
       </div>

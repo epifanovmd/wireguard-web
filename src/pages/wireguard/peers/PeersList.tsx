@@ -28,15 +28,15 @@ export const PeersList: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
-        title="Peers"
-        subtitle={`${vm.total} total`}
-        actions={<Button onClick={() => setCreateOpen(true)}>Add peer</Button>}
+        title="Пиры"
+        subtitle={`${vm.total} всего`}
+        actions={<Button onClick={() => setCreateOpen(true)}>Добавить пир</Button>}
       />
 
       <div className="p-4 sm:p-6 flex flex-col gap-4">
         <Card
-          title="Peers"
-          extra={<Badge variant="gray">{vm.total} total</Badge>}
+          title="Пиры"
+          extra={<Badge variant="gray">{vm.total} всего</Badge>}
         >
           <PeersTable
             data={vm.data}
@@ -63,7 +63,7 @@ export const PeersList: FC = observer(() => {
         <ModalOverlay />
         <ModalContent className="max-w-lg">
           <ModalHeader>
-            <ModalTitle>Add peer</ModalTitle>
+            <ModalTitle>Добавить пир</ModalTitle>
           </ModalHeader>
           <ModalBody>
             <PeerForm
@@ -72,14 +72,14 @@ export const PeersList: FC = observer(() => {
               onCancel={() => setCreateOpen(false)}
               onSubmit={async (data, serverId) => {
                 if (!serverId) {
-                  toast.error("Select a server");
+                  toast.error("Выберите сервер");
                   return;
                 }
                 const res = await vm.createPeer(serverId, data);
 
                 if (res.error) toast.error(res.error.message);
                 else {
-                  toast.success("Peer created");
+                  toast.success("Пир создан");
                   setCreateOpen(false);
                 }
               }}

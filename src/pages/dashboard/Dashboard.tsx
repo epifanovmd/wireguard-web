@@ -43,43 +43,43 @@ export const Dashboard: FC = observer(() => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Dashboard" subtitle="WireGuard VPN overview" />
+      <PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />
       <div className="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
         {/* Stat cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
-            title="Total servers"
+            title="Серверов"
             value={serversStore.total}
-            subtitle={`${activeServers.length} active`}
+            subtitle={`${activeServers.length} активных`}
             color="info"
             icon={<Server size={20} />}
           />
           <StatCard
-            title="Total peers"
+            title="Пиров"
             value={stats?.totalPeers ?? 0}
-            subtitle={`${stats?.activePeers ?? 0} active`}
+            subtitle={`${stats?.activePeers ?? 0} активных`}
             color="success"
             icon={<Zap size={20} />}
           />
           <StatCard
-            title="RX Speed"
+            title="Скорость RX"
             value={formatSpeed(stats?.rxSpeedBps ?? 0)}
-            subtitle="Download speed"
+            subtitle="Загрузка"
             color="purple"
             icon={<Download size={20} />}
           />
           <StatCard
-            title="TX Speed"
+            title="Скорость TX"
             value={formatSpeed(stats?.txSpeedBps ?? 0)}
-            subtitle="Upload speed"
+            subtitle="Отдача"
             color="warning"
             icon={<Upload size={20} />}
           />
         </div>
 
-        <ServerSpeedChart title={"All servers speed"} points={speedPoints} />
+        <ServerSpeedChart title={"Скорость всех серверов"} points={speedPoints} />
         <ServerTrafficChart
-          title={"All servers traffic"}
+          title={"Трафик всех серверов"}
           points={trafficPoints}
         />
 

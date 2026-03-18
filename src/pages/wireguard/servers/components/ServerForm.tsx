@@ -18,16 +18,16 @@ import {
 } from "~@components/ui2";
 
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Название обязательно"),
   interface: z
     .string()
-    .min(1, "Interface name is required")
-    .regex(/^[a-z0-9]+$/, "Lowercase letters and numbers only"),
+    .min(1, "Имя интерфейса обязательно")
+    .regex(/^[a-z0-9]+$/, "Только строчные буквы и цифры"),
   listenPort: z.coerce.number().int().min(1).max(65535),
   address: z
     .string()
-    .min(1, "CIDR address required")
-    .regex(/^\d+\.\d+\.\d+\.\d+\/\d+$/, "Must be CIDR format e.g. 10.0.0.1/24"),
+    .min(1, "CIDR-адрес обязателен")
+    .regex(/^\d+\.\d+\.\d+\.\d+\/\d+$/, "Формат CIDR, например 10.0.0.1/24"),
   endpoint: z.string().optional().or(z.literal("")),
   dns: z.string().optional().or(z.literal("")),
   mtu: z.coerce.number().optional().nullable(),
@@ -105,30 +105,30 @@ export const ServerForm: FC<ServerFormProps> = ({
       <div className="flex flex-col gap-4 mb-4">
         <InputFormField<ServerFormData>
           name="name"
-          label="Server name"
+          label="Название сервера"
           required
         />
 
         {!isEdit && (
           <InputFormField<ServerFormData>
             name="interface"
-            label="Interface name"
+            label="Имя интерфейса"
             placeholder="wg0"
             required
-            hint="e.g. wg0, wg1 — cannot be changed after creation"
+            hint="Например wg0, wg1 — нельзя изменить после создания"
           />
         )}
 
         <div className="grid grid-cols-2 gap-3">
           <InputFormField<ServerFormData>
             name="listenPort"
-            label="Listen port"
+            label="Порт прослушивания"
             type="number"
             required
           />
           <InputFormField<ServerFormData>
             name="address"
-            label="Address (CIDR)"
+            label="Адрес (CIDR)"
             placeholder="10.0.0.1/24"
             required
           />
@@ -136,9 +136,9 @@ export const ServerForm: FC<ServerFormProps> = ({
 
         <InputFormField<ServerFormData>
           name="endpoint"
-          label="Endpoint"
+          label="Эндпоинт"
           placeholder="vpn.example.com:51820"
-          hint="Public host:port for client configs"
+          hint="Публичный host:port для конфигурации клиентов"
         />
 
         <div className="grid grid-cols-2 gap-3">
@@ -157,20 +157,20 @@ export const ServerForm: FC<ServerFormProps> = ({
 
         <TextareaFormField<ServerFormData>
           name="description"
-          label="Description"
+          label="Описание"
           rows={2}
         />
 
         <div className="flex items-center justify-between py-1">
           <span className="text-sm font-medium text-[var(--foreground)]">
-            Enabled
+            Включён
           </span>
           <SwitchFormField<ServerFormData> name="enabled" />
         </div>
 
         <Collapse variant="ghost">
           <Collapse.Trigger leadingIcon={<Terminal size={15} />}>
-            Advanced settings (scripts)
+            Дополнительные настройки (скрипты)
           </Collapse.Trigger>
           <Collapse.Content innerClassName="px-3 pb-3 flex flex-col gap-3">
             <TextareaFormField<ServerFormData>
@@ -199,14 +199,14 @@ export const ServerForm: FC<ServerFormProps> = ({
 
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Отмена
           </Button>
           <Button
             type="button"
             loading={loading}
             onClick={handleSubmit(handleFormSubmit)}
           >
-            {isEdit ? "Save changes" : "Create server"}
+            {isEdit ? "Сохранить" : "Создать сервер"}
           </Button>
         </div>
       </div>

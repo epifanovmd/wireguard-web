@@ -8,10 +8,10 @@ import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
+  password: z.string().min(6, "Пароль должен содержать минимум 6 символов"),
+  confirmPassword: z.string().min(1, "Подтвердите пароль"),
 }).refine(d => d.password === d.confirmPassword, {
-  message: "Passwords do not match",
+  message: "Пароли не совпадают",
   path: ["confirmPassword"],
 });
 
@@ -49,8 +49,8 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">Reset password</h2>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">Enter your new password</p>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">Сброс пароля</h2>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">Введите новый пароль</p>
         </div>
 
         {error && (
@@ -63,13 +63,13 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
           <div className="flex flex-col gap-4">
             <InputFormField<FormData>
               name="password"
-              label="New password"
+              label="Новый пароль"
               type="password"
               placeholder="••••••••"
             />
             <InputFormField<FormData>
               name="confirmPassword"
-              label="Confirm password"
+              label="Подтвердите пароль"
               type="password"
               placeholder="••••••••"
             />
@@ -79,7 +79,7 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
               loading={loading}
               onClick={handleSubmit(onSubmit)}
             >
-              Set new password
+              Установить пароль
             </Button>
           </div>
         </FormProvider>

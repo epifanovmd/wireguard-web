@@ -10,15 +10,15 @@ interface IPeerSpeedChartProps {
 
 export const PeerSpeedChart: FC<IPeerSpeedChartProps> = ({
   points,
-  title = "Peer speed",
-  description = "Real-time download / upload",
+  title = "Скорость пира",
+  description = "Загрузка / отдача в реальном времени",
 }) => (
   <WGChart
     title={title}
     description={description}
     points={points}
     formatter={formatSpeed}
-    rxLabel="Download"
-    txLabel="Upload"
+    rxLabel="Загрузка"
+    txLabel="Отдача"
   />
 );

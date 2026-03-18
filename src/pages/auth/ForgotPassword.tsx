@@ -11,7 +11,7 @@ import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
 
 const schema = z.object({
-  login: z.string().min(1, "Email or phone is required"),
+  login: z.string().min(1, "Email или телефон обязателен"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -48,24 +48,24 @@ export const ForgotPassword = observer(() => {
               <Check className="w-6 h-6 text-success" />
             </div>
             <h2 className="text-lg font-bold text-[var(--foreground)] mb-2">
-              Email sent
+              Письмо отправлено
             </h2>
             <p className="text-sm text-[var(--muted-foreground)] mb-6">
-              If an account exists for this email, you will receive a password
-              reset link shortly.
+              Если аккаунт с таким email существует, вы получите ссылку для
+              сброса пароля.
             </p>
             <Button type="button" variant="ghost" onClick={onBack}>
-              Back to sign in
+              Вернуться к входу
             </Button>
           </div>
         ) : (
           <>
             <div className="mb-6">
               <h2 className="text-xl font-bold text-[var(--foreground)]">
-                Forgot password
+                Восстановление пароля
               </h2>
               <p className="text-sm text-[var(--muted-foreground)] mt-1">
-                Enter your email or phone to receive a reset link
+                Введите email или телефон для получения ссылки сброса
               </p>
             </div>
 
@@ -73,7 +73,7 @@ export const ForgotPassword = observer(() => {
               <div className="flex flex-col gap-4">
                 <InputFormField<FormData>
                   name="login"
-                  label="Email or phone"
+                  label="Email или телефон"
                   placeholder="email@example.com"
                 />
                 <Button
@@ -82,10 +82,10 @@ export const ForgotPassword = observer(() => {
                   className="w-full"
                   onClick={handleSubmit(onSubmit)}
                 >
-                  Send reset link
+                  Отправить ссылку
                 </Button>
                 <Button type="button" variant="outline" onClick={onBack} className="w-full">
-                  Back to sign in
+                  Вернуться к входу
                 </Button>
               </div>
             </FormProvider>

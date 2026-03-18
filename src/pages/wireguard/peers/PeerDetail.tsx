@@ -42,7 +42,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     if (vm.isLoading || !vm.isReady) {
       return (
         <div className="flex flex-col h-full">
-          <PageHeader title="Peer" />
+          <PageHeader title="Пир" />
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
@@ -52,7 +52,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
 
     if (!peer || !model) {
       return (
-        <div className="p-6 text-[var(--muted-foreground)]">Peer not found</div>
+        <div className="p-6 text-[var(--muted-foreground)]">Пир не найден</div>
       );
     }
 
@@ -81,17 +81,17 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             />
             {(liveStatus?.isActive ?? false) && (
               <Badge variant="success" dot>
-                Connected
+                Подключён
               </Badge>
             )}
             {peer.hasPresharedKey && (
               <Badge variant="info" dot>
-                PSK enabled
+                PSK включён
               </Badge>
             )}
             {peer.userId && (
               <Badge variant="purple" dot>
-                Assigned
+                Назначен
               </Badge>
             )}
             {liveStatus?.endpoint && (
@@ -99,7 +99,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             )}
             {liveStatus?.lastHandshake && (
               <span className="text-xs text-[var(--muted-foreground)]">
-                Last handshake: {liveStatus.lastHandshake}
+                Последнее рукопожатие: {liveStatus.lastHandshake}
               </span>
             )}
           </div>
@@ -107,35 +107,35 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           {/* Live stat cards */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
-              title="Total RX"
+              title="Всего RX"
               value={formatBytes(liveStats?.rxBytes ?? 0)}
-              subtitle="Downloaded"
+              subtitle="Загружено"
               color="info"
             />
             <StatCard
-              title="Total TX"
+              title="Всего TX"
               value={formatBytes(liveStats?.txBytes ?? 0)}
-              subtitle="Uploaded"
+              subtitle="Отдано"
               color="success"
             />
             <StatCard
-              title="RX Speed"
+              title="Скорость RX"
               value={formatSpeed(liveStats?.rxSpeedBps ?? 0)}
-              subtitle="Download speed"
+              subtitle="Загрузка"
               color="purple"
             />
             <StatCard
-              title="TX Speed"
+              title="Скорость TX"
               value={formatSpeed(liveStats?.txSpeedBps ?? 0)}
-              subtitle="Upload speed"
+              subtitle="Отдача"
               color="warning"
             />
           </div>
 
           <Tabs defaultValue="charts">
             <TabsList>
-              <TabsTrigger value="charts">Speed / Traffic</TabsTrigger>
-              <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>
+              <TabsTrigger value="config">Конфигурация</TabsTrigger>
             </TabsList>
 
             <TabsContent value="charts" className={"flex flex-col gap-4"}>
@@ -160,7 +160,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           <ModalOverlay />
           <ModalContent className="max-w-lg">
             <ModalHeader>
-              <ModalTitle>Edit peer</ModalTitle>
+              <ModalTitle>Редактировать пир</ModalTitle>
             </ModalHeader>
             <ModalBody>
               <PeerForm

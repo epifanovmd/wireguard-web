@@ -11,15 +11,15 @@ interface IServerTrafficChartProps {
 
 export const ServerTrafficChart: FC<IServerTrafficChartProps> = ({
   points,
-  title = "Server traffic",
-  description = "Cumulative RX / TX bytes",
+  title = "Трафик сервера",
+  description = "Накопленный RX / TX трафик",
 }) => (
   <WGChart
     title={title}
     description={description}
     points={points}
     formatter={formatBytes}
-    rxLabel="Received"
-    txLabel="Sent"
+    rxLabel="Получено"
+    txLabel="Отправлено"
   />
 );

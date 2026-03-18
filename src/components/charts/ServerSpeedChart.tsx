@@ -10,8 +10,8 @@ interface IServerSpeedChartProps {
 }
 
 export const ServerSpeedChart: FC<IServerSpeedChartProps> = ({
-  title = "Server speed",
-  description = "Real-time download / upload",
+  title = "Скорость сервера",
+  description = "Загрузка / отдача в реальном времени",
   points,
 }) => (
   <WGChart
@@ -19,7 +19,7 @@ export const ServerSpeedChart: FC<IServerSpeedChartProps> = ({
     description={description}
     points={points}
     formatter={formatSpeed}
-    rxLabel="Download"
-    txLabel="Upload"
+    rxLabel="Загрузка"
+    txLabel="Отдача"
   />
 );

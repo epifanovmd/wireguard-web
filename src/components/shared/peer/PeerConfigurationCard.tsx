@@ -13,22 +13,22 @@ export interface IPeerConfigurationCardProps extends CardProps {
 export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
   ({ peer, handleRotatePsk, handleRemovePsk }) => {
     return (
-      <Card title="Peer configuration">
+      <Card title="Конфигурация пира">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           {[
-            ["Allowed IPs", peer.data.allowedIPs],
-            ["Client IPs", peer.data.clientAllowedIPs],
-            ["Endpoint", peer.data.endpoint ?? "—"],
+            ["Разрешённые IP", peer.data.allowedIPs],
+            ["IP клиента", peer.data.clientAllowedIPs],
+            ["Эндпоинт", peer.data.endpoint ?? "—"],
             [
               "Keepalive",
               peer.data.persistentKeepalive
-                ? `${peer.data.persistentKeepalive}s`
+                ? `${peer.data.persistentKeepalive}с`
                 : "—",
             ],
             ["DNS", peer.data.dns ?? "—"],
             ["MTU", peer.data.mtu ? String(peer.data.mtu) : "—"],
-            ["PSK", peer.data.hasPresharedKey ? "Yes" : "No"],
-            ["Expires", peer.expiresAtFormatted ?? "Never"],
+            ["PSK", peer.data.hasPresharedKey ? "Да" : "Нет"],
+            ["Истекает", peer.expiresAtFormatted ?? "Никогда"],
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>
@@ -40,7 +40,7 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
         </dl>
         <div className="mt-4 pt-4 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted-foreground)] mb-1">
-            Public Key
+            Публичный ключ
           </p>
           <CopyableText
             text={peer.data.publicKey}
@@ -51,10 +51,10 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
         {peer.data.hasPresharedKey && (
           <div className="mt-4 flex gap-2">
             <AsyncButton size="sm" variant="outline" onClick={handleRotatePsk}>
-              Rotate PSK
+              Обновить PSK
             </AsyncButton>
             <AsyncButton size="sm" variant="ghost" onClick={handleRemovePsk}>
-              Remove PSK
+              Удалить PSK
             </AsyncButton>
           </div>
         )}

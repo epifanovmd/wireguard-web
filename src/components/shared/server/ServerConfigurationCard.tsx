@@ -14,14 +14,14 @@ export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
       <Card {...props}>
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           {[
-            ["Interface", server?.interface],
-            ["Listen port", String(server?.listenPort)],
-            ["Address", server?.address],
-            ["Endpoint", server?.endpoint ?? "—"],
+            ["Интерфейс", server?.interface],
+            ["Порт", String(server?.listenPort)],
+            ["Адрес", server?.address],
+            ["Эндпоинт", server?.endpoint ?? "—"],
             ["DNS", server?.dns ?? "—"],
             ["MTU", server?.mtu ? String(server.mtu) : "—"],
-            ["Status", server?.status],
-            ["Enabled", server?.enabled ? "Yes" : "No"],
+            ["Статус", server?.status],
+            ["Включён", server?.enabled ? "Да" : "Нет"],
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>
@@ -34,7 +34,7 @@ export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
         {server?.publicKey && (
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
             <p className="text-xs text-[var(--muted-foreground)] mb-1">
-              Public Key
+              Публичный ключ
             </p>
             <CopyableText
               className="text-[var(--muted-foreground)]"

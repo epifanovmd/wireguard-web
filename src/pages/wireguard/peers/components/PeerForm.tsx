@@ -18,7 +18,7 @@ import {
 } from "~@components/ui2";
 
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Название обязательно"),
   description: z.string().optional().or(z.literal("")),
   presharedKey: z.boolean(),
   persistentKeepalive: z.coerce.number().optional().nullable(),
@@ -108,27 +108,27 @@ export const PeerForm: FC<PeerFormProps> = ({
             }))}
             value={serverId}
             onValueChange={v => setServerId(v ?? "")}
-            placeholder="Select server"
+            placeholder="Выберите сервер"
           />
         )}
 
-        <InputFormField<PeerFormData> name="name" label="Peer name" required />
+        <InputFormField<PeerFormData> name="name" label="Название пира" required />
         <TextareaFormField<PeerFormData>
           name="description"
-          label="Description"
+          label="Описание"
           rows={2}
         />
 
         <InputFormField<PeerFormData>
           name="clientAllowedIPs"
-          label="Client allowed IPs"
-          hint="Routes pushed to client (e.g. 0.0.0.0/0 for full tunnel)"
+          label="Разрешённые IP клиента"
+          hint="Маршруты для клиента (например 0.0.0.0/0 для полного туннеля)"
         />
 
         <div className="grid grid-cols-2 gap-3">
           <InputFormField<PeerFormData>
             name="dns"
-            label="DNS override"
+            label="DNS (переопределение)"
             placeholder="1.1.1.1"
           />
           <InputFormField<PeerFormData>
@@ -141,28 +141,28 @@ export const PeerForm: FC<PeerFormProps> = ({
 
         <InputFormField<PeerFormData>
           name="persistentKeepalive"
-          label="Persistent keepalive (sec)"
+          label="Persistent keepalive (сек)"
           type="number"
           placeholder="25"
         />
         <InputFormField<PeerFormData>
           name="endpoint"
-          label="Endpoint override"
+          label="Эндпоинт (переопределение)"
           placeholder="host:port"
         />
         <InputFormField<PeerFormData>
           name="expiresAt"
-          label="Expires at"
+          label="Срок действия"
           type="datetime-local"
         />
 
         <div className="flex items-center justify-between py-1">
           <div>
             <p className="text-sm font-medium text-[var(--foreground)]">
-              Preshared key
+              Общий ключ (PSK)
             </p>
             <p className="text-xs text-[var(--muted-foreground)]">
-              Adds additional layer of symmetric encryption
+              Добавляет дополнительный уровень симметричного шифрования
             </p>
           </div>
           <SwitchFormField<PeerFormData> name="presharedKey" />
@@ -170,21 +170,21 @@ export const PeerForm: FC<PeerFormProps> = ({
 
         <div className="flex items-center justify-between py-1">
           <span className="text-sm font-medium text-[var(--foreground)]">
-            Enabled
+            Включён
           </span>
           <SwitchFormField<PeerFormData> name="enabled" />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Отмена
           </Button>
           <Button
             type="button"
             loading={loading}
             onClick={handleSubmit(handleFormSubmit)}
           >
-            {isEdit ? "Save changes" : "Create peer"}
+            {isEdit ? "Сохранить" : "Создать пир"}
           </Button>
         </div>
       </div>

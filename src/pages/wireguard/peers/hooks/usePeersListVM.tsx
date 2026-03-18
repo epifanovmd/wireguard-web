@@ -65,8 +65,8 @@ export const usePeersListVM = (serverId?: string) => {
   const handleDelete = useCallback(
     async (id: string, name: string) => {
       const ok = await confirm({
-        title: "Delete peer",
-        message: `Delete peer "${name}"?`,
+        title: "Удалить пир",
+        message: `Удалить пир «${name}»?`,
         variant: "danger",
       });
 
@@ -76,7 +76,7 @@ export const usePeersListVM = (serverId?: string) => {
       if (res.error) {
         toast.error(res.error.message);
       } else {
-        toast.success("Peer deleted");
+        toast.success("Пир удалён");
         listStore.removePeer(id);
       }
     },

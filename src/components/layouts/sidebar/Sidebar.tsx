@@ -35,31 +35,31 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    items: [{ to: "/", label: "Dashboard", icon: <Grid2x2 size={17} /> }],
+    items: [{ to: "/", label: "Дашборд", icon: <Grid2x2 size={17} /> }],
   },
   {
-    label: "Management",
-    items: [{ to: "/users", label: "Users", icon: <Users size={17} /> }],
+    label: "Управление",
+    items: [{ to: "/users", label: "Пользователи", icon: <Users size={17} /> }],
   },
   {
     label: "WireGuard VPN",
     items: [
       {
         to: "/wireguard/servers",
-        label: "Servers",
+        label: "Серверы",
         icon: <Server size={17} />,
       },
-      { to: "/wireguard/peers", label: "Peers", icon: <Zap size={17} /> },
+      { to: "/wireguard/peers", label: "Пиры", icon: <Zap size={17} /> },
       {
         to: "/wireguard/stats",
-        label: "Statistics",
+        label: "Статистика",
         icon: <BarChart3 size={17} />,
       },
     ],
   },
   {
     items: [
-      { to: "/settings", label: "Settings", icon: <Settings size={17} /> },
+      { to: "/settings", label: "Настройки", icon: <Settings size={17} /> },
     ],
   },
 ];
@@ -86,7 +86,7 @@ export const NavContent: FC<NavContentProps> = ({
           WireGuard
         </p>
         <p className="text-[var(--muted-foreground)] text-[11px] mt-0.5">
-          Admin Panel
+          Панель управления
         </p>
       </div>
     </div>
@@ -137,7 +137,7 @@ export const NavContent: FC<NavContentProps> = ({
         )}
       >
         <LogOut size={15} className="opacity-70" />
-        <span>Sign out</span>
+        <span>Выйти</span>
       </Button>
     </div>
   </div>
@@ -202,7 +202,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
           <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] outline-none">
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--sidebar-border)]">
               <p className="text-[var(--sidebar-foreground)] text-sm font-semibold">
-                WireGuard Admin
+                WireGuard
               </p>
               <Button
                 variant="ghost"

@@ -12,8 +12,8 @@ import { Button, Card, InputFormField } from "~@components/ui2";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
-  login: z.string().min(1, "Login is required"),
-  password: z.string().min(1, "Password is required"),
+  login: z.string().min(1, "Логин обязателен"),
+  password: z.string().min(1, "Пароль обязателен"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -43,10 +43,10 @@ export const SignIn = observer(() => {
       <Card className="p-6">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            Sign in
+            Вход
           </h2>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
-            Enter your credentials to access the admin panel
+            Введите данные для входа в панель управления
           </p>
         </div>
 
@@ -60,12 +60,12 @@ export const SignIn = observer(() => {
           <div className="flex flex-col gap-4">
             <InputFormField<FormData>
               name="login"
-              label="Email or phone"
+              label="Email или телефон"
               placeholder="email@example.com"
             />
             <InputFormField<FormData>
               name="password"
-              label="Password"
+              label="Пароль"
               type="password"
               placeholder="••••••••"
             />
@@ -75,7 +75,7 @@ export const SignIn = observer(() => {
                 className="text-sm text-[#6366f1] hover:underline"
                 to={"/auth/recovery-password"}
               >
-                Forgot password?
+                Забыли пароль?
               </Link>
             </div>
 
@@ -85,7 +85,7 @@ export const SignIn = observer(() => {
               className="w-full"
               onClick={handleSubmit(onSubmit)}
             >
-              Sign in
+              Войти
             </Button>
 
             {passkey.support && passkey.profileId && (
@@ -93,7 +93,7 @@ export const SignIn = observer(() => {
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-[var(--border)]" />
                   <span className="text-xs text-[var(--muted-foreground)]">
-                    or
+                    или
                   </span>
                   <div className="flex-1 h-px bg-[var(--border)]" />
                 </div>
@@ -106,7 +106,7 @@ export const SignIn = observer(() => {
                   onClick={passkey.handleLogin}
                 >
                   <Fingerprint size={16} />
-                  Sign in with passkey
+                  Войти с passkey
                 </Button>
               </>
             )}

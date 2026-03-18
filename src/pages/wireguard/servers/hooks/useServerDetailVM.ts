@@ -59,7 +59,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
       if (res.error) {
         toast.error(res.error.message);
       } else {
-        toast.success("Server updated");
+        toast.success("Сервер обновлён");
         setEditOpen(false);
       }
     },

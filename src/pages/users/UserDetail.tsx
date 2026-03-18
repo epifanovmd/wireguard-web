@@ -61,14 +61,14 @@ export const UserDetail: FC<UserDetailProps> = observer(
       if (res.error) {
         toast.error(res.error.message);
       } else {
-        toast.success("Privileges updated");
+        toast.success("Права обновлены");
       }
     };
 
     if (store.userHolder.isLoading || !store.userHolder.isReady) {
       return (
         <div className="flex flex-col h-full">
-          <PageHeader title="User" />
+          <PageHeader title="Пользователь" />
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
@@ -81,21 +81,23 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     if (!user)
       return (
-        <div className="p-6 text-[var(--muted-foreground)]">User not found</div>
+        <div className="p-6 text-[var(--muted-foreground)]">
+          Пользователь не найден
+        </div>
       );
 
     return (
       <div className="flex flex-col h-full">
         <PageHeader
-          title={model?.displayName ?? "User"}
+          title={model?.displayName ?? "Пользователь"}
           actions={
             <Button
               variant="destructive"
               size="sm"
               onClick={async () => {
                 const ok = await confirm({
-                  title: "Delete user",
-                  message: "Delete this user permanently?",
+                  title: "Удалить пользователя",
+                  message: "Удалить этого пользователя навсегда?",
                   variant: "danger",
                 });
                 if (!ok) return;
@@ -103,19 +105,19 @@ export const UserDetail: FC<UserDetailProps> = observer(
                 if (res.error) {
                   toast.error(res.error.message);
                 } else {
-                  toast.success("Deleted");
+                  toast.success("Удалено");
                   onBack();
                 }
               }}
             >
-              Delete user
+              Удалить пользователя
             </Button>
           }
         />
         <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap">
           {/* Sidebar - user info */}
           <div className="w-full xl:w-64 flex-shrink-0 flex flex-col gap-4">
-            <Card className="p-5">
+            <Card className="p-4">
               <div className="flex flex-col items-center text-center gap-2.5">
                 <UserAvatar name={model?.displayName ?? "?"} size="lg" />
                 <div>
@@ -129,23 +131,22 @@ export const UserDetail: FC<UserDetailProps> = observer(
                 <UserRoleBadge role={model?.roleLabel ?? "user"} />
                 {user.emailVerified !== undefined && (
                   <Badge variant={user.emailVerified ? "success" : "gray"} dot>
-                    {user.emailVerified ? "Email verified" : "Email unverified"}
+                    {user.emailVerified
+                      ? "Email подтверждён"
+                      : "Email не подтверждён"}
                   </Badge>
                 )}
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--border)] flex flex-col gap-2 text-xs">
                 <div className="flex justify-between">
                   <span className="text-[var(--muted-foreground)]">
-                    Registered
-                  </span>
-                  <span className="text-[var(--muted-foreground)]">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {`Зарегистрирован ${new Date(user.createdAt).toLocaleDateString()}`}
                   </span>
                 </div>
                 {user.profile?.lastOnline && (
                   <div className="flex justify-between">
                     <span className="text-[var(--muted-foreground)]">
-                      Last online
+                      Последний визит
                     </span>
                     <span className="text-[var(--muted-foreground)]">
                       {new Date(user.profile.lastOnline).toLocaleDateString()}
@@ -160,17 +161,17 @@ export const UserDetail: FC<UserDetailProps> = observer(
           <div className="flex-1 min-w-0">
             <Tabs defaultValue="privileges">
               <TabsList>
-                <TabsTrigger value="privileges">Privileges</TabsTrigger>
-                <TabsTrigger value="peers">VPN Peers</TabsTrigger>
+                <TabsTrigger value="privileges">Права</TabsTrigger>
+                <TabsTrigger value="peers">VPN пиры</TabsTrigger>
               </TabsList>
               <TabsContent value="privileges">
                 <div className="flex flex-col gap-6 mt-4">
-                  <Card title="Role" className="p-5">
+                  <Card title="Роль" className="p-5">
                     <Select
                       options={[
-                        { value: ERole.Admin, label: "Admin" },
-                        { value: ERole.User, label: "User" },
-                        { value: ERole.Guest, label: "Guest" },
+                        { value: ERole.Admin, label: "Администратор" },
+                        { value: ERole.User, label: "Пользователь" },
+                        { value: ERole.Guest, label: "Гость" },
                       ]}
                       value={selectedRole}
                       onValueChange={v =>
@@ -178,7 +179,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                       }
                     />
                   </Card>
-                  <Card title="Permissions" className="p-5">
+                  <Card title="Права доступа" className="p-5">
                     <PermissionsEditor
                       value={selectedPerms}
                       onChange={setSelectedPerms}
@@ -189,7 +190,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                       loading={savingPrivileges}
                       onClick={handleSavePrivileges}
                     >
-                      Save privileges
+                      Сохранить права
                     </Button>
                   </div>
                 </div>

@@ -34,8 +34,8 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
 
   const handleDelete = useCallback(async () => {
     const ok = await confirm({
-      title: "Delete peer",
-      message: "Delete this peer permanently?",
+      title: "Удалить пир",
+      message: "Удалить этот пир навсегда?",
       variant: "danger",
     });
 
@@ -45,7 +45,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     if (res.error) {
       toast.error(res.error.message);
     } else {
-      toast.success("Peer deleted");
+      toast.success("Пир удалён");
       onBack();
     }
   }, [peerStore, peerId, confirm, toast, onBack]);
@@ -57,7 +57,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
       if (res.error) {
         toast.error(res.error.message);
       } else {
-        toast.success("Peer updated");
+        toast.success("Пир обновлён");
         setEditOpen(false);
       }
     },
@@ -68,14 +68,14 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     const res = await peerStore.rotatePsk(peerId);
 
     if (res.error) toast.error(res.error.message);
-    else toast.success("PSK rotated");
+    else toast.success("PSK обновлён");
   }, [peerStore, peerId, toast]);
 
   const handleRemovePsk = useCallback(async () => {
     const res = await peerStore.removePsk(peerId);
 
     if (res.error) toast.error(res.error.message);
-    else toast.success("PSK removed");
+    else toast.success("PSK удалён");
   }, [peerStore, peerId, toast]);
 
   return {

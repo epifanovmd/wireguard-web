@@ -43,7 +43,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
     if (vm.isLoading || !vm.isReady) {
       return (
         <div className="flex flex-col h-full">
-          <PageHeader title="Server" />
+          <PageHeader title="Сервер" />
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
@@ -54,7 +54,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
     if (!server) {
       return (
         <div className="p-6 text-[var(--muted-foreground)]">
-          Server not found
+          Сервер не найден
         </div>
       );
     }
@@ -79,41 +79,41 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
           {/* Status cards */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
-              title="Status"
+              title="Статус"
               value={<ServerStatusBadge status={vm.effectiveStatus} />}
             />
-            <StatCard title="Interface" value={server.interface} />
+            <StatCard title="Интерфейс" value={server.interface} />
 
-            <StatCard title="Total peers" value={vm.peerCount ?? "—"} />
+            <StatCard title="Всего пиров" value={vm.peerCount ?? "—"} />
 
-            <StatCard title="Active peers" value={vm.activePeerCount ?? "—"} />
+            <StatCard title="Активных пиров" value={vm.activePeerCount ?? "—"} />
           </div>
 
           {/* Live speed stat cards */}
           {liveStats && (
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
               <StatCard
-                title="RX Speed"
+                title="Скорость RX"
                 value={formatSpeed(liveStats.rxSpeedBps)}
-                subtitle="Download"
+                subtitle="Загрузка"
                 color="info"
               />
               <StatCard
-                title="TX Speed"
+                title="Скорость TX"
                 value={formatSpeed(liveStats.txSpeedBps)}
-                subtitle="Upload"
+                subtitle="Отдача"
                 color="success"
               />
               <StatCard
-                title="Total RX"
+                title="Всего RX"
                 value={formatBytes(liveStats.totalRxBytes)}
-                subtitle="Downloaded"
+                subtitle="Загружено"
                 color="purple"
               />
               <StatCard
-                title="Total TX"
+                title="Всего TX"
                 value={formatBytes(liveStats.totalTxBytes)}
-                subtitle="Uploaded"
+                subtitle="Отдано"
                 color="warning"
               />
             </div>
@@ -121,9 +121,9 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
 
           <Tabs defaultValue="charts">
             <TabsList>
-              <TabsTrigger value="charts">Speed / Traffic</TabsTrigger>
-              <TabsTrigger value="config">Configuration</TabsTrigger>
-              <TabsTrigger value="peers">Peers</TabsTrigger>
+              <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>
+              <TabsTrigger value="config">Конфигурация</TabsTrigger>
+              <TabsTrigger value="peers">Пиры</TabsTrigger>
             </TabsList>
             <TabsContent value="charts" className={"flex flex-col gap-4"}>
               <ServerSpeedChart points={vm.speedPoints} />
@@ -134,8 +134,8 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
             </TabsContent>
             <TabsContent value="peers">
               <Card
-                title="Peers"
-                extra={<Badge variant="gray">{peersVM.total} total</Badge>}
+                title="Пиры"
+                extra={<Badge variant="gray">{peersVM.total} всего</Badge>}
               >
                 <PeersTable
                   data={peersVM.data}
@@ -155,7 +155,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
           <ModalOverlay />
           <ModalContent className="max-w-lg">
             <ModalHeader>
-              <ModalTitle>Edit server</ModalTitle>
+              <ModalTitle>Редактировать сервер</ModalTitle>
             </ModalHeader>
             <ModalBody>
               <ServerForm

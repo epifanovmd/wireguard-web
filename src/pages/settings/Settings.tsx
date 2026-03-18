@@ -58,14 +58,14 @@ export const Settings: FC = observer(() => {
     const login = userRes.data?.email ?? userRes.data?.phone;
 
     if (!login) {
-      toast.error("Could not determine your login (email/phone)");
+      toast.error("Не удалось определить логин (email/телефон)");
       return;
     }
 
     const ok = await passkey.handleRegister(login);
 
     if (ok) {
-      toast.success("Passkey registered successfully");
+      toast.success("Passkey успешно зарегистрирован");
     } else if (passkey.error) {
       toast.error(passkey.error);
     }
@@ -73,7 +73,7 @@ export const Settings: FC = observer(() => {
 
   const handlePasskeyRemove = () => {
     passkey.removePasskey();
-    toast.success("Passkey removed from this device");
+    toast.success("Passkey удалён с этого устройства");
   };
 
   const PERMISSIONS_MATRIX = [
@@ -133,28 +133,28 @@ export const Settings: FC = observer(() => {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
-        title="Settings"
-        subtitle="System configuration and information"
+        title="Настройки"
+        subtitle="Системная конфигурация и информация"
       />
       <div className="p-4 sm:p-6">
         <Tabs defaultValue="system">
           <TabsList>
-            <TabsTrigger value="system">System</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-            <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
+            <TabsTrigger value="system">Система</TabsTrigger>
+            <TabsTrigger value="security">Безопасность</TabsTrigger>
+            <TabsTrigger value="roles">Роли и права</TabsTrigger>
           </TabsList>
 
           <TabsContent value="system">
             <div className="flex flex-col gap-6 max-w-2xl mt-4">
               {/* Theme */}
-              <Card title="Appearance" className="p-5">
+              <Card title="Внешний вид" className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-[var(--foreground)]">
-                      Dark mode
+                      Тёмная тема
                     </p>
                     <p className="text-xs text-[var(--muted-foreground)]">
-                      Toggle between light and dark theme
+                      Переключение между светлой и тёмной темой
                     </p>
                   </div>
                   <Switch
@@ -165,12 +165,12 @@ export const Settings: FC = observer(() => {
               </Card>
 
               {/* Health */}
-              <Card title="System health" className="p-5">
+              <Card title="Состояние системы" className="p-5">
                 {health ? (
                   <dl className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <dt className="text-sm text-[var(--muted-foreground)]">
-                        Database
+                        База данных
                       </dt>
                       <dd>
                         <Badge
@@ -185,7 +185,7 @@ export const Settings: FC = observer(() => {
                     </div>
                     <div className="flex items-center justify-between">
                       <dt className="text-sm text-[var(--muted-foreground)]">
-                        Uptime
+                        Аптайм
                       </dt>
                       <dd className="text-sm text-[var(--foreground)] font-medium">
                         {formatUptime(health.uptime ?? 0)}
@@ -194,7 +194,7 @@ export const Settings: FC = observer(() => {
                     {health.version && (
                       <div className="flex items-center justify-between">
                         <dt className="text-sm text-[var(--muted-foreground)]">
-                          Version
+                          Версия
                         </dt>
                         <dd className="text-sm text-[var(--foreground)] font-mono">
                           {health.version}
@@ -204,7 +204,7 @@ export const Settings: FC = observer(() => {
                   </dl>
                 ) : (
                   <p className="text-sm text-[var(--muted-foreground)]">
-                    Loading health data...
+                    Загрузка данных...
                   </p>
                 )}
               </Card>
@@ -213,10 +213,10 @@ export const Settings: FC = observer(() => {
 
           <TabsContent value="security">
             <div className="flex flex-col gap-6 max-w-2xl mt-4">
-              <Card title="Passkey (biometric login)" className="p-5">
+              <Card title="Passkey (биометрический вход)" className="p-5">
                 {!passkey.support ? (
                   <p className="text-sm text-[var(--muted-foreground)]">
-                    Your browser does not support passkeys (WebAuthn).
+                    Ваш браузер не поддерживает passkey (WebAuthn).
                   </p>
                 ) : (
                   <div className="flex flex-col gap-4">
@@ -230,20 +230,20 @@ export const Settings: FC = observer(() => {
                       <div className="flex-1">
                         <p className="text-sm font-medium text-[var(--foreground)]">
                           {passkey.profileId
-                            ? "Passkey registered on this device"
-                            : "No passkey registered on this device"}
+                            ? "Passkey зарегистрирован на этом устройстве"
+                            : "Passkey не зарегистрирован на этом устройстве"}
                         </p>
                         <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
                           {passkey.profileId
-                            ? `Login: ${passkey.profileId}`
-                            : "Register a passkey to sign in with Face ID, Touch ID, or a security key."}
+                            ? `Логин: ${passkey.profileId}`
+                            : "Зарегистрируйте passkey для входа через Face ID, Touch ID или ключ безопасности."}
                         </p>
                       </div>
                       <Badge
                         variant={passkey.profileId ? "success" : "gray"}
                         dot
                       >
-                        {passkey.profileId ? "Active" : "Not set"}
+                        {passkey.profileId ? "Активен" : "Не задан"}
                       </Badge>
                     </div>
 
@@ -263,8 +263,8 @@ export const Settings: FC = observer(() => {
                         onClick={handlePasskeyRegister}
                       >
                         {passkey.profileId
-                          ? "Re-register passkey"
-                          : "Register passkey"}
+                          ? "Перерегистрировать passkey"
+                          : "Зарегистрировать passkey"}
                       </Button>
                       {passkey.profileId && (
                         <Button
@@ -272,7 +272,7 @@ export const Settings: FC = observer(() => {
                           variant="destructive"
                           onClick={handlePasskeyRemove}
                         >
-                          Remove
+                          Удалить
                         </Button>
                       )}
                     </div>
@@ -284,22 +284,22 @@ export const Settings: FC = observer(() => {
 
           <TabsContent value="roles">
             <div className="flex flex-col gap-6 max-w-3xl mt-4">
-              <Card title="Permissions matrix" className="overflow-hidden">
+              <Card title="Матрица прав" className="overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-[var(--muted)] border-b border-[var(--border)]">
                         <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                          Permission
+                          Право
                         </th>
                         <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">
-                          Admin
+                          Админ
                         </th>
                         <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">
-                          User
+                          Пользователь
                         </th>
                         <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                          Guest
+                          Гость
                         </th>
                       </tr>
                     </thead>
@@ -335,22 +335,22 @@ export const Settings: FC = observer(() => {
                 </div>
               </Card>
 
-              <Card title="Available roles" className="p-5">
+              <Card title="Доступные роли" className="p-5">
                 <div className="flex gap-3 flex-wrap">
                   {[
                     {
                       role: ERole.Admin,
-                      desc: "Full access to all features",
+                      desc: "Полный доступ ко всем функциям",
                       variant: "purple" as const,
                     },
                     {
                       role: ERole.User,
-                      desc: "Standard user access",
+                      desc: "Стандартный доступ пользователя",
                       variant: "info" as const,
                     },
                     {
                       role: ERole.Guest,
-                      desc: "Read-only minimal access",
+                      desc: "Минимальный доступ только для чтения",
                       variant: "gray" as const,
                     },
                   ].map(r => (

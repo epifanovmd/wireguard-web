@@ -27,7 +27,7 @@ export const PeerActions: FC<PeerActionsProps> = ({
   >
     {onQr && (
       <AsyncIconButton
-        title="QR Code"
+        title="QR-код"
         size={size}
         variant="primary"
         onClick={onQr}
@@ -36,7 +36,7 @@ export const PeerActions: FC<PeerActionsProps> = ({
       </AsyncIconButton>
     )}
     <AsyncIconButton
-      title={enabled ? "Disable" : "Enable"}
+      title={enabled ? "Отключить" : "Включить"}
       size={size}
       variant={enabled ? "disable" : "enable"}
       onClick={onToggle}
@@ -44,13 +44,13 @@ export const PeerActions: FC<PeerActionsProps> = ({
       <Power size={15} />
     </AsyncIconButton>
     {onEdit && (
-      <AsyncIconButton title="Edit" size={size} onClick={onEdit}>
+      <AsyncIconButton title="Редактировать" size={size} onClick={onEdit}>
         <Pencil size={15} />
       </AsyncIconButton>
     )}
     {onDelete && (
       <AsyncIconButton
-        title="Delete"
+        title="Удалить"
         size={size}
         variant="destructive"
         onClick={onDelete}

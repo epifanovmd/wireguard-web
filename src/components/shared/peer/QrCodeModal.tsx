@@ -61,7 +61,7 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
       <ModalOverlay />
       <ModalContent className="max-w-sm">
         <ModalHeader>
-          <ModalTitle>QR Code — {peerName}</ModalTitle>
+          <ModalTitle>QR-код — {peerName}</ModalTitle>
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col items-center gap-4 py-4">
@@ -78,25 +78,25 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
             ) : (
               <div className="w-48 h-48 flex items-center justify-center bg-[var(--muted)] rounded-lg">
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  QR code unavailable
+                  QR-код недоступен
                 </p>
               </div>
             )}
             <div className="text-center">
               <p className="text-sm text-[var(--muted-foreground)]">
-                Scan this QR code with the WireGuard app
+                Отсканируйте QR-код в приложении WireGuard
               </p>
               <p className="text-xs text-[var(--muted-foreground)] mt-1">
-                Available for iOS, Android, Windows, macOS, Linux
+                Доступно для iOS, Android, Windows, macOS, Linux
               </p>
             </div>
           </div>
         </ModalBody>
         <ModalFooter>
           <Button variant="outline" onClick={handleDownload}>
-            Download .conf
+            Скачать .conf
           </Button>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose}>Закрыть</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

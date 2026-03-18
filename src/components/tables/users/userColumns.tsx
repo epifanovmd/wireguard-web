@@ -7,7 +7,7 @@ import { UserAvatar } from "../../shared";
 export const userColumns: ColumnDef<PublicUserModel>[] = [
   {
     accessorKey: "displayName",
-    header: "User",
+    header: "Пользователь",
     cell: ({ row }) => (
       <div className="flex items-center gap-2.5">
         <UserAvatar name={row.original.displayName} />
@@ -19,7 +19,7 @@ export const userColumns: ColumnDef<PublicUserModel>[] = [
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: "Эл. почта",
     cell: ({ row }) => (
       <span className="text-[var(--muted-foreground)]">
         {row.original.data.email ?? "—"}
