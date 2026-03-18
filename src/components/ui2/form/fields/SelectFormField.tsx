@@ -24,6 +24,7 @@ export const SelectFormField = createFormField(
   (field, fieldState) => ({
     value: field.value as string | undefined,
     onValueChange: (v: string) => field.onChange(v),
+    onClear: () => field.onChange(undefined),
     onOpenChange: (open: boolean) => {
       if (!open) field.onBlur();
     },

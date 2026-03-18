@@ -1,7 +1,9 @@
 import { DataModelBase } from "@force-dev/utils";
-import { format, parseISO } from "date-fns";
+import { computed, makeObservable } from "mobx";
 
 import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
+
+import { DateModel } from "../date";
 
 const STATUS_LABELS: Record<EWgServerStatus, string> = {
   [EWgServerStatus.Up]: "Активен",
@@ -11,6 +13,27 @@ const STATUS_LABELS: Record<EWgServerStatus, string> = {
 };
 
 export class ServerModel extends DataModelBase<WgServerDto> {
+  public readonly createdAtDate = new DateModel(() => this.data.createdAt);
+  public readonly updatedAtDate = new DateModel(() => this.data.updatedAt);
+
+  constructor(data: WgServerDto) {
+    super(data);
+    makeObservable(this, {
+      name: computed,
+      isUp: computed,
+      isDown: computed,
+      isError: computed,
+      statusLabel: computed,
+      enabled: computed,
+      enabledLabel: computed,
+      description: computed,
+      endpoint: computed,
+      createdAt: computed,
+      updatedAt: computed,
+      shortPublicKey: computed,
+    });
+  }
+
   get name() {
     return this.data.name;
   }
@@ -48,11 +71,11 @@ export class ServerModel extends DataModelBase<WgServerDto> {
   }
 
   get createdAt() {
-    return format(parseISO(this.data.createdAt), "d MMMM yyyy");
+    return this.createdAtDate.formattedDate;
   }
 
   get updatedAt() {
-    return format(parseISO(this.data.updatedAt), "d MMMM yyyy, HH:mm");
+    return this.updatedAtDate.formatted;
   }
 
   get shortPublicKey() {

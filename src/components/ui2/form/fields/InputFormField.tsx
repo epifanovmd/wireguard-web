@@ -24,6 +24,7 @@ export const InputFormField = createFormField(
     value: (field.value ?? "") as string,
     onChange: field.onChange,
     onBlur: field.onBlur,
+    onClear: () => field.onChange(""),
     variant: fieldState.invalid ? ("error" as const) : undefined,
   }),
 );

@@ -1,9 +1,32 @@
 import { DataModelBase } from "@force-dev/utils";
-import { format, parseISO } from "date-fns";
+import { computed, makeObservable } from "mobx";
 
 import { ERole, UserDto } from "~@api/api-gen/data-contracts";
 
+import { DateModel } from "../date";
+
 export class UserModel extends DataModelBase<UserDto> {
+  public readonly createdAtDate = new DateModel(() => this.data.createdAt);
+  public readonly updatedAtDate = new DateModel(() => this.data.updatedAt);
+  public readonly lastOnlineDate = new DateModel(
+    () => this.data.profile?.lastOnline,
+  );
+
+  constructor(data: UserDto) {
+    super(data);
+    makeObservable(this, {
+      displayName: computed,
+      initials: computed,
+      login: computed,
+      isAdmin: computed,
+      roleLabel: computed,
+      emailVerified: computed,
+      createdAt: computed,
+      updatedAt: computed,
+      lastOnline: computed,
+    });
+  }
+
   get displayName() {
     const p = this.data.profile;
     const name = [p?.firstName, p?.lastName].filter(Boolean).join(" ");
@@ -37,16 +60,16 @@ export class UserModel extends DataModelBase<UserDto> {
   }
 
   get createdAt() {
-    return format(parseISO(this.data.createdAt), "d MMMM yyyy");
+    return this.createdAtDate.formattedDate;
   }
 
   get updatedAt() {
-    return format(parseISO(this.data.updatedAt), "d MMMM yyyy");
+    return this.updatedAtDate.formattedDate;
   }
 
   get lastOnline() {
-    if (!this.data.profile?.lastOnline) return undefined;
-
-    return format(parseISO(this.data.profile.lastOnline), "d MMMM yyyy");
+    return this.lastOnlineDate.data
+      ? this.lastOnlineDate.formattedDate
+      : undefined;
   }
 }

@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
+import { formatter } from "~@common";
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
@@ -26,7 +27,6 @@ import {
   TabsTrigger,
 } from "~@components/ui2";
 
-import { formatBytes, formatSpeed } from "../../dashboard";
 import { ServerForm } from "./components/ServerForm";
 import { useServerDetailVM } from "./hooks";
 
@@ -97,25 +97,25 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
               <StatCard
                 title="Скорость RX"
-                value={formatSpeed(liveStats.rxSpeedBps)}
+                value={formatter.speed(liveStats.rxSpeedBps)}
                 subtitle="Загрузка"
                 color="info"
               />
               <StatCard
                 title="Скорость TX"
-                value={formatSpeed(liveStats.txSpeedBps)}
+                value={formatter.speed(liveStats.txSpeedBps)}
                 subtitle="Отдача"
                 color="success"
               />
               <StatCard
                 title="Всего RX"
-                value={formatBytes(liveStats.totalRxBytes)}
+                value={formatter.bytes(liveStats.totalRxBytes)}
                 subtitle="Загружено"
                 color="purple"
               />
               <StatCard
                 title="Всего TX"
-                value={formatBytes(liveStats.totalTxBytes)}
+                value={formatter.bytes(liveStats.totalTxBytes)}
                 subtitle="Отдано"
                 color="warning"
               />

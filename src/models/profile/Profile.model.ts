@@ -1,9 +1,34 @@
 import { DataModelBase } from "@force-dev/utils";
-import { format, parseISO } from "date-fns";
+import { computed, makeObservable } from "mobx";
 
 import { ERole, ProfileDto } from "~@api/api-gen/data-contracts";
 
+import { DateModel } from "../date";
+
 export class ProfileModel extends DataModelBase<ProfileDto> {
+  public readonly registeredAtDate = new DateModel(
+    () => this.data.user?.createdAt,
+  );
+  public readonly lastOnlineDate = new DateModel(() => this.data.lastOnline);
+  public readonly birthDateModel = new DateModel(() => this.data.birthDate);
+
+  constructor(data: ProfileDto) {
+    super(data);
+    makeObservable(this, {
+      displayName: computed,
+      initials: computed,
+      email: computed,
+      phone: computed,
+      login: computed,
+      roleLabel: computed,
+      emailVerified: computed,
+      registeredAt: computed,
+      lastOnlineFormatted: computed,
+      birthDateFormatted: computed,
+      birthDateInput: computed,
+    });
+  }
+
   get displayName() {
     const name = [this.data.firstName, this.data.lastName]
       .filter(Boolean)
@@ -48,26 +73,24 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
   }
 
   get registeredAt() {
-    if (!this.data.user?.createdAt) return undefined;
-
-    return format(parseISO(this.data.user.createdAt), "d MMMM yyyy");
+    return this.registeredAtDate.data
+      ? this.registeredAtDate.formattedDate
+      : undefined;
   }
 
   get lastOnlineFormatted() {
-    if (!this.data.lastOnline) return undefined;
-
-    return format(parseISO(this.data.lastOnline), "d MMMM yyyy");
+    return this.lastOnlineDate.data
+      ? this.lastOnlineDate.formattedDate
+      : undefined;
   }
 
   get birthDateFormatted() {
-    if (!this.data.birthDate) return undefined;
-
-    return format(parseISO(this.data.birthDate), "d MMMM yyyy");
+    return this.birthDateModel.data
+      ? this.birthDateModel.formattedDate
+      : undefined;
   }
 
   get birthDateInput() {
-    if (!this.data.birthDate) return "";
-
-    return format(parseISO(this.data.birthDate), "yyyy-MM-dd");
+    return this.birthDateModel.formattedInputDate;
   }
 }

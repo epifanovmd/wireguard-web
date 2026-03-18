@@ -1,7 +1,8 @@
 import { FC } from "react";
 
-import { IChartPoint } from "../wgChart";
-import { formatBytes, WGChart } from "../wgChart";
+import { formatter } from "~@common";
+
+import { IChartPoint, WGChart } from "../wgChart";
 
 interface IPeerTrafficChartProps {
   points: IChartPoint[];
@@ -18,7 +19,7 @@ export const PeerTrafficChart: FC<IPeerTrafficChartProps> = ({
     title={title}
     description={description}
     points={points}
-    formatter={formatBytes}
+    formatter={formatter.bytes}
     rxLabel="Получено"
     txLabel="Отправлено"
   />

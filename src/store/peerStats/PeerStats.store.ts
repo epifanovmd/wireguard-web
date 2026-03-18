@@ -1,8 +1,8 @@
 import { DataHolder } from "@force-dev/utils";
-import { format } from "date-fns";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
+import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
 
 import { WgPeerStatsPayload, WgPeerStatusPayload } from "../../socket/events";
@@ -38,12 +38,12 @@ export class PeerStatsStore implements IPeerStatsStore {
     this._apiService.getPeerStats({ peerId, from, to }).then(res => {
       if (res.data) {
         this.speedPoints = res.data.speed.slice(-60).map(s => ({
-          t: format(s.timestamp, "HH:mm:ss"),
+          t: formatter.date.formatTime(s.timestamp),
           rx: s.rxSpeedBps,
           tx: s.txSpeedBps,
         }));
         this.trafficPoints = res.data.traffic.slice(-60).map(t => ({
-          t: format(t.timestamp, "HH:mm:ss"),
+          t: formatter.date.formatTime(t.timestamp),
           rx: t.rxBytes,
           tx: t.txBytes,
         }));
@@ -53,7 +53,7 @@ export class PeerStatsStore implements IPeerStatsStore {
     return this._wgSocket.subscribePeer(peerId, {
       onStats: s => {
         this.holder.setData(s);
-        const t = format(s.timestamp, "HH:mm:ss");
+        const t = formatter.date.formatTime(s.timestamp);
         this.speedPoints = [
           ...this.speedPoints.slice(-59),
           { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },

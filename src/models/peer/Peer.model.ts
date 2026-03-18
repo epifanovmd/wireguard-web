@@ -1,9 +1,31 @@
 import { DataModelBase } from "@force-dev/utils";
-import { format, isAfter, parseISO } from "date-fns";
+import { computed, makeObservable } from "mobx";
 
 import { WgPeerDto } from "~@api/api-gen/data-contracts";
 
+import { DateModel } from "../date";
+
 export class PeerModel extends DataModelBase<WgPeerDto> {
+  public readonly expiresAtDate = new DateModel(() => this.data.expiresAt);
+  public readonly createdAtDate = new DateModel(() => this.data.createdAt);
+  public readonly updatedAtDate = new DateModel(() => this.data.updatedAt);
+
+  constructor(data: WgPeerDto) {
+    super(data);
+    makeObservable(this, {
+      name: computed,
+      enabled: computed,
+      enabledLabel: computed,
+      isExpired: computed,
+      description: computed,
+      endpoint: computed,
+      expiresAt: computed,
+      createdAt: computed,
+      updatedAt: computed,
+      shortPublicKey: computed,
+    });
+  }
+
   get name() {
     return this.data.name;
   }
@@ -17,9 +39,7 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
   }
 
   get isExpired() {
-    if (!this.data.expiresAt) return false;
-
-    return isAfter(new Date(), parseISO(this.data.expiresAt));
+    return this.expiresAtDate.isExpired;
   }
 
   get description() {
@@ -31,17 +51,15 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
   }
 
   get expiresAt() {
-    return this.data.expiresAt
-      ? format(parseISO(this.data.expiresAt), "d MMMM yyyy, HH:mm")
-      : null;
+    return this.expiresAtDate.data ? this.expiresAtDate.formatted : null;
   }
 
   get createdAt() {
-    return format(parseISO(this.data.createdAt), "d MMMM yyyy");
+    return this.createdAtDate.formattedDate;
   }
 
   get updatedAt() {
-    return format(parseISO(this.data.updatedAt), "d MMMM yyyy, HH:mm");
+    return this.updatedAtDate.formatted;
   }
 
   get shortPublicKey() {

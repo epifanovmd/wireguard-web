@@ -15,7 +15,6 @@ export const profileSchema = z.object({
   lastName: z.string().optional(),
   gender: z.string().optional(),
   birthDate: z.date().optional(),
-  status: z.nativeEnum(EProfileStatus).optional(),
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
@@ -45,7 +44,6 @@ export const useProfileVM = () => {
       lastName: profile.lastName ?? "",
       gender: profile.gender ?? "",
       birthDate: profile.birthDate ? parseISO(profile.birthDate) : undefined,
-      status: (profile.status as EProfileStatus) ?? undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
@@ -58,7 +56,6 @@ export const useProfileVM = () => {
       lastName: data.lastName || undefined,
       gender: data.gender || undefined,
       birthDate: data.birthDate?.toISOString(),
-      status: data.status,
     });
 
     setSaving(false);

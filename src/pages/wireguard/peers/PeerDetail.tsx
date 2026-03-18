@@ -2,6 +2,7 @@ import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
+import { formatter } from "~@common";
 import { PeerSpeedChart, PeerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
@@ -26,7 +27,6 @@ import {
   TabsTrigger,
 } from "~@components/ui2";
 
-import { formatBytes, formatSpeed } from "../../dashboard";
 import { PeerForm } from "./components/PeerForm";
 import { usePeerDetailVM } from "./hooks";
 
@@ -110,25 +110,25 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Всего RX"
-              value={formatBytes(liveStats?.rxBytes ?? 0)}
+              value={formatter.bytes(liveStats?.rxBytes ?? 0)}
               subtitle="Загружено"
               color="info"
             />
             <StatCard
               title="Всего TX"
-              value={formatBytes(liveStats?.txBytes ?? 0)}
+              value={formatter.bytes(liveStats?.txBytes ?? 0)}
               subtitle="Отдано"
               color="success"
             />
             <StatCard
               title="Скорость RX"
-              value={formatSpeed(liveStats?.rxSpeedBps ?? 0)}
+              value={formatter.speed(liveStats?.rxSpeedBps ?? 0)}
               subtitle="Загрузка"
               color="purple"
             />
             <StatCard
               title="Скорость TX"
-              value={formatSpeed(liveStats?.txSpeedBps ?? 0)}
+              value={formatter.speed(liveStats?.txSpeedBps ?? 0)}
               subtitle="Отдача"
               color="warning"
             />

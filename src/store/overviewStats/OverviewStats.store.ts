@@ -1,7 +1,7 @@
 import { DataHolder } from "@force-dev/utils";
-import { format } from "date-fns";
 import { makeAutoObservable } from "mobx";
 
+import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
 
 import { IWgSocketService, WgOverviewStatsPayload } from "../../socket";
@@ -28,7 +28,7 @@ export class OverviewStatsStore implements IOverviewStatsStore {
         this.speedPoints = [
           ...this.speedPoints.slice(-59),
           {
-            t: format(s.timestamp, "HH:mm:ss"),
+            t: formatter.date.formatTime(s.timestamp),
             rx: s.rxSpeedBps,
             tx: s.txSpeedBps,
           },
@@ -36,7 +36,7 @@ export class OverviewStatsStore implements IOverviewStatsStore {
         this.trafficPoints = [
           ...this.trafficPoints.slice(-59),
           {
-            t: format(s.timestamp, "HH:mm:ss"),
+            t: formatter.date.formatTime(s.timestamp),
             rx: s.totalRxBytes,
             tx: s.totalTxBytes,
           },

@@ -1,9 +1,26 @@
 import { DataModelBase } from "@force-dev/utils";
-import { format, parseISO } from "date-fns";
+import { computed, makeObservable } from "mobx";
 
 import { EProfileStatus, PublicUserDto } from "~@api/api-gen/data-contracts";
 
+import { DateModel } from "../date";
+
 export class PublicUserModel extends DataModelBase<PublicUserDto> {
+  public readonly lastOnlineDate = new DateModel(
+    () => this.data.profile?.lastOnline,
+  );
+
+  constructor(data: PublicUserDto) {
+    super(data);
+    makeObservable(this, {
+      id: computed,
+      displayName: computed,
+      initials: computed,
+      isOnline: computed,
+      lastOnline: computed,
+    });
+  }
+
   get id() {
     return this.data.userId;
   }
@@ -33,8 +50,8 @@ export class PublicUserModel extends DataModelBase<PublicUserDto> {
   }
 
   get lastOnline() {
-    if (!this.data.profile?.lastOnline) return undefined;
-
-    return format(parseISO(this.data.profile.lastOnline), "d MMMM yyyy");
+    return this.lastOnlineDate.data
+      ? this.lastOnlineDate.formattedDate
+      : undefined;
   }
 }

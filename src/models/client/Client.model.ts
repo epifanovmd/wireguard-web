@@ -1,4 +1,5 @@
 import { DataModelBase } from "@force-dev/utils";
+import { computed, makeObservable } from "mobx";
 
 import { WgPeerDto } from "~@api/api-gen/data-contracts";
 
@@ -13,13 +14,21 @@ export type IWgClientsDto = WgPeerDto & {
 };
 
 export class ClientModel extends DataModelBase<IWgClientsDto> {
-  public date = new DateModel(() => this.data.latestHandshakeAt);
+  public readonly date = new DateModel(() => this.data.latestHandshakeAt);
 
-  public get name() {
+  constructor(data: IWgClientsDto) {
+    super(data);
+    makeObservable(this, {
+      name: computed,
+      enabled: computed,
+    });
+  }
+
+  get name() {
     return this.data.name;
   }
 
-  public get enabled() {
+  get enabled() {
     return this.data.enabled ? "Активен" : "Отключен";
   }
 }

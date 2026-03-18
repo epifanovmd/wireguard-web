@@ -49,55 +49,60 @@ export const DateRangePicker = React.forwardRef<
     ref,
   ) => {
     const hasValue = !!value?.from;
+    const showClear = clearable && hasValue && !disabled;
 
     const label = React.useMemo(() => {
       if (!value?.from) return null;
       if (value.to)
         return `${format(value.from, dateFormat)} — ${format(value.to, dateFormat)}`;
+
       return format(value.from, dateFormat);
     }, [value, dateFormat]);
 
-    const handleClear = React.useCallback(
-      (e: React.MouseEvent) => {
-        e.stopPropagation();
-        onChange?.(undefined);
-      },
-      [onChange],
-    );
-
     return (
       <Popover>
-        <div className="relative w-full">
-          <Popover.Trigger asChild>
-            <DatePickerTrigger
-              ref={ref}
-              size={size}
-              variant={variant}
-              disabled={disabled}
-              className={cn(
-                !hasValue && "text-muted-foreground",
-                clearable && hasValue && "pr-7",
-                className,
-              )}
-            >
-              <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
-              <span className="flex-1 truncate text-left">{label ?? placeholder}</span>
-            </DatePickerTrigger>
-          </Popover.Trigger>
-          {clearable && hasValue && (
-            <button
-              type="button"
-              onClick={handleClear}
-              disabled={disabled}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
-              tabIndex={-1}
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-        <Popover.Content size="auto" align="start" className="p-0" {...contentProps}>
-          <RangeCalendar selected={value} onSelect={onChange} {...calendarProps} />
+        <Popover.Trigger asChild>
+          <DatePickerTrigger
+            ref={ref}
+            size={size}
+            variant={variant}
+            disabled={disabled}
+            className={cn(!hasValue && "text-muted-foreground", className)}
+          >
+            <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+            <span className="flex-1 truncate text-left">
+              {label ?? placeholder}
+            </span>
+            {showClear && (
+              <span
+                role="button"
+                tabIndex={-1}
+                onPointerDown={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onClick={e => {
+                  e.stopPropagation();
+                  onChange?.(undefined);
+                }}
+                className="shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer inline-flex items-center justify-center"
+              >
+                <X className="h-4 w-4" />
+              </span>
+            )}
+          </DatePickerTrigger>
+        </Popover.Trigger>
+        <Popover.Content
+          size="auto"
+          align="start"
+          className="p-0"
+          {...contentProps}
+        >
+          <RangeCalendar
+            selected={value}
+            onSelect={onChange}
+            {...calendarProps}
+          />
         </Popover.Content>
       </Popover>
     );

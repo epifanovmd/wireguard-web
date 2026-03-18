@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { FC, useEffect, useMemo } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import { formatter } from "~@common";
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
@@ -11,8 +12,6 @@ import { serverColumns } from "~@components/tables/servers/serverColumns";
 import { StatCard } from "~@components/ui2";
 import { ServerModel } from "~@models";
 import { useOverviewStatsStore, useServersListStore } from "~@store";
-
-import { formatSpeed } from "./dashboard.helpers";
 
 export const Dashboard: FC = observer(() => {
   const serversStore = useServersListStore();
@@ -63,14 +62,14 @@ export const Dashboard: FC = observer(() => {
           />
           <StatCard
             title="Скорость RX"
-            value={formatSpeed(stats?.rxSpeedBps ?? 0)}
+            value={formatter.speed(stats?.rxSpeedBps ?? 0)}
             subtitle="Загрузка"
             color="purple"
             icon={<Download size={20} />}
           />
           <StatCard
             title="Скорость TX"
-            value={formatSpeed(stats?.txSpeedBps ?? 0)}
+            value={formatter.speed(stats?.txSpeedBps ?? 0)}
             subtitle="Отдача"
             color="warning"
             icon={<Upload size={20} />}

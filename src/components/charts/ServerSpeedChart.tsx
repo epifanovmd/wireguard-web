@@ -1,7 +1,8 @@
 import { FC } from "react";
 
-import { IChartPoint } from "../wgChart";
-import { formatSpeed, WGChart } from "../wgChart";
+import { formatter } from "~@common";
+
+import { IChartPoint, WGChart } from "../wgChart";
 
 interface IServerSpeedChartProps {
   points: IChartPoint[];
@@ -18,7 +19,7 @@ export const ServerSpeedChart: FC<IServerSpeedChartProps> = ({
     title={title}
     description={description}
     points={points}
-    formatter={formatSpeed}
+    formatter={formatter.speed}
     rxLabel="Загрузка"
     txLabel="Отдача"
   />

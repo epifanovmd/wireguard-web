@@ -101,16 +101,6 @@ export const Profile: FC = observer(() => {
                       clearable
                     />
                   </div>
-
-                  <SelectFormField<ProfileFormData>
-                    name="status"
-                    label="Статус"
-                    placeholder="Выберите статус"
-                    options={[
-                      { value: EProfileStatus.Online, label: "Онлайн" },
-                      { value: EProfileStatus.Offline, label: "Оффлайн" },
-                    ]}
-                  />
                 </div>
               </Card>
 
