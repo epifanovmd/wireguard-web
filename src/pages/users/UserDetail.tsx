@@ -1,11 +1,13 @@
+import { format, parseISO } from "date-fns";
+import { ru } from "date-fns/locale";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { PageHeader } from "~@components/layouts";
+import { UserInfoCard } from "~@components/shared";
 import { peerColumns, PeersTable } from "~@components/tables/peers";
 import {
-  Badge,
   Button,
   Card,
   Select,
@@ -20,8 +22,6 @@ import {
 import { usePeersListStore, useUsersDataStore } from "~@store";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
-import { UserAvatar } from "./components/UserAvatar";
-import { UserRoleBadge } from "./components/UserRoleBadge";
 
 interface UserDetailProps {
   userId: string;
@@ -116,45 +116,19 @@ export const UserDetail: FC<UserDetailProps> = observer(
         />
         <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap">
           {/* Sidebar - user info */}
-          <div className="w-full xl:w-64 flex-shrink-0 flex flex-col gap-4">
-            <Card className="p-4">
-              <div className="flex flex-col items-center text-center gap-2.5">
-                <UserAvatar name={model?.displayName ?? "?"} size="lg" />
-                <div>
-                  <p className="font-semibold text-[var(--foreground)]">
-                    {model?.displayName}
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-                    {user.email ?? user.phone ?? "—"}
-                  </p>
-                </div>
-                <UserRoleBadge role={model?.roleLabel ?? "user"} />
-                {user.emailVerified !== undefined && (
-                  <Badge variant={user.emailVerified ? "success" : "gray"} dot>
-                    {user.emailVerified
-                      ? "Email подтверждён"
-                      : "Email не подтверждён"}
-                  </Badge>
-                )}
-              </div>
-              <div className="mt-4 pt-4 border-t border-[var(--border)] flex flex-col gap-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-[var(--muted-foreground)]">
-                    {`Зарегистрирован ${new Date(user.createdAt).toLocaleDateString()}`}
-                  </span>
-                </div>
-                {user.profile?.lastOnline && (
-                  <div className="flex justify-between">
-                    <span className="text-[var(--muted-foreground)]">
-                      Последний визит
-                    </span>
-                    <span className="text-[var(--muted-foreground)]">
-                      {new Date(user.profile.lastOnline).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </Card>
+          <div className="w-full xl:w-64 flex-shrink-0">
+            <UserInfoCard
+              displayName={model?.displayName ?? "?"}
+              login={user.email ?? user.phone}
+              role={model?.roleLabel}
+              emailVerified={user.emailVerified}
+              registeredAt={format(parseISO(user.createdAt), "d MMMM yyyy", { locale: ru })}
+              lastOnline={
+                user.profile?.lastOnline
+                  ? format(parseISO(user.profile.lastOnline), "d MMMM yyyy", { locale: ru })
+                  : undefined
+              }
+            />
           </div>
 
           {/* Main content */}
