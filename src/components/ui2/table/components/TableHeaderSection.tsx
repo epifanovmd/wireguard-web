@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { cn } from "../cn";
+import { cn } from "../../cn";
+import { type TanstackTable } from "../TableTypes";
 import { TableHeadCell } from "./TableHeadCell";
 import { TableHeader, TableRow } from "./TablePrimitive";
-import { type TanstackTable } from "./TableTypes";
 
 interface TableHeaderSectionProps<TData> {
   table: TanstackTable<TData>;
@@ -17,7 +17,7 @@ export const TableHeaderSection = <TData,>({
   stickyHeader,
 }: TableHeaderSectionProps<TData>) => {
   return (
-    <TableHeader className={cn(stickyHeader && "sticky top-0 z-10")}>
+    <TableHeader className={cn(stickyHeader && "sticky top-0 z-20 bg-card shadow-[0_1px_0_0_hsl(var(--border))]")}>
       {table.getHeaderGroups().map(headerGroup => (
         <TableRow key={headerGroup.id} className="hover:bg-transparent">
           {headerGroup.headers.map(header => (
@@ -27,4 +27,4 @@ export const TableHeaderSection = <TData,>({
       ))}
     </TableHeader>
   );
-}
+};

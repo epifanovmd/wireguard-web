@@ -165,7 +165,7 @@ export {
 } from "./modal";
 
 // Tables
-export type { ColumnDef, TableProps } from "./table";
+export type { ColumnDef, TablePaginationProps, TableProps } from "./table";
 export {
   Table,
   TableBody,
@@ -174,6 +174,7 @@ export {
   TableFooter,
   TableHead,
   TableHeader,
+  TablePagination,
   TableRoot,
   TableRow,
 } from "./table";

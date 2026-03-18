@@ -1,5 +1,4 @@
 import { useNavigate } from "@tanstack/react-router";
-import { type OnChangeFn, type PaginationState } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -20,26 +19,11 @@ export const useUsersListVM = () => {
   const toast = useToast();
 
   const [search, setSearch] = useState("");
-  const [paginationState, setPaginationState] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 20,
-  });
 
   useEffect(() => {
     store.load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
-    updater => {
-      const next =
-        typeof updater === "function" ? updater(paginationState) : updater;
-
-      setPaginationState(next);
-      store.load(next.pageIndex * next.pageSize);
-    },
-    [paginationState, store],
-  );
 
   const filtered = useMemo(
     () =>
@@ -108,16 +92,11 @@ export const useUsersListVM = () => {
     [handleDelete],
   );
 
-  const pageCount = Math.ceil(store.total / paginationState.pageSize);
-
   return {
     data: filtered,
     columns,
     loading: store.listHolder.isLoading,
     total: store.total,
-    paginationState,
-    onPaginationChange: handlePaginationChange,
-    pageCount,
     search,
     setSearch,
     handleRowClick,

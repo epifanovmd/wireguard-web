@@ -6,7 +6,5 @@ export interface TableInstanceResult<TData = any> {
   table: TanstackTable<TData>;
   rows: Row<TData>[];
   totalColumns: number;
-  currentPage: number;
-  totalPages: number;
   hasFooter: boolean;
 }

@@ -16,15 +16,12 @@ export const ServersTable: FC<ServersTableProps> = ({
   data,
   columns,
   loading,
-  pageSize = 20,
   onRowClick,
 }) => (
   <Table
     data={data}
     columns={columns}
     loading={loading}
-    pagination
-    pageSize={pageSize}
     getRowId={s => s.data.id}
     onRowClick={onRowClick}
     empty={

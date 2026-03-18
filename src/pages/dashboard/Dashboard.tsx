@@ -41,9 +41,9 @@ export const Dashboard: FC = observer(() => {
   const columns = useMemo(() => serverColumns, []);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />
-      <div className="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
+      <div className="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
         {/* Stat cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
@@ -76,7 +76,10 @@ export const Dashboard: FC = observer(() => {
           />
         </div>
 
-        <ServerSpeedChart title={"Скорость всех серверов"} points={speedPoints} />
+        <ServerSpeedChart
+          title={"Скорость всех серверов"}
+          points={speedPoints}
+        />
         <ServerTrafficChart
           title={"Трафик всех серверов"}
           points={trafficPoints}

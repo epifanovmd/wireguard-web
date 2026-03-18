@@ -12,7 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import React, { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { Button, ThemeToggle } from "~@components/ui2";
@@ -68,27 +68,46 @@ interface NavContentProps {
   onSignOut: () => void;
   displayName: string;
   initials: string;
+  onClose?: () => void;
 }
 
 export const NavContent: FC<NavContentProps> = ({
   onSignOut,
   displayName,
   initials,
+  onClose,
 }) => (
   <div className="flex flex-col h-full">
     {/* Logo */}
-    <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[var(--sidebar-border)]">
-      <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-        <ShieldCheck size={15} className="text-white" />
+    <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--sidebar-border)]">
+      <div className="flex items-center gap-2.5">
+        <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+          <ShieldCheck size={15} className="text-white" />
+        </div>
+        <div>
+          <p className="text-[var(--sidebar-foreground)] text-sm font-semibold leading-none">
+            WireGuard
+          </p>
+          <p className="text-[var(--muted-foreground)] text-[11px] mt-0.5">
+            Панель управления
+          </p>
+        </div>
       </div>
-      <div>
-        <p className="text-[var(--sidebar-foreground)] text-sm font-semibold leading-none">
-          WireGuard
-        </p>
-        <p className="text-[var(--muted-foreground)] text-[11px] mt-0.5">
-          Панель управления
-        </p>
-      </div>
+      {onClose && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(
+            "w-7 h-7 p-0",
+            "text-[var(--sidebar-foreground)]",
+            "hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+          )}
+          onClick={onClose}
+          aria-label="Close menu"
+        >
+          <X size={15} />
+        </Button>
+      )}
     </div>
 
     {/* Nav */}
@@ -101,14 +120,16 @@ export const NavContent: FC<NavContentProps> = ({
             </p>
           )}
           {group.items.map(item => (
-            <ButtonLink
-              to={item.to}
-              size="sm"
-              leftIcon={item.icon}
-              className={"justify-start"}
-            >
-              {item.label}
-            </ButtonLink>
+            <div key={item.to as string} onClick={onClose}>
+              <ButtonLink
+                to={item.to}
+                size="sm"
+                leftIcon={item.icon}
+                className={"justify-start w-full"}
+              >
+                {item.label}
+              </ButtonLink>
+            </div>
           ))}
         </div>
       ))}
@@ -117,21 +138,23 @@ export const NavContent: FC<NavContentProps> = ({
 
     {/* User area */}
     <div className="px-2 py-2 border-t border-[var(--sidebar-border)]">
-      <ButtonLink
-        to="/profile"
-        variant="ghost"
-        size="sm"
-        className="w-full justify-start gap-2.5 font-normal mb-0.5"
-      >
-        <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-          {initials}
-        </div>
-        <div className="flex-1 min-w-0 text-left">
-          <p className="text-xs font-medium text-[var(--sidebar-foreground)] truncate">
-            {displayName}
-          </p>
-        </div>
-      </ButtonLink>
+      <div onClick={onClose}>
+        <ButtonLink
+          to="/profile"
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start gap-2.5 font-normal mb-0.5"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+            {initials}
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <p className="text-xs font-medium text-[var(--sidebar-foreground)] truncate">
+              {displayName}
+            </p>
+          </div>
+        </ButtonLink>
+      </div>
       <Button
         variant="ghost"
         size="sm"
@@ -177,21 +200,29 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
         />
       </aside>
 
-      {/* Mobile hamburger */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className={cn(
-          "md:hidden fixed top-3 left-3 z-50 w-9 h-9 p-0",
-          "bg-[var(--sidebar)] border border-[var(--sidebar-border)]",
-          "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
-          "shadow-sm",
-        )}
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open menu"
-      >
-        <Menu size={18} />
-      </Button>
+      {/* Mobile header bar */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 flex items-center gap-3 px-3 bg-[var(--sidebar)] border-b border-[var(--sidebar-border)]">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(
+            "w-9 h-9 p-0",
+            "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+          )}
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu size={18} />
+        </Button>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+            <ShieldCheck size={15} className="text-white" />
+          </div>
+          <p className="text-[var(--sidebar-foreground)] text-sm font-semibold">
+            WireGuard
+          </p>
+        </div>
+      </header>
 
       {/* Mobile drawer (left-side) */}
       <DrawerPrimitive.Root
@@ -205,30 +236,12 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
             onClick={() => setMobileOpen(false)}
           />
           <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] outline-none">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--sidebar-border)]">
-              <p className="text-[var(--sidebar-foreground)] text-sm font-semibold">
-                WireGuard
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "w-7 h-7 p-0",
-                  "text-[var(--sidebar-foreground)]",
-                  "hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
-                )}
-                onClick={() => setMobileOpen(false)}
-              >
-                <X size={15} />
-              </Button>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <NavContent
-                onSignOut={onSignOut}
-                displayName={displayName}
-                initials={initials}
-              />
-            </div>
+            <NavContent
+              onSignOut={onSignOut}
+              displayName={displayName}
+              initials={initials}
+              onClose={() => setMobileOpen(false)}
+            />
           </DrawerPrimitive.Content>
         </DrawerPrimitive.Portal>
       </DrawerPrimitive.Root>

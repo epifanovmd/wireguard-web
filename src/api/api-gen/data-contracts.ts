@@ -158,6 +158,8 @@ export interface IProfileListDto {
   /** @format double */
   count?: number;
   /** @format double */
+  totalCount?: number;
+  /** @format double */
   offset?: number;
   /** @format double */
   limit?: number;
@@ -179,6 +181,8 @@ export interface PublicUserDto {
 export interface IUserListDto {
   /** @format double */
   count?: number;
+  /** @format double */
+  totalCount?: number;
   /** @format double */
   offset?: number;
   /** @format double */
@@ -489,7 +493,13 @@ export interface WgPeerDto {
 
 export interface IWgPeerListDto {
   /** @format double */
-  count: number;
+  count?: number;
+  /** @format double */
+  totalCount?: number;
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
   data: WgPeerDto[];
 }
 
@@ -552,7 +562,13 @@ export interface WgServerDto {
 
 export interface IWgServerListDto {
   /** @format double */
-  count: number;
+  count?: number;
+  /** @format double */
+  totalCount?: number;
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
   data: WgServerDto[];
 }
 
@@ -689,9 +705,39 @@ export interface RefreshPayload {
   refreshToken: string;
 }
 
+export interface GetPeersByServerParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  serverId: string;
+}
+
+export interface GetMyPeersParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+}
+
+export interface GetPeersByUserParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  userId: string;
+}
+
 export interface AssignPeerParams {
   userId: string;
   id: string;
+}
+
+export interface GetServersParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
 }
 
 export interface GetPeerTrafficParams {

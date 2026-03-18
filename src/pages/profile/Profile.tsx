@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import React, { FC } from "react";
 import { FormProvider } from "react-hook-form";
 
-import { EProfileStatus } from "~@api/api-gen/data-contracts";
 import { PageHeader } from "~@components/layouts";
 import { UserInfoCard } from "~@components/shared";
 import {
@@ -29,9 +28,9 @@ export const Profile: FC = observer(() => {
 
   if (isLoading && !model) {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         <PageHeader title="Мой профиль" />
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center py-12 overflow-auto">
           <Spinner />
         </div>
       </div>
@@ -51,13 +50,13 @@ export const Profile: FC = observer(() => {
     ) : undefined;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Мой профиль"
         subtitle="Просмотр и редактирование профиля"
       />
 
-      <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap">
+      <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap overflow-auto">
         <div className="w-full xl:w-64 flex-shrink-0">
           <UserInfoCard
             displayName={model?.displayName ?? "Профиль"}

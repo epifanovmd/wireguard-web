@@ -4,12 +4,13 @@ import React, { FC, useEffect, useState } from "react";
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { PageHeader } from "~@components/layouts";
 import { UserInfoCard } from "~@components/shared";
-import { peerColumns, PeersTable } from "~@components/tables/peers";
+import { peerColumns } from "~@components/tables/peers";
 import {
   Button,
   Card,
   Select,
   Spinner,
+  Table,
   Tabs,
   TabsContent,
   TabsList,
@@ -85,7 +86,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
       );
 
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         <PageHeader
           title={model?.displayName ?? "Пользователь"}
           actions={
@@ -112,7 +113,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
             </Button>
           }
         />
-        <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap">
+        <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap overflow-auto">
           {/* Sidebar - user info */}
           <div className="w-full xl:w-64 flex-shrink-0">
             <UserInfoCard
@@ -165,10 +166,16 @@ export const UserDetail: FC<UserDetailProps> = observer(
               </TabsContent>
               <TabsContent value="peers">
                 <div className="mt-4">
-                  <PeersTable
+                  <Table
                     data={peersStore.models}
                     columns={peerColumns}
                     loading={peersStore.isLoading}
+                    getRowId={p => p.data.id}
+                    empty={
+                      <div className="text-center py-8 text-muted-foreground text-sm">
+                        Пиры не найдены
+                      </div>
+                    }
                   />
                 </div>
               </TabsContent>

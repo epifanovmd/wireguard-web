@@ -17,7 +17,7 @@ import {
 } from "~@components/ui2";
 
 import { ServerForm } from "./components/ServerForm";
-import { useServersListVM } from "./hooks/useServersListVM";
+import { useServersListVM } from "./hooks";
 
 export const ServersList: FC = observer(() => {
   const vm = useServersListVM();
@@ -25,7 +25,7 @@ export const ServersList: FC = observer(() => {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Серверы"
         subtitle={`${vm.total} всего`}
@@ -34,7 +34,7 @@ export const ServersList: FC = observer(() => {
         }
       />
 
-      <div className="p-4 sm:p-6">
+      <div className="p-4 sm:p-6 overflow-auto">
         <Card
           title="Серверы"
           extra={<Badge variant="gray">{vm.total} всего</Badge>}

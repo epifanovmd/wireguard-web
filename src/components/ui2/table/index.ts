@@ -1,11 +1,8 @@
-export type { ColumnDef, TableProps } from "./Table";
-export { Table } from "./Table";
-export { TableBodySection } from "./TableBodySection";
-export { TableDataRow } from "./TableDataRow";
-export { TableFooterSection } from "./TableFooterSection";
-export { TableHeadCell } from "./TableHeadCell";
-export { TableHeaderSection } from "./TableHeaderSection";
-export { TablePaginationBar } from "./TablePaginationBar";
+export { TableBodySection } from "./components/TableBodySection";
+export { TableDataRow } from "./components/TableDataRow";
+export { TableFooterSection } from "./components/TableFooterSection";
+export { TableHeadCell } from "./components/TableHeadCell";
+export { TableHeaderSection } from "./components/TableHeaderSection";
 export {
   TableBody,
   TableCaption,
@@ -15,8 +12,12 @@ export {
   TableHeader,
   TableRoot,
   TableRow,
-} from "./TablePrimitive";
+} from "./components/TablePrimitive";
+export { tableCellVariants, tableHeadVariants, tableVariants } from "./components/tableVariants";
+export { useTableInstance } from "./hooks/useTableInstance";
+export { useTableState } from "./hooks/useTableState";
+export type { TablePaginationProps } from "./pagination/TablePagination";
+export { TablePagination } from "./pagination/TablePagination";
+export type { ColumnDef, TableProps } from "./Table";
+export { Table } from "./Table";
 export type { TableInstanceResult } from "./TableTypes";
-export { tableCellVariants, tableHeadVariants, tableVariants } from "./tableVariants";
-export { useTableInstance } from "./useTableInstance";
-export { useTableState } from "./useTableState";

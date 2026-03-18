@@ -14,14 +14,18 @@ export const UsersList: FC = observer(() => {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Пользователи"
         subtitle={`${vm.total} всего`}
-        actions={<Button onClick={() => setCreateOpen(true)}>Добавить пользователя</Button>}
+        actions={
+          <Button onClick={() => setCreateOpen(true)}>
+            Добавить пользователя
+          </Button>
+        }
       />
 
-      <div className="p-4 sm:p-6 flex flex-col gap-4">
+      <div className="p-4 sm:p-6 flex flex-col gap-4 overflow-auto">
         <Card
           title="Пользователи"
           extra={<Badge variant="gray">{vm.total} всего</Badge>}
@@ -39,10 +43,6 @@ export const UsersList: FC = observer(() => {
             data={vm.data}
             columns={vm.columns}
             loading={vm.loading}
-            manualPagination
-            paginationState={vm.paginationState}
-            onPaginationChange={vm.onPaginationChange}
-            pageCount={vm.pageCount}
             onRowClick={vm.handleRowClick}
           />
         </Card>

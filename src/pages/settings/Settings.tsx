@@ -131,12 +131,12 @@ export const Settings: FC = observer(() => {
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Настройки"
         subtitle="Системная конфигурация и информация"
       />
-      <div className="p-4 sm:p-6">
+      <div className="p-4 sm:p-6 overflow-auto">
         <Tabs defaultValue="system">
           <TabsList>
             <TabsTrigger value="system">Система</TabsTrigger>

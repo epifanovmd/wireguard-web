@@ -41,7 +41,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
 
     if (vm.isLoading || !vm.isReady) {
       return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-hidden">
           <PageHeader title="Пир" />
           <div className="flex justify-center py-12">
             <Spinner />
@@ -57,7 +57,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     }
 
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         <PageHeader
           title={peer.name}
           actions={
@@ -72,7 +72,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           }
         />
 
-        <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
           {/* Status strip */}
           <div className="flex items-center gap-3 flex-wrap">
             <PeerStatus

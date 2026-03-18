@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import React, { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -81,18 +82,14 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
     setLoading(false);
   };
 
+  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], ["SELECT"]);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col gap-4 mb-4">
         <div className="grid grid-cols-2 gap-3">
-          <InputFormField<CreateUserFormData>
-            name="firstName"
-            label="Имя"
-          />
-          <InputFormField<CreateUserFormData>
-            name="lastName"
-            label="Фамилия"
-          />
+          <InputFormField<CreateUserFormData> name="firstName" label="Имя" />
+          <InputFormField<CreateUserFormData> name="lastName" label="Фамилия" />
         </div>
         <InputFormField<CreateUserFormData>
           name="email"

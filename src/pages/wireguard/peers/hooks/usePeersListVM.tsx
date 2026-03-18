@@ -5,14 +5,9 @@ import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { PeerActions, QrCodeModal } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { PeerModel } from "~@models";
-import { usePeerDataStore, usePeersListStore } from "~@store";
-import { useServersListStore } from "~@store";
+import { usePeerDataStore, usePeersListStore, useServersListStore } from "~@store";
 
-import {
-  type ColumnDef,
-  useConfirm,
-  useToast,
-} from "../../../../components/ui2";
+import { type ColumnDef, useConfirm, useToast } from "../../../../components/ui2";
 
 export const usePeersListVM = (serverId?: string) => {
   const listStore = usePeersListStore();
@@ -60,7 +55,6 @@ export const usePeersListVM = (serverId?: string) => {
         listStore.updatePeer(res.data);
       }
     },
-
     [peerStore, listStore, toast],
   );
 
@@ -82,7 +76,6 @@ export const usePeersListVM = (serverId?: string) => {
         listStore.removePeer(id);
       }
     },
-
     [peerStore, listStore, confirm, toast],
   );
 
@@ -122,11 +115,33 @@ export const usePeersListVM = (serverId?: string) => {
     [listStore],
   );
 
+  const onPageChange = useCallback(
+    (page: number) => {
+      listStore.goToPage(page);
+    },
+    [listStore],
+  );
+
+  const onPageSizeChange = useCallback(
+    (pageSize: number) => {
+      listStore.setPageSize(pageSize);
+    },
+    [listStore],
+  );
+
+  const { page, pageSize } = listStore.peersHolder.pagination;
+
   return {
     data: listStore.models,
     columns,
     loading: listStore.isLoading,
+    refreshing: listStore.peersHolder.isRefreshing,
     total: listStore.total,
+    currentPage: page,
+    totalPages: listStore.pageCount,
+    pageSize,
+    onPageChange,
+    onPageSizeChange,
     servers: serversStore.models,
     qrPeer,
     setQrPeer,

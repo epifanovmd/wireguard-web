@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from "react";
 
 import { useSessionDataStore } from "~@store";
 
-import { Sidebar } from "../sidebar/Sidebar";
+import { Sidebar } from "../sidebar";
 
 interface AppLayoutProps {
   children: ReactNode;

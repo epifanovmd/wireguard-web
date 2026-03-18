@@ -16,6 +16,7 @@ export interface CardProps
   description?: React.ReactNode;
   extra?: React.ReactNode;
   footer?: React.ReactNode;
+  contentClassName?: string;
 }
 
 const _Card = React.forwardRef<HTMLDivElement, CardProps>(
@@ -28,6 +29,7 @@ const _Card = React.forwardRef<HTMLDivElement, CardProps>(
       description,
       extra,
       footer,
+      contentClassName,
       children,
       ...props
     },
@@ -47,7 +49,7 @@ const _Card = React.forwardRef<HTMLDivElement, CardProps>(
             {description && <CardDescription>{description}</CardDescription>}
           </CardHeader>
         )}
-        {children && <CardContent>{children}</CardContent>}
+        {children && <CardContent className={contentClassName}>{children}</CardContent>}
         {footer && <CardFooter>{footer}</CardFooter>}
       </div>
     );

@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Fingerprint } from "lucide-react";
 import { observer } from "mobx-react-lite";
@@ -36,15 +37,15 @@ export const SignIn = observer(() => {
     }
   };
 
+  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
+
   const passkeyError = passkey.error ?? (session.lastError || null);
 
   return (
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">
-            Вход
-          </h2>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">Вход</h2>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
             Введите данные для входа в панель управления
           </p>

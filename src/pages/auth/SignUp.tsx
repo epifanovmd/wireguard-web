@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -34,6 +35,8 @@ export const SignUp = observer(() => {
     if (session.isAuthorized) navigate({ to: "/" });
   };
 
+  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
+
   return (
     <AuthLayout>
       <Card className="p-6">
@@ -51,7 +54,6 @@ export const SignUp = observer(() => {
             <InputFormField<FormData>
               name="email"
               label="Email"
-
               type="email"
               required
             />

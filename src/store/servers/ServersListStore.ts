@@ -20,7 +20,7 @@ export class ServersListStore implements IServersListStore {
     this.listHolder.initialize({
       keyExtractor: s => s.id,
       onFetchData: async () => {
-        const res = await this._apiService.getServers();
+        const res = await this._apiService.getServers({});
         const data = res.data?.data ?? [];
 
         this.listHolder.updateData(data, { replace: true });

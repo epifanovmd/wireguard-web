@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import { formatISO, parseISO } from "date-fns";
 import React, { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -94,6 +95,11 @@ export const PeerForm: FC<PeerFormProps> = ({
 
     await onSubmit(payload, serverId);
   };
+
+  useHotkeys(
+    [["Enter", () => handleSubmit(handleFormSubmit)()]],
+    ["TEXTAREA", "SELECT"],
+  );
 
   return (
     <FormProvider {...methods}>

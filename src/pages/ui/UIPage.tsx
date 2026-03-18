@@ -53,7 +53,6 @@ import {
   ModalTitle,
   Pagination,
   Popover,
-  PopoverContent,
   Segmented,
   Select,
   Spinner,
@@ -1257,8 +1256,6 @@ export const UIPage = () => {
                   size="sm"
                   sorting
                   selection
-                  pagination
-                  pageSize={4}
                   onRowClick={row => console.log("clicked", row)}
                   caption="Recent transactions"
                 />

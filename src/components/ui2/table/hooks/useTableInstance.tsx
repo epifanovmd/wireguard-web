@@ -2,15 +2,14 @@ import {
   type ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
 
-import { Checkbox } from "../checkbox";
-import { type TableProps } from "./Table";
-import { type TableInstanceResult } from "./TableTypes";
+import { Checkbox } from "../../checkbox";
+import { type TableProps } from "../Table";
+import { type TableInstanceResult } from "../TableTypes";
 import { useTableState } from "./useTableState";
 
 export const useTableInstance = <TData,>(
@@ -31,12 +30,6 @@ export const useTableInstance = <TData,>(
     rowSelection,
     onRowSelectionChange,
     onSelectedRowsChange,
-    pagination,
-    pageSize,
-    paginationState,
-    onPaginationChange,
-    manualPagination,
-    pageCount,
   } = props;
 
   const state = useTableState({
@@ -44,9 +37,6 @@ export const useTableInstance = <TData,>(
     onSortingChange,
     rowSelection,
     onRowSelectionChange,
-    paginationState,
-    onPaginationChange,
-    pageSize,
   });
 
   const checkboxSize = size === "lg" ? "md" : "sm";
@@ -92,21 +82,16 @@ export const useTableInstance = <TData,>(
       ...(sorting && { sorting: state.sorting }),
       ...(globalFilter !== undefined && { globalFilter }),
       ...(selection && { rowSelection: state.rowSelection }),
-      ...(pagination && { pagination: state.pagination }),
     },
     enableRowSelection: selection,
     onRowSelectionChange: selection ? state.onRowSelectionChange : undefined,
     onSortingChange: sorting ? state.onSortingChange : undefined,
     onGlobalFilterChange,
-    onPaginationChange: pagination ? state.onPaginationChange : undefined,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: sorting ? getSortedRowModel() : undefined,
     getFilteredRowModel:
       globalFilter !== undefined ? getFilteredRowModel() : undefined,
-    getPaginationRowModel: pagination ? getPaginationRowModel() : undefined,
     manualSorting,
-    manualPagination,
-    pageCount: manualPagination ? pageCount : undefined,
   });
 
   React.useEffect(() => {
@@ -117,11 +102,9 @@ export const useTableInstance = <TData,>(
 
   const rows = table.getRowModel().rows;
   const totalColumns = table.getVisibleLeafColumns().length;
-  const currentPage = state.pagination.pageIndex + 1;
-  const totalPages = table.getPageCount();
   const hasFooter = table
     .getFooterGroups()
     .some(fg => fg.headers.some(h => h.column.columnDef.footer));
 
-  return { table, rows, totalColumns, currentPage, totalPages, hasFooter };
-}
+  return { table, rows, totalColumns, hasFooter };
+};

@@ -20,9 +20,9 @@ export const Stats: FC = observer(() => {
   const vm = useStatsVM();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader title="Статистика" subtitle="Трафик и скорость WireGuard" />
-      <div className="p-4 sm:p-6 flex flex-col gap-6">
+      <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
           <Select

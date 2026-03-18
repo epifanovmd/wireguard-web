@@ -1,8 +1,8 @@
 import { type Row } from "@tanstack/react-table";
 import * as React from "react";
 
-import { Empty } from "../empty";
-import { Spinner } from "../spinner";
+import { Empty } from "../../empty";
+import { Spinner } from "../../spinner";
 import { TableDataRow } from "./TableDataRow";
 import { TableBody } from "./TablePrimitive";
 
@@ -10,6 +10,7 @@ interface TableBodySectionProps<TData> {
   rows: Row<TData>[];
   totalColumns: number;
   loading?: boolean;
+  refreshing?: boolean;
   empty?: React.ReactNode;
   onRowClick?: (row: TData, e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
@@ -18,6 +19,7 @@ export const TableBodySection = <TData,>({
   rows,
   totalColumns,
   loading,
+  refreshing,
   empty,
   onRowClick,
 }: TableBodySectionProps<TData>) => {
@@ -48,7 +50,13 @@ export const TableBodySection = <TData,>({
   }
 
   return (
-    <TableBody>
+    <TableBody
+      className={
+        refreshing
+          ? "opacity-50 pointer-events-none transition-opacity duration-150"
+          : "transition-opacity duration-150"
+      }
+    >
       {rows.map(row => (
         <TableDataRow
           key={row.id}
@@ -59,4 +67,4 @@ export const TableBodySection = <TData,>({
       ))}
     </TableBody>
   );
-}
+};

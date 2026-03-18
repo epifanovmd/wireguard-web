@@ -15,10 +15,14 @@ import {
   ApiResponseDto,
   AssignPeerParams,
   Base64URLString,
+  GetMyPeersParams,
+  GetPeersByServerParams,
+  GetPeersByUserParams,
   GetPeerSpeedParams,
   GetPeerStatsParams,
   GetPeerTrafficParams,
   GetProfilesParams,
+  GetServersParams,
   GetServerSpeedParams,
   GetServerStatsParams,
   GetServerTrafficParams,
@@ -559,10 +563,14 @@ export class Api<
    * @request GET:/api/wg/servers/{serverId}/peers
    * @secure
    */
-  getPeersByServer = (serverId: string, params: RequestParams = {}) =>
+  getPeersByServer = (
+    { serverId, ...query }: GetPeersByServerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<IWgPeerListDto, any>({
       url: `/api/wg/servers/${serverId}/peers`,
       method: "GET",
+      params: query,
       responseType: "json",
       ...params,
     });
@@ -597,10 +605,11 @@ export class Api<
    * @request GET:/api/wg/peers/my
    * @secure
    */
-  getMyPeers = (params: RequestParams = {}) =>
+  getMyPeers = (query: GetMyPeersParams, params: RequestParams = {}) =>
     this.request<IWgPeerListDto, any>({
       url: `/api/wg/peers/my`,
       method: "GET",
+      params: query,
       responseType: "json",
       ...params,
     });
@@ -613,10 +622,14 @@ export class Api<
    * @request GET:/api/wg/peers/user/{userId}
    * @secure
    */
-  getPeersByUser = (userId: string, params: RequestParams = {}) =>
+  getPeersByUser = (
+    { userId, ...query }: GetPeersByUserParams,
+    params: RequestParams = {},
+  ) =>
     this.request<IWgPeerListDto, any>({
       url: `/api/wg/peers/user/${userId}`,
       method: "GET",
+      params: query,
       responseType: "json",
       ...params,
     });
@@ -820,10 +833,11 @@ export class Api<
    * @request GET:/api/wg/servers
    * @secure
    */
-  getServers = (params: RequestParams = {}) =>
+  getServers = (query: GetServersParams, params: RequestParams = {}) =>
     this.request<IWgServerListDto, any>({
       url: `/api/wg/servers`,
       method: "GET",
+      params: query,
       responseType: "json",
       ...params,
     });

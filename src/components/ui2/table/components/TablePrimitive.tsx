@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "../cn";
+import { cn } from "../../cn";
 import { TableContext } from "./TableContext";
 import {
   tableCellVariants,

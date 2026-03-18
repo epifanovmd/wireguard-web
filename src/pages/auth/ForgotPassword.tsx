@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import { useNavigate } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { observer } from "mobx-react-lite";
@@ -38,6 +39,8 @@ export const ForgotPassword = observer(() => {
     setLoading(false);
     setSent(true);
   };
+
+  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
 
   return (
     <AuthLayout>
@@ -84,7 +87,12 @@ export const ForgotPassword = observer(() => {
                 >
                   Отправить ссылку
                 </Button>
-                <Button type="button" variant="outline" onClick={onBack} className="w-full">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onBack}
+                  className="w-full"
+                >
                   Вернуться к входу
                 </Button>
               </div>

@@ -1,0 +1,511 @@
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
+
+import {
+  HolderStatus,
+  IApiResponse,
+  IHolderError,
+  InfiniteFetchFn,
+  IPagedResponse,
+  MutationStatus,
+  toHolderError,
+} from "./HolderTypes";
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface IInfiniteHolderOptions<TItem, TArgs = void> {
+  /** Called for every load (initial, refresh, loadMore). */
+  onFetch?: InfiniteFetchFn<TItem, TArgs>;
+  /** Key extractor for CRUD helpers. */
+  keyExtractor?: (item: TItem) => string | number;
+  /** Items per page (default: 20). */
+  pageSize?: number;
+}
+
+export interface IInfiniteHolderResult<TItem, TError extends IHolderError> {
+  data: TItem[] | null;
+  hasMore: boolean;
+  error: TError | null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Holder for **infinite-scroll / load-more** lists.
+ *
+ * Unlike PagedHolder, all pages are accumulated in `items`.
+ * A separate `loadMoreStatus` tracks the "load more" spinner independently
+ * from the initial load status — so you can show a skeleton on first load
+ * and a tiny bottom spinner for subsequent loads simultaneously.
+ *
+ * Features:
+ * - `load(args?)` → initial fetch, clears items
+ * - `refresh(args?)` → silent reload from page 0, replaces items
+ * - `loadMore()` → append next page (no-op if `!hasMore` or already loading)
+ * - Built-in CRUD helpers on the full accumulated list
+ * - `fromApi()` for manual control
+ *
+ * @example
+ * ```ts
+ * logsHolder = new InfiniteHolder<LogDto>({
+ *   pageSize: 50,
+ *   keyExtractor: l => l.id,
+ *   onFetch: ({ offset, limit }) => this._api.getLogs({ offset, limit }),
+ * });
+ *
+ * // In component
+ * <List onEndReached={() => logsHolder.loadMore()} />
+ * ```
+ */
+export class InfiniteHolder<
+  TItem,
+  TArgs = void,
+  TError extends IHolderError = IHolderError,
+> {
+  /** Accumulated items from all loaded pages. */
+  items: TItem[] = [];
+
+  /** Status of the **initial / refresh** load. */
+  status: HolderStatus = "idle";
+
+  /** Status of the **load-more** action (independent from `status`). */
+  loadMoreStatus: MutationStatus = "idle";
+
+  error: TError | null = null;
+  loadMoreError: TError | null = null;
+
+  /** Whether the server indicated there are more items. */
+  hasMore: boolean = true;
+
+  /** Last args used — for refresh / loadMore continuation. */
+  lastArgs: TArgs | null = null;
+
+  private _currentOffset: number = 0;
+  private readonly _pageSize: number;
+  private readonly _onFetch?: InfiniteFetchFn<TItem, TArgs>;
+  private readonly _keyExtractor?: (item: TItem) => string | number;
+
+  constructor(options?: IInfiniteHolderOptions<TItem, TArgs>) {
+    this._pageSize = options?.pageSize ?? 20;
+    this._onFetch = options?.onFetch;
+    this._keyExtractor = options?.keyExtractor;
+
+    makeObservable(this, {
+      items: observable,
+      status: observable,
+      loadMoreStatus: observable,
+      error: observable.ref,
+      loadMoreError: observable.ref,
+      hasMore: observable,
+      lastArgs: observable.ref,
+
+      isIdle: computed,
+      isLoading: computed,
+      isRefreshing: computed,
+      isBusy: computed,
+      isSuccess: computed,
+      isError: computed,
+      isEmpty: computed,
+      isLoadingMore: computed,
+      isLoadMoreError: computed,
+      count: computed,
+
+      setLoading: action,
+      setRefreshing: action,
+      setItems: action,
+      appendItems: action,
+      prependItem: action,
+      appendItem: action,
+      updateItem: action,
+      removeItem: action,
+      upsertItem: action,
+      setError: action,
+      reset: action,
+    });
+  }
+
+  // ─── Computed ──────────────────────────────────────────────────────────────
+
+  get isIdle() {
+    return this.status === "idle";
+  }
+
+  get isLoading() {
+    return this.status === "loading";
+  }
+
+  get isRefreshing() {
+    return this.status === "refreshing";
+  }
+
+  /** True while initial loading OR refreshing. */
+  get isBusy() {
+    return this.status === "loading" || this.status === "refreshing";
+  }
+
+  get isSuccess() {
+    return this.status === "success";
+  }
+
+  get isError() {
+    return this.status === "error";
+  }
+
+  get isEmpty() {
+    return this.isSuccess && this.items.length === 0;
+  }
+
+  get isLoadingMore() {
+    return this.loadMoreStatus === "loading";
+  }
+
+  get isLoadMoreError() {
+    return this.loadMoreStatus === "error";
+  }
+
+  get count() {
+    return this.items.length;
+  }
+
+  // ─── State setters ────────────────────────────────────────────────────────
+
+  setLoading() {
+    this.status = "loading";
+    this.error = null;
+  }
+
+  setRefreshing() {
+    this.status = "refreshing";
+    this.error = null;
+  }
+
+  /**
+   * Replace all items (first load or refresh).
+   * Resets offset to items.length.
+   */
+  setItems(items: TItem[], hasMore: boolean) {
+    this.items = items;
+    this.hasMore = hasMore;
+    this._currentOffset = items.length;
+    this.status = "success";
+    this.error = null;
+    this.loadMoreStatus = "idle";
+    this.loadMoreError = null;
+  }
+
+  /**
+   * Append items from the next page.
+   */
+  appendItems(items: TItem[], hasMore: boolean) {
+    this.items = [...this.items, ...items];
+    this.hasMore = hasMore;
+    this._currentOffset = this.items.length;
+    this.loadMoreStatus = "success";
+    this.loadMoreError = null;
+  }
+
+  setError(error: TError | IHolderError | string) {
+    this.status = "error";
+    this.error =
+      typeof error === "string"
+        ? ({ message: error } as TError)
+        : (error as TError);
+  }
+
+  reset() {
+    this.items = [];
+    this.status = "idle";
+    this.loadMoreStatus = "idle";
+    this.error = null;
+    this.loadMoreError = null;
+    this.hasMore = true;
+    this.lastArgs = null;
+    this._currentOffset = 0;
+  }
+
+  // ─── CRUD helpers ─────────────────────────────────────────────────────────
+
+  prependItem(item: TItem) {
+    this.items = [item, ...this.items];
+    this._currentOffset++;
+  }
+
+  appendItem(item: TItem) {
+    this.items = [...this.items, item];
+    this._currentOffset++;
+  }
+
+  updateItem(
+    predicate: ((item: TItem) => boolean) | string | number,
+    updated: TItem,
+  ) {
+    const fn = this._normalizePredicate(predicate);
+
+    this.items = this.items.map(item => (fn(item) ? updated : item));
+  }
+
+  removeItem(predicate: ((item: TItem) => boolean) | string | number) {
+    const fn = this._normalizePredicate(predicate);
+
+    this.items = this.items.filter(item => !fn(item));
+    this._currentOffset = Math.max(0, this._currentOffset - 1);
+  }
+
+  upsertItem(
+    predicate: ((item: TItem) => boolean) | string | number,
+    item: TItem,
+  ) {
+    const fn = this._normalizePredicate(predicate);
+    const exists = this.items.some(fn);
+
+    if (exists) {
+      this.items = this.items.map(i => (fn(i) ? item : i));
+    } else {
+      this.appendItem(item);
+    }
+  }
+
+  // ─── Async helpers ────────────────────────────────────────────────────────
+
+  /**
+   * Initial load — clears existing items, shows skeleton.
+   * Resets offset to 0.
+   */
+  async load(
+    ..._args: TArgs extends void ? [] : [args: TArgs]
+  ): Promise<IInfiniteHolderResult<TItem, TError>> {
+    const args = _args[0] as TArgs;
+
+    this.lastArgs = args ?? null;
+    this._currentOffset = 0;
+
+    return this._runFetch(args, "loading");
+  }
+
+  /**
+   * Silent reload from offset 0 — keeps old items visible while fetching.
+   */
+  async refresh(
+    ..._args: TArgs extends void ? [] : [args: TArgs]
+  ): Promise<IInfiniteHolderResult<TItem, TError>> {
+    const args = _args[0] as TArgs;
+
+    this.lastArgs = args ?? null;
+    this._currentOffset = 0;
+
+    return this._runFetch(args, "refreshing");
+  }
+
+  /**
+   * Append the next page. No-op if already loading more or `!hasMore`.
+   */
+  async loadMore(): Promise<IInfiniteHolderResult<TItem, TError>> {
+    if (!this.hasMore || this.isLoadingMore || this.isBusy) {
+      return {
+        data: this.items,
+        hasMore: this.hasMore,
+        error: null,
+      };
+    }
+
+    return this._runFetch(this.lastArgs as TArgs, "loadMore");
+  }
+
+  /**
+   * Manual API wrapper for the initial / refresh load.
+   *
+   * @example
+   * ```ts
+   * await this.logsHolder.fromApi(
+   *   () => this._api.getLogs({ offset: 0, limit: 50 }),
+   *   res => ({ items: res.data, hasMore: res.data.length === 50 }),
+   * );
+   * ```
+   */
+  async fromApi<TResponse, TApiError extends IHolderError = TError>(
+    fn: () => Promise<IApiResponse<TResponse, TApiError>>,
+    extractor: (
+      response: TResponse,
+      offset: number,
+      limit: number,
+    ) => { items: TItem[]; hasMore: boolean },
+    options?: { append?: boolean; refresh?: boolean },
+  ): Promise<IInfiniteHolderResult<TItem, TApiError>> {
+    if (options?.append) {
+      runInAction(() => {
+        this.loadMoreStatus = "loading";
+        this.loadMoreError = null;
+      });
+    } else {
+      if (options?.refresh) {
+        this.setRefreshing();
+      } else {
+        this.setLoading();
+        this._currentOffset = 0;
+      }
+    }
+
+    try {
+      const res = await fn();
+
+      if (res.error) {
+        if (options?.append) {
+          runInAction(() => {
+            this.loadMoreStatus = "error";
+            this.loadMoreError = res.error as unknown as TError;
+          });
+        } else {
+          this.setError(res.error as unknown as TError);
+        }
+
+        return { data: null, hasMore: this.hasMore, error: res.error };
+      }
+
+      if (res.data != null) {
+        const { items, hasMore } = extractor(
+          res.data as TResponse,
+          this._currentOffset,
+          this._pageSize,
+        );
+
+        if (options?.append) {
+          runInAction(() => {
+            this.appendItems(items, hasMore);
+          });
+        } else {
+          this.setItems(items, hasMore);
+        }
+
+        return { data: items, hasMore, error: null };
+      }
+
+      if (options?.append) {
+        runInAction(() => {
+          this.hasMore = false;
+          this.loadMoreStatus = "success";
+        });
+      } else {
+        this.setItems([], false);
+      }
+
+      return { data: [], hasMore: false, error: null };
+    } catch (e) {
+      const err = toHolderError(e) as unknown as TApiError;
+
+      if (options?.append) {
+        runInAction(() => {
+          this.loadMoreStatus = "error";
+          this.loadMoreError = err as unknown as TError;
+        });
+      } else {
+        this.setError(err as unknown as TError);
+      }
+
+      return { data: null, hasMore: this.hasMore, error: err };
+    }
+  }
+
+  // ─── Private ──────────────────────────────────────────────────────────────
+
+  private _normalizePredicate(
+    predicate: ((item: TItem) => boolean) | string | number,
+  ): (item: TItem) => boolean {
+    if (typeof predicate === "function") return predicate;
+    if (!this._keyExtractor) {
+      throw new Error(
+        "[InfiniteHolder] keyExtractor must be configured to use string/number predicates.",
+      );
+    }
+    const key = predicate;
+
+    return item => this._keyExtractor!(item) === key;
+  }
+
+  private async _runFetch(
+    args: TArgs,
+    mode: "loading" | "refreshing" | "loadMore",
+  ): Promise<IInfiniteHolderResult<TItem, TError>> {
+    if (!this._onFetch) {
+      console.warn(
+        "[InfiniteHolder] load/refresh/loadMore called but no onFetch was provided in options.",
+      );
+
+      return { data: null, hasMore: false, error: null };
+    }
+
+    const isAppend = mode === "loadMore";
+
+    if (isAppend) {
+      runInAction(() => {
+        this.loadMoreStatus = "loading";
+        this.loadMoreError = null;
+      });
+    } else if (mode === "refreshing") {
+      this.setRefreshing();
+    } else {
+      this.setLoading();
+    }
+
+    const offset = isAppend ? this._currentOffset : 0;
+
+    try {
+      const res = await this._onFetch({ offset, limit: this._pageSize }, args);
+
+      if (res.error) {
+        if (isAppend) {
+          runInAction(() => {
+            this.loadMoreStatus = "error";
+            this.loadMoreError = res.error as unknown as TError;
+          });
+        } else {
+          this.setError(res.error as unknown as TError);
+        }
+
+        return {
+          data: null,
+          hasMore: this.hasMore,
+          error: res.error as unknown as TError,
+        };
+      }
+
+      if (res.data != null) {
+        const pagedRes = res.data as IPagedResponse<TItem>;
+        const items = pagedRes.data ?? [];
+        const hasMore = items.length >= this._pageSize;
+
+        if (isAppend) {
+          runInAction(() => {
+            this.appendItems(items, hasMore);
+          });
+        } else {
+          this.setItems(items, hasMore);
+        }
+
+        return { data: items, hasMore, error: null };
+      }
+
+      if (isAppend) {
+        runInAction(() => {
+          this.hasMore = false;
+          this.loadMoreStatus = "success";
+        });
+      } else {
+        this.setItems([], false);
+      }
+
+      return { data: [], hasMore: false, error: null };
+    } catch (e) {
+      const err = toHolderError(e) as TError;
+
+      if (isAppend) {
+        runInAction(() => {
+          this.loadMoreStatus = "error";
+          this.loadMoreError = err;
+        });
+      } else {
+        this.setError(err);
+      }
+
+      return { data: null, hasMore: this.hasMore, error: err };
+    }
+  }
+}

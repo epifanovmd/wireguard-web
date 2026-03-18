@@ -1,30 +1,24 @@
+import { createSlot, useSlotProps } from "@force-dev/react";
 import {
   type ColumnDef,
   type OnChangeFn,
-  type PaginationState,
   type Row,
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table";
 import * as React from "react";
+import { PropsWithChildren } from "react";
 
-import { cn } from "../cn";
-import { TableBodySection } from "./TableBodySection";
-import { TableContext } from "./TableContext";
-import { TableFooterSection } from "./TableFooterSection";
-import { TableHeaderSection } from "./TableHeaderSection";
-import { TablePaginationBar } from "./TablePaginationBar";
+import { TableBodySection } from "./components/TableBodySection";
+import { TableContext } from "./components/TableContext";
+import { TableFooterSection } from "./components/TableFooterSection";
+import { TableHeaderSection } from "./components/TableHeaderSection";
+import { TableCaption, TableRoot } from "./components/TablePrimitive";
+import { useTableInstance } from "./hooks/useTableInstance";
 import {
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRoot,
-  TableRow,
-} from "./TablePrimitive";
-import { useTableInstance } from "./useTableInstance";
+  TablePagination,
+  TablePaginationProps,
+} from "./pagination/TablePagination";
 
 export type { ColumnDef };
 
@@ -56,24 +50,24 @@ export interface TableProps<TData> {
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   onSelectedRowsChange?: (rows: TData[]) => void;
 
-  // Pagination
-  pagination?: boolean;
-  pageSize?: number;
-  paginationState?: PaginationState;
-  onPaginationChange?: OnChangeFn<PaginationState>;
-  manualPagination?: boolean;
-  pageCount?: number;
-
   // State
   loading?: boolean;
+  refreshing?: boolean;
   empty?: React.ReactNode;
 
   // Row
-  onRowClick?: (row: TData, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  onRowClick?: (
+    row: TData,
+    event: React.MouseEvent<HTMLTableRowElement>,
+  ) => void;
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
 
-const TableComponent = <TData,>(props: TableProps<TData>) => {
+const Pagination = createSlot<TablePaginationProps>("Pagination");
+
+const TableComponent = <TData,>(
+  props: PropsWithChildren<TableProps<TData>>,
+) => {
   const {
     variant = "default",
     size = "md",
@@ -82,65 +76,47 @@ const TableComponent = <TData,>(props: TableProps<TData>) => {
     className,
     containerClassName,
     sorting,
-    selection,
-    pagination,
     loading,
+    refreshing,
     empty,
     onRowClick,
+    children,
   } = props;
 
-  const { table, rows, totalColumns, currentPage, totalPages, hasFooter } =
-    useTableInstance(props);
+  const { table, rows, totalColumns, hasFooter } = useTableInstance(props);
+  const { pagination } = useSlotProps(Table, children);
 
   return (
     <TableContext.Provider value={{ size, variant }}>
-      <div className={cn("w-full space-y-2", containerClassName)}>
-
+      <div className="overflow-auto rounded-lg border">
         <div className="overflow-auto rounded-lg border">
           <TableRoot className={className}>
             {caption && <TableCaption>{caption}</TableCaption>}
-
             <TableHeaderSection
               table={table}
               sorting={sorting}
               stickyHeader={stickyHeader}
             />
-
             <TableBodySection
               rows={rows}
               totalColumns={totalColumns}
               loading={loading}
+              refreshing={refreshing}
               empty={empty}
               onRowClick={onRowClick}
             />
-
             {hasFooter && <TableFooterSection table={table} />}
           </TableRoot>
         </div>
 
-        {pagination && totalPages > 1 && (
-          <TablePaginationBar
-            table={table}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            selection={selection}
-          />
-        )}
-
+        {pagination && <TablePagination {...pagination} />}
       </div>
     </TableContext.Provider>
   );
-}
+};
 
 TableComponent.displayName = "Table";
 
 export const Table = Object.assign(TableComponent, {
-  Root: TableRoot,
-  Header: TableHeader,
-  Body: TableBody,
-  Footer: TableFooter,
-  Row: TableRow,
-  Head: TableHead,
-  Cell: TableCell,
-  Caption: TableCaption,
+  Pagination,
 });

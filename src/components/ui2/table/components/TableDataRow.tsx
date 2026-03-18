@@ -1,7 +1,7 @@
 import { flexRender, type Row } from "@tanstack/react-table";
 import * as React from "react";
 
-import { cn } from "../cn";
+import { cn } from "../../cn";
 import { TableCell, TableRow } from "./TablePrimitive";
 
 interface TableDataRowProps<TData = unknown> {
@@ -36,7 +36,7 @@ const TableDataRowInner = <TData = unknown,>({
       ))}
     </TableRow>
   );
-}
+};
 
 export const TableDataRow = React.memo(
   TableDataRowInner,

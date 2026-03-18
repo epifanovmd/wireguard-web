@@ -1,4 +1,4 @@
-import { createServiceDecorator, ListCollectionHolder } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
 import {
   IWgPeerCreateRequestDto,
@@ -6,23 +6,27 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { PeerModel } from "~@models";
 
+import { PagedHolder } from "../holders";
+
 export type PeerListArgs = {
   serverId?: string;
   userId?: string;
-  my?: boolean;
 };
 
 export const IPeersListStore = createServiceDecorator<IPeersListStore>();
 
 export interface IPeersListStore {
-  listHolder: ListCollectionHolder<WgPeerDto, PeerListArgs>;
+  peersHolder: PagedHolder<WgPeerDto, PeerListArgs>;
   models: PeerModel[];
   isLoading: boolean;
   total: number;
+  pageCount: number;
 
   loadByServer(serverId: string): Promise<void>;
   loadByUser(userId: string): Promise<void>;
   loadMine(): Promise<void>;
+  goToPage(page: number): Promise<void>;
+  setPageSize(pageSize: number): Promise<void>;
 
   createPeer(
     serverId: string,

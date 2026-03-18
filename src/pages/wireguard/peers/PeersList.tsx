@@ -3,7 +3,6 @@ import { FC, useState } from "react";
 
 import { PageHeader } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
-import { PeersTable } from "~@components/tables/peers";
 import {
   Badge,
   Button,
@@ -14,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  Table,
   useToast,
 } from "~@components/ui2";
 
@@ -26,24 +26,41 @@ export const PeersList: FC = observer(() => {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Пиры"
         subtitle={`${vm.total} всего`}
-        actions={<Button onClick={() => setCreateOpen(true)}>Добавить пир</Button>}
+        actions={
+          <Button onClick={() => setCreateOpen(true)}>Добавить пир</Button>
+        }
       />
 
-      <div className="p-4 sm:p-6 flex flex-col gap-4">
+      <div className="p-4 sm:p-6 overflow-auto">
         <Card
           title="Пиры"
           extra={<Badge variant="gray">{vm.total} всего</Badge>}
         >
-          <PeersTable
+          <Table
             data={vm.data}
             columns={vm.columns}
             loading={vm.loading}
+            refreshing={vm.refreshing}
+            getRowId={p => p.data.id}
             onRowClick={vm.handleRowClick}
-          />
+            empty={
+              <div className="text-center py-8 text-muted-foreground text-sm">
+                Пиры не найдены
+              </div>
+            }
+          >
+            {/*<Table.Pagination*/}
+            {/*  totalPages={vm.totalPages}*/}
+            {/*  currentPage={vm.currentPage}*/}
+            {/*  pageSize={vm.pageSize}*/}
+            {/*  onPageChange={vm.onPageChange}*/}
+            {/*  onPageSizeChange={vm.onPageSizeChange}*/}
+            {/*/>*/}
+          </Table>
         </Card>
       </div>
 

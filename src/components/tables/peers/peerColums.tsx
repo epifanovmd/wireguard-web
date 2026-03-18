@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { PeerModel } from "~@models";
 
 import { PeerHandshake } from "../../shared";
-import { PeerStatusLive } from "../../shared/peer/PeerStatusLive";
+import { PeerStatusLive } from "../../shared";
 import { Badge, CopyableText } from "../../ui2";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [

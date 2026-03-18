@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
 import { Terminal } from "lucide-react";
 import React, { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -99,6 +100,11 @@ export const ServerForm: FC<ServerFormProps> = ({
     }
     await onSubmit(payload);
   };
+
+  useHotkeys(
+    [["Enter", () => handleSubmit(handleFormSubmit)()]],
+    ["TEXTAREA", "SELECT"],
+  );
 
   return (
     <FormProvider {...methods}>

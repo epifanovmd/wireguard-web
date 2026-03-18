@@ -43,4 +43,4 @@ export const TableHeadCell = <TData = unknown,>({ header, sorting }: TableHeadCe
       )}
     </TableHead>
   );
-}
+};

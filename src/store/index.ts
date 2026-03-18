@@ -1,4 +1,5 @@
 export * from "./app";
+export * from "./holders";
 export * from "./overviewStats";
 export * from "./peers";
 export * from "./peerStats";

@@ -1,8 +1,8 @@
 import { flexRender } from "@tanstack/react-table";
 import * as React from "react";
 
+import { type TanstackTable } from "../TableTypes";
 import { TableFooter, TableHead, TableRow } from "./TablePrimitive";
-import { type TanstackTable } from "./TableTypes";
 
 interface TableFooterSectionProps<TData> {
   table: TanstackTable<TData>;
@@ -27,4 +27,4 @@ export const TableFooterSection = <TData,>({ table }: TableFooterSectionProps<TD
       ))}
     </TableFooter>
   );
-}
+};
