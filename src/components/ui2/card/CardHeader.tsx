@@ -11,7 +11,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
     <div
       ref={ref}
       className={cn(
-        "flex items-start justify-between gap-4 px-6 py-4",
+        "flex items-start justify-between gap-4 p-3 md:px-6 md:py-4",
         className,
       )}
       {...props}
