@@ -101,7 +101,9 @@ export class SessionDataStore implements ISessionDataStore {
     } else if (res.data) {
       const { tokens, ...user } = res.data;
 
-      this._profileDataStore.holder.setData({ ...user });
+      if (user.profile) {
+        this._profileDataStore.holder.setData(user.profile);
+      }
       this._tokenProvider.setTokens(tokens.accessToken, tokens.refreshToken);
       this.holder.setData(this._tokenProvider.accessToken);
     }

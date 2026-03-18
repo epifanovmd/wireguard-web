@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, formatISO, parseISO } from "date-fns";
+import { formatISO, parseISO } from "date-fns";
 import React, { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import {
 } from "~@api/api-gen/data-contracts";
 import {
   Button,
+  DatePickerFormField,
   InputFormField,
   Select,
   SwitchFormField,
@@ -26,8 +27,7 @@ const schema = z.object({
   dns: z.string().optional().or(z.literal("")),
   mtu: z.coerce.number().optional().nullable(),
   clientAllowedIPs: z.string().optional().or(z.literal("")),
-  endpoint: z.string().optional().or(z.literal("")),
-  expiresAt: z.string().optional().or(z.literal("")),
+  expiresAt: z.date().optional(),
   enabled: z.boolean(),
 });
 
@@ -65,14 +65,13 @@ export const PeerForm: FC<PeerFormProps> = ({
       name: defaultValues?.name ?? "",
       description: defaultValues?.description ?? "",
       presharedKey: defaultValues?.hasPresharedKey ?? false,
-      persistentKeepalive: defaultValues?.persistentKeepalive ?? null,
+      persistentKeepalive: defaultValues?.persistentKeepalive ?? 25,
       dns: defaultValues?.dns ?? "",
       mtu: defaultValues?.mtu ?? null,
       clientAllowedIPs: defaultValues?.clientAllowedIPs ?? "0.0.0.0/0, ::/0",
-      endpoint: defaultValues?.endpoint ?? "",
       expiresAt: defaultValues?.expiresAt
-        ? format(parseISO(defaultValues.expiresAt), "yyyy-MM-dd'T'HH:mm")
-        : "",
+        ? parseISO(defaultValues.expiresAt)
+        : undefined,
       enabled: defaultValues?.enabled ?? true,
     },
   });
@@ -91,9 +90,7 @@ export const PeerForm: FC<PeerFormProps> = ({
     if (data.dns) payload.dns = data.dns;
     if (data.mtu) payload.mtu = data.mtu;
     if (data.clientAllowedIPs) payload.clientAllowedIPs = data.clientAllowedIPs;
-    if (data.endpoint) payload.endpoint = data.endpoint;
-    if (data.expiresAt)
-      payload.expiresAt = formatISO(parseISO(data.expiresAt));
+    if (data.expiresAt) payload.expiresAt = formatISO(data.expiresAt);
 
     await onSubmit(payload, serverId);
   };
@@ -113,7 +110,11 @@ export const PeerForm: FC<PeerFormProps> = ({
           />
         )}
 
-        <InputFormField<PeerFormData> name="name" label="Название пира" required />
+        <InputFormField<PeerFormData>
+          name="name"
+          label="Название пира"
+          required
+        />
         <TextareaFormField<PeerFormData>
           name="description"
           label="Описание"
@@ -146,15 +147,10 @@ export const PeerForm: FC<PeerFormProps> = ({
           type="number"
           placeholder="25"
         />
-        <InputFormField<PeerFormData>
-          name="endpoint"
-          label="Эндпоинт (переопределение)"
-          placeholder="host:port"
-        />
-        <InputFormField<PeerFormData>
+        <DatePickerFormField<PeerFormData>
           name="expiresAt"
           label="Срок действия"
-          type="datetime-local"
+          placeholder="Выберите дату"
         />
 
         <div className="flex items-center justify-between py-1">

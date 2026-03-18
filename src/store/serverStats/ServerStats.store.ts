@@ -49,14 +49,14 @@ export class ServerStatsStore implements IServerStatsStore {
 
     if (res.data) {
       this.speedPointsHolder.setData(
-        res.data.speed.slice(-60).map(s => ({
+        res.data.speed.map(s => ({
           t: formatter.date.formatTime(s.timestamp),
           rx: s.rxSpeedBps,
           tx: s.txSpeedBps,
         })),
       );
       this.trafficPointsHolder.setData(
-        res.data.traffic.slice(-60).map(t => ({
+        res.data.traffic.map(t => ({
           t: formatter.date.formatTime(t.timestamp),
           rx: t.rxBytes,
           tx: t.txBytes,
@@ -71,11 +71,11 @@ export class ServerStatsStore implements IServerStatsStore {
         this.holder.setData(s);
         const t = formatter.date.formatTime(s.timestamp);
         this.speedPointsHolder.setData([
-          ...this.speedPoints.slice(-59),
+          ...this.speedPoints,
           { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
         ]);
         this.trafficPointsHolder.setData([
-          ...this.trafficPoints.slice(-59),
+          ...this.trafficPoints,
           { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
         ]);
       },

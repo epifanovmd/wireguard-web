@@ -1,7 +1,8 @@
 import { type VariantProps } from "class-variance-authority";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import * as React from "react";
+import { useMemo } from "react";
 
 import { cn } from "../cn";
 import { Popover, type PopoverContentProps } from "../popover";
@@ -11,7 +12,7 @@ import { datePickerTriggerVariants } from "./datePickerVariants";
 
 export interface DatePickerProps
   extends VariantProps<typeof datePickerTriggerVariants> {
-  value?: Date;
+  value?: Date | string;
   onChange?: (date: Date | undefined) => void;
   placeholder?: string;
   disabled?: boolean;
@@ -30,7 +31,7 @@ export interface DatePickerProps
 export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
   (
     {
-      value,
+      value: _value,
       onChange,
       placeholder = "Выберите дату",
       disabled,
@@ -44,6 +45,11 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
     },
     ref,
   ) => {
+    const value = useMemo(() => {
+      const value = typeof _value === "string" ? parseISO(_value) : _value;
+      return isValid(value) ? value : undefined;
+    }, [_value]);
+
     const showClear = clearable && !!value && !disabled;
 
     return (

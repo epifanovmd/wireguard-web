@@ -16,15 +16,9 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
       <Card title="Конфигурация пира">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           {[
-            ["Разрешённые IP", peer.data.allowedIPs],
-            ["IP клиента", peer.data.clientAllowedIPs],
-            ["Эндпоинт", peer.data.endpoint ?? "—"],
-            [
-              "Keepalive",
-              peer.data.persistentKeepalive
-                ? `${peer.data.persistentKeepalive}с`
-                : "—",
-            ],
+            ["Разрешённые IP (сервер)", peer.data.allowedIPs],
+            ["Разрешённые IP (клиент)", peer.data.clientAllowedIPs],
+            ["Keepalive, сек", peer.data.persistentKeepalive ?? "—"],
             ["DNS", peer.data.dns ?? "—"],
             ["MTU", peer.data.mtu ? String(peer.data.mtu) : "—"],
             ["PSK", peer.data.hasPresharedKey ? "Да" : "Нет"],

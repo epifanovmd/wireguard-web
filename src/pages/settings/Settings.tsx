@@ -54,7 +54,7 @@ export const Settings: FC = observer(() => {
   const handlePasskeyRegister = async () => {
     if (!profile?.id) return;
 
-    const userRes = await api.getUserById(profile.id);
+    const userRes = await api.getUserById(profile.userId);
     const login = userRes.data?.email ?? userRes.data?.phone;
 
     if (!login) {

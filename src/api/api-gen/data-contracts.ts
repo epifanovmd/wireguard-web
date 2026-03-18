@@ -468,7 +468,6 @@ export interface WgPeerDto {
   publicKey: string;
   hasPresharedKey: boolean;
   allowedIPs: string;
-  endpoint: string | null;
   /** @format double */
   persistentKeepalive: number | null;
   dns: string | null;
@@ -503,7 +502,6 @@ export interface IWgPeerCreateRequestDto {
   /** @format double */
   mtu?: number;
   clientAllowedIPs?: string;
-  endpoint?: string;
   description?: string;
   expiresAt?: string;
   enabled?: boolean;
@@ -521,7 +519,6 @@ export interface IWgPeerUpdateRequestDto {
   /** @format double */
   mtu?: number | null;
   clientAllowedIPs?: string;
-  endpoint?: string | null;
   description?: string | null;
   expiresAt?: string | null;
   enabled?: boolean;

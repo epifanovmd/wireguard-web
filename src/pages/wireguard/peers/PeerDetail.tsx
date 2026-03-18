@@ -98,7 +98,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             )}
             {liveActive?.lastHandshake && (
               <span className="text-xs text-[var(--muted-foreground)]">
-                {` Последнее рукопожатие:${formatter.date.format(liveActive?.lastHandshake)}`}
+                {`Последнее рукопожатие:${formatter.date.format(liveActive?.lastHandshake)}`}
               </span>
             )}
           </div>

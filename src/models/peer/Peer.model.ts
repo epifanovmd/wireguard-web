@@ -19,7 +19,6 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
       enabledLabel: computed,
       isExpired: computed,
       description: computed,
-      endpoint: computed,
       expiresAt: computed,
       createdAt: computed,
       updatedAt: computed,
@@ -49,10 +48,6 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
 
   get description() {
     return this.data.description ?? "—";
-  }
-
-  get endpoint() {
-    return this.data.endpoint ?? "—";
   }
 
   get expiresAt() {
