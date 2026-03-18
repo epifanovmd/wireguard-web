@@ -28,11 +28,7 @@ export interface WgPeerStatusPayload {
 export interface WgPeerActivePayload {
   peerId: string;
   serverId: string;
-  publicKey: string;
-  isActive: boolean;
   lastHandshake: string | null;
-  endpoint: string | null;
-  timestamp: string;
 }
 
 export interface WgPeerStatsPayload {

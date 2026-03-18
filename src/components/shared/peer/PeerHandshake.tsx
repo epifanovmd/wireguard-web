@@ -8,11 +8,11 @@ import { useWgPeer } from "../../../socket";
 export const PeerHandshake: FC<{ row: PeerModel }> = ({ row }) => {
   const { active } = useWgPeer(row.data.id);
 
-  console.log("row.original", row.data.id);
+  console.log("active", active);
 
   return (
     <span className="text-xs text-[var(--muted-foreground)]">
-      {formatter.date.format(active?.lastHandshake)}
+      {formatter.date.format(active?.lastHandshake) || "–"}
     </span>
   );
 };

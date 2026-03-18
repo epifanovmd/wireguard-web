@@ -1,4 +1,3 @@
-import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
@@ -80,11 +79,13 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               status={liveStatus?.status ?? peer.status}
               enabled={peer.enabled}
             />
-            {liveActive?.isActive && (
-              <Badge variant="success" dot>
-                Подключён
-              </Badge>
-            )}
+            {liveActive?.lastHandshake &&
+              Date.now() - new Date(liveActive.lastHandshake).getTime() <
+                3 * 60 * 1000 && (
+                <Badge variant="success" dot>
+                  Подключён
+                </Badge>
+              )}
             {peer.hasPresharedKey && (
               <Badge variant="info" dot>
                 PSK включён
@@ -94,9 +95,6 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               <Badge variant="purple" dot>
                 Назначен
               </Badge>
-            )}
-            {liveActive?.endpoint && (
-              <Badge variant="default">{liveActive.endpoint}</Badge>
             )}
             {liveActive?.lastHandshake && (
               <span className="text-xs text-[var(--muted-foreground)]">
