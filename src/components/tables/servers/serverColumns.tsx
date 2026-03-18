@@ -2,16 +2,28 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { ServerModel } from "~@models";
 
-import {
-  ServerNameLiveCell,
-  ServerPeersCell,
-} from "../../shared";
+import { ServerStatusCell } from "../../shared";
 
 export const serverColumns: ColumnDef<ServerModel>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <ServerNameLiveCell server={row.original} />,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2 mt-0.5 text-xs text-[var(--muted-foreground)]">
+        <span className="font-mono">{row.original.name}</span>
+        {row.original.data.endpoint && (
+          <>
+            <span>·</span>
+            <span>{row.original.data.endpoint}</span>
+          </>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <ServerStatusCell row={row.original} />,
   },
   {
     accessorKey: "interface",
@@ -27,14 +39,9 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     header: "Port",
     cell: ({ row }) => (
       <span className="text-[var(--muted-foreground)]">
-        :{row.original.data.listenPort}
+        {row.original.data.listenPort}
       </span>
     ),
-  },
-  {
-    id: "peers",
-    header: "Peers",
-    cell: ({ row }) => <ServerPeersCell server={row.original} />,
   },
   {
     accessorKey: "createdAt",

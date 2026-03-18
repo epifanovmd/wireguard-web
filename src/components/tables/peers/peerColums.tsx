@@ -2,18 +2,25 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { PeerModel } from "~@models";
 
-import {
-  PeerHandshakeCell,
-  PeerNameCell,
-  PeerStatusCell,
-} from "../../shared";
-import { Badge } from "../../ui2";
+import { PeerHandshakeCell, PeerStatusCell } from "../../shared";
+import { Badge, CopyableText } from "../../ui2";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <PeerNameCell peer={row.original} />,
+    cell: ({ row }) => (
+      <div>
+        <p className="font-medium text-[var(--foreground)]">
+          {row.original.name}
+        </p>
+        <CopyableText
+          text={row.original.data.publicKey}
+          displayText={row.original.shortPublicKey}
+          className="mt-0.5 text-[var(--muted-foreground)]"
+        />
+      </div>
+    ),
   },
   {
     accessorKey: "allowedIPs",
@@ -27,7 +34,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     id: "status",
     header: "Status",
-    cell: ({ row }) => <PeerStatusCell peer={row.original} />,
+    cell: ({ row }) => <PeerStatusCell row={row.original} />,
   },
   {
     id: "psk",
@@ -53,6 +60,6 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     id: "handshake",
     header: "Last handshake",
-    cell: ({ row }) => <PeerHandshakeCell peer={row.original} />,
+    cell: ({ row }) => <PeerHandshakeCell row={row.original} />,
   },
 ];
