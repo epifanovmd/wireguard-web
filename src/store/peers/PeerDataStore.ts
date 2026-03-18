@@ -61,8 +61,8 @@ export class PeerDataStore implements IPeerDataStore {
     return this._apiService.deletePeer(id);
   }
 
-  async enablePeer(id: string) {
-    const res = await this._apiService.enablePeer(id);
+  async startPeer(id: string) {
+    const res = await this._apiService.startPeer(id);
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -71,8 +71,8 @@ export class PeerDataStore implements IPeerDataStore {
     return res;
   }
 
-  async disablePeer(id: string) {
-    const res = await this._apiService.disablePeer(id);
+  async stopPeer(id: string) {
+    const res = await this._apiService.stopPeer(id);
 
     if (res.data) {
       this.peerHolder.setData(res.data);

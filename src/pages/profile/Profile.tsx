@@ -114,16 +114,14 @@ export const Profile: FC = observer(() => {
                       {model?.email ?? "—"}
                     </span>
                   </div>
-                  {model?.phone && (
-                    <div className="flex items-center justify-between py-1">
-                      <span className="text-sm text-[var(--muted-foreground)]">
-                        Телефон
-                      </span>
-                      <span className="text-sm text-[var(--foreground)]">
-                        {model.phone}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between py-1">
+                    <span className="text-sm text-[var(--muted-foreground)]">
+                      Телефон
+                    </span>
+                    <span className="text-sm text-[var(--foreground)]">
+                      {model?.phone ?? "—"}
+                    </span>
+                  </div>
                 </div>
               </Card>
 

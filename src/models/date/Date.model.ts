@@ -3,8 +3,8 @@ import { computed, makeObservable } from "mobx";
 
 import { formatter } from "~@common";
 
-export class DateModel extends DataModelBase<Maybe<string>> {
-  constructor(value: Maybe<string> | (() => Maybe<string>)) {
+export class DateModel extends DataModelBase<Maybe<string | null>> {
+  constructor(value: Maybe<string | null> | (() => Maybe<string | null>)) {
     super(value);
     makeObservable(this, {
       formatted: computed,

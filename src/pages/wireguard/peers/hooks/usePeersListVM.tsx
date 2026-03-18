@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { PeerActions, QrCodeModal } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { PeerModel } from "~@models";
@@ -47,10 +48,11 @@ export const usePeersListVM = (serverId?: string) => {
   }, [serversStore.listHolder.d.length]);
 
   const handleToggle = useCallback(
-    async (id: string, enabled: boolean) => {
-      const res = enabled
-        ? await peerStore.disablePeer(id)
-        : await peerStore.enablePeer(id);
+    async (id: string, status: EWgServerStatus) => {
+      const res =
+        status === EWgServerStatus.Up
+          ? await peerStore.stopPeer(id)
+          : await peerStore.startPeer(id);
 
       if (res.error) {
         toast.error(res.error.message);
@@ -102,8 +104,8 @@ export const usePeersListVM = (serverId?: string) => {
         header: "",
         cell: ({ row }) => (
           <PeerActions
-            enabled={row.original.enabled}
-            onToggle={() => handleToggle(row.original.data.id, row.original.enabled)}
+            status={row.original.status}
+            onToggle={() => handleToggle(row.original.data.id, row.original.status)}
             onDelete={() => handleDelete(row.original.data.id, row.original.name)}
             onQr={() => setQrPeer({ id: row.original.data.id, name: row.original.name })}
           />

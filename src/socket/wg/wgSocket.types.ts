@@ -2,6 +2,7 @@ import { createServiceDecorator } from "@force-dev/utils";
 
 import {
   WgOverviewStatsPayload,
+  WgPeerActivePayload,
   WgPeerStatsPayload,
   WgPeerStatusPayload,
   WgServerStatsPayload,
@@ -28,6 +29,7 @@ export interface IWgSocketService {
     handlers: {
       onStats?: (data: WgPeerStatsPayload) => void;
       onStatus?: (data: WgPeerStatusPayload) => void;
+      onActive?: (data: WgPeerActivePayload) => void;
     },
   ): () => void;
   unsubscribePeer(peerId: string): void;

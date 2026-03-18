@@ -14,6 +14,7 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
     super(data);
     makeObservable(this, {
       name: computed,
+      status: computed,
       enabled: computed,
       enabledLabel: computed,
       isExpired: computed,
@@ -28,6 +29,10 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
 
   get name() {
     return this.data.name;
+  }
+
+  get status() {
+    return this.data.status;
   }
 
   get enabled() {

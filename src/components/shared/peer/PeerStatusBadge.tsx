@@ -1,31 +1,23 @@
-import React, { FC } from "react";
+import { FC } from "react";
+
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 
 import { Badge } from "../../ui2";
 
-interface PeerStatusBadgeProps {
-  enabled: boolean;
-  isExpired?: boolean;
-}
+const STATUS_CONFIG: Record<string, { variant: any; label: string }> = {
+  [EWgServerStatus.Up]: { variant: "success", label: "Работает" },
+  [EWgServerStatus.Down]: { variant: "gray", label: "Не работает" },
+  [EWgServerStatus.Error]: { variant: "danger", label: "Ошибка" },
+  [EWgServerStatus.Unknown]: { variant: "default", label: "Неизвестно" },
+};
 
-export const PeerStatusBadge: FC<PeerStatusBadgeProps> = ({
-  enabled,
-  isExpired,
+export const PeerStatusBadge: FC<{ status: EWgServerStatus }> = ({
+  status,
 }) => {
-  if (isExpired)
-    return (
-      <Badge variant="warning" dot>
-        Истёк
-      </Badge>
-    );
-  if (!enabled)
-    return (
-      <Badge variant="gray" dot>
-        Отключён
-      </Badge>
-    );
+  const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG[EWgServerStatus.Unknown];
   return (
-    <Badge variant="success" dot>
-      Включён
+    <Badge variant={cfg.variant} dot>
+      {cfg.label}
     </Badge>
   );
 };

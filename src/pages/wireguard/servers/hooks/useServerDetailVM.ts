@@ -36,9 +36,8 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   const liveStatus = serverStore.liveStatus;
   const effectiveStatus =
     liveSocketStatus?.status ?? server?.status ?? EWgServerStatus.Unknown;
-  const peerCount = liveSocketStatus?.peerCount ?? liveStatus?.peerCount;
-  const activePeerCount =
-    liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;
+  const peerCount = liveStatus?.peerCount;
+  const activePeerCount = liveStatus?.activePeerCount;
 
   const handleAction = useCallback(
     async (action: "start" | "stop" | "restart") => {

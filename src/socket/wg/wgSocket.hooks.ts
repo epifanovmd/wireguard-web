@@ -2,6 +2,7 @@ import { iocHook } from "@force-dev/react";
 import { useEffect, useState } from "react";
 
 import type {
+  WgPeerActivePayload,
   WgPeerStatsPayload,
   WgPeerStatusPayload,
   WgServerStatsPayload,
@@ -44,6 +45,7 @@ export function useWgServer(
 export interface WgPeerState {
   stats: WgPeerStatsPayload | null;
   status: WgPeerStatusPayload | null;
+  active: WgPeerActivePayload | null;
 }
 
 export function useWgPeer(peerId: string | null | undefined): WgPeerState {
@@ -51,6 +53,7 @@ export function useWgPeer(peerId: string | null | undefined): WgPeerState {
   const [state, setState] = useState<WgPeerState>({
     stats: null,
     status: null,
+    active: null,
   });
 
   useEffect(() => {
@@ -59,6 +62,7 @@ export function useWgPeer(peerId: string | null | undefined): WgPeerState {
     return service.subscribePeer(peerId, {
       onStats: stats => setState(s => ({ ...s, stats })),
       onStatus: status => setState(s => ({ ...s, status })),
+      onActive: active => setState(s => ({ ...s, active })),
     });
   }, [service, peerId]);
 

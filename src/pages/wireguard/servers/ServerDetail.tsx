@@ -7,7 +7,7 @@ import { PageHeader } from "~@components/layouts";
 import {
   ServerActions,
   ServerConfigurationCard,
-  ServerStatusBadge,
+  ServerStatus,
 } from "~@components/shared";
 import { PeersTable } from "~@components/tables/peers";
 import {
@@ -80,7 +80,14 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Статус"
-              value={<ServerStatusBadge status={vm.effectiveStatus} />}
+              value={
+                <div className={"flex gap-2"}>
+                  <ServerStatus
+                    status={vm.effectiveStatus}
+                    enabled={server.enabled}
+                  />
+                </div>
+              }
             />
             <StatCard title="Интерфейс" value={server.interface} />
 

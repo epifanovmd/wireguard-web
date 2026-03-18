@@ -35,7 +35,8 @@ clean:
 # Правило для копирования проекта из текущей папки
 copy:
 	ssh $(SSH_USER)@$(SSH_HOST) 'mkdir -p $(SSH_PROJECT_DIR)' && \
-	rsync -avz --delete --exclude-from='.gitignore' $(LOCAL_PROJECT_DIR)/ $(SSH_USER)@$(SSH_HOST):$(SSH_PROJECT_DIR)
+	rsync -avz --delete --exclude='.git' --exclude='.claude' --exclude='node_modules' --exclude-from='.gitignore' $(LOCAL_PROJECT_DIR)/ $(SSH_USER)@$(SSH_HOST):$(SSH_PROJECT_DIR)
+
 
 # Правило для остановки и удаления запущенного контейнера
 remove-container:

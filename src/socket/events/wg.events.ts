@@ -3,10 +3,6 @@ import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 export interface WgServerStatusPayload {
   serverId: string;
   status: EWgServerStatus;
-  interface: string;
-  listenPort: number;
-  peerCount: number;
-  activePeerCount: number;
   timestamp: string;
 }
 
@@ -23,6 +19,13 @@ export interface WgServerStatsPayload {
 }
 
 export interface WgPeerStatusPayload {
+  peerId: string;
+  serverId: string;
+  status: EWgServerStatus;
+  timestamp: string;
+}
+
+export interface WgPeerActivePayload {
   peerId: string;
   serverId: string;
   publicKey: string;
@@ -63,6 +66,7 @@ export interface WgSocketServerEvents {
   "wg:server:status": (data: WgServerStatusPayload) => void;
   "wg:server:stats": (data: WgServerStatsPayload) => void;
   "wg:peer:status": (data: WgPeerStatusPayload) => void;
+  "wg:peer:active": (data: WgPeerActivePayload) => void;
   "wg:peer:stats": (data: WgPeerStatsPayload) => void;
   "wg:stats:overview": (data: WgOverviewStatsPayload) => void;
   authenticated: (data: { userId: string }) => void;

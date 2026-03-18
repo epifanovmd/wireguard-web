@@ -675,33 +675,33 @@ export class Api<
       ...params,
     });
   /**
-   * @description Enable a peer (add to live WG interface).
+   * @description Start a peer (add to live WG interface, status → UP).
    *
    * @tags WireGuard Peers
-   * @name EnablePeer
-   * @summary Enable peer
-   * @request POST:/api/wg/peers/{id}/enable
+   * @name StartPeer
+   * @summary Start peer
+   * @request POST:/api/wg/peers/{id}/start
    * @secure
    */
-  enablePeer = (id: string, params: RequestParams = {}) =>
+  startPeer = (id: string, params: RequestParams = {}) =>
     this.request<WgPeerDto, any>({
-      url: `/api/wg/peers/${id}/enable`,
+      url: `/api/wg/peers/${id}/start`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Disable a peer (remove from live WG interface).
+   * @description Stop a peer (remove from live WG interface, status → DOWN).
    *
    * @tags WireGuard Peers
-   * @name DisablePeer
-   * @summary Disable peer
-   * @request POST:/api/wg/peers/{id}/disable
+   * @name StopPeer
+   * @summary Stop peer
+   * @request POST:/api/wg/peers/{id}/stop
    * @secure
    */
-  disablePeer = (id: string, params: RequestParams = {}) =>
+  stopPeer = (id: string, params: RequestParams = {}) =>
     this.request<WgPeerDto, any>({
-      url: `/api/wg/peers/${id}/disable`,
+      url: `/api/wg/peers/${id}/stop`,
       method: "POST",
       responseType: "json",
       ...params,

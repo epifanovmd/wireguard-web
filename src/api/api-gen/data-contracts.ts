@@ -476,6 +476,7 @@ export interface WgPeerDto {
   mtu: number | null;
   clientAllowedIPs: string;
   enabled: boolean;
+  status: EWgServerStatus;
   /** @format date-time */
   expiresAt: string | null;
   description: string | null;

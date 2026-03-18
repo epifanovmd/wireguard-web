@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { ServerModel } from "~@models";
 
-import { ServerStatusCell } from "../../shared";
+import { ServerStatusLive } from "../../shared/server/ServerStatusLive";
 
 export const serverColumns: ColumnDef<ServerModel>[] = [
   {
@@ -23,7 +23,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
   {
     accessorKey: "status",
     header: "Статус",
-    cell: ({ row }) => <ServerStatusCell row={row.original} />,
+    cell: ({ row }) => <ServerStatusLive row={row.original} />,
   },
   {
     accessorKey: "interface",

@@ -2,6 +2,7 @@ import { noop } from "~@common";
 
 import {
   WgOverviewStatsPayload,
+  WgPeerActivePayload,
   WgPeerStatsPayload,
   WgPeerStatusPayload,
   WgServerStatsPayload,
@@ -81,6 +82,7 @@ export class WgSocketService implements IWgSocketService {
     handlers: {
       onStats?: (data: WgPeerStatsPayload) => void;
       onStatus?: (data: WgPeerStatusPayload) => void;
+      onActive?: (data: WgPeerActivePayload) => void;
     },
   ): () => void {
     this._transport.emit("wg:subscribe:peer", peerId);
@@ -97,6 +99,12 @@ export class WgSocketService implements IWgSocketService {
         })
       : noop;
 
+    const unsubActive = handlers.onActive
+      ? this._transport.on("wg:peer:active", data => {
+          if (data.peerId === peerId) handlers.onActive!(data);
+        })
+      : noop;
+
     const unsubConnect = this._transport.onConnect(() => {
       this._transport.emit("wg:subscribe:peer", peerId);
     });
@@ -105,6 +113,7 @@ export class WgSocketService implements IWgSocketService {
       this.unsubscribePeer(peerId);
       unsubStats();
       unsubStatus();
+      unsubActive();
       unsubConnect();
     };
   }

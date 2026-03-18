@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { useConfirm, useToast } from "~@components/ui2";
 import { usePeerDataStore } from "~@store";
 import { usePeerStatsStore } from "~@store/peerStats";
@@ -25,9 +26,10 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
 
   const handleToggle = useCallback(async () => {
     if (!peerStore.peer) return;
-    const res = peerStore.peer.enabled
-      ? await peerStore.disablePeer(peerId)
-      : await peerStore.enablePeer(peerId);
+    const isRunning = peerStore.peer.status === EWgServerStatus.Up;
+    const res = isRunning
+      ? await peerStore.stopPeer(peerId)
+      : await peerStore.startPeer(peerId);
 
     if (res.error) toast.error(res.error.message);
   }, [peerStore, peerId, toast]);
@@ -85,6 +87,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     isReady: peerStore.peerHolder.isReady,
     liveStats: peerStatsStore.stats,
     liveStatus: peerStatsStore.status,
+    liveActive: peerStatsStore.active,
     speedPoints: peerStatsStore.speedPoints,
     trafficPoints: peerStatsStore.trafficPoints,
     editOpen,

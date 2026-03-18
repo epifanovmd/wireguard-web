@@ -2,7 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { PeerModel } from "~@models";
 
-import { PeerHandshakeCell, PeerStatusCell } from "../../shared";
+import { PeerHandshake } from "../../shared";
+import { PeerStatusLive } from "../../shared/peer/PeerStatusLive";
 import { Badge, CopyableText } from "../../ui2";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [
@@ -34,7 +35,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     id: "status",
     header: "Статус",
-    cell: ({ row }) => <PeerStatusCell row={row.original} />,
+    cell: ({ row }) => <PeerStatusLive row={row.original} />,
   },
   {
     id: "psk",
@@ -58,8 +59,8 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     ),
   },
   {
-    id: "handshake",
+    id: "lastHandshake",
     header: "Последнее рукопожатие",
-    cell: ({ row }) => <PeerHandshakeCell row={row.original} />,
+    cell: ({ row }) => <PeerHandshake row={row.original} />,
   },
 ];

@@ -8,7 +8,7 @@ import { PageHeader } from "~@components/layouts";
 import {
   PeerActions,
   PeerConfigurationCard,
-  PeerStatusBadge,
+  PeerStatus,
   QrCodeModal,
 } from "~@components/shared";
 import {
@@ -38,7 +38,7 @@ interface PeerDetailProps {
 export const PeerDetail: FC<PeerDetailProps> = observer(
   ({ peerId, onBack }) => {
     const vm = usePeerDetailVM(peerId, onBack);
-    const { peer, model, liveStats, liveStatus } = vm;
+    const { peer, model, liveStats, liveStatus, liveActive } = vm;
 
     if (vm.isLoading || !vm.isReady) {
       return (
@@ -63,7 +63,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           title={peer.name}
           actions={
             <PeerActions
-              enabled={peer.enabled}
+              status={peer.status}
               size="sm"
               onQr={() => vm.setQrOpen(true)}
               onToggle={vm.handleToggle}
@@ -76,11 +76,11 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
         <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
           {/* Status strip */}
           <div className="flex items-center gap-3 flex-wrap">
-            <PeerStatusBadge
+            <PeerStatus
+              status={liveStatus?.status ?? peer.status}
               enabled={peer.enabled}
-              isExpired={model.isExpired}
             />
-            {(liveStatus?.isActive ?? false) && (
+            {liveActive?.isActive && (
               <Badge variant="success" dot>
                 Подключён
               </Badge>
@@ -95,13 +95,12 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                 Назначен
               </Badge>
             )}
-            {liveStatus?.endpoint && (
-              <Badge variant="default">{liveStatus.endpoint}</Badge>
+            {liveActive?.endpoint && (
+              <Badge variant="default">{liveActive.endpoint}</Badge>
             )}
-            {liveStatus?.lastHandshake && (
+            {liveActive?.lastHandshake && (
               <span className="text-xs text-[var(--muted-foreground)]">
-                Последнее рукопожатие:{" "}
-                {format(parseISO(liveStatus.lastHandshake), "dd.MM.yyyy HH:mm:ss")}
+                {` Последнее рукопожатие:${formatter.date.format(liveActive?.lastHandshake)}`}
               </span>
             )}
           </div>

@@ -5,7 +5,11 @@ import { IApiService } from "~@api";
 import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
 
-import { WgPeerStatsPayload, WgPeerStatusPayload } from "../../socket/events";
+import {
+  WgPeerActivePayload,
+  WgPeerStatsPayload,
+  WgPeerStatusPayload,
+} from "../../socket/events";
 import { IWgSocketService } from "../../socket/wg";
 import { IPeerStatsStore } from "./PeerStats.types";
 
@@ -13,6 +17,7 @@ import { IPeerStatsStore } from "./PeerStats.types";
 export class PeerStatsStore implements IPeerStatsStore {
   public holder = new DataHolder<WgPeerStatsPayload>();
   public statusHolder = new DataHolder<WgPeerStatusPayload>();
+  public activeHolder = new DataHolder<WgPeerActivePayload>();
   public speedPoints: IChartPoint[] = [];
   public trafficPoints: IChartPoint[] = [];
 
@@ -29,6 +34,10 @@ export class PeerStatsStore implements IPeerStatsStore {
 
   get status() {
     return this.statusHolder.d;
+  }
+
+  get active() {
+    return this.activeHolder.d;
   }
 
   subscribe(peerId: string, from?: string, to?: string) {
@@ -65,6 +74,9 @@ export class PeerStatsStore implements IPeerStatsStore {
       },
       onStatus: s => {
         this.statusHolder.setData(s);
+      },
+      onActive: a => {
+        this.activeHolder.setData(a);
       },
     });
   }
