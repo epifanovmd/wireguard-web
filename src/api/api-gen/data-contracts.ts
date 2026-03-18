@@ -60,6 +60,11 @@ export enum PublicKeyCredentialType {
   PublicKey = "public-key",
 }
 
+export enum EProfileStatus {
+  Online = "online",
+  Offline = "offline",
+}
+
 export enum EPermissions {
   Read = "read",
   Write = "write",
@@ -80,13 +85,9 @@ export enum ERole {
   Guest = "guest",
 }
 
-export enum EProfileStatus {
-  Online = "online",
-  Offline = "offline",
-}
-
 export interface ProfileDto {
   id: string;
+  userId: string;
   firstName?: string;
   lastName?: string;
   /** @format date-time */
@@ -95,6 +96,39 @@ export interface ProfileDto {
   status?: string;
   /** @format date-time */
   lastOnline?: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: UserDto;
+}
+
+export interface IPermissionDto {
+  id: string;
+  name: EPermissions;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface IRoleDto {
+  id: string;
+  name: ERole;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  permissions: IPermissionDto[];
+}
+
+export interface UserDto {
+  id: string;
+  email?: string;
+  emailVerified?: boolean;
+  phone?: string;
+  profile?: ProfileDto;
+  role: IRoleDto;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -128,38 +162,6 @@ export interface IProfileListDto {
   /** @format double */
   limit?: number;
   data: PublicProfileDto[];
-}
-
-export interface IPermissionDto {
-  id: string;
-  name: EPermissions;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-}
-
-export interface IRoleDto {
-  id: string;
-  name: ERole;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-  permissions: IPermissionDto[];
-}
-
-export interface UserDto {
-  id: string;
-  email?: string;
-  emailVerified?: boolean;
-  phone?: string;
-  profile?: ProfileDto;
-  role: IRoleDto;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
 }
 
 export interface IUserUpdateRequestDto {

@@ -2,7 +2,10 @@ import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
-import { ProfileDto } from "~@api/api-gen/data-contracts";
+import {
+  IProfileUpdateRequestDto,
+  ProfileDto,
+} from "~@api/api-gen/data-contracts";
 
 import { IProfileDataStore } from "./ProfileData.types";
 
@@ -44,5 +47,19 @@ export class ProfileDataStore implements IProfileDataStore {
     }
 
     return undefined;
+  }
+
+  async updateProfile(data: IProfileUpdateRequestDto) {
+    const res = await this._apiService.updateMyProfile(data);
+
+    if (res.error) {
+      return { error: res.error };
+    }
+
+    if (res.data) {
+      this.holder.setData(res.data);
+    }
+
+    return { data: res.data! };
   }
 }

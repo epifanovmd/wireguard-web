@@ -117,16 +117,21 @@ export const NavContent: FC<NavContentProps> = ({
 
     {/* User area */}
     <div className="px-2 py-2 border-t border-[var(--sidebar-border)]">
-      <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg mb-0.5">
+      <ButtonLink
+        to="/profile"
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start gap-2.5 font-normal mb-0.5"
+      >
         <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
           {initials}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 text-left">
           <p className="text-xs font-medium text-[var(--sidebar-foreground)] truncate">
             {displayName}
           </p>
         </div>
-      </div>
+      </ButtonLink>
       <Button
         variant="ghost"
         size="sm"

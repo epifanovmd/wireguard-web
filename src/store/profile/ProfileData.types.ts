@@ -1,6 +1,6 @@
 import { createServiceDecorator, DataHolder } from "@force-dev/utils";
 
-import { ProfileDto } from "~@api/api-gen/data-contracts";
+import { IProfileUpdateRequestDto, ProfileDto } from "~@api/api-gen/data-contracts";
 
 export const IProfileDataStore = createServiceDecorator<IProfileDataStore>();
 
@@ -11,4 +11,7 @@ export interface IProfileDataStore {
   isError: boolean;
   isEmpty: boolean;
   getProfile(): Promise<ProfileDto | undefined>;
+  updateProfile(
+    data: IProfileUpdateRequestDto,
+  ): Promise<{ data: ProfileDto } | { error: Error }>;
 }

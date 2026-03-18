@@ -23,6 +23,7 @@ const AuthRecoveryPasswordLazyRouteImport = createFileRoute(
   '/auth/recovery-password',
 )()
 const PrivateSettingsLazyRouteImport = createFileRoute('/_private/settings')()
+const PrivateProfileLazyRouteImport = createFileRoute('/_private/profile')()
 const PrivateUsersIndexLazyRouteImport = createFileRoute('/_private/users/')()
 const PrivateWireguardStatsLazyRouteImport = createFileRoute(
   '/_private/wireguard/stats',
@@ -94,6 +95,13 @@ const PrivateSettingsLazyRoute = PrivateSettingsLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_private/settings.lazy').then((d) => d.Route),
 )
+const PrivateProfileLazyRoute = PrivateProfileLazyRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => PrivateRoute,
+} as any).lazy(() =>
+  import('./routes/_private/profile.lazy').then((d) => d.Route),
+)
 const PrivateUsersIndexLazyRoute = PrivateUsersIndexLazyRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -159,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/ui': typeof UiRoute
+  '/profile': typeof PrivateProfileLazyRoute
   '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -176,6 +185,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/ui': typeof UiRoute
+  '/profile': typeof PrivateProfileLazyRoute
   '/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -195,6 +205,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/ui': typeof UiRoute
+  '/_private/profile': typeof PrivateProfileLazyRoute
   '/_private/settings': typeof PrivateSettingsLazyRoute
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/ui'
+    | '/profile'
     | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -231,6 +243,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/ui'
+    | '/profile'
     | '/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -249,6 +262,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/ui'
+    | '/_private/profile'
     | '/_private/settings'
     | '/auth/recovery-password'
     | '/auth/signIn'
@@ -335,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateSettingsLazyRouteImport
       parentRoute: typeof PrivateRoute
     }
+    '/_private/profile': {
+      id: '/_private/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof PrivateProfileLazyRouteImport
+      parentRoute: typeof PrivateRoute
+    }
     '/_private/users/': {
       id: '/_private/users/'
       path: '/users'
@@ -388,6 +409,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface PrivateRouteChildren {
+  PrivateProfileLazyRoute: typeof PrivateProfileLazyRoute
   PrivateSettingsLazyRoute: typeof PrivateSettingsLazyRoute
   PrivateIndexLazyRoute: typeof PrivateIndexLazyRoute
   PrivateUsersUserIdLazyRoute: typeof PrivateUsersUserIdLazyRoute
@@ -400,6 +422,7 @@ interface PrivateRouteChildren {
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
+  PrivateProfileLazyRoute: PrivateProfileLazyRoute,
   PrivateSettingsLazyRoute: PrivateSettingsLazyRoute,
   PrivateIndexLazyRoute: PrivateIndexLazyRoute,
   PrivateUsersUserIdLazyRoute: PrivateUsersUserIdLazyRoute,
