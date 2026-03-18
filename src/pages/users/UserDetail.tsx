@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { PageHeader } from "~@components/layouts";
+import { peerColumns, PeersTable } from "~@components/tables/peers";
 import {
   Badge,
   Button,
@@ -195,62 +196,11 @@ export const UserDetail: FC<UserDetailProps> = observer(
               </TabsContent>
               <TabsContent value="peers">
                 <div className="mt-4">
-                  {peersStore.isLoading ? (
-                    <div className="flex justify-center py-8">
-                      <Spinner />
-                    </div>
-                  ) : peersStore.models.length === 0 ? (
-                    <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
-                      No peers assigned to this user
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b border-[var(--border)] bg-[var(--muted)]/30">
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                              Name
-                            </th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                              IP
-                            </th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                              Status
-                            </th>
-                            <th className="text-left px-3 py-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase">
-                              Expires
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {peersStore.models.map(peer => (
-                            <tr
-                              key={peer.data.id}
-                              className="border-b border-[var(--border)] hover:bg-[var(--accent)]"
-                            >
-                              <td className="px-3 py-2.5 font-medium text-[var(--foreground)]">
-                                {peer.name}
-                              </td>
-                              <td className="px-3 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">
-                                {peer.data.allowedIPs}
-                              </td>
-                              <td className="px-3 py-2.5">
-                                <Badge
-                                  variant={peer.enabled ? "success" : "gray"}
-                                  dot
-                                >
-                                  {peer.statusLabel}
-                                </Badge>
-                              </td>
-                              <td className="px-3 py-2.5 text-xs text-[var(--muted-foreground)]">
-                                {peer.expiresAtFormatted ?? "No expiry"}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                  <PeersTable
+                    data={peersStore.models}
+                    columns={peerColumns}
+                    loading={peersStore.isLoading}
+                  />
                 </div>
               </TabsContent>
             </Tabs>
