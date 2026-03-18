@@ -65,7 +65,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
           title={server.name}
           actions={
             <ServerActions
-              effectiveStatus={vm.effectiveStatus}
+              status={vm.effectiveStatus}
               size="sm"
               onEdit={() => vm.setEditOpen(true)}
               onStart={() => vm.handleAction("start")}
@@ -86,7 +86,10 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
 
             <StatCard title="Всего пиров" value={vm.peerCount ?? "—"} />
 
-            <StatCard title="Активных пиров" value={vm.activePeerCount ?? "—"} />
+            <StatCard
+              title="Активных пиров"
+              value={vm.activePeerCount ?? "—"}
+            />
           </div>
 
           {/* Live speed stat cards */}

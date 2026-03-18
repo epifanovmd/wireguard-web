@@ -17,7 +17,7 @@ export const PageHeader: FC<PageHeaderProps> = ({
   return (
     <div
       className={cn(
-        "relative px-6 py-4 border-b border-[var(--border)] bg-[var(--card)]",
+        "sticky top-0 px-6 py-4 border-b border-[var(--border)] bg-[var(--card)]",
         className,
       )}
     >

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { useToast } from "~@components/ui2";
 import { useServerDetailStore } from "~@store";
 import { useServerStatsStore } from "~@store/serverStats";
@@ -34,7 +35,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   const server = serverStore.server;
   const liveStatus = serverStore.liveStatus;
   const effectiveStatus =
-    liveSocketStatus?.status ?? server?.status ?? "unknown";
+    liveSocketStatus?.status ?? server?.status ?? EWgServerStatus.Unknown;
   const peerCount = liveSocketStatus?.peerCount ?? liveStatus?.peerCount;
   const activePeerCount =
     liveSocketStatus?.activePeerCount ?? liveStatus?.activePeerCount;

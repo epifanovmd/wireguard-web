@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format, formatISO, parseISO } from "date-fns";
 import React, { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -70,7 +71,7 @@ export const PeerForm: FC<PeerFormProps> = ({
       clientAllowedIPs: defaultValues?.clientAllowedIPs ?? "0.0.0.0/0, ::/0",
       endpoint: defaultValues?.endpoint ?? "",
       expiresAt: defaultValues?.expiresAt
-        ? new Date(defaultValues.expiresAt).toISOString().slice(0, 16)
+        ? format(parseISO(defaultValues.expiresAt), "yyyy-MM-dd'T'HH:mm")
         : "",
       enabled: defaultValues?.enabled ?? true,
     },
@@ -92,7 +93,7 @@ export const PeerForm: FC<PeerFormProps> = ({
     if (data.clientAllowedIPs) payload.clientAllowedIPs = data.clientAllowedIPs;
     if (data.endpoint) payload.endpoint = data.endpoint;
     if (data.expiresAt)
-      payload.expiresAt = new Date(data.expiresAt).toISOString();
+      payload.expiresAt = formatISO(parseISO(data.expiresAt));
 
     await onSubmit(payload, serverId);
   };

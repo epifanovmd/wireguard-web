@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { FC } from "react";
 
 import { PeerModel } from "~@models";
@@ -11,7 +11,7 @@ export const PeerHandshakeCell: FC<{ row: PeerModel }> = ({ row }) => {
   return (
     <span className="text-xs text-[var(--muted-foreground)]">
       {liveStatus?.lastHandshake
-        ? format(liveStatus.lastHandshake, "DD.MM.YYYY HH:mm:ss")
+        ? format(parseISO(liveStatus.lastHandshake), "dd.MM.yyyy HH:mm:ss")
         : row.createdAt}
     </span>
   );

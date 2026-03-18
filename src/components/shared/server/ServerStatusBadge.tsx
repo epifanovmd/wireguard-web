@@ -11,7 +11,9 @@ const STATUS_CONFIG: Record<string, { variant: any; label: string }> = {
   [EWgServerStatus.Unknown]: { variant: "default", label: "Неизвестно" },
 };
 
-export const ServerStatusBadge: FC<{ status: string }> = ({ status }) => {
+export const ServerStatusBadge: FC<{ status: EWgServerStatus }> = ({
+  status,
+}) => {
   const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG[EWgServerStatus.Unknown];
   return (
     <Badge variant={cfg.variant} dot>

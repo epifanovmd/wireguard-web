@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
@@ -99,7 +100,8 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             )}
             {liveStatus?.lastHandshake && (
               <span className="text-xs text-[var(--muted-foreground)]">
-                Последнее рукопожатие: {liveStatus.lastHandshake}
+                Последнее рукопожатие:{" "}
+                {format(parseISO(liveStatus.lastHandshake), "dd.MM.yyyy HH:mm:ss")}
               </span>
             )}
           </div>
