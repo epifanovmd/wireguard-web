@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Fingerprint } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -7,6 +8,7 @@ import { z } from "zod";
 
 import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
+import { usePasskeyAuth } from "~@common";
 import { useSessionDataStore } from "~@store";
 
 const schema = z.object({
@@ -19,6 +21,7 @@ type FormData = z.infer<typeof schema>;
 export const SignIn = observer(() => {
   const session = useSessionDataStore();
   const navigate = useNavigate();
+  const passkey = usePasskeyAuth();
 
   const methods = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -33,19 +36,23 @@ export const SignIn = observer(() => {
     }
   };
 
+  const passkeyError = passkey.error ?? (session.lastError || null);
+
   return (
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">Sign in</h2>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">
+            Sign in
+          </h2>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
             Enter your credentials to access the admin panel
           </p>
         </div>
 
-        {session.lastError && (
+        {passkeyError && (
           <div className="mb-4 px-4 py-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <p className="text-sm text-destructive">{session.lastError}</p>
+            <p className="text-sm text-destructive">{passkeyError}</p>
           </div>
         )}
 
@@ -80,6 +87,29 @@ export const SignIn = observer(() => {
             >
               Sign in
             </Button>
+
+            {passkey.support && passkey.profileId && (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-[var(--border)]" />
+                  <span className="text-xs text-[var(--muted-foreground)]">
+                    or
+                  </span>
+                  <div className="flex-1 h-px bg-[var(--border)]" />
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2"
+                  loading={passkey.loading}
+                  onClick={passkey.handleLogin}
+                >
+                  <Fingerprint size={16} />
+                  Sign in with passkey
+                </Button>
+              </>
+            )}
           </div>
         </FormProvider>
       </Card>

@@ -1,11 +1,14 @@
-import { Check, X } from "lucide-react";
+import { Check, Fingerprint, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 
+import { useApi } from "~@api";
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
+import { usePasskeyAuth } from "~@common";
 import { PageHeader } from "~@components/layouts";
 import {
   Badge,
+  Button,
   Card,
   Switch,
   Tabs,
@@ -14,6 +17,7 @@ import {
   TabsTrigger,
   useToast,
 } from "~@components/ui2";
+import { useProfileDataStore } from "~@store";
 import { useTheme } from "~@theme";
 
 export const Settings: FC = observer(() => {
@@ -24,6 +28,10 @@ export const Settings: FC = observer(() => {
     dbStatus: string;
     version: string;
   } | null>(null);
+
+  const api = useApi();
+  const { profile } = useProfileDataStore();
+  const passkey = usePasskeyAuth();
 
   useEffect(() => {
     fetch("/health")
@@ -43,18 +51,83 @@ export const Settings: FC = observer(() => {
     return parts.join(" ");
   };
 
+  const handlePasskeyRegister = async () => {
+    if (!profile?.id) return;
+
+    const userRes = await api.getUserById(profile.id);
+    const login = userRes.data?.email ?? userRes.data?.phone;
+
+    if (!login) {
+      toast.error("Could not determine your login (email/phone)");
+      return;
+    }
+
+    const ok = await passkey.handleRegister(login);
+
+    if (ok) {
+      toast.success("Passkey registered successfully");
+    } else if (passkey.error) {
+      toast.error(passkey.error);
+    }
+  };
+
+  const handlePasskeyRemove = () => {
+    passkey.removePasskey();
+    toast.success("Passkey removed from this device");
+  };
+
   const PERMISSIONS_MATRIX = [
     { permission: EPermissions.Read, admin: true, user: true, guest: true },
     { permission: EPermissions.Write, admin: true, user: false, guest: false },
     { permission: EPermissions.Delete, admin: true, user: false, guest: false },
-    { permission: EPermissions.WgServerView, admin: true, user: false, guest: false },
-    { permission: EPermissions.WgServerManage, admin: true, user: false, guest: false },
-    { permission: EPermissions.WgServerControl, admin: true, user: false, guest: false },
-    { permission: EPermissions.WgPeerView, admin: true, user: true, guest: false },
-    { permission: EPermissions.WgPeerManage, admin: true, user: false, guest: false },
-    { permission: EPermissions.WgPeerOwn, admin: true, user: true, guest: false },
-    { permission: EPermissions.WgStatsView, admin: true, user: true, guest: false },
-    { permission: EPermissions.WgStatsExport, admin: true, user: false, guest: false },
+    {
+      permission: EPermissions.WgServerView,
+      admin: true,
+      user: false,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgServerManage,
+      admin: true,
+      user: false,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgServerControl,
+      admin: true,
+      user: false,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgPeerView,
+      admin: true,
+      user: true,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgPeerManage,
+      admin: true,
+      user: false,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgPeerOwn,
+      admin: true,
+      user: true,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgStatsView,
+      admin: true,
+      user: true,
+      guest: false,
+    },
+    {
+      permission: EPermissions.WgStatsExport,
+      admin: true,
+      user: false,
+      guest: false,
+    },
   ];
 
   return (
@@ -67,6 +140,7 @@ export const Settings: FC = observer(() => {
         <Tabs defaultValue="system">
           <TabsList>
             <TabsTrigger value="system">System</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
           </TabsList>
 
@@ -132,6 +206,77 @@ export const Settings: FC = observer(() => {
                   <p className="text-sm text-[var(--muted-foreground)]">
                     Loading health data...
                   </p>
+                )}
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="security">
+            <div className="flex flex-col gap-6 max-w-2xl mt-4">
+              <Card title="Passkey (biometric login)" className="p-5">
+                {!passkey.support ? (
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    Your browser does not support passkeys (WebAuthn).
+                  </p>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 w-8 h-8 rounded-full bg-[var(--muted)] flex items-center justify-center flex-shrink-0">
+                        <Fingerprint
+                          size={16}
+                          className="text-[var(--muted-foreground)]"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-[var(--foreground)]">
+                          {passkey.profileId
+                            ? "Passkey registered on this device"
+                            : "No passkey registered on this device"}
+                        </p>
+                        <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+                          {passkey.profileId
+                            ? `Login: ${passkey.profileId}`
+                            : "Register a passkey to sign in with Face ID, Touch ID, or a security key."}
+                        </p>
+                      </div>
+                      <Badge
+                        variant={passkey.profileId ? "success" : "gray"}
+                        dot
+                      >
+                        {passkey.profileId ? "Active" : "Not set"}
+                      </Badge>
+                    </div>
+
+                    {passkey.error && (
+                      <div className="px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-lg">
+                        <p className="text-xs text-destructive">
+                          {passkey.error}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        variant={passkey.profileId ? "outline" : "default"}
+                        loading={passkey.loading}
+                        onClick={handlePasskeyRegister}
+                      >
+                        {passkey.profileId
+                          ? "Re-register passkey"
+                          : "Register passkey"}
+                      </Button>
+                      {passkey.profileId && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={handlePasskeyRemove}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 )}
               </Card>
             </div>

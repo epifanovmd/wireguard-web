@@ -14,91 +14,156 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { useSessionDataStore } from "~@store";
 
+const PROFILE_ID_KEY = "profileId";
+
 export const usePasskeyAuth = () => {
-  const [support, setSupport] = useState<boolean>(false);
-  // Сохраненный userId в localStorage, означает что доступен вход по биометрии
-  const [profileId, setProfileId] = useState(localStorage.getItem("profileId"));
+  const [support, setSupport] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [profileId, setProfileId] = useState<string | null>(
+    () => localStorage.getItem(PROFILE_ID_KEY),
+  );
 
   const api = useApi();
   const { restore } = useSessionDataStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const support = browserSupportsWebAuthn();
-
-    setSupport(support);
+    setSupport(browserSupportsWebAuthn());
   }, []);
 
   const handleRegister = useCallback(
-    async (profileId: string) => {
-      // Получите challenge и другие данные с сервера
-      const response = await api.generateRegistrationOptions();
+    async (login: string): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
 
-      console.log("response", response);
+      try {
+        const optionsRes = await api.generateRegistrationOptions();
 
-      if (response.error) {
-        console.error(response.error.message);
-      } else if (response.data) {
-        // Запустите процесс регистрации
-        return await startRegistration({
-          optionsJSON: response.data as PublicKeyCredentialCreationOptionsJSON,
-        })
-          .then(async data => {
-            const isVerified = await api
-              .verifyRegistration({
-                data: data as RegistrationResponseJSON,
-              })
-              .then(res => !!res.data?.verified)
-              .catch(
-                err =>
-                  err.message === "The authenticator was previously registered",
-              );
+        if (optionsRes.error) {
+          setError(optionsRes.error.message);
+          return false;
+        }
 
-            if (isVerified) {
-              localStorage.setItem("profileId", profileId);
-              setProfileId(profileId);
-            }
+        let attResp;
 
-            return isVerified;
-          })
-          .catch(err => {
-            console.log("[usePasskeyAuth:handleRegister] error", err);
-            if (err.message === "The authenticator was previously registered") {
-              localStorage.setItem("profileId", profileId);
-              setProfileId(profileId);
-            }
-
-            return false;
+        try {
+          attResp = await startRegistration({
+            optionsJSON:
+              optionsRes.data as PublicKeyCredentialCreationOptionsJSON,
           });
-      }
+        } catch (err: any) {
+          if (err?.name === "InvalidStateError") {
+            // Аутентификатор уже зарегистрирован — считаем успехом
+            localStorage.setItem(PROFILE_ID_KEY, login);
+            setProfileId(login);
+            return true;
+          }
 
-      return false;
+          setError(err?.message ?? "Registration cancelled");
+
+          return false;
+        }
+
+        const verifyRes = await api.verifyRegistration({
+          data: attResp as RegistrationResponseJSON,
+        });
+
+        if (verifyRes.error) {
+          setError(verifyRes.error.message);
+          return false;
+        }
+
+        if (verifyRes.data?.verified) {
+          localStorage.setItem(PROFILE_ID_KEY, login);
+          setProfileId(login);
+          return true;
+        }
+
+        setError("Passkey registration was not verified by the server");
+
+        return false;
+      } catch (err: any) {
+        setError(err?.message ?? "Passkey registration failed");
+        return false;
+      } finally {
+        setLoading(false);
+      }
     },
     [api],
   );
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(async (): Promise<boolean> => {
     if (!profileId) {
-      return;
+      setError("No passkey registered on this device");
+      return false;
     }
 
-    const response = await api.generateAuthenticationOptions({ login: profileId });
+    setLoading(true);
+    setError(null);
 
-    if (response.data) {
-      // Запустите процесс аутентификации
-      const data = await startAuthentication({ optionsJSON: response.data });
-      const verifyResponse = await api.verifyAuthentication({
-        data: data as AuthenticationResponseJSON,
+    try {
+      const optionsRes = await api.generateAuthenticationOptions({
+        login: profileId,
       });
 
-      if (verifyResponse.error) {
-        console.error(verifyResponse.error.message);
-      } else if (verifyResponse.data) {
-        await restore(verifyResponse.data.tokens);
-        navigate({ to: "/" }).then();
+      if (optionsRes.error) {
+        setError(optionsRes.error.message);
+        return false;
       }
+
+      let authResp;
+
+      try {
+        authResp = await startAuthentication({
+          optionsJSON: optionsRes.data!,
+        });
+      } catch (err: any) {
+        setError(err?.message ?? "Authentication cancelled");
+        return false;
+      }
+
+      const verifyRes = await api.verifyAuthentication({
+        data: authResp as AuthenticationResponseJSON,
+      });
+
+      if (verifyRes.error) {
+        setError(verifyRes.error.message);
+        return false;
+      }
+
+      if (verifyRes.data?.tokens) {
+        await restore(verifyRes.data.tokens);
+        navigate({ to: "/" });
+        return true;
+      }
+
+      setError("Authentication was not verified by the server");
+
+      return false;
+    } catch (err: any) {
+      setError(err?.message ?? "Passkey authentication failed");
+      return false;
+    } finally {
+      setLoading(false);
     }
   }, [api, navigate, profileId, restore]);
 
-  return { profileId, handleRegister, handleLogin, support };
+  const removePasskey = useCallback(() => {
+    localStorage.removeItem(PROFILE_ID_KEY);
+    setProfileId(null);
+  }, []);
+
+  const clearError = useCallback(() => setError(null), []);
+
+  return {
+    support,
+    loading,
+    error,
+    profileId,
+    handleRegister,
+    handleLogin,
+    removePasskey,
+    clearError,
+  };
 };

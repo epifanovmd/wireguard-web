@@ -65,20 +65,24 @@ export class SessionDataStore implements ISessionDataStore {
     if (tokens) {
       this._tokenProvider.setTokens(tokens.accessToken, tokens.refreshToken);
       await this._profileDataStore.getProfile();
-    } else {
-      const refreshToken = await this._tokenProvider.restoreRefreshToken();
+      this.holder.setData(this._tokenProvider.accessToken);
 
-      if (refreshToken) {
-        await this._apiService.updateToken();
+      return;
+    }
 
-        if (this._tokenProvider.accessToken) {
-          await this._profileDataStore.getProfile();
-          this.holder.setData(this._tokenProvider.accessToken);
+    const refreshToken = await this._tokenProvider.restoreRefreshToken();
 
-          return;
-        }
+    if (refreshToken) {
+      await this._apiService.updateToken();
+
+      if (this._tokenProvider.accessToken) {
+        await this._profileDataStore.getProfile();
+        this.holder.setData(this._tokenProvider.accessToken);
+
+        return;
       }
     }
+
     this.holder.setPending();
   }
 
