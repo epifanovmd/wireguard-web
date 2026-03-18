@@ -1,6 +1,8 @@
+import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+
 export interface WgServerStatusPayload {
   serverId: string;
-  status: "up" | "down" | "error" | "unknown";
+  status: EWgServerStatus;
   interface: string;
   listenPort: number;
   peerCount: number;

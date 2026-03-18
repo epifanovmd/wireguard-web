@@ -38,8 +38,8 @@ export { ToastProvider, useToast } from "./toast";
 // Confirm
 export type { ConfirmOptions } from "./confirm";
 export { useConfirm } from "./confirm";
-export type { IconButtonProps } from "./icon-button";
-export { IconButton, iconButtonVariants } from "./icon-button";
+export type { AsyncIconButtonProps, IconButtonProps } from "./icon-button";
+export { AsyncIconButton, IconButton, iconButtonVariants } from "./icon-button";
 
 // Inputs
 export type { InputProps } from "./input";

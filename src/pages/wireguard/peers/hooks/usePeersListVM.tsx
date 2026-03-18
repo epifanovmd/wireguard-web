@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { PeerActionsCell, QrCodeModal } from "~@components/shared";
+import { PeerActions, QrCodeModal } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { PeerModel } from "~@models";
 import { usePeerDataStore, usePeersListStore } from "~@store";
@@ -23,9 +23,6 @@ export const usePeersListVM = (serverId?: string) => {
 
   const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
     null,
-  );
-  const [actionLoading, setActionLoading] = useState<Record<string, string>>(
-    {},
   );
 
   useEffect(() => {
@@ -49,24 +46,12 @@ export const usePeersListVM = (serverId?: string) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serversStore.listHolder.d.length]);
 
-  const setLoading = (id: string, action: string) =>
-    setActionLoading(prev => ({ ...prev, [id]: action }));
-  const clearLoading = (id: string) =>
-    setActionLoading(prev => {
-      const n = { ...prev };
-      delete n[id];
-
-      return n;
-    });
-
   const handleToggle = useCallback(
     async (id: string, enabled: boolean) => {
-      setLoading(id, "toggle");
       const res = enabled
         ? await peerStore.disablePeer(id)
         : await peerStore.enablePeer(id);
 
-      clearLoading(id);
       if (res.error) {
         toast.error(res.error.message);
       } else if (res.data) {
@@ -86,10 +71,8 @@ export const usePeersListVM = (serverId?: string) => {
       });
 
       if (!ok) return;
-      setLoading(id, "delete");
       const res = await peerStore.deletePeer(id);
 
-      clearLoading(id);
       if (res.error) {
         toast.error(res.error.message);
       } else {
@@ -118,17 +101,16 @@ export const usePeersListVM = (serverId?: string) => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
-          <PeerActionsCell
-            peer={row.original}
-            loading={actionLoading[row.original.data.id]}
-            onToggle={handleToggle}
-            onDelete={handleDelete}
-            onQr={(id, name) => setQrPeer({ id, name })}
+          <PeerActions
+            enabled={row.original.enabled}
+            onToggle={() => handleToggle(row.original.data.id, row.original.enabled)}
+            onDelete={() => handleDelete(row.original.data.id, row.original.name)}
+            onQr={() => setQrPeer({ id: row.original.data.id, name: row.original.name })}
           />
         ),
       },
     ],
-    [actionLoading, handleToggle, handleDelete],
+    [handleToggle, handleDelete],
   );
 
   const createPeer = useCallback(

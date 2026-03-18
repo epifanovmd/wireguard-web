@@ -12,9 +12,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
-  const [toggling, setToggling] = useState(false);
 
-  // Stats store subscription — pause when on config tab
   useEffect(() => {
     return peerStatsStore.subscribe(peerId);
     // eslint-disable-next-line
@@ -27,12 +25,10 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
 
   const handleToggle = useCallback(async () => {
     if (!peerStore.peer) return;
-    setToggling(true);
     const res = peerStore.peer.enabled
       ? await peerStore.disablePeer(peerId)
       : await peerStore.enablePeer(peerId);
 
-    setToggling(false);
     if (res.error) toast.error(res.error.message);
   }, [peerStore, peerId, toast]);
 
@@ -95,7 +91,6 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     setEditOpen,
     qrOpen,
     setQrOpen,
-    toggling,
     handleToggle,
     handleDelete,
     handleUpdate,

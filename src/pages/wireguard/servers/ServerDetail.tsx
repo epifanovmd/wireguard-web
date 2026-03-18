@@ -1,10 +1,10 @@
-import { Pencil, Play, RotateCcw, Square } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
+  ServerActions,
   ServerConfigurationCard,
   ServerStatusBadge,
 } from "~@components/shared";
@@ -12,7 +12,6 @@ import { PeersTable } from "~@components/tables/peers";
 import {
   Badge,
   Card,
-  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -65,47 +64,14 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
         <PageHeader
           title={server.name}
           actions={
-            <div className="flex items-center gap-1">
-              <IconButton
-                title="Edit"
-                variant="ghost"
-                size="sm"
-                onClick={() => vm.setEditOpen(true)}
-              >
-                <Pencil size={17} />
-              </IconButton>
-              <IconButton
-                title="Start"
-                variant="ghost"
-                size="sm"
-                disabled={
-                  vm.actionLoading === "start" || vm.effectiveStatus === "up"
-                }
-                onClick={() => vm.handleAction("start")}
-              >
-                <Play size={17} className="text-success" />
-              </IconButton>
-              <IconButton
-                title="Stop"
-                variant="ghost"
-                size="sm"
-                disabled={
-                  vm.actionLoading === "stop" || vm.effectiveStatus === "down"
-                }
-                onClick={() => vm.handleAction("stop")}
-              >
-                <Square size={17} className="text-warning" />
-              </IconButton>
-              <IconButton
-                title="Restart"
-                variant="ghost"
-                size="sm"
-                disabled={vm.actionLoading === "restart"}
-                onClick={() => vm.handleAction("restart")}
-              >
-                <RotateCcw size={17} />
-              </IconButton>
-            </div>
+            <ServerActions
+              effectiveStatus={vm.effectiveStatus}
+              size="sm"
+              onEdit={() => vm.setEditOpen(true)}
+              onStart={() => vm.handleAction("start")}
+              onStop={() => vm.handleAction("stop")}
+              onRestart={() => vm.handleAction("restart")}
+            />
           }
         />
 

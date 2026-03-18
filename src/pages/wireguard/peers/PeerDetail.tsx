@@ -1,17 +1,16 @@
-import { Pencil, Power, QrCode, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
 import { PeerSpeedChart, PeerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
+  PeerActions,
   PeerConfigurationCard,
   PeerStatusBadge,
   QrCodeModal,
 } from "~@components/shared";
 import {
   Badge,
-  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -62,44 +61,14 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
         <PageHeader
           title={peer.name}
           actions={
-            <div className="flex items-center gap-1">
-              <IconButton
-                title="QR / Config"
-                variant="ghost"
-                size="sm"
-                onClick={() => vm.setQrOpen(true)}
-              >
-                <QrCode size={17} className="text-[#6366f1]" />
-              </IconButton>
-              <IconButton
-                title={peer.enabled ? "Disable" : "Enable"}
-                variant="ghost"
-                size="sm"
-                disabled={vm.toggling}
-                onClick={vm.handleToggle}
-              >
-                <Power
-                  size={17}
-                  className={peer.enabled ? "text-warning" : "text-success"}
-                />
-              </IconButton>
-              <IconButton
-                title="Edit"
-                variant="ghost"
-                size="sm"
-                onClick={() => vm.setEditOpen(true)}
-              >
-                <Pencil size={17} />
-              </IconButton>
-              <IconButton
-                title="Delete"
-                variant="ghost"
-                size="sm"
-                onClick={vm.handleDelete}
-              >
-                <Trash2 size={17} className="text-destructive" />
-              </IconButton>
-            </div>
+            <PeerActions
+              enabled={peer.enabled}
+              size="sm"
+              onQr={() => vm.setQrOpen(true)}
+              onToggle={vm.handleToggle}
+              onEdit={() => vm.setEditOpen(true)}
+              onDelete={vm.handleDelete}
+            />
           }
         />
 

@@ -13,12 +13,9 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   const toast = useToast();
 
   const [editOpen, setEditOpen] = useState(false);
-  const [actionLoading, setActionLoading] = useState("");
 
-  // Socket — only subscribe to live status when NOT on config tab
   const { status: liveSocketStatus } = useWgServer(serverId);
 
-  // Stats store subscription — pause when on config tab
   useEffect(() => {
     serverStatsStore.loadServerStats(serverId).then(() => {
       serverStatsStore.subscribe(serverId);
@@ -44,14 +41,12 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
 
   const handleAction = useCallback(
     async (action: "start" | "stop" | "restart") => {
-      setActionLoading(action);
       let res;
 
       if (action === "start") res = await serverStore.startServer(serverId);
       else if (action === "stop") res = await serverStore.stopServer(serverId);
       else res = await serverStore.restartServer(serverId);
 
-      setActionLoading("");
       if (res?.error) toast.error(res.error.message);
     },
     [serverStore, serverId, toast],
@@ -71,7 +66,6 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
     [serverStore, serverId, toast],
   );
 
-  // Peers VM scoped to this server
   const peersVM = usePeersListVM(serverId);
 
   return {
@@ -87,7 +81,6 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
     activePeerCount,
     editOpen,
     setEditOpen,
-    actionLoading,
     handleAction,
     handleUpdate,
     peersVM,

@@ -1,4 +1,4 @@
-export * from "./PeerActionCell";
+export * from "./PeerActions";
 export * from "./PeerConfigurationCard";
 export * from "./PeerHandshakeCell";
 export * from "./PeerStatusBadge";
