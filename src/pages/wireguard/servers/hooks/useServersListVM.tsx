@@ -3,7 +3,8 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { ServerActionsLiveStatus } from "~@components/shared";
 import { serverColumns } from "~@components/tables/servers";
-import { type ColumnDef, useConfirm, useToast } from "~@components/ui2";
+import { type ColumnDef, useConfirm } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { ServerModel } from "~@models";
 import { useServerDetailStore, useServersListStore } from "~@store";
 
@@ -12,7 +13,7 @@ export const useServersListVM = () => {
   const detailStore = useServerDetailStore();
   const navigate = useNavigate();
   const confirm = useConfirm();
-  const toast = useToast();
+  const toast = useNotification();
 
   useEffect(() => {
     listStore.load().then();

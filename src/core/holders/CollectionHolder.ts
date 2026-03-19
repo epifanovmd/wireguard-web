@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 
 import {
   CollectionFetchFn,
@@ -57,7 +57,7 @@ export class CollectionHolder<
   TError extends IHolderError = IHolderError,
 > {
   items: TItem[] = [];
-  status: HolderStatus = "idle";
+  status = HolderStatus.Idle;
   error: TError | null = null;
 
   private readonly _onFetch?: CollectionFetchFn<TItem, TArgs>;
@@ -131,23 +131,23 @@ export class CollectionHolder<
   // ─── State setters ────────────────────────────────────────────────────────
 
   setLoading() {
-    this.status = "loading";
+    this.status = HolderStatus.Loading;
     this.error = null;
   }
 
   setRefreshing() {
-    this.status = "refreshing";
+    this.status = HolderStatus.Refreshing;
     this.error = null;
   }
 
   setItems(items: TItem[]) {
     this.items = items;
-    this.status = "success";
+    this.status = HolderStatus.Success;
     this.error = null;
   }
 
   setError(error: TError | IHolderError | string) {
-    this.status = "error";
+    this.status = HolderStatus.Error;
     this.error =
       typeof error === "string"
         ? ({ message: error } as TError)
@@ -156,7 +156,7 @@ export class CollectionHolder<
 
   reset() {
     this.items = [];
-    this.status = "idle";
+    this.status = HolderStatus.Idle;
     this.error = null;
   }
 

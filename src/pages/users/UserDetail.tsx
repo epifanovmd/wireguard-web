@@ -16,8 +16,8 @@ import {
   TabsList,
   TabsTrigger,
   useConfirm,
-  useToast,
 } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { usePeersListStore, useUsersDataStore } from "~@store";
 
 import { PermissionsEditor } from "./components/PermissionsEditor";
@@ -32,7 +32,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
     const store = useUsersDataStore();
     const peersStore = usePeersListStore();
     const confirm = useConfirm();
-    const toast = useToast();
+    const toast = useNotification();
     const [selectedRole, setSelectedRole] = useState<ERole>(ERole.User);
     const [selectedPerms, setSelectedPerms] = useState<EPermissions[]>([]);
     const [savingPrivileges, setSavingPrivileges] = useState(false);

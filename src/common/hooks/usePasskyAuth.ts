@@ -20,8 +20,8 @@ export const usePasskeyAuth = () => {
   const [support, setSupport] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [profileId, setProfileId] = useState<string | null>(
-    () => localStorage.getItem(PROFILE_ID_KEY),
+  const [profileId, setProfileId] = useState<string | null>(() =>
+    localStorage.getItem(PROFILE_ID_KEY),
   );
 
   const api = useApi();
@@ -33,7 +33,7 @@ export const usePasskeyAuth = () => {
   }, []);
 
   const handleRegister = useCallback(
-    async (login: string): Promise<boolean> => {
+    async (login: string): Promise<{ ok: boolean; error?: string }> => {
       setLoading(true);
       setError(null);
 
@@ -42,7 +42,7 @@ export const usePasskeyAuth = () => {
 
         if (optionsRes.error) {
           setError(optionsRes.error.message);
-          return false;
+          return { ok: false, error: optionsRes.error.message };
         }
 
         let attResp;
@@ -57,12 +57,13 @@ export const usePasskeyAuth = () => {
             // Аутентификатор уже зарегистрирован — считаем успехом
             localStorage.setItem(PROFILE_ID_KEY, login);
             setProfileId(login);
-            return true;
+            return { ok: true };
           }
 
-          setError(err?.message ?? "Registration cancelled");
+          const error = err?.message ?? "Registration cancelled";
+          setError(error);
 
-          return false;
+          return { ok: false, error };
         }
 
         const verifyRes = await api.verifyRegistration({
@@ -71,21 +72,23 @@ export const usePasskeyAuth = () => {
 
         if (verifyRes.error) {
           setError(verifyRes.error.message);
-          return false;
+          return { ok: false, error: verifyRes.error.message };
         }
 
         if (verifyRes.data?.verified) {
           localStorage.setItem(PROFILE_ID_KEY, login);
           setProfileId(login);
-          return true;
+          return { ok: true };
         }
 
-        setError("Passkey registration was not verified by the server");
+        const error = "Passkey registration was not verified by the server";
+        setError(error);
 
-        return false;
+        return { ok: false, error };
       } catch (err: any) {
-        setError(err?.message ?? "Passkey registration failed");
-        return false;
+        const error = err?.message ?? "Passkey registration failed";
+        setError(error);
+        return { ok: false, error };
       } finally {
         setLoading(false);
       }
@@ -93,10 +96,14 @@ export const usePasskeyAuth = () => {
     [api],
   );
 
-  const handleLogin = useCallback(async (): Promise<boolean> => {
+  const handleLogin = useCallback(async (): Promise<{
+    ok: boolean;
+    error?: string;
+  }> => {
     if (!profileId) {
-      setError("No passkey registered on this device");
-      return false;
+      const error = "No passkey registered on this device";
+      setError(error);
+      return { ok: false, error };
     }
 
     setLoading(true);
@@ -109,7 +116,7 @@ export const usePasskeyAuth = () => {
 
       if (optionsRes.error) {
         setError(optionsRes.error.message);
-        return false;
+        return { ok: true, error: optionsRes.error.message };
       }
 
       let authResp;
@@ -119,8 +126,10 @@ export const usePasskeyAuth = () => {
           optionsJSON: optionsRes.data!,
         });
       } catch (err: any) {
-        setError(err?.message ?? "Authentication cancelled");
-        return false;
+        const error = err?.message ?? "Registration cancelled";
+        setError(error);
+
+        return { ok: false, error };
       }
 
       const verifyRes = await api.verifyAuthentication({
@@ -129,21 +138,23 @@ export const usePasskeyAuth = () => {
 
       if (verifyRes.error) {
         setError(verifyRes.error.message);
-        return false;
+        return { ok: false, error: verifyRes.error.message };
       }
 
       if (verifyRes.data?.tokens) {
         await restore(verifyRes.data.tokens);
-        navigate({ to: "/" });
-        return true;
+        navigate({ to: "/" }).then();
+        return { ok: true };
       }
 
-      setError("Authentication was not verified by the server");
+      const error = "Authentication was not verified by the server";
+      setError(error);
 
-      return false;
+      return { ok: false, error };
     } catch (err: any) {
-      setError(err?.message ?? "Passkey authentication failed");
-      return false;
+      const error = err?.message ?? "Passkey authentication failed";
+      setError(error);
+      return { ok: false, error };
     } finally {
       setLoading(false);
     }

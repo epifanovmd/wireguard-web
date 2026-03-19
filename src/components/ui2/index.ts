@@ -31,10 +31,6 @@ export { CopyableText } from "./copyable";
 export type { TextareaProps } from "./textarea";
 export { Textarea, textareaVariants } from "./textarea";
 
-// Toast
-export type { ToastContextValue } from "./toast";
-export { ToastProvider, useToast } from "./toast";
-
 // Confirm
 export type { ConfirmOptions } from "./confirm";
 export { useConfirm } from "./confirm";

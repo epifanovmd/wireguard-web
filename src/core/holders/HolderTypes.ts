@@ -11,15 +11,21 @@
  * success    — last request succeeded
  * error      — last request failed
  */
-export type HolderStatus =
-  | "idle"
-  | "loading"
-  | "refreshing"
-  | "success"
-  | "error";
+export enum HolderStatus {
+  Idle = "idle",
+  Loading = "loading",
+  Refreshing = "refreshing",
+  Success = "success",
+  Error = "error",
+}
 
 /** Mutation-only subset (no "refreshing" concept for mutations). */
-export type MutationStatus = "idle" | "loading" | "success" | "error";
+export enum MutationStatus {
+  Idle = "idle",
+  Loading = "loading",
+  Success = "success",
+  Error = "error",
+}
 
 // ─── Error ───────────────────────────────────────────────────────────────────
 

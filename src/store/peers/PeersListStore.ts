@@ -5,9 +5,9 @@ import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
+import { PagedHolder } from "~@core/holders";
 import { PeerModel } from "~@models";
 
-import { PagedHolder } from "../holders";
 import { IPeersListStore, PeerListArgs } from "./PeersListStore.types";
 
 @IPeersListStore({ inSingleton: true })

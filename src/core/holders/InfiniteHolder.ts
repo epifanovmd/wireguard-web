@@ -1,4 +1,10 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 
 import {
   HolderStatus,
@@ -65,10 +71,10 @@ export class InfiniteHolder<
   items: TItem[] = [];
 
   /** Status of the **initial / refresh** load. */
-  status: HolderStatus = "idle";
+  status = HolderStatus.Idle;
 
   /** Status of the **load-more** action (independent from `status`). */
-  loadMoreStatus: MutationStatus = "idle";
+  loadMoreStatus = MutationStatus.Idle;
 
   error: TError | null = null;
   loadMoreError: TError | null = null;
@@ -126,28 +132,31 @@ export class InfiniteHolder<
   // ─── Computed ──────────────────────────────────────────────────────────────
 
   get isIdle() {
-    return this.status === "idle";
+    return this.status === HolderStatus.Idle;
   }
 
   get isLoading() {
-    return this.status === "loading";
+    return this.status === HolderStatus.Loading;
   }
 
   get isRefreshing() {
-    return this.status === "refreshing";
+    return this.status === HolderStatus.Refreshing;
   }
 
   /** True while initial loading OR refreshing. */
   get isBusy() {
-    return this.status === "loading" || this.status === "refreshing";
+    return (
+      this.status === HolderStatus.Loading ||
+      this.status === HolderStatus.Refreshing
+    );
   }
 
   get isSuccess() {
-    return this.status === "success";
+    return this.status === HolderStatus.Success;
   }
 
   get isError() {
-    return this.status === "error";
+    return this.status === HolderStatus.Error;
   }
 
   get isEmpty() {
@@ -155,11 +164,11 @@ export class InfiniteHolder<
   }
 
   get isLoadingMore() {
-    return this.loadMoreStatus === "loading";
+    return this.loadMoreStatus === MutationStatus.Loading;
   }
 
   get isLoadMoreError() {
-    return this.loadMoreStatus === "error";
+    return this.loadMoreStatus === MutationStatus.Error;
   }
 
   get count() {
@@ -169,12 +178,12 @@ export class InfiniteHolder<
   // ─── State setters ────────────────────────────────────────────────────────
 
   setLoading() {
-    this.status = "loading";
+    this.status = HolderStatus.Loading;
     this.error = null;
   }
 
   setRefreshing() {
-    this.status = "refreshing";
+    this.status = HolderStatus.Refreshing;
     this.error = null;
   }
 
@@ -186,9 +195,9 @@ export class InfiniteHolder<
     this.items = items;
     this.hasMore = hasMore;
     this._currentOffset = items.length;
-    this.status = "success";
+    this.status = HolderStatus.Success;
     this.error = null;
-    this.loadMoreStatus = "idle";
+    this.loadMoreStatus = MutationStatus.Idle;
     this.loadMoreError = null;
   }
 
@@ -199,12 +208,12 @@ export class InfiniteHolder<
     this.items = [...this.items, ...items];
     this.hasMore = hasMore;
     this._currentOffset = this.items.length;
-    this.loadMoreStatus = "success";
+    this.loadMoreStatus = MutationStatus.Success;
     this.loadMoreError = null;
   }
 
   setError(error: TError | IHolderError | string) {
-    this.status = "error";
+    this.status = HolderStatus.Error;
     this.error =
       typeof error === "string"
         ? ({ message: error } as TError)
@@ -213,8 +222,8 @@ export class InfiniteHolder<
 
   reset() {
     this.items = [];
-    this.status = "idle";
-    this.loadMoreStatus = "idle";
+    this.status = HolderStatus.Idle;
+    this.loadMoreStatus = MutationStatus.Idle;
     this.error = null;
     this.loadMoreError = null;
     this.hasMore = true;
@@ -332,7 +341,7 @@ export class InfiniteHolder<
   ): Promise<IInfiniteHolderResult<TItem, TApiError>> {
     if (options?.append) {
       runInAction(() => {
-        this.loadMoreStatus = "loading";
+        this.loadMoreStatus = MutationStatus.Loading;
         this.loadMoreError = null;
       });
     } else {
@@ -350,7 +359,7 @@ export class InfiniteHolder<
       if (res.error) {
         if (options?.append) {
           runInAction(() => {
-            this.loadMoreStatus = "error";
+            this.loadMoreStatus = MutationStatus.Error;
             this.loadMoreError = res.error as unknown as TError;
           });
         } else {
@@ -381,7 +390,7 @@ export class InfiniteHolder<
       if (options?.append) {
         runInAction(() => {
           this.hasMore = false;
-          this.loadMoreStatus = "success";
+          this.loadMoreStatus = MutationStatus.Success;
         });
       } else {
         this.setItems([], false);
@@ -393,7 +402,7 @@ export class InfiniteHolder<
 
       if (options?.append) {
         runInAction(() => {
-          this.loadMoreStatus = "error";
+          this.loadMoreStatus = MutationStatus.Error;
           this.loadMoreError = err as unknown as TError;
         });
       } else {
@@ -436,7 +445,7 @@ export class InfiniteHolder<
 
     if (isAppend) {
       runInAction(() => {
-        this.loadMoreStatus = "loading";
+        this.loadMoreStatus = MutationStatus.Loading;
         this.loadMoreError = null;
       });
     } else if (mode === "refreshing") {
@@ -453,7 +462,7 @@ export class InfiniteHolder<
       if (res.error) {
         if (isAppend) {
           runInAction(() => {
-            this.loadMoreStatus = "error";
+            this.loadMoreStatus = MutationStatus.Error;
             this.loadMoreError = res.error as unknown as TError;
           });
         } else {
@@ -486,7 +495,7 @@ export class InfiniteHolder<
       if (isAppend) {
         runInAction(() => {
           this.hasMore = false;
-          this.loadMoreStatus = "success";
+          this.loadMoreStatus = MutationStatus.Success;
         });
       } else {
         this.setItems([], false);
@@ -498,7 +507,7 @@ export class InfiniteHolder<
 
       if (isAppend) {
         runInAction(() => {
-          this.loadMoreStatus = "error";
+          this.loadMoreStatus = MutationStatus.Error;
           this.loadMoreError = err;
         });
       } else {

@@ -1,6 +1,5 @@
 export * from "./app";
 export * from "./auth";
-export * from "./holders";
 export * from "./overviewStats";
 export * from "./peers";
 export * from "./peerStats";

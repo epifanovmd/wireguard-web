@@ -15,15 +15,15 @@ import {
   ModalTitle,
   Select,
   Table,
-  useToast,
 } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 
 import { PeerForm } from "./components/PeerForm";
 import { usePeersListVM } from "./hooks";
 
 export const PeersList: FC = observer(() => {
   const vm = usePeersListVM();
-  const toast = useToast();
+  const toast = useNotification();
   const [createOpen, setCreateOpen] = useState(false);
 
   return (

@@ -65,7 +65,7 @@ export class EntityHolder<
   TError extends IHolderError = IHolderError,
 > {
   data: TData | null = null;
-  status: HolderStatus = "idle";
+  status = HolderStatus.Idle;
   error: TError | null = null;
 
   private readonly _onFetch?: EntityFetchFn<TData, TArgs>;
@@ -96,7 +96,7 @@ export class EntityHolder<
 
     if (options?.initialData !== undefined) {
       this.data = options.initialData;
-      this.status = "success";
+      this.status = HolderStatus.Success;
     }
   }
 
@@ -145,23 +145,23 @@ export class EntityHolder<
   // ─── Manual state setters ─────────────────────────────────────────────────
 
   setLoading() {
-    this.status = "loading";
+    this.status = HolderStatus.Loading;
     this.error = null;
   }
 
   setRefreshing() {
-    this.status = "refreshing";
+    this.status = HolderStatus.Refreshing;
     this.error = null;
   }
 
   setData(data: TData) {
     this.data = data;
-    this.status = "success";
+    this.status = HolderStatus.Success;
     this.error = null;
   }
 
   setError(error: TError | IHolderError | string) {
-    this.status = "error";
+    this.status = HolderStatus.Error;
     this.error =
       typeof error === "string"
         ? ({ message: error } as TError)
@@ -171,7 +171,7 @@ export class EntityHolder<
   /** Clears data and resets to idle. */
   reset() {
     this.data = null;
-    this.status = "idle";
+    this.status = HolderStatus.Idle;
     this.error = null;
   }
 
@@ -218,7 +218,7 @@ export class EntityHolder<
       // Server returned success with no body (204 / empty data)
       runInAction(() => {
         this.data = null;
-        this.status = "success";
+        this.status = HolderStatus.Success;
       });
 
       return { data: null, error: null };
@@ -297,7 +297,7 @@ export class EntityHolder<
 
       runInAction(() => {
         this.data = null;
-        this.status = "success";
+        this.status = HolderStatus.Success;
       });
 
       return { data: null, error: null };

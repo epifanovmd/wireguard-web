@@ -1,4 +1,3 @@
-import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
@@ -8,9 +7,9 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
+import { CombinedHolder, EntityHolder, PollingHolder } from "~@core/holders";
 import { ServerModel } from "~@models";
 
-import { EntityHolder } from "../holders";
 import { IServerDetailStore } from "./ServerDetailStore.types";
 
 @IServerDetailStore({ inSingleton: true })
@@ -18,9 +17,14 @@ export class ServerDetailStore implements IServerDetailStore {
   public serverHolder = new EntityHolder<WgServerDto, string>({
     onFetch: id => this._apiService.getServer(id),
   });
-  public statusHolder = new EntityHolder<IWgServerStatusDto, string>({
+  public statusHolder = new PollingHolder<IWgServerStatusDto, string>({
     onFetch: id => this._apiService.getServerStatus(id),
+    interval: 10_000,
   });
+  public pageHolder = new CombinedHolder([
+    this.serverHolder,
+    this.statusHolder,
+  ]);
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -50,6 +54,14 @@ export class ServerDetailStore implements IServerDetailStore {
     const res = await this.statusHolder.load(id);
 
     return res.data;
+  }
+
+  startStatusPolling(id: string) {
+    this.statusHolder.startPolling({ args: id });
+  }
+
+  stopStatusPolling() {
+    this.statusHolder.stopPolling();
   }
 
   async createServer(params: IWgServerCreateRequestDto) {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { PeerActions } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
+import { useNotification } from "~@core/notifications";
 import { PeerModel } from "~@models";
 import {
   usePeerDataStore,
@@ -11,11 +12,7 @@ import {
   useServersListStore,
 } from "~@store";
 
-import {
-  type ColumnDef,
-  useConfirm,
-  useToast,
-} from "../../../../components/ui2";
+import { type ColumnDef, useConfirm } from "../../../../components/ui2";
 
 export const usePeersListVM = (_serverId?: string) => {
   const listStore = usePeersListStore();
@@ -23,7 +20,7 @@ export const usePeersListVM = (_serverId?: string) => {
   const serversStore = useServersListStore();
   const navigate = useNavigate();
   const confirm = useConfirm();
-  const toast = useToast();
+  const toast = useNotification();
 
   const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
     null,

@@ -16,13 +16,13 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  useToast,
 } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { useAuthStore } from "~@store";
 import { useTheme } from "~@theme";
 
 export const Settings: FC = observer(() => {
-  const toast = useToast();
+  const toast = useNotification();
   const { isDark, setTheme } = useTheme();
   const [health, setHealth] = useState<{
     uptime: number;
@@ -64,18 +64,17 @@ export const Settings: FC = observer(() => {
       return;
     }
 
-    const ok = await passkey.handleRegister(login);
+    const { ok, error } = await passkey.handleRegister(login);
 
     if (ok) {
       toast.success("Passkey успешно зарегистрирован");
-    } else if (passkey.error) {
-      toast.error(passkey.error);
+    } else if (error) {
+      toast.error(error);
     }
   };
 
   const handlePasskeyRemove = () => {
     passkey.removePasskey();
-    toast.success("Passkey удалён с этого устройства");
   };
 
   const PERMISSIONS_MATRIX = [

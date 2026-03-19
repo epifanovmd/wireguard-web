@@ -1,4 +1,10 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 
 import {
   IApiResponse,
@@ -65,7 +71,7 @@ export class MutationHolder<
 > {
   /** Last successful response data. */
   data: TData | null = null;
-  status: MutationStatus = "idle";
+  status = MutationStatus.Idle;
   error: TError | null = null;
 
   private readonly _onMutate?: MutationFn<TArgs, TData>;
@@ -90,26 +96,26 @@ export class MutationHolder<
   // ─── Computed ──────────────────────────────────────────────────────────────
 
   get isIdle() {
-    return this.status === "idle";
+    return this.status === MutationStatus.Idle;
   }
 
   get isLoading() {
-    return this.status === "loading";
+    return this.status === MutationStatus.Loading;
   }
 
   get isSuccess() {
-    return this.status === "success";
+    return this.status === MutationStatus.Success;
   }
 
   get isError() {
-    return this.status === "error";
+    return this.status === MutationStatus.Error;
   }
 
   // ─── Actions ──────────────────────────────────────────────────────────────
 
   reset() {
     this.data = null;
-    this.status = "idle";
+    this.status = MutationStatus.Idle;
     this.error = null;
   }
 
@@ -135,14 +141,8 @@ export class MutationHolder<
    */
   async execute(
     ..._params: TArgs extends void
-      ? [
-          args?: never,
-          fn?: MutationFn<TArgs, TData>,
-        ]
-      : [
-          args: TArgs,
-          fn?: MutationFn<TArgs, TData>,
-        ]
+      ? [args?: never, fn?: MutationFn<TArgs, TData>]
+      : [args: TArgs, fn?: MutationFn<TArgs, TData>]
   ): Promise<IMutationHolderResult<TData, TError>> {
     const args = _params[0] as TArgs;
     const fn = _params[1] ?? this._onMutate;
@@ -157,7 +157,7 @@ export class MutationHolder<
     }
 
     runInAction(() => {
-      this.status = "loading";
+      this.status = MutationStatus.Loading;
       this.error = null;
     });
 
@@ -166,7 +166,7 @@ export class MutationHolder<
 
       if (res.error) {
         runInAction(() => {
-          this.status = "error";
+          this.status = MutationStatus.Error;
           this.error = res.error as unknown as TError;
         });
 
@@ -175,7 +175,7 @@ export class MutationHolder<
 
       runInAction(() => {
         this.data = (res.data ?? null) as TData | null;
-        this.status = "success";
+        this.status = MutationStatus.Success;
         this.error = null;
       });
 
@@ -184,7 +184,7 @@ export class MutationHolder<
       const err = toHolderError(e) as TError;
 
       runInAction(() => {
-        this.status = "error";
+        this.status = MutationStatus.Error;
         this.error = err;
       });
 
@@ -203,7 +203,7 @@ export class MutationHolder<
     fn: () => Promise<IApiResponse<TData>>,
   ): Promise<IMutationHolderResult<TData, TError>> {
     runInAction(() => {
-      this.status = "loading";
+      this.status = MutationStatus.Loading;
       this.error = null;
     });
 
@@ -212,7 +212,7 @@ export class MutationHolder<
 
       if (res.error) {
         runInAction(() => {
-          this.status = "error";
+          this.status = MutationStatus.Error;
           this.error = res.error as unknown as TError;
         });
 
@@ -221,7 +221,7 @@ export class MutationHolder<
 
       runInAction(() => {
         this.data = (res.data ?? null) as TData | null;
-        this.status = "success";
+        this.status = MutationStatus.Success;
       });
 
       return { data: (res.data ?? null) as TData | null, error: null };
@@ -229,7 +229,7 @@ export class MutationHolder<
       const err = toHolderError(e) as TError;
 
       runInAction(() => {
-        this.status = "error";
+        this.status = MutationStatus.Error;
         this.error = err;
       });
 

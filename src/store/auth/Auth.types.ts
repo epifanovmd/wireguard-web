@@ -7,9 +7,8 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { IEntityHolderResult, IHolderError } from "~@core/holders";
 import { ProfileModel } from "~@models";
-
-import { IEntityHolderResult, IHolderError } from "../holders";
 
 export enum AuthStatus {
   Idle = "idle",

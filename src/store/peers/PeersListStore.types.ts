@@ -4,9 +4,8 @@ import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
+import { PagedHolder } from "~@core/holders";
 import { PeerModel } from "~@models";
-
-import { PagedHolder } from "../holders";
 
 export type PeerListArgs = {
   serverId?: string;

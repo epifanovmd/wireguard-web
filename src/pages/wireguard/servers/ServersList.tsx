@@ -13,15 +13,15 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
-  useToast,
 } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 
 import { ServerForm } from "./components/ServerForm";
 import { useServersListVM } from "./hooks";
 
 export const ServersList: FC = observer(() => {
   const vm = useServersListVM();
-  const toast = useToast();
+  const toast = useNotification();
   const [createOpen, setCreateOpen] = useState(false);
 
   return (

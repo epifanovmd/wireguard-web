@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { useConfirm, useToast } from "~@components/ui2";
+import { useConfirm } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { usePeerDataStore } from "~@store";
 import { usePeerStatsStore } from "~@store/peerStats";
 
@@ -9,7 +10,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
   const peerStore = usePeerDataStore();
   const peerStatsStore = usePeerStatsStore();
   const confirm = useConfirm();
-  const toast = useToast();
+  const toast = useNotification();
 
   const [editOpen, setEditOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);

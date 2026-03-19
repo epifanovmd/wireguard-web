@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 
 import {
   HolderStatus,
@@ -71,7 +71,7 @@ export class PagedHolder<
   TError extends IHolderError = IHolderError,
 > {
   items: TItem[] = [];
-  status: HolderStatus = "idle";
+  status = HolderStatus.Idle;
   error: TError | null = null;
   pagination: IPagedHolderPagination;
 
@@ -130,27 +130,30 @@ export class PagedHolder<
   // ─── Computed ──────────────────────────────────────────────────────────────
 
   get isIdle() {
-    return this.status === "idle";
+    return this.status === HolderStatus.Idle;
   }
 
   get isLoading() {
-    return this.status === "loading";
+    return this.status === HolderStatus.Loading;
   }
 
   get isRefreshing() {
-    return this.status === "refreshing";
+    return this.status === HolderStatus.Refreshing;
   }
 
   get isBusy() {
-    return this.status === "loading" || this.status === "refreshing";
+    return (
+      this.status === HolderStatus.Loading ||
+      this.status === HolderStatus.Refreshing
+    );
   }
 
   get isSuccess() {
-    return this.status === "success";
+    return this.status === HolderStatus.Success;
   }
 
   get isError() {
-    return this.status === "error";
+    return this.status === HolderStatus.Error;
   }
 
   get isEmpty() {
@@ -186,12 +189,12 @@ export class PagedHolder<
   // ─── State setters ────────────────────────────────────────────────────────
 
   setLoading() {
-    this.status = "loading";
+    this.status = HolderStatus.Loading;
     this.error = null;
   }
 
   setRefreshing() {
-    this.status = "refreshing";
+    this.status = HolderStatus.Refreshing;
     this.error = null;
   }
 
@@ -217,12 +220,12 @@ export class PagedHolder<
   setItems(items: TItem[], totalCount: number) {
     this.items = items;
     this.pagination = { ...this.pagination, totalCount };
-    this.status = "success";
+    this.status = HolderStatus.Success;
     this.error = null;
   }
 
   setError(error: TError | IHolderError | string) {
-    this.status = "error";
+    this.status = HolderStatus.Error;
     this.error =
       typeof error === "string"
         ? ({ message: error } as TError)
@@ -232,7 +235,7 @@ export class PagedHolder<
   /** Reset items, pagination (except pageSize), and status to idle. */
   reset() {
     this.items = [];
-    this.status = "idle";
+    this.status = HolderStatus.Idle;
     this.error = null;
     this.lastArgs = null;
     this.pagination = { ...this.pagination, page: 1, totalCount: 0 };
@@ -361,9 +364,9 @@ export class PagedHolder<
   /**
    * Re-fetches the **current page** with the same args used last time.
    */
-  async reload(
-    options?: { refresh?: boolean },
-  ): Promise<IPagedHolderResult<TItem, TError>> {
+  async reload(options?: {
+    refresh?: boolean;
+  }): Promise<IPagedHolderResult<TItem, TError>> {
     return this._runFetch(this.lastArgs as TArgs, options?.refresh ?? false);
   }
 
@@ -379,20 +382,27 @@ export class PagedHolder<
       page: Math.max(1, Math.min(page, this.pageCount)),
     };
 
-    return this._runFetch(
-      this.lastArgs as TArgs,
-      options?.refresh ?? false,
-    );
+    return this._runFetch(this.lastArgs as TArgs, options?.refresh ?? false);
   }
 
   async nextPage(): Promise<IPagedHolderResult<TItem, TError>> {
-    if (!this.hasNextPage) return { data: this.items, totalCount: this.pagination.totalCount, error: null };
+    if (!this.hasNextPage)
+      return {
+        data: this.items,
+        totalCount: this.pagination.totalCount,
+        error: null,
+      };
 
     return this.goToPage(this.pagination.page + 1);
   }
 
   async prevPage(): Promise<IPagedHolderResult<TItem, TError>> {
-    if (!this.hasPrevPage) return { data: this.items, totalCount: this.pagination.totalCount, error: null };
+    if (!this.hasPrevPage)
+      return {
+        data: this.items,
+        totalCount: this.pagination.totalCount,
+        error: null,
+      };
 
     return this.goToPage(this.pagination.page - 1);
   }

@@ -7,21 +7,23 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
+import { CombinedHolder, EntityHolder, PollingHolder } from "~@core/holders";
 import { ServerModel } from "~@models";
-
-import { EntityHolder } from "../holders";
 
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();
 
 export interface IServerDetailStore {
   serverHolder: EntityHolder<WgServerDto, string>;
-  statusHolder: EntityHolder<IWgServerStatusDto, string>;
+  statusHolder: PollingHolder<IWgServerStatusDto, string>;
+  pageHolder: CombinedHolder;
   server: WgServerDto | null;
   serverModel: ServerModel | null;
   liveStatus: IWgServerStatusDto | null;
 
   loadServer(id: string): Promise<WgServerDto | null>;
   loadServerStatus(id: string): Promise<IWgServerStatusDto | null>;
+  startStatusPolling(id: string): void;
+  stopStatusPolling(): void;
   createServer(params: IWgServerCreateRequestDto): Promise<void>;
   updateServer(
     id: string,

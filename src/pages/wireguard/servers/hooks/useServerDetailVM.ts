@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { useToast } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { useServerDetailStore } from "~@store";
 import { useServerStatsStore } from "~@store/serverStats";
 
@@ -11,7 +11,7 @@ import { usePeersListVM } from "../../peers/hooks";
 export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   const serverStore = useServerDetailStore();
   const serverStatsStore = useServerStatsStore();
-  const toast = useToast();
+  const toast = useNotification();
 
   const [editOpen, setEditOpen] = useState(false);
 
@@ -28,7 +28,9 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
 
   useEffect(() => {
     serverStore.loadServer(serverId);
-    serverStore.loadServerStatus(serverId);
+    serverStore.startStatusPolling(serverId);
+
+    return () => serverStore.stopStatusPolling();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverId]);
 
@@ -71,7 +73,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   return {
     server,
     serverModel: serverStore.serverModel,
-    isLoading: serverStore.serverHolder.isLoading,
+    isLoading: serverStore.pageHolder.isLoading,
     isFilled: serverStore.serverHolder.isFilled,
     liveStats: serverStatsStore.stats,
     speedPoints: serverStatsStore.speedPoints,

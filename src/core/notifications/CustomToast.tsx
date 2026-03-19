@@ -1,10 +1,10 @@
+import { clsx } from "clsx";
 import { AlertCircle, AlertTriangle, CheckCircle, Info, X } from "lucide-react";
 import * as React from "react";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { twMerge } from "tailwind-merge";
 
-import { cn } from "../cn";
-
-type ToastVariant = "success" | "error" | "warning" | "info";
+export type ToastVariant = "success" | "error" | "warning" | "info";
 
 const ICONS: Record<ToastVariant, React.ReactNode> = {
   success: <CheckCircle size={16} />,
@@ -20,7 +20,7 @@ const VARIANT_CLASSES: Record<ToastVariant, string> = {
   info: "border-info/40 text-info",
 };
 
-interface CustomToastProps {
+export interface CustomToastProps {
   id: string;
   message: string;
   variant: ToastVariant;
@@ -34,13 +34,15 @@ export const CustomToast: React.FC<CustomToastProps> = ({
   visible,
 }) => (
   <div
-    className={cn(
-      "flex items-start gap-2.5 px-4 py-3 rounded-lg border shadow-lg",
-      "min-w-[280px] max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)]",
-      VARIANT_CLASSES[variant],
-      visible
-        ? "animate-in slide-in-from-right-5 fade-in duration-300 ease-out"
-        : "animate-out slide-out-to-right-5 fade-out duration-200 ease-in fill-mode-forwards",
+    className={twMerge(
+      clsx(
+        "flex items-start gap-2.5 px-4 py-3 rounded-lg border shadow-lg",
+        "min-w-[280px] max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)]",
+        VARIANT_CLASSES[variant],
+        visible
+          ? "animate-in slide-in-from-right-5 fade-in duration-300 ease-out"
+          : "animate-out slide-out-to-right-5 fade-out duration-200 ease-in fill-mode-forwards",
+      ),
     )}
   >
     <span className="flex-shrink-0 mt-0.5">{ICONS[variant]}</span>
@@ -53,26 +55,4 @@ export const CustomToast: React.FC<CustomToastProps> = ({
       <X size={14} />
     </button>
   </div>
-);
-
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <>
-    {children}
-    <Toaster
-      position="top-right"
-      gutter={8}
-      containerStyle={{ zIndex: 9999 }}
-      toastOptions={{
-        duration: 4000,
-        style: {
-          padding: 0,
-          background: "transparent",
-          boxShadow: "none",
-          maxWidth: "400px",
-        },
-      }}
-    />
-  </>
 );

@@ -5,9 +5,9 @@ import {
   IWgServerCreateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
+import { PagedHolder } from "~@core/holders";
 import { ServerModel } from "~@models";
 
-import { PagedHolder } from "../holders";
 import { IServersListStore } from "./ServersListStore.types";
 
 @IServersListStore({ inSingleton: true })

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api";
-import { useToast } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 import { useAuthStore } from "~@store";
 
 export const profileSchema = z.object({
@@ -19,7 +19,7 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 
 export const useProfileVM = () => {
   const api = useApi();
-  const toast = useToast();
+  const toast = useNotification();
   const authStore = useAuthStore();
   const [sendingVerification, setSendingVerification] = useState(false);
 

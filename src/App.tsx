@@ -2,11 +2,8 @@ import { disposer } from "@force-dev/utils";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode, useEffect } from "react";
 
-import {
-  ModalProvider,
-  ToastProvider,
-  TooltipProvider,
-} from "~@components/ui2";
+import { ModalProvider, TooltipProvider } from "~@components/ui2";
+import { ToastProvider } from "~@core/notifications";
 import { useAppDataStore } from "~@store";
 import { ThemeProvider } from "~@theme";
 

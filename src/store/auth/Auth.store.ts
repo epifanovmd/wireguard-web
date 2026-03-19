@@ -11,9 +11,9 @@ import {
   UserDto,
 } from "~@api/api-gen/data-contracts";
 import { IAuthSessionService } from "~@core/auth";
+import { EntityHolder } from "~@core/holders";
 import { ProfileModel } from "~@models";
 
-import { EntityHolder } from "../holders";
 import { AuthStatus, IAuthStore } from "./Auth.types";
 
 const AuthStatusModel = createEnumModelBase<typeof AuthStatus>(AuthStatus);

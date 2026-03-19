@@ -6,12 +6,8 @@ import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
-import {
-  Button,
-  InputFormField,
-  SelectFormField,
-  useToast,
-} from "~@components/ui2";
+import { Button, InputFormField, SelectFormField } from "~@components/ui2";
+import { useNotification } from "~@core/notifications";
 
 import { PermissionsEditor } from "./PermissionsEditor";
 
@@ -46,7 +42,7 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
   onCreated,
 }) => {
   const api = useApi();
-  const toast = useToast();
+  const toast = useNotification();
   const [loading, setLoading] = useState(false);
   const [permissions, setPermissions] = useState<EPermissions[]>([
     EPermissions.Read,
