@@ -13,6 +13,8 @@ export const signInFormValidationSchema = z.object({
 
 export const signUpFormValidationSchema = z
   .object({
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
     confirmPassword: passwordValidation,
   })
   .merge(signInFormValidationSchema)

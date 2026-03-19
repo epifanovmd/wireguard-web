@@ -23,9 +23,19 @@ export const useSignUpVM = () => {
       const phone = isPhone(data.login) ? data.login : undefined;
 
       if (email) {
-        await authStore.signUp({ email, password: data.password });
+        await authStore.signUp({
+          email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        });
       } else if (phone) {
-        await authStore.signUp({ phone, password: data.password });
+        await authStore.signUp({
+          phone,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        });
       }
 
       if (authStore.isAuthenticated) {

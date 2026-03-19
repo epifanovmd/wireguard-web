@@ -1,43 +1,24 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Fingerprint } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
+import { FormProvider } from "react-hook-form";
 
 import { usePasskeyAuth } from "~@common";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui2";
+import { AsyncButton, Button, Card, InputFormField } from "~@components/ui2";
 import { useAuthStore } from "~@store";
 
-const schema = z.object({
-  login: z.string().min(1, "Логин обязателен"),
-  password: z.string().min(1, "Пароль обязателен"),
-});
-
-type FormData = z.infer<typeof schema>;
+import { useSignInVM } from "./hooks";
+import { TSignInForm } from "./validations";
 
 export const SignIn = observer(() => {
   const auth = useAuthStore();
-  const navigate = useNavigate();
+  const { form, handleLogin } = useSignInVM();
   const passkey = usePasskeyAuth();
 
-  const methods = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
-  const { handleSubmit } = methods;
-
-  const onSubmit = async (data: FormData) => {
-    await auth.signIn({ login: data.login, password: data.password });
-    if (auth.isAuthenticated) {
-      await navigate({ to: "/" });
-    }
-  };
-
-  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
+  useHotkeys([["Enter", () => handleLogin()]], []);
 
   const passkeyError = passkey.error ?? (auth.error || null);
 
@@ -57,14 +38,14 @@ export const SignIn = observer(() => {
           </div>
         )}
 
-        <FormProvider {...methods}>
+        <FormProvider {...form}>
           <div className="flex flex-col gap-4">
-            <InputFormField<FormData>
+            <InputFormField<TSignInForm>
               name="login"
               label="Email или телефон"
               placeholder="email@example.com"
             />
-            <InputFormField<FormData>
+            <InputFormField<TSignInForm>
               name="password"
               label="Пароль"
               type="password"
@@ -80,14 +61,14 @@ export const SignIn = observer(() => {
               </Link>
             </div>
 
-            <Button
+            <AsyncButton
               type="button"
-              loading={auth.isLoading}
               className="w-full"
-              onClick={handleSubmit(onSubmit)}
+              loading={auth.isLoading}
+              onClick={handleLogin}
             >
               Войти
-            </Button>
+            </AsyncButton>
 
             {passkey.support && passkey.profileId && (
               <>

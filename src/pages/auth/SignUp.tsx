@@ -1,41 +1,20 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
-import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
+import { FormProvider } from "react-hook-form";
 
 import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
 import { useAuthStore } from "~@store";
 
-const schema = z.object({
-  email: z.string().email("Неверный email"),
-  password: z.string().min(6, "Минимум 6 символов"),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-});
-type FormData = z.infer<typeof schema>;
+import { useSignUpVM } from "./hooks";
+import { TSignUpForm } from "./validations";
 
 export const SignUp = observer(() => {
   const auth = useAuthStore();
-  const navigate = useNavigate();
+  const { form, handleSignUp } = useSignUpVM();
 
-  const methods = useForm<FormData>({ resolver: zodResolver(schema) });
-  const { handleSubmit } = methods;
-
-  const onSubmit = async (data: FormData) => {
-    await auth.signUp({
-      email: data.email,
-      password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
-    });
-    if (auth.isAuthenticated) navigate({ to: "/" });
-  };
-
-  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
+  useHotkeys([["Enter", () => handleSignUp()]], []);
 
   return (
     <AuthLayout>
@@ -45,21 +24,27 @@ export const SignUp = observer(() => {
             Создать аккаунт
           </h2>
         </div>
-        <FormProvider {...methods}>
+        <FormProvider {...form}>
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-3">
-              <InputFormField<FormData> name="firstName" label="Имя" />
-              <InputFormField<FormData> name="lastName" label="Фамилия" />
+              <InputFormField<TSignUpForm> name="firstName" label="Имя" />
+              <InputFormField<TSignUpForm> name="lastName" label="Фамилия" />
             </div>
-            <InputFormField<FormData>
-              name="email"
-              label="Email"
+            <InputFormField<TSignUpForm>
+              name="login"
+              label="Логин / Email"
               type="email"
               required
             />
-            <InputFormField<FormData>
+            <InputFormField<TSignUpForm>
               name="password"
               label="Пароль"
+              type="password"
+              required
+            />
+            <InputFormField<TSignUpForm>
+              name="confirmPassword"
+              label="Подтверждение пароля"
               type="password"
               required
             />
@@ -67,7 +52,7 @@ export const SignUp = observer(() => {
               type="button"
               loading={auth.isLoading}
               className="w-full"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSignUp}
             >
               Создать аккаунт
             </Button>
