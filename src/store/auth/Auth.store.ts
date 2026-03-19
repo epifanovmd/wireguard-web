@@ -10,6 +10,7 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { IAuthSessionService } from "~@core/auth";
 import { ProfileModel } from "~@models";
 
 import { EntityHolder } from "../holders";
@@ -31,7 +32,10 @@ class AuthStore implements IAuthStore {
   >();
   private _signUpHolder = new EntityHolder<IUserWithTokensDto>();
 
-  constructor(@IApiService() private _api: IApiService) {
+  constructor(
+    @IApiService() private _api: IApiService,
+    @IAuthSessionService() private _session: IAuthSessionService,
+  ) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
@@ -94,7 +98,7 @@ class AuthStore implements IAuthStore {
     if (res.data) {
       const { tokens, ...userDto } = res.data;
 
-      this._api.setTokens(tokens.accessToken, tokens.refreshToken);
+      this._session.setTokens(tokens.accessToken, tokens.refreshToken);
       this._userHolder.setData(userDto);
       await this.load();
       this._setStatus(AuthStatus.Authenticated);
@@ -117,7 +121,7 @@ class AuthStore implements IAuthStore {
     if (res.data) {
       const { tokens, ...userDto } = res.data;
 
-      this._api.setTokens(tokens.accessToken, tokens.refreshToken);
+      this._session.setTokens(tokens.accessToken, tokens.refreshToken);
       this._userHolder.setData(userDto);
       this._setStatus(AuthStatus.Authenticated);
     }
@@ -136,9 +140,9 @@ class AuthStore implements IAuthStore {
     this._setStatus(AuthStatus.Loading);
 
     if (tokens) {
-      this._api.setTokens(tokens.accessToken, tokens.refreshToken);
+      this._session.setTokens(tokens.accessToken, tokens.refreshToken);
     } else {
-      const ok = await this._api.restoreTokens();
+      const ok = await this._session.restoreSession();
 
       if (!ok) {
         this._setStatus(AuthStatus.Unauthenticated);
@@ -155,7 +159,7 @@ class AuthStore implements IAuthStore {
   }
 
   signOut() {
-    this._api.clearTokens();
+    this._session.clearTokens();
     this._userHolder.reset();
     this._signHolder.reset();
     this._signUpHolder.reset();

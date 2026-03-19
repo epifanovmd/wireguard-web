@@ -30,6 +30,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
+      "~@core": ["./src/core"],
+      "~@core/*": ["./src/core/*"],
       "~@api": ["./src/api"],
       "~@api/*": ["./src/api/*"],
       "~@common": ["./src/common"],

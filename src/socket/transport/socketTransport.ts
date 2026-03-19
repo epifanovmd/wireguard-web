@@ -1,7 +1,8 @@
 import { reaction } from "mobx";
 import { connect } from "socket.io-client";
 
-import { IApiService, IApiTokenProvider, SOCKET_BASE_URL } from "~@api";
+import { IAuthSessionService, IAuthTokenStore } from "~@core/auth";
+import { SOCKET_BASE_URL } from "~@core/env";
 
 import {
   SocketClientToServerEvents,
@@ -29,8 +30,8 @@ export class SocketTransport implements ISocketTransport {
   };
 
   constructor(
-    @IApiTokenProvider() private _tokenProvider: IApiTokenProvider,
-    @IApiService() private _apiService: IApiService,
+    @IAuthTokenStore() private _tokenStore: IAuthTokenStore,
+    @IAuthSessionService() private _session: IAuthSessionService,
   ) {}
 
   get state(): SocketTransportState {
@@ -41,7 +42,7 @@ export class SocketTransport implements ISocketTransport {
 
   initialize(): () => void {
     const disposeTokenReaction = reaction(
-      () => this._tokenProvider.accessToken,
+      () => this._tokenStore.accessToken,
       token => {
         if (this._socket && token) {
           this._socket.auth = { token };
@@ -66,7 +67,7 @@ export class SocketTransport implements ISocketTransport {
 
       this._teardown();
 
-      const accessToken = this._tokenProvider.accessToken;
+      const accessToken = this._tokenStore.accessToken;
 
       if (!accessToken) {
         const err = new Error("[Socket] No access token available");
@@ -207,8 +208,8 @@ export class SocketTransport implements ISocketTransport {
 
     // Server-side kick → refresh token and reconnect
     if (reason === "io server disconnect") {
-      this._apiService
-        .updateToken()
+      this._session
+        .refreshToken()
         .then(() => this.connect())
         .catch(err => this._setState({ status: "error", error: err }));
     }
@@ -222,8 +223,8 @@ export class SocketTransport implements ISocketTransport {
 
   private _onAuthError = ({ message }: { message: string }): void => {
     console.warn("[Socket] Auth error:", message);
-    this._apiService
-      .updateToken()
+    this._session
+      .restoreSession()
       .then(() => this.connect())
       .catch(err => this._setState({ status: "error", error: err }));
   };

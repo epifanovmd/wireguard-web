@@ -1,23 +1,16 @@
-import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
-import { memo } from "react";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 import { IAuthStore } from "~@store";
-
-const Component = memo(() => {
-  return <Outlet />;
-});
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
     const auth = IAuthStore.getInstance();
 
-    if (!auth.isAuthenticated) {
+    if (auth.isIdle) {
       await auth.restore();
-
-      if (!auth.isAuthenticated) {
-        throw redirect({ to: "/auth/signIn" });
-      }
     }
   },
-  component: Component,
+  component: () => {
+    return <Outlet />;
+  },
 });

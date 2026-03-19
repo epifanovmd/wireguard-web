@@ -1,37 +1,27 @@
+import { IAuthSessionService } from "~@core/auth";
+import { BASE_URL } from "~@core/env";
+
 import { ApiError, IApiService } from "./Api.types";
 import { Api } from "./api-gen/Api";
-import { IApiTokenProvider } from "./ApiToken.provider";
-
-const env = import.meta.env;
-const isDev = env.MODE === "development";
-
-const DEV_BASE_URL = `${env.VITE_PROTOCOL}://${env.VITE_HOST}:${env.VITE_PORT}`;
-
-export const BASE_URL = isDev ? DEV_BASE_URL : env.VITE_BASE_URL;
-export const SOCKET_BASE_URL = env.VITE_SOCKET_BASE_URL;
 
 @IApiService({ inSingleton: true })
-class ApiService extends Api<ApiError, ApiError> {
-  private _refreshPromise: Promise<void> | null = null;
-
-  constructor(@IApiTokenProvider() private _tokenProvider: IApiTokenProvider) {
+class ApiService extends Api<ApiError, ApiError> implements IApiService {
+  constructor(@IAuthSessionService() private _session: IAuthSessionService) {
     super(
-      {
-        timeout: 2 * 60 * 1000,
-        withCredentials: true,
-        baseURL: BASE_URL,
-      },
+      { baseURL: BASE_URL, timeout: 2 * 60 * 1000, withCredentials: true },
       ApiError.fromAxiosError,
     );
 
+    this._setupInterceptors();
+  }
+
+  // ─── Interceptors ────────────────────────────────────────────────────────────
+
+  private _setupInterceptors(): void {
     this.instance.interceptors.request.use(async request => {
-      const isRefreshRequest = request.url === "/api/auth/refresh";
+      await this._session.ensureFreshToken();
 
-      if (!isRefreshRequest) {
-        await this._ensureFreshToken();
-      }
-
-      const token = this._tokenProvider.accessToken;
+      const token = this._session.accessToken;
 
       if (token) {
         request.headers.set("Authorization", `Bearer ${token}`);
@@ -40,83 +30,26 @@ class ApiService extends Api<ApiError, ApiError> {
       return request;
     });
 
-    this.instance.interceptors.response.use(
-      res => res,
-      async error => {
-        const isRefreshRequest = error.config?.url === "/api/auth/refresh";
+    this.instance.interceptors.response.use(undefined, async error => {
+      if (error.response?.status === 401 && !error.config?._retry) {
+        error.config._retry = true;
 
-        if (
-          error.response?.status === 401 &&
-          !error.config?._retry &&
-          !isRefreshRequest
-        ) {
-          error.config._retry = true;
-          await this._forceRefresh();
-          const token = this._tokenProvider.accessToken;
-
-          if (token) {
-            error.config.headers["Authorization"] = `Bearer ${token}`;
-
-            return this.instance(error.config);
-          }
+        try {
+          await this._session.refreshToken();
+        } catch {
+          return Promise.reject(error);
         }
 
-        return Promise.reject(error);
-      },
-    );
-  }
+        const token = this._session.accessToken;
 
-  public async updateToken(): Promise<void> {
-    return this._doRefresh();
-  }
+        if (token) {
+          error.config.headers["Authorization"] = `Bearer ${token}`;
 
-  public setTokens(accessToken: string, refreshToken: string): void {
-    this._tokenProvider.setTokens(accessToken, refreshToken);
-  }
+          return this.instance(error.config);
+        }
+      }
 
-  public clearTokens(): void {
-    this._tokenProvider.clear();
-  }
-
-  public async restoreTokens(): Promise<boolean> {
-    const token = await this._tokenProvider.restoreRefreshToken();
-
-    if (!token) return false;
-
-    await this._doRefresh();
-
-    return !!this._tokenProvider.accessToken;
-  }
-
-  private async _doRefresh(): Promise<void> {
-    const res = await this.refresh({
-      refreshToken: this._tokenProvider.refreshToken,
+      return Promise.reject(error);
     });
-
-    if (res.data) {
-      this._tokenProvider.setTokens(
-        res.data.accessToken,
-        res.data.refreshToken,
-      );
-    } else {
-      this._tokenProvider.clear();
-    }
-  }
-
-  private _forceRefresh(): Promise<void> {
-    if (!this._refreshPromise) {
-      this._refreshPromise = this._doRefresh().finally(() => {
-        this._refreshPromise = null;
-      });
-    }
-
-    return this._refreshPromise;
-  }
-
-  private async _ensureFreshToken(): Promise<void> {
-    if (!this._tokenProvider.refreshToken) return;
-    if (!this._tokenProvider.isTokenExpiringSoon()) return;
-
-    return this._forceRefresh();
   }
 }

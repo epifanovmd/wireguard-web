@@ -33,6 +33,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      "~@core": path.resolve(projectRootDir, "src/core"),
       "~@api": path.resolve(projectRootDir, "src/api"),
       "~@common": path.resolve(projectRootDir, "src/common"),
       "~@components": path.resolve(projectRootDir, "src/components"),

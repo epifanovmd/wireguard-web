@@ -1,9 +1,17 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import React from "react";
 
 import { AppLayout } from "~@components/layouts";
+import { IAuthStore } from "~@store";
 
 export const Route = createFileRoute("/_private")({
+  beforeLoad: () => {
+    const auth = IAuthStore.getInstance();
+
+    if (!auth.isAuthenticated) {
+      throw redirect({ to: "/auth/signIn" });
+    }
+  },
   component: () => (
     <AppLayout>
       <Outlet />

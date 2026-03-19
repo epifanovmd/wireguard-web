@@ -1,14 +1,20 @@
 import { createServiceDecorator } from "@force-dev/utils";
+import type { AxiosError } from "axios";
 
 import { Api } from "./api-gen/Api";
 
 export const IApiService = createServiceDecorator<IApiService>();
-export interface IApiService extends Api<ApiError, ApiError> {
-  updateToken(): Promise<void>;
-  setTokens(accessToken: string, refreshToken: string): void;
-  clearTokens(): void;
-  restoreTokens(): Promise<boolean>;
+export type IApiService = Api<ApiError, ApiError>;
+
+export function isApiError(error: unknown): error is ApiError {
+  return error instanceof ApiError;
 }
+
+type ApiErrorBody = {
+  name?: string;
+  message?: string;
+  reason?: string;
+};
 
 export class ApiError extends Error {
   constructor(
@@ -22,12 +28,15 @@ export class ApiError extends Error {
     this.name = name;
   }
 
-  static fromAxiosError(error: any): ApiError {
+  static fromAxiosError(error: AxiosError<ApiErrorBody>): ApiError {
+    const body = error.response?.data;
+
     return new ApiError(
-      error.response?.data.name ?? error.name,
-      error.response?.data.message ?? error.message ?? "Request failed",
-      error.status ?? 400,
-      error.response?.data.reason ?? error.cause,
+      body?.name ?? error.name,
+      body?.message ?? error.message ?? "Request failed",
+      error.response?.status ?? 0,
+      body?.reason ?? String(error.cause ?? ""),
+      body,
     );
   }
 
