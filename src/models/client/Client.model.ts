@@ -5,18 +5,10 @@ import { WgPeerDto } from "~@api/api-gen/data-contracts";
 
 import { DateModel } from "../date";
 
-// Legacy compatibility alias
-export type IWgClientsDto = WgPeerDto & {
-  latestHandshakeAt?: string;
-  transferRx?: number;
-  transferTx?: number;
-  address?: string;
-};
+export class ClientModel extends DataModelBase<WgPeerDto> {
+  public readonly date = new DateModel(() => this.data.lastHandshake);
 
-export class ClientModel extends DataModelBase<IWgClientsDto> {
-  public readonly date = new DateModel(() => this.data.latestHandshakeAt);
-
-  constructor(data: IWgClientsDto) {
+  constructor(data: WgPeerDto) {
     super(data);
     makeObservable(this, {
       name: computed,

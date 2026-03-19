@@ -1,4 +1,10 @@
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 
 import {
   EntityFetchFn,
@@ -289,10 +295,10 @@ export class EntityHolder<
         return { data: res.data, error: null };
       }
 
-      action(() => {
+      runInAction(() => {
         this.data = null;
         this.status = "success";
-      })();
+      });
 
       return { data: null, error: null };
     } catch (e) {

@@ -2,13 +2,14 @@ import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
-import { ClientModel, IWgClientsDto } from "~@models";
+import { WgPeerDto } from "~@api/api-gen/data-contracts";
+import { ClientModel } from "~@models";
 
 import { IClientDataStore } from "./ClientData.types";
 
 @IClientDataStore()
 export class ClientDataStore implements IClientDataStore {
-  public holder = new DataHolder<IWgClientsDto>();
+  public holder = new DataHolder<WgPeerDto>();
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -35,9 +36,9 @@ export class ClientDataStore implements IClientDataStore {
         this.holder.setError(res.axiosError.toString());
       }
     } else if (res.data) {
-      this.holder.setData(res.data as IWgClientsDto);
+      this.holder.setData(res.data);
 
-      return res.data as IWgClientsDto;
+      return res.data;
     }
 
     return undefined;

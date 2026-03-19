@@ -63,8 +63,8 @@ export const Profile: FC = observer(() => {
             login={model?.login}
             role={model?.roleLabel}
             emailVerified={model?.emailVerified}
-            registeredAt={model?.registeredAt}
-            lastOnline={model?.lastOnlineFormatted}
+            registeredAt={model?.registeredAtDate.formattedDate}
+            lastOnline={model?.lastOnlineDate.formattedDate}
             actions={emailVerificationAction}
           />
         </div>

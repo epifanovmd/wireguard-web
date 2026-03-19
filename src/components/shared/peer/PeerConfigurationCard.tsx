@@ -22,7 +22,7 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
             ["DNS", peer.data.dns ?? "—"],
             ["MTU", peer.data.mtu ? String(peer.data.mtu) : "—"],
             ["PSK", peer.data.hasPresharedKey ? "Да" : "Нет"],
-            ["Истекает", peer.expiresAt ?? "Никогда"],
+            ["Истекает", peer.expiresAtDate.formatted ?? "Никогда"],
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>

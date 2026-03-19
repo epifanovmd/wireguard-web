@@ -22,10 +22,6 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
       login: computed,
       roleLabel: computed,
       emailVerified: computed,
-      registeredAt: computed,
-      lastOnlineFormatted: computed,
-      birthDateFormatted: computed,
-      birthDateInput: computed,
     });
   }
 
@@ -70,27 +66,5 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
 
   get emailVerified() {
     return this.data.user?.emailVerified;
-  }
-
-  get registeredAt() {
-    return this.registeredAtDate.data
-      ? this.registeredAtDate.formattedDate
-      : undefined;
-  }
-
-  get lastOnlineFormatted() {
-    return this.lastOnlineDate.data
-      ? this.lastOnlineDate.formattedDate
-      : undefined;
-  }
-
-  get birthDateFormatted() {
-    return this.birthDateModel.data
-      ? this.birthDateModel.formattedDate
-      : undefined;
-  }
-
-  get birthDateInput() {
-    return this.birthDateModel.formattedInputDate;
   }
 }

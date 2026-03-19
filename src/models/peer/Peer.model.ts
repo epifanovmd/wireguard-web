@@ -17,11 +17,7 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
       status: computed,
       enabled: computed,
       enabledLabel: computed,
-      isExpired: computed,
       description: computed,
-      expiresAt: computed,
-      createdAt: computed,
-      updatedAt: computed,
       shortPublicKey: computed,
     });
   }
@@ -42,24 +38,8 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
     return this.data.enabled ? "Активен" : "Отключён";
   }
 
-  get isExpired() {
-    return this.expiresAtDate.isExpired;
-  }
-
   get description() {
     return this.data.description ?? "—";
-  }
-
-  get expiresAt() {
-    return this.expiresAtDate.data ? this.expiresAtDate.formatted : null;
-  }
-
-  get createdAt() {
-    return this.createdAtDate.formattedDate;
-  }
-
-  get updatedAt() {
-    return this.updatedAtDate.formatted;
   }
 
   get shortPublicKey() {

@@ -48,7 +48,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     header: "Создан",
     cell: ({ row }) => (
       <span className="text-xs text-[var(--muted-foreground)]">
-        {row.original.createdAt}
+        {row.original.createdAtDate.formattedDate}
       </span>
     ),
   },
