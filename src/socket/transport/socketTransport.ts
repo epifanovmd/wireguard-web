@@ -1,3 +1,4 @@
+import { reaction } from "mobx";
 import { connect } from "socket.io-client";
 
 import { IApiService, IApiTokenProvider, SOCKET_BASE_URL } from "~@api";
@@ -39,8 +40,21 @@ export class SocketTransport implements ISocketTransport {
   // ─── Lifecycle ──────────────────────────────────────────────────────────────
 
   initialize(): () => void {
+    const disposeTokenReaction = reaction(
+      () => this._tokenProvider.accessToken,
+      token => {
+        if (this._socket && token) {
+          this._socket.auth = { token };
+        }
+      },
+    );
+
     this.connect().catch(() => {});
-    return () => this.disconnect();
+
+    return () => {
+      disposeTokenReaction();
+      this.disconnect();
+    };
   }
 
   connect(): Promise<void> {

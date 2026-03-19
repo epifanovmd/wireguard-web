@@ -7,6 +7,8 @@ export interface IApiTokenProvider {
   accessToken: string;
   refreshToken: string;
 
+  isTokenExpiringSoon(bufferSeconds?: number): boolean;
+
   setTokens(accessToken: string, refreshToken: string): void;
 
   restoreRefreshToken(): Promise<string>;
@@ -23,6 +25,17 @@ export class ApiTokenProvider implements IApiTokenProvider {
     this.restoreRefreshToken().then();
 
     makeAutoObservable(this, {}, { autoBind: true });
+  }
+
+  isTokenExpiringSoon(bufferSeconds = 60): boolean {
+    if (!this.accessToken) return true;
+    try {
+      const { exp } = JSON.parse(atob(this.accessToken.split(".")[1]));
+
+      return Date.now() / 1000 > exp - bufferSeconds;
+    } catch {
+      return true;
+    }
   }
 
   setTokens(accessToken: string, refreshToken: string) {
