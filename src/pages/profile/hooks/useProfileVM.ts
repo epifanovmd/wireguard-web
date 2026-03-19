@@ -5,10 +5,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useApi } from "~@api";
-import { EProfileStatus } from "~@api/api-gen/data-contracts";
 import { useToast } from "~@components/ui2";
-import { ProfileModel } from "~@models";
-import { useProfileDataStore } from "~@store";
+import { useUserDataStore } from "~@store";
 
 export const profileSchema = z.object({
   firstName: z.string().optional(),
@@ -22,24 +20,30 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 export const useProfileVM = () => {
   const api = useApi();
   const toast = useToast();
-  const profileStore = useProfileDataStore();
+  const userStore = useUserDataStore();
   const [saving, setSaving] = useState(false);
   const [sendingVerification, setSendingVerification] = useState(false);
 
-  const { profile, isLoading } = profileStore;
-  const model = profile ? new ProfileModel(profile) : undefined;
+  const profile = userStore.user?.profile;
+  const isLoading = userStore.isLoading;
+  const model = userStore.profile;
 
   const methods = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {},
   });
 
-  const { reset } = methods;
+  useEffect(() => {
+    if (!userStore.user) {
+      userStore.load();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!profile) return;
 
-    reset({
+    methods.reset({
       firstName: profile.firstName ?? "",
       lastName: profile.lastName ?? "",
       gender: profile.gender ?? "",
@@ -51,7 +55,7 @@ export const useProfileVM = () => {
   const onSubmit = async (data: ProfileFormData) => {
     setSaving(true);
 
-    const res = await profileStore.updateProfile({
+    const res = await userStore.updateProfile({
       firstName: data.firstName || undefined,
       lastName: data.lastName || undefined,
       gender: data.gender || undefined,

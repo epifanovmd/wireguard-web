@@ -3,12 +3,12 @@ import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 import { signInFormValidationSchema, TSignInForm } from "../validations";
 
 export const useSignInVM = () => {
-  const sessionDataStore = useSessionDataStore();
+  const authStore = useAuthStore();
   const navigate = useNavigate();
 
   const form = useForm<TSignInForm>({
@@ -29,13 +29,13 @@ export const useSignInVM = () => {
 
   const handleLogin = useCallback(async () => {
     return form.handleSubmit(async data => {
-      await sessionDataStore.signIn(data);
+      await authStore.signIn(data);
 
-      if (sessionDataStore.isAuthorized) {
+      if (authStore.isAuthenticated) {
         navigate({ to: "/" }).then();
       }
     })();
-  }, [form, navigate, sessionDataStore]);
+  }, [form, navigate, authStore]);
 
   return {
     form,

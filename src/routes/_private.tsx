@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import React, { memo } from "react";
 
 import { AppLayout } from "~@components/layouts";
-import { ISessionDataStore } from "~@store";
+import { IAuthStore } from "~@store";
 
 const Component = memo(() => (
   <AppLayout>
@@ -12,10 +12,12 @@ const Component = memo(() => (
 
 export const Route = createFileRoute("/_private")({
   beforeLoad: async () => {
-    const session = ISessionDataStore.getInstance();
-    if (!session.isAuthorized) {
-      await session.restore();
-      if (!session.isAuthorized) {
+    const auth = IAuthStore.getInstance();
+
+    if (!auth.isAuthenticated) {
+      await auth.restore();
+
+      if (!auth.isAuthenticated) {
         throw redirect({ to: "/auth/signIn" });
       }
     }

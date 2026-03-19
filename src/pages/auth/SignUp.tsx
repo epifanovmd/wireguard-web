@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 const schema = z.object({
   email: z.string().email("Неверный email"),
@@ -19,20 +19,20 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const SignUp = observer(() => {
-  const session = useSessionDataStore();
+  const auth = useAuthStore();
   const navigate = useNavigate();
 
   const methods = useForm<FormData>({ resolver: zodResolver(schema) });
   const { handleSubmit } = methods;
 
   const onSubmit = async (data: FormData) => {
-    await session.signUp({
+    await auth.signUp({
       email: data.email,
       password: data.password,
       firstName: data.firstName,
       lastName: data.lastName,
     });
-    if (session.isAuthorized) navigate({ to: "/" });
+    if (auth.isAuthenticated) navigate({ to: "/" });
   };
 
   useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
@@ -65,7 +65,7 @@ export const SignUp = observer(() => {
             />
             <Button
               type="button"
-              loading={session.isLoading}
+              loading={auth.isLoading}
               className="w-full"
               onClick={handleSubmit(onSubmit)}
             >

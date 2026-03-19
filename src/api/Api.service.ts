@@ -77,6 +77,24 @@ class ApiService extends Api<ApiError, ApiError> {
     return this._doRefresh();
   }
 
+  public setTokens(accessToken: string, refreshToken: string): void {
+    this._tokenProvider.setTokens(accessToken, refreshToken);
+  }
+
+  public clearTokens(): void {
+    this._tokenProvider.clear();
+  }
+
+  public async restoreTokens(): Promise<boolean> {
+    const token = await this._tokenProvider.restoreRefreshToken();
+
+    if (!token) return false;
+
+    await this._doRefresh();
+
+    return !!this._tokenProvider.accessToken;
+  }
+
   private async _doRefresh(): Promise<void> {
     const res = await this.refresh({
       refreshToken: this._tokenProvider.refreshToken,

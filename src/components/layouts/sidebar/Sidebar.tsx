@@ -17,7 +17,7 @@ import { Drawer as DrawerPrimitive } from "vaul";
 
 import { Button, ThemeToggle } from "~@components/ui2";
 import { cn } from "~@components/ui2/cn";
-import { useProfileDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 import { ButtonLink } from "../../ui2/button";
 
@@ -176,18 +176,23 @@ interface SidebarProps {
 }
 
 export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
-  const { profile } = useProfileDataStore();
+  const { user } = useAuthStore();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const displayName =
-    [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") ||
+    [user?.profile?.firstName, user?.profile?.lastName]
+      .filter(Boolean)
+      .join(" ") ||
+    user?.email ||
     "Admin";
-  const initials =
-    [profile?.firstName, profile?.lastName]
+  const initials = (
+    [user?.profile?.firstName, user?.profile?.lastName]
       .filter(Boolean)
       .map(s => s![0])
       .join("")
-      .toUpperCase() || "A";
+      .toUpperCase() ||
+    (user?.email?.[0] ?? "A").toUpperCase()
+  );
 
   return (
     <>

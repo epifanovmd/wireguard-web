@@ -1,4 +1,4 @@
-import { DataModelBase } from "@force-dev/utils";
+import { DataModelBase, LambdaValue } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { ERole, ProfileDto } from "~@api/api-gen/data-contracts";
@@ -6,13 +6,11 @@ import { ERole, ProfileDto } from "~@api/api-gen/data-contracts";
 import { DateModel } from "../date";
 
 export class ProfileModel extends DataModelBase<ProfileDto> {
-  public readonly registeredAtDate = new DateModel(
-    () => this.data.user?.createdAt,
-  );
+  public readonly registeredAtDate = new DateModel(() => this.data?.createdAt);
   public readonly lastOnlineDate = new DateModel(() => this.data.lastOnline);
   public readonly birthDateModel = new DateModel(() => this.data.birthDate);
 
-  constructor(data: ProfileDto) {
+  constructor(data: LambdaValue<ProfileDto>) {
     super(data);
     makeObservable(this, {
       displayName: computed,
@@ -30,9 +28,7 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
       .filter(Boolean)
       .join(" ");
 
-    return (
-      name || this.data.user?.email || this.data.user?.phone || "Без имени"
-    );
+    return name || this.email || this.phone || "Без имени";
   }
 
   get initials() {

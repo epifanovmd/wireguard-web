@@ -5,6 +5,9 @@ import { Api } from "./api-gen/Api";
 export const IApiService = createServiceDecorator<IApiService>();
 export interface IApiService extends Api<ApiError, ApiError> {
   updateToken(): Promise<void>;
+  setTokens(accessToken: string, refreshToken: string): void;
+  clearTokens(): void;
+  restoreTokens(): Promise<boolean>;
 }
 
 export type ApiRequest<T extends object = object> = T & {

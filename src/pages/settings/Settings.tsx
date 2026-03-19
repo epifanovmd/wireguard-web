@@ -17,7 +17,7 @@ import {
   TabsTrigger,
   useToast,
 } from "~@components/ui2";
-import { useProfileDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 import { useTheme } from "~@theme";
 
 export const Settings: FC = observer(() => {
@@ -30,7 +30,8 @@ export const Settings: FC = observer(() => {
   } | null>(null);
 
   const api = useApi();
-  const { profile } = useProfileDataStore();
+  const { user } = useAuthStore();
+  const profile = user?.profile;
   const passkey = usePasskeyAuth();
 
   useEffect(() => {

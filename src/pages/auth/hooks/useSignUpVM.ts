@@ -4,12 +4,12 @@ import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 import { isEmail, isPhone } from "~@common";
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 import { signUpFormValidationSchema, TSignUpForm } from "../validations";
 
 export const useSignUpVM = () => {
-  const sessionDataStore = useSessionDataStore();
+  const authStore = useAuthStore();
   const navigate = useNavigate();
 
   const form = useForm<TSignUpForm>({
@@ -23,22 +23,16 @@ export const useSignUpVM = () => {
       const phone = isPhone(data.login) ? data.login : undefined;
 
       if (email) {
-        await sessionDataStore.signUp({
-          email,
-          password: data.password,
-        });
+        await authStore.signUp({ email, password: data.password });
       } else if (phone) {
-        await sessionDataStore.signUp({
-          phone,
-          password: data.password,
-        });
+        await authStore.signUp({ phone, password: data.password });
       }
 
-      if (sessionDataStore.isAuthorized) {
+      if (authStore.isAuthenticated) {
         navigate({ to: "/" }).then();
       }
     })();
-  }, [form, navigate, sessionDataStore]);
+  }, [form, navigate, authStore]);
 
   return {
     form,

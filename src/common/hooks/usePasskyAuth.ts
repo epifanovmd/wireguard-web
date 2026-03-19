@@ -12,7 +12,7 @@ import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
 } from "~@api/api-gen/data-contracts";
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 const PROFILE_ID_KEY = "profileId";
 
@@ -25,7 +25,7 @@ export const usePasskeyAuth = () => {
   );
 
   const api = useApi();
-  const { restore } = useSessionDataStore();
+  const { restore } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {

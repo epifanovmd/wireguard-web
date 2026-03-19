@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
 
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 import { Sidebar } from "../sidebar";
 
@@ -9,11 +9,11 @@ interface AppLayoutProps {
 }
 
 export const AppLayout: FC<AppLayoutProps> = ({ children }) => {
-  const session = useSessionDataStore();
+  const auth = useAuthStore();
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--background)]">
-      <Sidebar onSignOut={() => session.clear()} />
+      <Sidebar onSignOut={() => auth.signOut()} />
       <main className="flex-1 overflow-y-auto min-w-0 pt-14 md:pt-0">
         {children}
       </main>

@@ -10,7 +10,7 @@ import { z } from "zod";
 import { usePasskeyAuth } from "~@common";
 import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui2";
-import { useSessionDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 const schema = z.object({
   login: z.string().min(1, "Логин обязателен"),
@@ -20,7 +20,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const SignIn = observer(() => {
-  const session = useSessionDataStore();
+  const auth = useAuthStore();
   const navigate = useNavigate();
   const passkey = usePasskeyAuth();
 
@@ -31,15 +31,15 @@ export const SignIn = observer(() => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (data: FormData) => {
-    await session.signIn({ login: data.login, password: data.password });
-    if (session.isAuthorized) {
-      navigate({ to: "/" });
+    await auth.signIn({ login: data.login, password: data.password });
+    if (auth.isAuthenticated) {
+      await navigate({ to: "/" });
     }
   };
 
   useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
 
-  const passkeyError = passkey.error ?? (session.lastError || null);
+  const passkeyError = passkey.error ?? (auth.error || null);
 
   return (
     <AuthLayout>
@@ -82,7 +82,7 @@ export const SignIn = observer(() => {
 
             <Button
               type="button"
-              loading={session.isLoading}
+              loading={auth.isLoading}
               className="w-full"
               onClick={handleSubmit(onSubmit)}
             >
