@@ -21,14 +21,7 @@ class ApiService extends Api<ApiError, ApiError> {
         withCredentials: true,
         baseURL: BASE_URL,
       },
-      error => {
-        return new ApiError(
-          error.response?.data.name ?? error.name,
-          error.response?.data.message ?? error.message,
-          error.status ?? 400,
-          error.response?.data.reason ?? error.cause,
-        );
-      },
+      ApiError.fromAxiosError,
     );
 
     this.instance.interceptors.request.use(async request => {
