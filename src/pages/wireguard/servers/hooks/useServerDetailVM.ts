@@ -72,7 +72,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
     server,
     serverModel: serverStore.serverModel,
     isLoading: serverStore.serverHolder.isLoading,
-    isReady: serverStore.serverHolder.isReady,
+    isFilled: serverStore.serverHolder.isFilled,
     liveStats: serverStatsStore.stats,
     speedPoints: serverStatsStore.speedPoints,
     trafficPoints: serverStatsStore.trafficPoints,

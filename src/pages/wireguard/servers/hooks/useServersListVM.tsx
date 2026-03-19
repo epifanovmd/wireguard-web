@@ -36,14 +36,16 @@ export const useServersListVM = () => {
       if (action === "start") res = await detailStore.startServer(id);
       else if (action === "stop") res = await detailStore.stopServer(id);
       else if (action === "restart") res = await detailStore.restartServer(id);
-      else {
-        res = await detailStore.deleteServer(id);
-        if (!res?.error) listStore.removeServer(id);
-      }
 
       if (res?.error) toast.error(res.error.message);
       else if (action === "delete") toast.success("Сервер удалён");
       else if (res?.data) listStore.updateServer(res.data);
+      else {
+        const r = await detailStore.deleteServer(id);
+        if (r.data) {
+          listStore.removeServer(id);
+        }
+      }
     },
 
     [detailStore, listStore, confirm, toast],

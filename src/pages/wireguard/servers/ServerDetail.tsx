@@ -40,7 +40,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
     const vm = useServerDetailVM(serverId, onBack);
     const { server, liveStats, peersVM } = vm;
 
-    if (vm.isLoading || !vm.isReady) {
+    if (vm.isLoading || !vm.isFilled) {
       return (
         <div className="flex flex-col h-full overflow-hidden">
           <PageHeader title="Сервер" />

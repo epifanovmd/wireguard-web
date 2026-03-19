@@ -1,5 +1,6 @@
-import { createServiceDecorator, DataHolder } from "@force-dev/utils";
+import { ApiResponse, createServiceDecorator } from "@force-dev/utils";
 
+import { ApiError } from "~@api";
 import {
   IWgServerCreateRequestDto,
   IWgServerStatusDto,
@@ -8,21 +9,26 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { ServerModel } from "~@models";
 
+import { EntityHolder } from "../holders";
+
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();
 
 export interface IServerDetailStore {
-  serverHolder: DataHolder<WgServerDto>;
-  statusHolder: DataHolder<IWgServerStatusDto>;
-  server: WgServerDto | undefined;
-  serverModel: ServerModel | undefined;
-  liveStatus: IWgServerStatusDto | undefined;
+  serverHolder: EntityHolder<WgServerDto, string>;
+  statusHolder: EntityHolder<IWgServerStatusDto, string>;
+  server: WgServerDto | null;
+  serverModel: ServerModel | null;
+  liveStatus: IWgServerStatusDto | null;
 
-  loadServer(id: string): Promise<WgServerDto | undefined>;
-  loadServerStatus(id: string): Promise<IWgServerStatusDto | undefined>;
-  createServer(params: IWgServerCreateRequestDto): Promise<any>;
-  updateServer(id: string, params: IWgServerUpdateRequestDto): Promise<any>;
-  deleteServer(id: string): Promise<any>;
-  startServer(id: string): Promise<any>;
-  stopServer(id: string): Promise<any>;
-  restartServer(id: string): Promise<any>;
+  loadServer(id: string): Promise<WgServerDto | null>;
+  loadServerStatus(id: string): Promise<IWgServerStatusDto | null>;
+  createServer(params: IWgServerCreateRequestDto): Promise<void>;
+  updateServer(
+    id: string,
+    params: IWgServerUpdateRequestDto,
+  ): Promise<ApiResponse<WgServerDto, ApiError>>;
+  deleteServer(id: string): Promise<ApiResponse<boolean, ApiError>>;
+  startServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
+  stopServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
+  restartServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
 }

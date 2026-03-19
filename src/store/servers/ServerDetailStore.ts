@@ -10,58 +10,50 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { ServerModel } from "~@models";
 
+import { EntityHolder } from "../holders";
 import { IServerDetailStore } from "./ServerDetailStore.types";
 
 @IServerDetailStore({ inSingleton: true })
 export class ServerDetailStore implements IServerDetailStore {
-  public serverHolder = new DataHolder<WgServerDto>();
-  public statusHolder = new DataHolder<IWgServerStatusDto>();
+  public serverHolder = new EntityHolder<WgServerDto, string>({
+    onFetch: id => this._apiService.getServer(id),
+  });
+  public statusHolder = new EntityHolder<IWgServerStatusDto, string>({
+    onFetch: id => this._apiService.getServerStatus(id),
+  });
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
   get server() {
-    return this.serverHolder.d;
+    return this.serverHolder.data;
   }
 
   get serverModel() {
-    return this.serverHolder.d ? new ServerModel(this.serverHolder.d) : undefined;
+    return this.serverHolder.data
+      ? new ServerModel(this.serverHolder.data)
+      : null;
   }
 
   get liveStatus() {
-    return this.statusHolder.d;
+    return this.statusHolder.data;
   }
 
   async loadServer(id: string) {
-    this.serverHolder.setLoading();
-    const res = await this._apiService.getServer(id);
+    const res = await this.serverHolder.load(id);
 
-    if (res.error) {
-      this.serverHolder.setError(res.error.message);
-    } else if (res.data) {
-      this.serverHolder.setData(res.data);
-
-      return res.data;
-    }
-
-    return undefined;
+    return res.data;
   }
 
   async loadServerStatus(id: string) {
-    const res = await this._apiService.getServerStatus(id);
+    const res = await this.statusHolder.load(id);
 
-    if (res.data) {
-      this.statusHolder.setData(res.data);
-
-      return res.data;
-    }
-
-    return undefined;
+    return res.data;
   }
 
   async createServer(params: IWgServerCreateRequestDto) {
-    return this._apiService.createServer(params);
+    await this._apiService.createServer(params);
   }
 
   async updateServer(id: string, params: IWgServerUpdateRequestDto) {
@@ -75,7 +67,9 @@ export class ServerDetailStore implements IServerDetailStore {
   }
 
   async deleteServer(id: string) {
-    return this._apiService.deleteServer(id);
+    const res = await this._apiService.deleteServer(id);
+
+    return res;
   }
 
   async startServer(id: string) {
