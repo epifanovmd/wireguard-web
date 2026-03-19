@@ -1,4 +1,4 @@
-import { createServiceDecorator, ListCollectionHolder } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
 import {
   IWgServerCreateRequestDto,
@@ -6,10 +6,12 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { ServerModel } from "~@models";
 
+import { PagedHolder } from "../holders";
+
 export const IServersListStore = createServiceDecorator<IServersListStore>();
 
 export interface IServersListStore {
-  listHolder: ListCollectionHolder<WgServerDto>;
+  listHolder: PagedHolder<WgServerDto>;
   models: ServerModel[];
   isLoading: boolean;
   total: number;

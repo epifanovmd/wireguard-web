@@ -34,7 +34,7 @@ export const Dashboard: FC = observer(() => {
     });
   };
 
-  const activeServers = serversStore.listHolder.d.filter(
+  const activeServers = serversStore.listHolder.items.filter(
     s => s.status === EWgServerStatus.Up,
   );
 

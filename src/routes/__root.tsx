@@ -1,5 +1,5 @@
 import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
-import React, { memo } from "react";
+import { memo } from "react";
 
 import { IAuthStore } from "~@store";
 
@@ -20,6 +20,4 @@ export const Route = createRootRoute({
     }
   },
   component: Component,
-  pendingMinMs: 0,
-  pendingMs: 0,
 });

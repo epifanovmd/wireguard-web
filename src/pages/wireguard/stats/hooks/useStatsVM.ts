@@ -26,11 +26,11 @@ export const useStatsVM = () => {
   }, []);
 
   useEffect(() => {
-    if (serversStore.listHolder.d.length > 0 && !selectedServer) {
-      setSelectedServer(serversStore.listHolder.d[0].id);
+    if (serversStore.listHolder.items.length > 0 && !selectedServer) {
+      setSelectedServer(serversStore.listHolder.items[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serversStore.listHolder.d.length]);
+  }, [serversStore.listHolder.items.length]);
 
   useEffect(() => {
     const rangeReady = !customRange || (customRange.from && customRange.to);

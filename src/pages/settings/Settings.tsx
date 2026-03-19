@@ -7,6 +7,7 @@ import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { usePasskeyAuth } from "~@common";
 import { PageHeader } from "~@components/layouts";
 import {
+  AsyncButton,
   Badge,
   Button,
   Card,
@@ -257,7 +258,7 @@ export const Settings: FC = observer(() => {
                     )}
 
                     <div className="flex gap-2 pt-1">
-                      <Button
+                      <AsyncButton
                         size="sm"
                         variant={passkey.profileId ? "outline" : "default"}
                         loading={passkey.loading}
@@ -266,7 +267,7 @@ export const Settings: FC = observer(() => {
                         {passkey.profileId
                           ? "Перерегистрировать passkey"
                           : "Зарегистрировать passkey"}
-                      </Button>
+                      </AsyncButton>
                       {passkey.profileId && (
                         <Button
                           size="sm"

@@ -13,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  Select,
   Table,
   useToast,
 } from "~@components/ui2";
@@ -35,7 +36,22 @@ export const PeersList: FC = observer(() => {
         }
       />
 
-      <div className="p-4 sm:p-6 overflow-auto">
+      <div className="flex flex-col p-4 sm:p-6 gap-6 overflow-auto">
+        {/* Controls */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <Select
+            options={vm.servers.map(s => ({
+              value: s.data.id,
+              label: s.name,
+            }))}
+            loading={vm.isLoadingServers}
+            value={vm.serverId}
+            onValueChange={vm.setServerId}
+            placeholder="Выберите сервер"
+            triggerClassName="w-48"
+          />
+        </div>
+
         <Card
           title="Пиры"
           extra={<Badge variant="gray">{vm.total} всего</Badge>}

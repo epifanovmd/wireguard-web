@@ -26,11 +26,12 @@ export const Stats: FC = observer(() => {
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
           <Select
-            options={vm.serversStore.listHolder.d.map(s => ({
+            options={vm.serversStore.listHolder.items.map(s => ({
               value: s.id,
               label: s.name,
             }))}
             value={vm.selectedServer}
+            loading={vm.serversStore.isLoading}
             onValueChange={v => vm.setSelectedServer(v ?? "")}
             placeholder="Выберите сервер"
             triggerClassName="w-48"

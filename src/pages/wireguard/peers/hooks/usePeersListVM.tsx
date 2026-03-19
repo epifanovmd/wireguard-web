@@ -2,14 +2,22 @@ import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { PeerActions, QrCodeModal } from "~@components/shared";
+import { PeerActions } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { PeerModel } from "~@models";
-import { usePeerDataStore, usePeersListStore, useServersListStore } from "~@store";
+import {
+  usePeerDataStore,
+  usePeersListStore,
+  useServersListStore,
+} from "~@store";
 
-import { type ColumnDef, useConfirm, useToast } from "../../../../components/ui2";
+import {
+  type ColumnDef,
+  useConfirm,
+  useToast,
+} from "../../../../components/ui2";
 
-export const usePeersListVM = (serverId?: string) => {
+export const usePeersListVM = (_serverId?: string) => {
   const listStore = usePeersListStore();
   const peerStore = usePeerDataStore();
   const serversStore = useServersListStore();
@@ -20,27 +28,23 @@ export const usePeersListVM = (serverId?: string) => {
   const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
     null,
   );
+  const [serverId, setServerId] = useState<string | undefined>(_serverId);
 
   useEffect(() => {
     if (!serverId) {
-      serversStore.load();
+      serversStore.load().then(() => {
+        if (serversStore.models[0]) setServerId(serversStore.models[0].data.id);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (serverId) {
-      listStore.loadByServer(serverId);
+      listStore.loadByServer(serverId).then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverId]);
-
-  useEffect(() => {
-    if (!serverId && serversStore.listHolder.d.length > 0) {
-      listStore.loadByServer(serversStore.listHolder.d[0].id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serversStore.listHolder.d.length]);
 
   const handleToggle = useCallback(
     async (id: string, status: EWgServerStatus) => {
@@ -98,9 +102,15 @@ export const usePeersListVM = (serverId?: string) => {
         cell: ({ row }) => (
           <PeerActions
             status={row.original.status}
-            onToggle={() => handleToggle(row.original.data.id, row.original.status)}
-            onDelete={() => handleDelete(row.original.data.id, row.original.name)}
-            onQr={() => setQrPeer({ id: row.original.data.id, name: row.original.name })}
+            onToggle={() =>
+              handleToggle(row.original.data.id, row.original.status)
+            }
+            onDelete={() =>
+              handleDelete(row.original.data.id, row.original.name)
+            }
+            onQr={() =>
+              setQrPeer({ id: row.original.data.id, name: row.original.name })
+            }
           />
         ),
       },
@@ -132,6 +142,8 @@ export const usePeersListVM = (serverId?: string) => {
   const { page, pageSize } = listStore.peersHolder.pagination;
 
   return {
+    serverId,
+    setServerId,
     data: listStore.models,
     columns,
     loading: listStore.isLoading,
@@ -143,6 +155,7 @@ export const usePeersListVM = (serverId?: string) => {
     onPageChange,
     onPageSizeChange,
     servers: serversStore.models,
+    isLoadingServers: serversStore.isLoading,
     qrPeer,
     setQrPeer,
     handleRowClick,

@@ -22,7 +22,6 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
-  const showNav = totalPages > 1;
   const showSizeSelector = !!onPageSizeChange && pageSize !== undefined;
 
   const options = React.useMemo(
@@ -37,22 +36,16 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   return (
     <div className="flex items-center justify-between p-4">
       <p className="text-xs text-muted-foreground">
-        {showNav && (
-          <>
-            Страница {currentPage} из {totalPages}
-          </>
-        )}
+        {`Страница ${currentPage} из ${totalPages}`}
       </p>
 
       <div className="flex items-center gap-3">
-        {showNav && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={onPageChange ?? (() => {})}
-            size="sm"
-          />
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange ?? (() => {})}
+          size="sm"
+        />
         {showSizeSelector && (
           <Select
             options={options}

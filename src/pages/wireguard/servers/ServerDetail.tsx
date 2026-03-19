@@ -21,7 +21,6 @@ import {
   Spinner,
   StatCard,
   Table,
-  TablePagination,
   Tabs,
   TabsContent,
   TabsList,
@@ -160,14 +159,15 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
                         Пиры не найдены
                       </div>
                     }
-                  />
-                  <TablePagination
-                    totalPages={peersVM.totalPages}
-                    currentPage={peersVM.currentPage}
-                    pageSize={peersVM.pageSize}
-                    onPageChange={peersVM.onPageChange}
-                    onPageSizeChange={peersVM.onPageSizeChange}
-                  />
+                  >
+                    {/*<Table.Pagination*/}
+                    {/*  totalPages={peersVM.totalPages}*/}
+                    {/*  currentPage={peersVM.currentPage}*/}
+                    {/*  pageSize={peersVM.pageSize}*/}
+                    {/*  onPageChange={peersVM.onPageChange}*/}
+                    {/*  onPageSizeChange={peersVM.onPageSizeChange}*/}
+                    {/*/>*/}
+                  </Table>
                 </div>
               </Card>
             </TabsContent>
