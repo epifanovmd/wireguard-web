@@ -3,12 +3,14 @@ import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import {
+  IProfileUpdateRequestDto,
   ISignInRequestDto,
   ITokensDto,
   IUserWithTokensDto,
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { ProfileModel } from "~@models";
 
 import { EntityHolder } from "../holders";
 import { AuthStatus, IAuthStore } from "./Auth.types";
@@ -35,11 +37,20 @@ class AuthStore implements IAuthStore {
     return this._userHolder.data;
   }
 
+  get profile() {
+    return this.user?.profile
+      ? new ProfileModel({
+          user: this.user,
+          ...this.user.profile,
+        })
+      : null;
+  }
+
   get error() {
     return (
       this._signHolder.error?.message ??
       this._signUpHolder.error?.message ??
-      null
+      this._userHolder.error?.message
     );
   }
 
@@ -99,6 +110,15 @@ class AuthStore implements IAuthStore {
       this._api.setTokens(tokens.accessToken, tokens.refreshToken);
       this._userHolder.setData(userDto);
       this._setStatus(AuthStatus.Authenticated);
+    }
+  }
+
+  async updateProfile(data: IProfileUpdateRequestDto) {
+    const res = await this._api.updateMyProfile(data);
+    const user = this._userHolder.data;
+
+    if (res.data && user) {
+      this._userHolder.setData({ ...user, profile: res.data });
     }
   }
 

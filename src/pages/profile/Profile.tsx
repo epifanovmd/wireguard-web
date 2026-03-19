@@ -5,12 +5,11 @@ import { FormProvider } from "react-hook-form";
 import { PageHeader } from "~@components/layouts";
 import { UserInfoCard } from "~@components/shared";
 import {
+  AsyncButton,
   Button,
   Card,
   DatePickerFormField,
   InputFormField,
-  SelectFormField,
-  Spinner,
 } from "~@components/ui2";
 
 import { ProfileFormData, useProfileVM } from "./hooks/useProfileVM";
@@ -18,24 +17,11 @@ import { ProfileFormData, useProfileVM } from "./hooks/useProfileVM";
 export const Profile: FC = observer(() => {
   const {
     model,
-    isLoading,
-    saving,
     sendingVerification,
     methods,
     onSubmit,
     sendEmailVerification,
   } = useProfileVM();
-
-  if (isLoading && !model) {
-    return (
-      <div className="flex flex-col h-full overflow-hidden">
-        <PageHeader title="Мой профиль" />
-        <div className="flex justify-center py-12 overflow-auto">
-          <Spinner />
-        </div>
-      </div>
-    );
-  }
 
   const emailVerificationAction =
     model?.email && !model.emailVerified ? (
@@ -125,9 +111,7 @@ export const Profile: FC = observer(() => {
               </Card>
 
               <div className="flex justify-end">
-                <Button loading={saving} onClick={onSubmit}>
-                  Сохранить
-                </Button>
+                <AsyncButton onClick={onSubmit}>Сохранить</AsyncButton>
               </div>
             </div>
           </FormProvider>

@@ -1,11 +1,13 @@
 import { createServiceDecorator } from "@force-dev/utils";
 
 import {
+  IProfileUpdateRequestDto,
   ISignInRequestDto,
   ITokensDto,
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { ProfileModel } from "~@models";
 
 export enum AuthStatus {
   Idle = "idle",
@@ -19,7 +21,8 @@ export const IAuthStore = createServiceDecorator<IAuthStore>();
 export interface IAuthStore {
   readonly status: AuthStatus;
   readonly user: UserDto | null;
-  readonly error: string | null;
+  readonly profile: ProfileModel | null;
+  readonly error: string | undefined;
   readonly isIdle: boolean;
   readonly isAuthenticated: boolean;
   readonly isLoading: boolean;
@@ -27,6 +30,7 @@ export interface IAuthStore {
 
   signIn(params: ISignInRequestDto): Promise<void>;
   signUp(params: TSignUpRequestDto): Promise<void>;
+  updateProfile(data: IProfileUpdateRequestDto): Promise<void>;
   restore(tokens?: ITokensDto): Promise<void>;
   signOut(): void;
 }

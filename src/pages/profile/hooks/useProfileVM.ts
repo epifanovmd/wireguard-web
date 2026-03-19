@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { useApi } from "~@api";
 import { useToast } from "~@components/ui2";
-import { useUserDataStore } from "~@store";
+import { useAuthStore } from "~@store";
 
 export const profileSchema = z.object({
   firstName: z.string().optional(),
@@ -20,25 +20,16 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 export const useProfileVM = () => {
   const api = useApi();
   const toast = useToast();
-  const userStore = useUserDataStore();
-  const [saving, setSaving] = useState(false);
+  const authStore = useAuthStore();
   const [sendingVerification, setSendingVerification] = useState(false);
 
-  const profile = userStore.user?.profile;
-  const isLoading = userStore.isLoading;
-  const model = userStore.profile;
+  const profile = authStore.user?.profile;
+  const model = authStore.profile;
 
   const methods = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {},
   });
-
-  useEffect(() => {
-    if (!userStore.user) {
-      userStore.load();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (!profile) return;
@@ -53,19 +44,15 @@ export const useProfileVM = () => {
   }, [profile]);
 
   const onSubmit = async (data: ProfileFormData) => {
-    setSaving(true);
-
-    const res = await userStore.updateProfile({
+    await authStore.updateProfile({
       firstName: data.firstName || undefined,
       lastName: data.lastName || undefined,
       gender: data.gender || undefined,
       birthDate: data.birthDate?.toISOString(),
     });
 
-    setSaving(false);
-
-    if ("error" in res && res.error) {
-      toast.error(res.error.message);
+    if (authStore.error) {
+      toast.error(authStore.error);
     } else {
       toast.success("Профиль обновлён");
     }
@@ -86,8 +73,6 @@ export const useProfileVM = () => {
 
   return {
     model,
-    isLoading,
-    saving,
     sendingVerification,
     methods,
     onSubmit: methods.handleSubmit(onSubmit),

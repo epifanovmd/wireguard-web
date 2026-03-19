@@ -6,6 +6,5 @@ export * from "./peers";
 export * from "./peerStats";
 export * from "./servers";
 export * from "./serverStats";
-export * from "./user";
 export * from "./users";
 // EXPORT STORE HERE
