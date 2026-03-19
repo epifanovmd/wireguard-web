@@ -22,7 +22,9 @@ class AuthStore implements IAuthStore {
   private statusModel = new AuthStatusModel(() => this.status);
   public status = AuthStatus.Idle;
 
-  private _userHolder = new EntityHolder<UserDto>();
+  private _userHolder = new EntityHolder<UserDto>({
+    onFetch: () => this._api.getMyUser(),
+  });
   private _signHolder = new EntityHolder<
     IUserWithTokensDto,
     ISignInRequestDto
@@ -70,6 +72,14 @@ class AuthStore implements IAuthStore {
     return !this.isIdle && !this.isLoading;
   }
 
+  public load() {
+    if (this.user) {
+      return this._userHolder.refresh();
+    }
+
+    return this._userHolder.load();
+  }
+
   async signIn(params: ISignInRequestDto) {
     this._setStatus(AuthStatus.Loading);
 
@@ -86,7 +96,7 @@ class AuthStore implements IAuthStore {
 
       this._api.setTokens(tokens.accessToken, tokens.refreshToken);
       this._userHolder.setData(userDto);
-      await this._loadUser();
+      await this.load();
       this._setStatus(AuthStatus.Authenticated);
     }
   }
@@ -137,7 +147,7 @@ class AuthStore implements IAuthStore {
       }
     }
 
-    const { data } = await this._loadUser();
+    const { data } = await this.load();
 
     this._setStatus(
       data ? AuthStatus.Authenticated : AuthStatus.Unauthenticated,
@@ -150,10 +160,6 @@ class AuthStore implements IAuthStore {
     this._signHolder.reset();
     this._signUpHolder.reset();
     this._setStatus(AuthStatus.Unauthenticated);
-  }
-
-  private _loadUser() {
-    return this._userHolder.fromApi(() => this._api.getMyUser());
   }
 
   private _setStatus(status: AuthStatus) {

@@ -9,6 +9,8 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { ProfileModel } from "~@models";
 
+import { IEntityHolderResult, IHolderError } from "../holders";
+
 export enum AuthStatus {
   Idle = "idle",
   Loading = "loading",
@@ -28,6 +30,7 @@ export interface IAuthStore {
   readonly isLoading: boolean;
   readonly isReady: boolean;
 
+  load(): Promise<IEntityHolderResult<UserDto, IHolderError>>;
   signIn(params: ISignInRequestDto): Promise<void>;
   signUp(params: TSignUpRequestDto): Promise<void>;
   updateProfile(data: IProfileUpdateRequestDto): Promise<void>;
