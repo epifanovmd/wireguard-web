@@ -14,7 +14,7 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { useAuthStore } from "~@store";
 
-const PROFILE_ID_KEY = "profileId";
+const PROFILE_ID_KEY = "app:profileId";
 
 export const usePasskeyAuth = () => {
   const [support, setSupport] = useState(false);
