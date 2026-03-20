@@ -9,16 +9,17 @@ import {
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
   WgPeerDto,
-  WgServerDto,
 } from "~@api/api-gen/data-contracts";
 import {
+  AsyncSelect,
   Button,
   DatePickerFormField,
   InputFormField,
-  Select,
   SwitchFormField,
   TextareaFormField,
 } from "~@components/ui";
+
+import { useServersSelectOptions } from "../../hooks";
 
 const schema = z.object({
   name: z.string().min(1, "Название обязательно"),
@@ -36,8 +37,7 @@ export type PeerFormData = z.infer<typeof schema>;
 
 interface PeerFormProps {
   defaultValues?: Partial<WgPeerDto>;
-  servers?: WgServerDto[];
-  selectedServerId?: string;
+  initialServerId?: string;
   isEdit?: boolean;
   loading?: boolean;
   onSubmit: (
@@ -49,16 +49,14 @@ interface PeerFormProps {
 
 export const PeerForm: FC<PeerFormProps> = ({
   defaultValues,
-  servers,
-  selectedServerId,
+  initialServerId,
   isEdit,
   loading,
   onSubmit,
   onCancel,
 }) => {
-  const [serverId, setServerId] = React.useState(
-    selectedServerId ?? servers?.[0]?.id ?? "",
-  );
+  const [serverId, setServerId] = React.useState(initialServerId ?? "");
+  const serversOptions = useServersSelectOptions();
 
   const methods = useForm<PeerFormData>({
     resolver: zodResolver(schema),
@@ -104,12 +102,11 @@ export const PeerForm: FC<PeerFormProps> = ({
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col gap-4 mb-4">
-        {!isEdit && servers && servers.length > 0 && (
-          <Select
-            options={servers.map(s => ({
-              value: s.id,
-              label: `${s.name} (${s.interface})`,
-            }))}
+        {!isEdit && (
+          <AsyncSelect
+            fetchOptions={serversOptions.fetchOptions}
+            getOption={serversOptions.getOption}
+            fetchOnMount
             value={serverId}
             onValueChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
@@ -172,9 +169,7 @@ export const PeerForm: FC<PeerFormProps> = ({
         </div>
 
         <div className="flex items-center justify-between py-1">
-          <span className="text-sm font-medium text-foreground">
-            Включён
-          </span>
+          <span className="text-sm font-medium text-foreground">Включён</span>
           <SwitchFormField<PeerFormData> name="enabled" />
         </div>
 

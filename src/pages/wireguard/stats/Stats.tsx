@@ -23,16 +23,16 @@ export const Stats: FC = () => {
         <div className="flex items-center gap-3 flex-wrap">
           <div className={"flex grow gap-3 flex-wrap"}>
             <AsyncSelect
-              getOption={vm.getServerOption}
+              getOption={vm.servers.getOption}
               fetchOnMount={true}
-              fetchOptions={vm.onFetchServers}
+              fetchOptions={vm.servers.fetchOptions}
               value={vm.selectedServer}
               onValueChange={v => vm.setSelectedServer(v ?? "")}
               placeholder="Выберите сервер"
             />
             <AsyncSelect
-              getOption={vm.getPeerOption}
-              fetchOptions={vm.onFetchPeers}
+              getOption={vm.peers.getOption}
+              fetchOptions={vm.peers.fetchOptions}
               value={vm.selectedPeer}
               disabled={!vm.selectedServer}
               onValueChange={v => vm.setSelectedPeer(v)}

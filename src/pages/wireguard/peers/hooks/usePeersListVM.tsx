@@ -10,18 +10,13 @@ import { PeerActions } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { useNotification } from "~@core/notifications";
 import { PeerModel } from "~@models";
-import {
-  usePeerDataStore,
-  usePeersListStore,
-  useServersListStore,
-} from "~@store";
+import { usePeerDataStore, usePeersListStore } from "~@store";
 
 import { type ColumnDef, useConfirm } from "../../../../components/ui";
 
 export const usePeersListVM = (_serverId?: string) => {
   const listStore = usePeersListStore();
   const peerStore = usePeerDataStore();
-  const serversStore = useServersListStore();
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useNotification();
@@ -30,15 +25,6 @@ export const usePeersListVM = (_serverId?: string) => {
     null,
   );
   const [serverId, setServerId] = useState<string | undefined>(_serverId);
-
-  useEffect(() => {
-    if (!serverId) {
-      serversStore.load().then(() => {
-        if (serversStore.models[0]) setServerId(serversStore.models[0].data.id);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (serverId) {
@@ -153,7 +139,7 @@ export const usePeersListVM = (_serverId?: string) => {
     setServerId,
     data: listStore.models,
     columns,
-    loading: listStore.isLoading || (!serverId && serversStore.isLoading),
+    loading: listStore.isLoading,
     createPeerLoading: listStore.createPeerMutation.isLoading,
     refreshing: listStore.peersHolder.isRefreshing,
     total: listStore.total,
@@ -162,8 +148,6 @@ export const usePeersListVM = (_serverId?: string) => {
     pageSize,
     onPageChange,
     onPageSizeChange,
-    servers: serversStore.models,
-    isLoadingServers: serversStore.listHolder.isLoading,
     qrPeer,
     setQrPeer,
     handleRowClick,

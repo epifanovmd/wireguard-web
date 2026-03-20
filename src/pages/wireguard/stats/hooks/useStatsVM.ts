@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useApi } from "~@api";
-import { WgPeerDto, WgServerDto } from "~@api/api-gen/data-contracts";
 import { type DateRange } from "~@components/ui";
 import { useServerStatsStore } from "~@store";
 
+import { usePeersSelectOptions, useServersSelectOptions } from "../../hooks";
 import { getPresetRange, type Preset } from "../stats.constants";
 
 export const useStatsVM = () => {
   const serverStatsStore = useServerStatsStore();
-  const api = useApi();
 
   const [selectedServer, setSelectedServer] = useState<string>();
   const [selectedPeer, setSelectedPeer] = useState<string>("");
@@ -54,37 +52,8 @@ export const useStatsVM = () => {
     setCustomRange(range);
   }, []);
 
-  const onFetchPeers = useCallback(async () => {
-    return selectedServer
-      ? api
-          .getPeersByServer({ serverId: selectedServer, limit: 10 })
-          .then(res => res.data?.data ?? [])
-          .catch(() => [])
-      : [];
-  }, [api, selectedServer]);
-
-  const getPeerOption = useCallback(
-    (s: WgPeerDto) => ({
-      value: s.id,
-      label: s.name,
-    }),
-    [],
-  );
-
-  const onFetchServers = useCallback(async () => {
-    return api
-      .getServers({ limit: 10 })
-      .then(res => res.data?.data ?? [])
-      .catch(() => []);
-  }, [api]);
-
-  const getServerOption = useCallback(
-    (s: WgServerDto) => ({
-      value: s.id,
-      label: s.name,
-    }),
-    [],
-  );
+  const servers = useServersSelectOptions();
+  const peers = usePeersSelectOptions(selectedServer);
 
   return {
     selectedServer,
@@ -96,9 +65,7 @@ export const useStatsVM = () => {
     loadStats,
     handlePresetChange,
     handleCustomRange,
-    onFetchPeers,
-    getPeerOption,
-    getServerOption,
-    onFetchServers,
+    servers,
+    peers,
   };
 };

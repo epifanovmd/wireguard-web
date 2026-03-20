@@ -4,6 +4,7 @@ import { FC, useState } from "react";
 import { PageHeader } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
 import {
+  AsyncSelect,
   Badge,
   Button,
   Card,
@@ -13,16 +14,17 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
-  Select,
   Table,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
+import { useServersSelectOptions } from "../hooks";
 import { PeerForm } from "./components/PeerForm";
 import { usePeersListVM } from "./hooks";
 
 export const PeersList: FC = observer(() => {
   const vm = usePeersListVM();
+  const serversOptions = useServersSelectOptions();
   const toast = useNotification();
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -39,12 +41,10 @@ export const PeersList: FC = observer(() => {
       <div className="flex flex-col p-4 sm:p-6 gap-6 overflow-auto">
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
-          <Select
-            options={vm.servers.map(s => ({
-              value: s.data.id,
-              label: s.name,
-            }))}
-            loading={vm.isLoadingServers}
+          <AsyncSelect
+            fetchOptions={serversOptions.fetchOptions}
+            getOption={serversOptions.getOption}
+            fetchOnMount
             value={vm.serverId}
             onValueChange={vm.setServerId}
             placeholder="Выберите сервер"
@@ -98,8 +98,6 @@ export const PeersList: FC = observer(() => {
           </ModalHeader>
           <ModalBody>
             <PeerForm
-              servers={vm.servers.map(s => s.data)}
-              selectedServerId={vm.servers[0]?.data.id}
               onCancel={() => setCreateOpen(false)}
               loading={vm.createPeerLoading}
               onSubmit={async (data, serverId) => {
