@@ -15,6 +15,7 @@ import {
   Button,
   DatePickerFormField,
   InputFormField,
+  SearchSelect,
   SwitchFormField,
   TextareaFormField,
 } from "~@components/ui";
@@ -103,6 +104,17 @@ export const PeerForm: FC<PeerFormProps> = ({
     <FormProvider {...methods}>
       <div className="flex flex-col gap-4 mb-4">
         {!isEdit && (
+          <SearchSelect
+            fetchOptions={serversOptions.fetchOptions}
+            getOption={serversOptions.getOption}
+            fetchOnMount
+            value={serverId}
+            onValueChange={v => setServerId(v ?? "")}
+            placeholder="Выберите сервер"
+            clearable
+          />
+        )}
+        {!isEdit && (
           <AsyncSelect
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
@@ -110,6 +122,7 @@ export const PeerForm: FC<PeerFormProps> = ({
             value={serverId}
             onValueChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
+            clearable
           />
         )}
 

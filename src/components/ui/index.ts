@@ -80,6 +80,7 @@ export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export type {
   AsyncSelectProps,
   GroupedSelectProps,
+  SearchSelectProps,
   SelectOption,
   SelectOptionGroup,
   SelectProps,
@@ -92,14 +93,13 @@ export type {
 export {
   AsyncSelect,
   GroupedSelect,
+  SearchSelect,
   Select,
   SelectContent,
   SelectEmpty,
   SelectItem,
   SelectLabel,
   SelectLoading,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
   useAsyncSelect,

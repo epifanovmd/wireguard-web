@@ -3,6 +3,8 @@ export type { AsyncSelectProps } from "./AsyncSelect";
 export { AsyncSelect } from "./AsyncSelect";
 export type { GroupedSelectProps } from "./GroupedSelect";
 export { GroupedSelect } from "./GroupedSelect";
+export type { SearchSelectProps } from "./SearchSelect";
+export { SearchSelect } from "./SearchSelect";
 export type { SelectProps } from "./Select";
 export { Select } from "./Select";
 
@@ -26,8 +28,6 @@ export {
   SelectItem,
   SelectLabel,
   SelectLoading,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
 } from "./primitives";

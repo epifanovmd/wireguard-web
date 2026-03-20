@@ -1,11 +1,10 @@
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { type VariantProps } from "class-variance-authority";
-import { ChevronDown, X } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../../cn";
-import { Spinner } from "../../spinner";
 import { selectTriggerVariants } from "../selectVariants";
+import { SelectTriggerIcon } from "./SelectTriggerIcon";
 
 export interface SelectTriggerProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>,
@@ -15,6 +14,7 @@ export interface SelectTriggerProps
   value?: string;
   clearable?: boolean;
   onClear?: () => void;
+  placeholder?: string;
 }
 
 export const SelectTrigger = React.forwardRef<
@@ -31,6 +31,7 @@ export const SelectTrigger = React.forwardRef<
       value,
       clearable,
       onClear,
+      placeholder: _placeholder,
       ...props
     },
     ref,
@@ -45,29 +46,11 @@ export const SelectTrigger = React.forwardRef<
         {...props}
       >
         {children}
-        <SelectPrimitive.Icon asChild>
-          {loading ? (
-            <Spinner size="sm" className="h-4 w-4 opacity-50 shrink-0" />
-          ) : showClear ? (
-            <span
-              role="button"
-              tabIndex={-1}
-              onPointerDown={e => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              onClick={e => {
-                e.stopPropagation();
-                onClear?.();
-              }}
-              className="shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer inline-flex items-center justify-center"
-            >
-              <X className="h-4 w-4" />
-            </span>
-          ) : (
-            <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
-          )}
-        </SelectPrimitive.Icon>
+        <SelectTriggerIcon
+          loading={loading}
+          showClear={showClear}
+          onClear={onClear}
+        />
       </SelectPrimitive.Trigger>
     );
   },

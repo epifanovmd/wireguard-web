@@ -7,7 +7,7 @@ export const useUsersSelectOptions = () => {
   const api = useApi();
 
   const fetchOptions = useCallback(
-    () =>
+    (_query?: string) =>
       api
         .getUsers({ limit: 100 })
         .then(res => res.data?.data ?? [])

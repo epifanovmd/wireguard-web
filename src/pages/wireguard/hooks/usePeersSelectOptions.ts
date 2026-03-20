@@ -7,7 +7,7 @@ export const usePeersSelectOptions = (serverId?: string) => {
   const api = useApi();
 
   const fetchOptions = useCallback(
-    () =>
+    (_query?: string) =>
       serverId
         ? api
             .getPeersByServer({ serverId, limit: 100 })

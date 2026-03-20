@@ -7,7 +7,7 @@ export const useServersSelectOptions = () => {
   const api = useApi();
 
   const fetchOptions = useCallback(
-    () =>
+    (_query?: string) =>
       api
         .getServers({ limit: 100 })
         .then(res => res.data?.data ?? [])

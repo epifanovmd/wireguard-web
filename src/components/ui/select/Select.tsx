@@ -7,8 +7,6 @@ import {
   SelectItem,
   SelectLabel,
   SelectLoading,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
 } from "./primitives";
@@ -21,7 +19,7 @@ import {
 export interface SelectProps<TValue extends string = string>
   extends SelectRootProps<TValue>,
     SelectTriggerAppearance {
-  /** Flat list of options. Triggers skeleton mode when provided. */
+  /** Flat list of options. */
   options?: SelectOption<TValue>[];
   loading?: boolean;
   /** Shown when options is empty (not loading). */
@@ -60,6 +58,7 @@ const SelectRoot = <TValue extends string = string>({
           value={value}
           clearable={clearable}
           onClear={onClear}
+          placeholder={placeholder}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
         </SelectTrigger>
@@ -70,7 +69,11 @@ const SelectRoot = <TValue extends string = string>({
             <SelectEmpty>{empty}</SelectEmpty>
           ) : (
             options.map(opt => (
-              <SelectItem key={opt.value} value={opt.value} disabled={opt.disabled}>
+              <SelectItem
+                key={opt.value}
+                value={opt.value}
+                disabled={opt.disabled}
+              >
                 {opt.label}
               </SelectItem>
             ))
@@ -95,6 +98,4 @@ export const Select = Object.assign(SelectRoot, {
   Loading: SelectLoading,
   Empty: SelectEmpty,
   Value: SelectPrimitive.Value,
-  ScrollUpButton: SelectScrollUpButton,
-  ScrollDownButton: SelectScrollDownButton,
 });

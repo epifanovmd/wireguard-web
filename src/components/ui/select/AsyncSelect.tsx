@@ -18,8 +18,8 @@ import {
 export interface AsyncSelectProps<TData, TValue extends string = string>
   extends SelectRootProps<TValue>,
     SelectTriggerAppearance {
-  /** Function that returns a Promise with raw data. Called on first open (or on mount if fetchOnMount=true). */
-  fetchOptions: (signal?: AbortSignal) => Promise<TData[]>;
+  /** Function that fetches raw data. Receives a search query and AbortSignal. */
+  fetchOptions: (query: string, signal?: AbortSignal) => Promise<TData[]>;
   /** Maps a raw data item to a SelectOption. */
   getOption: (item: TData) => SelectOption<TValue>;
   /** Fetch immediately on mount. Default: false (lazy — fetches on first open). */
@@ -77,6 +77,7 @@ export const AsyncSelect = <TData, TValue extends string = string>({
         value={value}
         clearable={clearable}
         onClear={onClear}
+        placeholder={placeholder}
       >
         <SelectPrimitive.Value placeholder={placeholder} />
       </SelectTrigger>
