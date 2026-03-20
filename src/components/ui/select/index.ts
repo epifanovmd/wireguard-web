@@ -1,12 +1,7 @@
 // Main components
-export type { AsyncSelectProps } from "./AsyncSelect";
-export { AsyncSelect } from "./AsyncSelect";
 export { GroupedSelect } from "./GroupedSelect";
-export type { SearchSelectProps } from "./SearchSelect";
-export { SearchSelect } from "./SearchSelect";
 export { Select } from "./Select";
-export type { SelectProps } from "./types";
-export type { GroupedSelectProps } from "./types";
+export type { GroupedSelectProps, SelectProps } from "./types";
 
 // Hooks
 export type { UseKeyboardNavProps, UseKeyboardNavResult } from "./hooks/useKeyboardNav";

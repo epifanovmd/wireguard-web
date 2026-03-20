@@ -78,9 +78,7 @@ export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
 // Select
 export type {
-  AsyncSelectProps,
   GroupedSelectProps,
-  SearchSelectProps,
   SelectOption,
   SelectOptionGroup,
   SelectOptionsArray,
@@ -88,8 +86,6 @@ export type {
   SelectOptionsGetter,
   SelectProps,
   SelectTriggerAppearance,
-  UseAsyncSelectOptions,
-  UseAsyncSelectResult,
   UseKeyboardNavProps,
   UseKeyboardNavResult,
   UseSelectOptionsProps,
@@ -97,9 +93,7 @@ export type {
   UseSelectStateResult,
 } from "./select";
 export {
-  AsyncSelect,
   GroupedSelect,
-  SearchSelect,
   Select,
   SelectEmpty,
   SelectListGroup,
@@ -109,7 +103,6 @@ export {
   SelectTag,
   SelectTriggerBase,
   SelectTriggerIcon,
-  useAsyncSelect,
   useKeyboardNav,
   useSelectOptions,
   useSelectState,

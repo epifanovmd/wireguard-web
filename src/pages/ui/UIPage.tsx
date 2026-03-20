@@ -20,7 +20,6 @@ import {
 import { useState } from "react";
 
 import {
-  AsyncSelect,
   Badge,
   Button,
   Card,
@@ -717,7 +716,7 @@ export const UIPage = () => {
                     size="sm"
                   />
 
-                  <AsyncSelect
+                  <Select
                     fetchOptions={fetchCountries}
                     getOption={c => ({ value: c, label: c })}
                     placeholder="Async (lazy)"
@@ -732,7 +731,7 @@ export const UIPage = () => {
                   Manual mode
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <AsyncSelect
+                  <Select
                     fetchOptions={fetchCities}
                     getOption={c => ({ value: c, label: c })}
                     placeholder="Async (on mount)"

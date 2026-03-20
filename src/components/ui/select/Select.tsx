@@ -11,7 +11,7 @@ import {
   SelectTag,
   SelectTriggerBase,
 } from "./primitives";
-import { type RenderOptionsContext,type SelectOption, type SelectProps } from "./types";
+import { type SelectOption, type SelectProps } from "./types";
 
 // ─── Label cache ───────────────────────────────────────────────────────────────
 
@@ -58,7 +58,7 @@ export function Select<TData = unknown, V extends string = string>(
 
   const multi = props.multi === true;
   const clearable = props.clearable === true;
-  const tagsDisplay = !multi || (props as any).tagsDisplay !== false;
+  const tagsDisplay = !multi || props.tagsDisplay !== false;
 
   const rawValue = props.value;
   const onChange = props.onChange as
@@ -166,9 +166,7 @@ export function Select<TData = unknown, V extends string = string>(
       ref={inputRef}
       className="flex-1 min-w-0 bg-transparent outline-none text-inherit placeholder:text-muted-foreground cursor-text text-sm"
       value={open ? query : ""}
-      placeholder={
-        selectedValues.length === 0 ? placeholder : undefined
-      }
+      placeholder={selectedValues.length === 0 ? placeholder : undefined}
       readOnly={!open}
       onChange={e => setQuery(e.target.value)}
       onKeyDown={handleKeyDown}
@@ -334,7 +332,12 @@ export function Select<TData = unknown, V extends string = string>(
           ) : options.length === 0 ? (
             <SelectEmpty>{empty}</SelectEmpty>
           ) : renderOptions ? (
-            renderOptions({ focusedIndex, setFocusedIndex, isSelected, onSelect: handleSelect })
+            renderOptions({
+              focusedIndex,
+              setFocusedIndex,
+              isSelected,
+              onSelect: handleSelect,
+            })
           ) : (
             options.map((opt, index) => (
               <SelectListItem

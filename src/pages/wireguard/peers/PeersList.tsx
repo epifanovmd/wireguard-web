@@ -4,7 +4,6 @@ import { FC, useState } from "react";
 import { PageHeader } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
 import {
-  AsyncSelect,
   Badge,
   Button,
   Card,
@@ -14,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  Select,
   Table,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
@@ -41,12 +41,12 @@ export const PeersList: FC = observer(() => {
       <div className="flex flex-col p-4 sm:p-6 gap-6 overflow-auto">
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
-          <AsyncSelect
+          <Select
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
             fetchOnMount
             value={vm.serverId}
-            onValueChange={vm.setServerId}
+            onChange={vm.setServerId}
             placeholder="Выберите сервер"
             className="w-48"
           />

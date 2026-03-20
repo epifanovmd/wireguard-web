@@ -2,10 +2,8 @@ import { FC } from "react";
 
 import { PageHeader } from "~@components/layouts";
 import {
-  AsyncSelect,
   Button,
   DateRangePicker,
-  SearchSelect,
   Segmented,
   Select,
 } from "~@components/ui";
@@ -24,24 +22,24 @@ export const Stats: FC = () => {
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
           <div className={"flex grow gap-3 flex-wrap"}>
-            <AsyncSelect
+            <Select
               getOption={vm.servers.getOption}
-              fetchOnMount={true}
+              fetchOnMount
               fetchOptions={vm.servers.fetchOptions}
               value={vm.selectedServer}
-              onValueChange={v => vm.setSelectedServer(v ?? "")}
+              onChange={v => vm.setSelectedServer(v ?? "")}
               placeholder="Выберите сервер"
             />
-            <SearchSelect
+            <Select
+              search
               getOption={vm.peers.getOption}
               fetchOptions={vm.peers.fetchOptions}
               value={vm.selectedPeer}
               disabled={!vm.selectedServer}
-              onValueChange={v => vm.setSelectedPeer(v ?? "")}
+              onChange={v => vm.setSelectedPeer(v ?? "")}
               placeholder="Выберите peer"
-              clearable={true}
-              tagsDisplay={true}
-              // multi={true}
+              clearable
+              // multi
             />
           </div>
           <Segmented

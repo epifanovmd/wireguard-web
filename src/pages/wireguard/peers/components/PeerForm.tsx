@@ -11,11 +11,10 @@ import {
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
 import {
-  AsyncSelect,
   Button,
   DatePickerFormField,
   InputFormField,
-  SearchSelect,
+  Select,
   SwitchFormField,
   TextareaFormField,
 } from "~@components/ui";
@@ -104,23 +103,24 @@ export const PeerForm: FC<PeerFormProps> = ({
     <FormProvider {...methods}>
       <div className="flex flex-col gap-4 mb-4">
         {!isEdit && (
-          <SearchSelect
+          <Select
+            search
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
             fetchOnMount
             value={serverId}
-            onValueChange={v => setServerId(v ?? "")}
+            onChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
             clearable
           />
         )}
         {!isEdit && (
-          <AsyncSelect
+          <Select
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
             // fetchOnMount
             value={serverId}
-            onValueChange={v => setServerId(v ?? "")}
+            onChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
             // clearable
           />
