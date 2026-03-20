@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import {
+  EWgServerStatus,
+  IWgPeerUpdateRequestDto,
+} from "~@api/api-gen/data-contracts";
 import { useConfirm } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { usePeerDataStore } from "~@store";
@@ -17,7 +20,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
 
   useEffect(() => {
     return peerStatsStore.subscribe(peerId);
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [peerId]);
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
   }, [peerStore, peerId, confirm, toast, onBack]);
 
   const handleUpdate = useCallback(
-    async (data: any) => {
+    async (data: IWgPeerUpdateRequestDto) => {
       const res = await peerStore.updatePeer(peerId, data);
 
       if (res.error) {
@@ -87,11 +90,6 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     isLoading: peerStore.peerHolder.isLoading,
     isReady: peerStore.peerHolder.isFilled,
     isUpdateLoading: peerStore.updatePeerMutation.isLoading,
-    liveStats: peerStatsStore.stats,
-    liveStatus: peerStatsStore.status,
-    liveActive: peerStatsStore.active,
-    speedPoints: peerStatsStore.speedPoints,
-    trafficPoints: peerStatsStore.trafficPoints,
     editOpen,
     setEditOpen,
     qrOpen,

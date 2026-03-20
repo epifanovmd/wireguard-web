@@ -1,6 +1,10 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo } from "react";
 
+import {
+  IWgServerCreateRequestDto,
+  IWgServerUpdateRequestDto,
+} from "~@api/api-gen/data-contracts";
 import { ServerActionsLiveStatus } from "~@components/shared";
 import { serverColumns } from "~@components/tables/servers";
 import { type ColumnDef, useConfirm } from "~@components/ui";
@@ -30,44 +34,33 @@ export const useServersListVM = () => {
         });
 
         if (!ok) return;
+
+        const r = await listStore.deleteServer(id);
+
+        if (r.error) toast.error(r.error.message);
+
+        return;
       }
 
       let res;
 
-      if (action === "start") {
-        res = await detailStore.startServer(id);
-        if (detailStore.serverActionMutation.error) {
-          toast.error("Не удалось запустить сервер");
-        } else {
-          toast.success("Сервер успешно запущен");
-        }
-      } else if (action === "stop") {
-        res = await detailStore.stopServer(id);
-        if (detailStore.serverActionMutation.error) {
-          toast.error("Не удалось остановить сервер");
-        } else {
-          toast.success("Сервер успешно остановлен");
-        }
-      } else if (action === "restart") {
-        res = await detailStore.restartServer(id);
-        if (detailStore.serverActionMutation.error) {
-          toast.error("Не удалось перезапустить сервер");
-        } else {
-          toast.success("Сервер успешно перезапущен");
-        }
-      }
+      if (action === "start") res = await detailStore.startServer(id);
+      else if (action === "stop") res = await detailStore.stopServer(id);
+      else res = await detailStore.restartServer(id);
 
-      if (res?.error) toast.error(res.error.message);
-      else if (action === "delete") listStore.removeServer(id);
-      else if (res?.data) listStore.updateServer(res.data);
-      else {
-        const r = await detailStore.deleteServer(id);
-        if (r.data) {
-          listStore.removeServer(id);
-        }
+      if (res.error) {
+        toast.error(res.error.message);
+      } else {
+        if (res.data) listStore.updateServer(res.data);
+        const successMessages = {
+          start: "Сервер успешно запущен",
+          stop: "Сервер успешно остановлен",
+          restart: "Сервер успешно перезапущен",
+        };
+
+        toast.success(successMessages[action]);
       }
     },
-
     [detailStore, listStore, confirm, toast],
   );
 
@@ -104,8 +97,8 @@ export const useServersListVM = () => {
   );
 
   const createServer = useCallback(
-    async (params: any) => {
-      return listStore.createServer(params);
+    async (params: IWgServerCreateRequestDto | IWgServerUpdateRequestDto) => {
+      return listStore.createServer(params as IWgServerCreateRequestDto);
     },
     [listStore],
   );

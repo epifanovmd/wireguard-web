@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import {
+  EWgServerStatus,
+  IWgServerUpdateRequestDto,
+} from "~@api/api-gen/data-contracts";
 import { useNotification } from "~@core/notifications";
 import { useServerDetailStore } from "~@store";
 import { useServerStatsStore } from "~@store/serverStats";
@@ -8,7 +11,7 @@ import { useServerStatsStore } from "~@store/serverStats";
 import { useWgServer } from "../../../../socket";
 import { usePeersListVM } from "../../peers/hooks";
 
-export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
+export const useServerDetailVM = (serverId: string) => {
   const serverStore = useServerDetailStore();
   const serverStatsStore = useServerStatsStore();
   const toast = useNotification();
@@ -51,7 +54,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   );
 
   const handleUpdate = useCallback(
-    async (data: any) => {
+    async (data: IWgServerUpdateRequestDto) => {
       const res = await serverStore.updateServer(serverId, data);
 
       if (res.error) {
@@ -73,9 +76,6 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
     isActionLoading: serverStore.serverActionMutation.isLoading,
     isUpdateLoading: serverStore.updateServerMutation.isLoading,
     isFilled: serverStore.serverHolder.isFilled,
-    liveStats: serverStatsStore.stats,
-    speedPoints: serverStatsStore.speedPoints,
-    trafficPoints: serverStatsStore.trafficPoints,
     effectiveStatus,
     peerCount,
     activePeerCount,

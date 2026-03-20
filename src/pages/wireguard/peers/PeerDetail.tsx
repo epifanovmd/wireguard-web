@@ -1,17 +1,13 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
-import { formatter } from "~@common";
-import { PeerSpeedChart, PeerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
   PeerActions,
   PeerConfigurationCard,
-  PeerStatus,
   QrCodeModal,
 } from "~@components/shared";
 import {
-  Badge,
   Modal,
   ModalBody,
   ModalContent,
@@ -19,7 +15,6 @@ import {
   ModalOverlay,
   ModalTitle,
   Spinner,
-  StatCard,
   Tabs,
   TabsContent,
   TabsList,
@@ -27,6 +22,9 @@ import {
 } from "~@components/ui";
 
 import { PeerForm } from "./components/PeerForm";
+import { PeerLiveCharts } from "./components/PeerLiveCharts";
+import { PeerLiveStatCards } from "./components/PeerLiveStatCards";
+import { PeerLiveStatusStrip } from "./components/PeerLiveStatusStrip";
 import { usePeerDetailVM } from "./hooks";
 
 interface PeerDetailProps {
@@ -37,7 +35,7 @@ interface PeerDetailProps {
 export const PeerDetail: FC<PeerDetailProps> = observer(
   ({ peerId, onBack }) => {
     const vm = usePeerDetailVM(peerId, onBack);
-    const { peer, model, liveStats, liveStatus, liveActive } = vm;
+    const { peer, model } = vm;
 
     if (vm.isLoading || !vm.isReady) {
       return (
@@ -51,9 +49,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     }
 
     if (!peer || !model) {
-      return (
-        <div className="p-6 text-muted-foreground">Пир не найден</div>
-      );
+      return <div className="p-6 text-muted-foreground">Пир не найден</div>;
     }
 
     return (
@@ -74,75 +70,10 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
 
         <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
           {/* Status strip */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <PeerStatus
-              status={liveStatus?.status ?? peer.status}
-              enabled={peer.enabled}
-            />
-            {(liveActive?.isActive ?? liveStats?.isActive ?? peer.isActive) ? (
-              <Badge variant="success" dot>
-                Активен
-              </Badge>
-            ) : (
-              <Badge variant="secondary" dot>
-                Нет активности
-              </Badge>
-            )}
-            {peer.hasPresharedKey && (
-              <Badge variant="info" dot>
-                PSK включён
-              </Badge>
-            )}
-            {peer.userId && (
-              <Badge variant="purple" dot>
-                Назначен
-              </Badge>
-            )}
-            {(() => {
-              const lastHandshake =
-                liveActive?.lastHandshake ??
-                liveStats?.lastHandshake ??
-                peer.lastHandshake;
-
-              return (
-                <span
-                  className="text-xs text-muted-foreground"
-                  title={formatter.date.format(lastHandshake) || undefined}
-                >
-                  Рукопожатие:{" "}
-                  {formatter.date.formatDiff(lastHandshake) || "—"}
-                </span>
-              );
-            })()}
-          </div>
+          <PeerLiveStatusStrip peer={peer} />
 
           {/* Live stat cards */}
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-            <StatCard
-              title="Всего RX"
-              value={formatter.bytes(liveStats?.rxBytes ?? 0)}
-              subtitle="Загружено"
-              color="info"
-            />
-            <StatCard
-              title="Всего TX"
-              value={formatter.bytes(liveStats?.txBytes ?? 0)}
-              subtitle="Отдано"
-              color="success"
-            />
-            <StatCard
-              title="Скорость RX"
-              value={formatter.speed(liveStats?.rxSpeedBps ?? 0)}
-              subtitle="Загрузка"
-              color="purple"
-            />
-            <StatCard
-              title="Скорость TX"
-              value={formatter.speed(liveStats?.txSpeedBps ?? 0)}
-              subtitle="Отдача"
-              color="warning"
-            />
-          </div>
+          <PeerLiveStatCards />
 
           <Tabs defaultValue="charts">
             <TabsList>
@@ -151,8 +82,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
             </TabsList>
 
             <TabsContent value="charts" className={"flex flex-col gap-4"}>
-              <PeerSpeedChart points={vm.speedPoints} />
-              <PeerTrafficChart points={vm.trafficPoints} />
+              <PeerLiveCharts />
             </TabsContent>
 
             <TabsContent value="config">

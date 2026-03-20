@@ -1,7 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import {
+  EWgServerStatus,
+  IWgPeerCreateRequestDto,
+  IWgPeerUpdateRequestDto,
+} from "~@api/api-gen/data-contracts";
 import { PeerActions } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { useNotification } from "~@core/notifications";
@@ -116,8 +120,14 @@ export const usePeersListVM = (_serverId?: string) => {
   );
 
   const createPeer = useCallback(
-    async (targetServerId: string, params: any) => {
-      return listStore.createPeer(targetServerId, params);
+    async (
+      targetServerId: string,
+      params: IWgPeerCreateRequestDto | IWgPeerUpdateRequestDto,
+    ) => {
+      return listStore.createPeer(
+        targetServerId,
+        params as IWgPeerCreateRequestDto,
+      );
     },
     [listStore],
   );

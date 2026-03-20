@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useApi } from "~@api";
 import { WgPeerDto, WgServerDto } from "~@api/api-gen/data-contracts";
 import { type DateRange } from "~@components/ui";
-import { useServersListStore, useServerStatsStore } from "~@store";
+import { useServerStatsStore } from "~@store";
 
 import { getPresetRange, type Preset } from "../stats.constants";
 
@@ -18,21 +18,15 @@ export const useStatsVM = () => {
     undefined,
   );
 
-  const [activeFrom, activeTo] =
-    customRange?.from && customRange?.to
-      ? [customRange.from, customRange.to]
-      : getPresetRange(preset);
+  const [activeFrom, activeTo] = useMemo(
+    () =>
+      customRange?.from && customRange?.to
+        ? [customRange.from, customRange.to]
+        : getPresetRange(preset),
+    [customRange, preset],
+  );
 
-  useEffect(() => {
-    const rangeReady = !customRange || (customRange.from && customRange.to);
-
-    if (selectedServer && rangeReady) {
-      loadStats();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedServer, selectedPeer, preset, customRange]);
-
-  const loadStats = () => {
+  const loadStats = useCallback(() => {
     if (selectedServer) {
       serverStatsStore.load(
         selectedServer,
@@ -41,27 +35,24 @@ export const useStatsVM = () => {
         selectedPeer || undefined,
       );
     }
-  };
+  }, [serverStatsStore, selectedServer, activeFrom, activeTo, selectedPeer]);
 
-  const handlePresetChange = (val: string) => {
+  useEffect(() => {
+    const rangeReady = !customRange || (customRange.from && customRange.to);
+
+    if (selectedServer && rangeReady) {
+      loadStats();
+    }
+  }, [selectedServer, selectedPeer, preset, customRange, loadStats]);
+
+  const handlePresetChange = useCallback((val: string) => {
     setPreset(val as Preset);
     setCustomRange(undefined);
-  };
+  }, []);
 
-  const handleCustomRange = (range: DateRange | undefined) => {
+  const handleCustomRange = useCallback((range: DateRange | undefined) => {
     setCustomRange(range);
-  };
-
-  const totalRx = serverStatsStore.stats?.totalRxBytes ?? 0;
-  const totalTx = serverStatsStore.stats?.totalTxBytes ?? 0;
-  const maxRxSpeed =
-    serverStatsStore.speedPoints.length > 0
-      ? Math.max(...serverStatsStore.speedPoints.map(d => d.rx))
-      : 0;
-  const maxTxSpeed =
-    serverStatsStore.speedPoints.length > 0
-      ? Math.max(...serverStatsStore.speedPoints.map(d => d.tx))
-      : 0;
+  }, []);
 
   const onFetchPeers = useCallback(async () => {
     return selectedServer
@@ -96,17 +87,12 @@ export const useStatsVM = () => {
   );
 
   return {
-    serverStatsStore,
     selectedServer,
     selectedPeer,
     setSelectedServer,
     setSelectedPeer,
     preset,
     customRange,
-    totalRx,
-    totalTx,
-    maxRxSpeed,
-    maxTxSpeed,
     loadStats,
     handlePresetChange,
     handleCustomRange,
