@@ -4,7 +4,7 @@ import { FC } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 
-import { AsyncIconButton, iconButtonVariants } from "../../ui2";
+import { AsyncIconButton, iconButtonVariants } from "../../ui";
 
 interface ServerActionsProps
   extends Pick<VariantProps<typeof iconButtonVariants>, "size"> {

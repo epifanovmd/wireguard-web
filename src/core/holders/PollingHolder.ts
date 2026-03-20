@@ -11,35 +11,35 @@ export type PollingStartOptions<TArgs> = TArgs extends void
 
 export interface IPollingHolderOptions<TData, TArgs = void>
   extends IEntityHolderOptions<TData, TArgs> {
-  /** Default polling interval in ms (default: 5000). */
+  /** Интервал опроса по умолчанию в мс (default: 5000). */
   interval?: number;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Extends `EntityHolder` with automatic polling (setInterval-based refresh).
+ * Расширяет `EntityHolder` автоматическим опросом (на основе setInterval).
  *
- * - `startPolling(options?)` — initial load (if idle) + periodic silent refresh
- * - `stopPolling()` — clears the interval
- * - `reset()` — stops polling and resets to idle
- * - `isPolling` — observable flag
+ * - `startPolling(options?)` — первичная загрузка (если idle) + периодическое тихое обновление
+ * - `stopPolling()` — очищает интервал
+ * - `reset()` — останавливает опрос и сбрасывает в idle
+ * - `isPolling` — observable-флаг
  *
  * @example
  * ```ts
  * // TArgs = void
- * statusHolder = new PollingHolder<StatusDto>({
- *   onFetch: () => this._api.getStatus(),
+ * healthHolder = new PollingHolder<HealthDto>({
+ *   onFetch: () => this._api.getHealth(),
  *   interval: 10_000,
  * });
- * statusHolder.startPolling();
- * statusHolder.stopPolling();
+ * healthHolder.startPolling();
+ * healthHolder.stopPolling();
  *
- * // TArgs = string
- * statusHolder = new PollingHolder<StatusDto, string>({
- *   onFetch: id => this._api.getStatus(id),
+ * // TArgs = string (идентификатор ресурса)
+ * jobStatusHolder = new PollingHolder<JobStatusDto, string>({
+ *   onFetch: id => this._api.getJobStatus(id),
  * });
- * statusHolder.startPolling({ args: serverId, interval: 10_000 });
+ * jobStatusHolder.startPolling({ args: jobId, interval: 5_000 });
  * ```
  */
 export class PollingHolder<
@@ -64,10 +64,10 @@ export class PollingHolder<
   }
 
   /**
-   * Starts polling. Performs an immediate `load()` if the holder is idle,
-   * then silently `refresh()`es on every interval tick.
+   * Запускает опрос. Выполняет немедленный `load()`, если холдер в состоянии idle,
+   * затем тихо вызывает `refresh()` на каждом тике интервала.
    *
-   * Calling `startPolling` while already polling restarts the interval.
+   * Повторный вызов `startPolling` во время активного опроса перезапускает интервал.
    */
   startPolling(options?: PollingStartOptions<TArgs>): void {
     this.stopPolling();
@@ -88,7 +88,7 @@ export class PollingHolder<
     this._intervalId = setInterval(doRefresh, interval);
   }
 
-  /** Clears the polling interval. */
+  /** Очищает интервал опроса. */
   stopPolling(): void {
     if (this._intervalId !== null) {
       clearInterval(this._intervalId);

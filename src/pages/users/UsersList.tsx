@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 
 import { PageHeader } from "~@components/layouts";
 import { UsersTable } from "~@components/tables/users";
-import { Badge, Button, Card, Input } from "~@components/ui2";
+import { Badge, Button, Card, Input } from "~@components/ui";
 
 import { CreateUserModal } from "./CreateUserModal";
 import { useUsersListVM } from "./hooks";

@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
 
-import { Badge, Button, Card } from "~@components/ui2";
+import { Badge, Button, Card } from "~@components/ui";
 
 import { UserAvatar } from "./UserAvatar";
 import { UserRoleBadge } from "./UserRoleBadge";

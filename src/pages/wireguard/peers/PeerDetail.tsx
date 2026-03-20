@@ -24,7 +24,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 import { PeerForm } from "./components/PeerForm";
 import { usePeerDetailVM } from "./hooks";
@@ -165,6 +165,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               <PeerForm
                 isEdit
                 defaultValues={peer}
+                loading={vm.isUpdateLoading}
                 onCancel={() => vm.setEditOpen(false)}
                 onSubmit={vm.handleUpdate}
               />

@@ -1,9 +1,9 @@
-import { DataHolder, ValueHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
+import { EntityHolder } from "~@core/holders";
 
 import {
   IWgSocketService,
@@ -14,10 +14,14 @@ import { IServerStatsStore } from "./ServerStats.types";
 
 @IServerStatsStore({ inSingleton: true })
 export class ServerStatsStore implements IServerStatsStore {
-  public holder = new DataHolder<WgServerStatsPayload>();
-  public statusHolder = new DataHolder<WgServerStatusPayload>();
-  public speedPointsHolder = new DataHolder<IChartPoint[]>([]);
-  public trafficPointsHolder = new DataHolder<IChartPoint[]>([]);
+  public holder = new EntityHolder<WgServerStatsPayload>();
+  public statusHolder = new EntityHolder<WgServerStatusPayload>();
+  public speedPointsHolder = new EntityHolder<IChartPoint[]>({
+    initialData: [],
+  });
+  public trafficPointsHolder = new EntityHolder<IChartPoint[]>({
+    initialData: [],
+  });
 
   constructor(
     @IApiService() private _apiService: IApiService,
@@ -26,19 +30,20 @@ export class ServerStatsStore implements IServerStatsStore {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
-  public get speedPoints() {
-    return this.speedPointsHolder.d ?? [];
+  get speedPoints() {
+    return this.speedPointsHolder.data ?? [];
   }
-  public get trafficPoints() {
-    return this.trafficPointsHolder.d ?? [];
+
+  get trafficPoints() {
+    return this.trafficPointsHolder.data ?? [];
   }
 
   get stats() {
-    return this.holder.d;
+    return this.holder.data;
   }
 
   get status() {
-    return this.statusHolder.d;
+    return this.statusHolder.data;
   }
 
   loadServerStats = async (serverId: string, from?: string, to?: string) => {
@@ -70,6 +75,7 @@ export class ServerStatsStore implements IServerStatsStore {
       onStats: s => {
         this.holder.setData(s);
         const t = formatter.date.formatTime(s.timestamp);
+
         this.speedPointsHolder.setData([
           ...this.speedPoints,
           { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },

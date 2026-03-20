@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import { WgServerDto } from "~@api/api-gen/data-contracts";
 
-import { Card, CardProps, CopyableText } from "../../ui2";
+import { Card, CardProps, CopyableText } from "../../ui";
 
 export interface IServerConfigurationCardProps extends CardProps {
   server?: WgServerDto;

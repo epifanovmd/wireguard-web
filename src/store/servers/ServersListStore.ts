@@ -5,7 +5,7 @@ import {
   IWgServerCreateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
-import { PagedHolder } from "~@core/holders";
+import { MutationHolder, PagedHolder } from "~@core/holders";
 import { ServerModel } from "~@models";
 
 import { IServersListStore } from "./ServersListStore.types";
@@ -17,6 +17,10 @@ export class ServersListStore implements IServersListStore {
     onFetch: async pagination => this._apiService.getServers(pagination),
     pageSize: 1000,
   });
+  public createServerMutation = new MutationHolder<
+    IWgServerCreateRequestDto,
+    WgServerDto
+  >();
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -43,13 +47,15 @@ export class ServersListStore implements IServersListStore {
   }
 
   async createServer(params: IWgServerCreateRequestDto) {
-    const res = await this._apiService.createServer(params);
+    return this.createServerMutation.execute(params, async args => {
+      const res = await this._apiService.createServer(args);
 
-    if (res.data) {
-      this.addServer(res.data);
-    }
+      if (res.data) {
+        this.addServer(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 
   addServer(server: WgServerDto) {

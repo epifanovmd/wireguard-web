@@ -16,7 +16,7 @@ import {
   TabsList,
   TabsTrigger,
   useConfirm,
-} from "~@components/ui2";
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { usePeersListStore, useUsersDataStore } from "~@store";
 
@@ -35,7 +35,6 @@ export const UserDetail: FC<UserDetailProps> = observer(
     const toast = useNotification();
     const [selectedRole, setSelectedRole] = useState<ERole>(ERole.User);
     const [selectedPerms, setSelectedPerms] = useState<EPermissions[]>([]);
-    const [savingPrivileges, setSavingPrivileges] = useState(false);
 
     useEffect(() => {
       store.loadUser(userId);
@@ -51,12 +50,11 @@ export const UserDetail: FC<UserDetailProps> = observer(
     }, [store.user]);
 
     const handleSavePrivileges = async () => {
-      setSavingPrivileges(true);
       const res = await store.setPrivileges(userId, {
         roleName: selectedRole,
         permissions: selectedPerms,
       });
-      setSavingPrivileges(false);
+
       if (res.error) {
         toast.error(res.error.message);
       } else {
@@ -93,6 +91,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
             <Button
               variant="destructive"
               size="sm"
+              loading={store.deleteUserMutation.isLoading}
               onClick={async () => {
                 const ok = await confirm({
                   title: "Удалить пользователя",
@@ -101,6 +100,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                 });
                 if (!ok) return;
                 const res = await store.deleteUser(userId);
+
                 if (res.error) {
                   toast.error(res.error.message);
                 } else {
@@ -156,7 +156,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                   </Card>
                   <div className="flex justify-end">
                     <Button
-                      loading={savingPrivileges}
+                      loading={store.setPrivilegesMutation.isLoading}
                       onClick={handleSavePrivileges}
                     >
                       Сохранить права

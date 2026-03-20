@@ -16,7 +16,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "~@components/ui2";
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { useAuthStore } from "~@store";
 import { useTheme } from "~@theme";

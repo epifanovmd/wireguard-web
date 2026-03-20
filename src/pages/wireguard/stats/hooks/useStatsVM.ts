@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { type DateRange } from "~@components/ui2";
+import { type DateRange } from "~@components/ui";
 import { useServersListStore, useServerStatsStore } from "~@store";
 
 import { getPresetRange, type Preset } from "../stats.constants";

@@ -7,7 +7,7 @@ import { FormProvider } from "react-hook-form";
 
 import { usePasskeyAuth } from "~@common";
 import { AuthLayout } from "~@components/layouts";
-import { AsyncButton, Button, Card, InputFormField } from "~@components/ui2";
+import { AsyncButton, Button, Card, InputFormField } from "~@components/ui";
 import { useAuthStore } from "~@store";
 
 import { useSignInVM } from "./hooks";

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { ServerActionsLiveStatus } from "~@components/shared";
 import { serverColumns } from "~@components/tables/servers";
-import { type ColumnDef, useConfirm } from "~@components/ui2";
+import { type ColumnDef, useConfirm } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { ServerModel } from "~@models";
 import { useServerDetailStore, useServersListStore } from "~@store";
@@ -96,6 +96,7 @@ export const useServersListVM = () => {
     columns,
     columnsReadOnly,
     loading: listStore.isLoading,
+    createServerLoading: listStore.createServerMutation.isLoading,
     total: listStore.total,
     handleRowClick,
     createServer,

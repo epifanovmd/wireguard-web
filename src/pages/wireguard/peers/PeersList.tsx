@@ -15,7 +15,7 @@ import {
   ModalTitle,
   Select,
   Table,
-} from "~@components/ui2";
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
 import { PeerForm } from "./components/PeerForm";
@@ -103,6 +103,7 @@ export const PeersList: FC = observer(() => {
               servers={vm.servers.map(s => s.data)}
               selectedServerId={vm.servers[0]?.data.id}
               onCancel={() => setCreateOpen(false)}
+              loading={vm.createPeerLoading}
               onSubmit={async (data, serverId) => {
                 if (!serverId) {
                   toast.error("Выберите сервер");

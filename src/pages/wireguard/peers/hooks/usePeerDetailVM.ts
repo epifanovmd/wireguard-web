@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { useConfirm } from "~@components/ui2";
+import { useConfirm } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { usePeerDataStore } from "~@store";
 import { usePeerStatsStore } from "~@store/peerStats";
@@ -85,7 +85,8 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     peer: peerStore.peer,
     model: peerStore.peerModel,
     isLoading: peerStore.peerHolder.isLoading,
-    isReady: peerStore.peerHolder.isReady,
+    isReady: peerStore.peerHolder.isFilled,
+    isUpdateLoading: peerStore.updatePeerMutation.isLoading,
     liveStats: peerStatsStore.stats,
     liveStatus: peerStatsStore.status,
     liveActive: peerStatsStore.active,

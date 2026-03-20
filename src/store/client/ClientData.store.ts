@@ -1,26 +1,28 @@
-import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import { WgPeerDto } from "~@api/api-gen/data-contracts";
+import { EntityHolder } from "~@core/holders";
 import { ClientModel } from "~@models";
 
 import { IClientDataStore } from "./ClientData.types";
 
 @IClientDataStore()
 export class ClientDataStore implements IClientDataStore {
-  public holder = new DataHolder<WgPeerDto>();
+  public holder = new EntityHolder<WgPeerDto, string>({
+    onFetch: id => this._apiService.getPeer(id),
+  });
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
   get data() {
-    return this.holder.d;
+    return this.holder.data ?? undefined;
   }
 
   get model() {
-    return this.data ? new ClientModel(this.data) : undefined;
+    return this.holder.data ? new ClientModel(this.holder.data) : undefined;
   }
 
   get loading() {
@@ -28,19 +30,8 @@ export class ClientDataStore implements IClientDataStore {
   }
 
   async onRefresh(clientId: string) {
-    this.holder.setLoading();
-    const res = await this._apiService.getPeer(clientId);
+    const res = await this.holder.load(clientId);
 
-    if (res.axiosError) {
-      if (!res.isCanceled) {
-        this.holder.setError(res.axiosError.toString());
-      }
-    } else if (res.data) {
-      this.holder.setData(res.data);
-
-      return res.data;
-    }
-
-    return undefined;
+    return res.data ?? undefined;
   }
 }

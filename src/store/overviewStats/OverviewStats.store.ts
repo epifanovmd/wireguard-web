@@ -1,15 +1,15 @@
-import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
+import { EntityHolder } from "~@core/holders";
 
 import { IWgSocketService, WgOverviewStatsPayload } from "../../socket";
 import { IOverviewStatsStore } from "./OverviewStats.types";
 
 @IOverviewStatsStore({ inSingleton: true })
 export class OverviewStatsStore implements IOverviewStatsStore {
-  public holder = new DataHolder<WgOverviewStatsPayload>();
+  public holder = new EntityHolder<WgOverviewStatsPayload>();
   public speedPoints: IChartPoint[] = [];
   public trafficPoints: IChartPoint[] = [];
 
@@ -18,7 +18,7 @@ export class OverviewStatsStore implements IOverviewStatsStore {
   }
 
   get stats() {
-    return this.holder.d;
+    return this.holder.data;
   }
 
   subscribe() {

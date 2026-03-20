@@ -12,7 +12,7 @@ import {
   useServersListStore,
 } from "~@store";
 
-import { type ColumnDef, useConfirm } from "../../../../components/ui2";
+import { type ColumnDef, useConfirm } from "../../../../components/ui";
 
 export const usePeersListVM = (_serverId?: string) => {
   const listStore = usePeersListStore();
@@ -143,7 +143,8 @@ export const usePeersListVM = (_serverId?: string) => {
     setServerId,
     data: listStore.models,
     columns,
-    loading: listStore.isLoading,
+    loading: listStore.isLoading || (!serverId && serversStore.isLoading),
+    createPeerLoading: listStore.createPeerMutation.isLoading,
     refreshing: listStore.peersHolder.isRefreshing,
     total: listStore.total,
     currentPage: page,
@@ -152,7 +153,7 @@ export const usePeersListVM = (_serverId?: string) => {
     onPageChange,
     onPageSizeChange,
     servers: serversStore.models,
-    isLoadingServers: serversStore.isLoading,
+    isLoadingServers: !serversStore.listHolder.isReady && !_serverId,
     qrPeer,
     setQrPeer,
     handleRowClick,

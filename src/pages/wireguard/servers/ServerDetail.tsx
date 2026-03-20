@@ -25,7 +25,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 import { ServerForm } from "./components/ServerForm";
 import { useServerDetailVM } from "./hooks";
@@ -187,6 +187,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
               <ServerForm
                 isEdit
                 defaultValues={server}
+                loading={vm.isUpdateLoading}
                 onCancel={() => vm.setEditOpen(false)}
                 onSubmit={vm.handleUpdate}
               />

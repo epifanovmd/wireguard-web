@@ -19,11 +19,11 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface IInfiniteHolderOptions<TItem, TArgs = void> {
-  /** Called for every load (initial, refresh, loadMore). */
+  /** Вызывается при каждой загрузке (первичной, обновлении, loadMore). */
   onFetch?: InfiniteFetchFn<TItem, TArgs>;
-  /** Key extractor for CRUD helpers. */
+  /** Извлекатель ключа для CRUD-хелперов. */
   keyExtractor?: (item: TItem) => string | number;
-  /** Items per page (default: 20). */
+  /** Элементов на страницу (default: 20). */
   pageSize?: number;
 }
 
@@ -36,30 +36,30 @@ export interface IInfiniteHolderResult<TItem, TError extends IHolderError> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Holder for **infinite-scroll / load-more** lists.
+ * Холдер для списков с **бесконечной прокруткой / кнопкой «Загрузить ещё»**.
  *
- * Unlike PagedHolder, all pages are accumulated in `items`.
- * A separate `loadMoreStatus` tracks the "load more" spinner independently
- * from the initial load status — so you can show a skeleton on first load
- * and a tiny bottom spinner for subsequent loads simultaneously.
+ * В отличие от PagedHolder, все страницы накапливаются в `items`.
+ * Отдельный `loadMoreStatus` отслеживает спиннер «загрузки ещё» независимо
+ * от статуса первичной загрузки — можно одновременно показывать скелетон
+ * при первом открытии и маленький спиннер внизу при подгрузке.
  *
- * Features:
- * - `load(args?)` → initial fetch, clears items
- * - `refresh(args?)` → silent reload from page 0, replaces items
- * - `loadMore()` → append next page (no-op if `!hasMore` or already loading)
- * - Built-in CRUD helpers on the full accumulated list
- * - `fromApi()` for manual control
+ * Возможности:
+ * - `load(args?)` → первичная загрузка, очищает элементы
+ * - `refresh(args?)` → тихая перезагрузка с offset 0, заменяет элементы
+ * - `loadMore()` → добавляет следующую страницу (no-op если `!hasMore` или уже грузится)
+ * - Встроенные CRUD-хелперы над полным накопленным списком
+ * - `fromApi()` для ручного управления
  *
  * @example
  * ```ts
- * logsHolder = new InfiniteHolder<LogDto>({
+ * notificationsHolder = new InfiniteHolder<NotificationDto>({
  *   pageSize: 50,
- *   keyExtractor: l => l.id,
- *   onFetch: ({ offset, limit }) => this._api.getLogs({ offset, limit }),
+ *   keyExtractor: n => n.id,
+ *   onFetch: ({ offset, limit }) => this._api.getNotifications({ offset, limit }),
  * });
  *
- * // In component
- * <List onEndReached={() => logsHolder.loadMore()} />
+ * // В компоненте
+ * <List onEndReached={() => notificationsHolder.loadMore()} />
  * ```
  */
 export class InfiniteHolder<
@@ -67,22 +67,22 @@ export class InfiniteHolder<
   TArgs = void,
   TError extends IHolderError = IHolderError,
 > {
-  /** Accumulated items from all loaded pages. */
+  /** Накопленные элементы со всех загруженных страниц. */
   items: TItem[] = [];
 
-  /** Status of the **initial / refresh** load. */
+  /** Статус **первичной / refresh** загрузки. */
   status = HolderStatus.Idle;
 
-  /** Status of the **load-more** action (independent from `status`). */
+  /** Статус действия **«загрузить ещё»** (независим от `status`). */
   loadMoreStatus = MutationStatus.Idle;
 
   error: TError | null = null;
   loadMoreError: TError | null = null;
 
-  /** Whether the server indicated there are more items. */
+  /** Сервер сообщил, что есть ещё элементы. */
   hasMore: boolean = true;
 
-  /** Last args used — for refresh / loadMore continuation. */
+  /** Последние использованные аргументы — для refresh / продолжения loadMore. */
   lastArgs: TArgs | null = null;
 
   private _currentOffset: number = 0;
@@ -143,7 +143,7 @@ export class InfiniteHolder<
     return this.status === HolderStatus.Refreshing;
   }
 
-  /** True while initial loading OR refreshing. */
+  /** True, пока идёт первичная загрузка ИЛИ refreshing. */
   get isBusy() {
     return (
       this.status === HolderStatus.Loading ||
@@ -175,7 +175,7 @@ export class InfiniteHolder<
     return this.items.length;
   }
 
-  // ─── State setters ────────────────────────────────────────────────────────
+  // ─── Сеттеры состояния ────────────────────────────────────────────────────
 
   setLoading() {
     this.status = HolderStatus.Loading;
@@ -188,8 +188,8 @@ export class InfiniteHolder<
   }
 
   /**
-   * Replace all items (first load or refresh).
-   * Resets offset to items.length.
+   * Заменяет все элементы (первая загрузка или refresh).
+   * Сбрасывает offset в items.length.
    */
   setItems(items: TItem[], hasMore: boolean) {
     this.items = items;
@@ -202,7 +202,7 @@ export class InfiniteHolder<
   }
 
   /**
-   * Append items from the next page.
+   * Добавляет элементы следующей страницы в конец списка.
    */
   appendItems(items: TItem[], hasMore: boolean) {
     this.items = [...this.items, ...items];
@@ -231,7 +231,7 @@ export class InfiniteHolder<
     this._currentOffset = 0;
   }
 
-  // ─── CRUD helpers ─────────────────────────────────────────────────────────
+  // ─── CRUD-хелперы ─────────────────────────────────────────────────────────
 
   prependItem(item: TItem) {
     this.items = [item, ...this.items];
@@ -273,11 +273,11 @@ export class InfiniteHolder<
     }
   }
 
-  // ─── Async helpers ────────────────────────────────────────────────────────
+  // ─── Async-хелперы ────────────────────────────────────────────────────────
 
   /**
-   * Initial load — clears existing items, shows skeleton.
-   * Resets offset to 0.
+   * Первичная загрузка — очищает существующие элементы, показывает скелетон.
+   * Сбрасывает offset в 0.
    */
   async load(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -291,7 +291,7 @@ export class InfiniteHolder<
   }
 
   /**
-   * Silent reload from offset 0 — keeps old items visible while fetching.
+   * Тихая перезагрузка с offset 0 — старые элементы остаются видны во время запроса.
    */
   async refresh(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -305,7 +305,7 @@ export class InfiniteHolder<
   }
 
   /**
-   * Append the next page. No-op if already loading more or `!hasMore`.
+   * Добавляет следующую страницу. No-op, если уже грузится или `!hasMore`.
    */
   async loadMore(): Promise<IInfiniteHolderResult<TItem, TError>> {
     if (!this.hasMore || this.isLoadingMore || this.isBusy) {
@@ -320,12 +320,12 @@ export class InfiniteHolder<
   }
 
   /**
-   * Manual API wrapper for the initial / refresh load.
+   * Ручная обёртка API для первичной загрузки / refresh.
    *
    * @example
    * ```ts
-   * await this.logsHolder.fromApi(
-   *   () => this._api.getLogs({ offset: 0, limit: 50 }),
+   * await this.notificationsHolder.fromApi(
+   *   () => this._api.getNotifications({ offset: 0, limit: 50 }),
    *   res => ({ items: res.data, hasMore: res.data.length === 50 }),
    * );
    * ```
@@ -413,7 +413,7 @@ export class InfiniteHolder<
     }
   }
 
-  // ─── Private ──────────────────────────────────────────────────────────────
+  // ─── Приватное ────────────────────────────────────────────────────────────
 
   private _normalizePredicate(
     predicate: ((item: TItem) => boolean) | string | number,

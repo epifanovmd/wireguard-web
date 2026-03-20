@@ -1,23 +1,23 @@
-import { DataHolder } from "@force-dev/utils";
 import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import { formatter } from "~@common";
 import { IChartPoint } from "~@components/wgChart";
+import { EntityHolder } from "~@core/holders";
 
 import {
+  IWgSocketService,
   WgPeerActivePayload,
   WgPeerStatsPayload,
   WgPeerStatusPayload,
-} from "../../socket/events";
-import { IWgSocketService } from "../../socket/wg";
+} from "../../socket";
 import { IPeerStatsStore } from "./PeerStats.types";
 
 @IPeerStatsStore({ inSingleton: true })
 export class PeerStatsStore implements IPeerStatsStore {
-  public holder = new DataHolder<WgPeerStatsPayload>();
-  public statusHolder = new DataHolder<WgPeerStatusPayload>();
-  public activeHolder = new DataHolder<WgPeerActivePayload>();
+  public holder = new EntityHolder<WgPeerStatsPayload>();
+  public statusHolder = new EntityHolder<WgPeerStatusPayload>();
+  public activeHolder = new EntityHolder<WgPeerActivePayload>();
   public speedPoints: IChartPoint[] = [];
   public trafficPoints: IChartPoint[] = [];
 
@@ -29,15 +29,15 @@ export class PeerStatsStore implements IPeerStatsStore {
   }
 
   get stats() {
-    return this.holder.d;
+    return this.holder.data;
   }
 
   get status() {
-    return this.statusHolder.d;
+    return this.statusHolder.data;
   }
 
   get active() {
-    return this.activeHolder.d;
+    return this.activeHolder.data;
   }
 
   subscribe(peerId: string, from?: string, to?: string) {
@@ -63,6 +63,7 @@ export class PeerStatsStore implements IPeerStatsStore {
       onStats: s => {
         this.holder.setData(s);
         const t = formatter.date.formatTime(s.timestamp);
+
         this.speedPoints = [
           ...this.speedPoints.slice(-59),
           { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },

@@ -7,7 +7,12 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
-import { CombinedHolder, EntityHolder, PollingHolder } from "~@core/holders";
+import {
+  CombinedHolder,
+  EntityHolder,
+  MutationHolder,
+  PollingHolder,
+} from "~@core/holders";
 import { ServerModel } from "~@models";
 
 import { IServerDetailStore } from "./ServerDetailStore.types";
@@ -25,6 +30,11 @@ export class ServerDetailStore implements IServerDetailStore {
     this.serverHolder,
     this.statusHolder,
   ]);
+  public serverActionMutation = new MutationHolder<string, WgServerDto>();
+  public updateServerMutation = new MutationHolder<
+    { id: string; params: IWgServerUpdateRequestDto },
+    WgServerDto
+  >();
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -69,48 +79,54 @@ export class ServerDetailStore implements IServerDetailStore {
   }
 
   async updateServer(id: string, params: IWgServerUpdateRequestDto) {
-    const res = await this._apiService.updateServer(id, params);
+    return this.updateServerMutation.execute({ id, params }, async args => {
+      const res = await this._apiService.updateServer(args.id, args.params);
 
-    if (res.data) {
-      this.serverHolder.setData(res.data);
-    }
+      if (res.data) {
+        this.serverHolder.setData(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 
   async deleteServer(id: string) {
-    const res = await this._apiService.deleteServer(id);
-
-    return res;
+    return this._apiService.deleteServer(id);
   }
 
   async startServer(id: string) {
-    const res = await this._apiService.startServer(id);
+    return this.serverActionMutation.execute(id, async args => {
+      const res = await this._apiService.startServer(args);
 
-    if (res.data) {
-      this.serverHolder.setData(res.data);
-    }
+      if (res.data) {
+        this.serverHolder.setData(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 
   async stopServer(id: string) {
-    const res = await this._apiService.stopServer(id);
+    return this.serverActionMutation.execute(id, async args => {
+      const res = await this._apiService.stopServer(args);
 
-    if (res.data) {
-      this.serverHolder.setData(res.data);
-    }
+      if (res.data) {
+        this.serverHolder.setData(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 
   async restartServer(id: string) {
-    const res = await this._apiService.restartServer(id);
+    return this.serverActionMutation.execute(id, async args => {
+      const res = await this._apiService.restartServer(args);
 
-    if (res.data) {
-      this.serverHolder.setData(res.data);
-    }
+      if (res.data) {
+        this.serverHolder.setData(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 }

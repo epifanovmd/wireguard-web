@@ -68,7 +68,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   useModal,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 import { FormDemo } from "./FormDemo";
 

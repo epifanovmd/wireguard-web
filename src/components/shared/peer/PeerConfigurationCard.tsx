@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import { PeerModel } from "~@models";
 
-import { AsyncButton, Card, CardProps, CopyableText } from "../../ui2";
+import { AsyncButton, Card, CardProps, CopyableText } from "../../ui";
 
 export interface IPeerConfigurationCardProps extends CardProps {
   peer: PeerModel;

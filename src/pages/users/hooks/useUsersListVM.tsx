@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { userColumns } from "~@components/tables/users";
-import { type ColumnDef, IconButton, useConfirm } from "~@components/ui2";
+import { type ColumnDef, IconButton, useConfirm } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { PublicUserModel } from "~@models";
 import { useUsersDataStore } from "~@store";

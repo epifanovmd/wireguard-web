@@ -5,13 +5,17 @@ import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
-import { PagedHolder } from "~@core/holders";
+import { MutationHolder, PagedHolder } from "~@core/holders";
 import { PeerModel } from "~@models";
 
 import { IPeersListStore, PeerListArgs } from "./PeersListStore.types";
 
 @IPeersListStore({ inSingleton: true })
 export class PeersListStore implements IPeersListStore {
+  public createPeerMutation = new MutationHolder<
+    { serverId: string; params: IWgPeerCreateRequestDto },
+    WgPeerDto
+  >();
   public peersHolder = new PagedHolder<WgPeerDto, PeerListArgs>({
     pageSize: 1000,
     keyExtractor: p => p.id,
@@ -70,13 +74,15 @@ export class PeersListStore implements IPeersListStore {
   }
 
   async createPeer(serverId: string, params: IWgPeerCreateRequestDto) {
-    const res = await this._apiService.createPeer(serverId, params);
+    return this.createPeerMutation.execute({ serverId, params }, async args => {
+      const res = await this._apiService.createPeer(args.serverId, args.params);
 
-    if (res.data) {
-      await this.peersHolder.reload({ refresh: true });
-    }
+      if (res.data) {
+        await this.peersHolder.reload({ refresh: true });
+      }
 
-    return res;
+      return res;
+    });
   }
 
   addPeer(peer: WgPeerDto) {

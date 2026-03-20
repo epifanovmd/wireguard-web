@@ -12,19 +12,19 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface IPagedHolderPagination {
-  /** Current page, 1-based. */
+  /** Текущая страница, нумерация с 1. */
   page: number;
   pageSize: number;
-  /** Total items across ALL pages (from the server). */
+  /** Общее количество элементов по всем страницам (от сервера). */
   totalCount: number;
 }
 
 export interface IPagedHolderOptions<TItem, TArgs = void> {
-  /** Called automatically from `load()` / `goToPage()` / `reload()`. */
+  /** Вызывается автоматически из `load()` / `goToPage()` / `reload()`. */
   onFetch?: PagedFetchFn<TItem, TArgs>;
-  /** Key extractor for CRUD helpers (updateItem / removeItem). */
+  /** Извлекатель ключа для CRUD-хелперов (updateItem / removeItem). */
   keyExtractor?: (item: TItem) => string | number;
-  /** Default page size (default: 20). */
+  /** Размер страницы по умолчанию (default: 20). */
   pageSize?: number;
 }
 
@@ -37,31 +37,31 @@ export interface IPagedHolderResult<TItem, TError extends IHolderError> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Holder for **server-side paginated** collections.
+ * Холдер для **серверной постраничной пагинации**.
  *
- * Manages current page, page size, total count, and page navigation.
- * Every page change triggers a fresh API request.
+ * Управляет текущей страницей, размером страницы, общим количеством
+ * и навигацией. Каждая смена страницы инициирует новый API-запрос.
  *
- * Features:
- * - Full status lifecycle + silent refresh
- * - `load(args?)` → page 1
- * - `goToPage(n)` → navigate to page n
- * - `setPageSize(n)` → change page size and reload page 1
- * - `reload()` → re-fetch current page with last args
- * - Built-in CRUD helpers that mutate the *current page* optimistically
- * - `fromApi()` for manual control
+ * Возможности:
+ * - Полный жизненный цикл + тихое обновление
+ * - `load(args?)` → загружает страницу 1
+ * - `goToPage(n)` → переходит на страницу n
+ * - `setPageSize(n)` → меняет размер страницы и перезагружает с 1-й
+ * - `reload()` → перезапрашивает текущую страницу с теми же аргументами
+ * - Встроенные CRUD-хелперы для оптимистичного обновления *текущей страницы*
+ * - `fromApi()` для ручного управления
  *
  * @example
  * ```ts
- * peersHolder = new PagedHolder<WgPeerDto, { serverId: string }>({
+ * ordersHolder = new PagedHolder<OrderDto, { userId: string }>({
  *   pageSize: 20,
- *   keyExtractor: p => p.id,
- *   onFetch: ({ offset, limit }, { serverId }) =>
- *     this._api.getPeersByServer({ serverId, offset, limit }),
+ *   keyExtractor: o => o.id,
+ *   onFetch: ({ offset, limit }, { userId }) =>
+ *     this._api.getOrdersByUser({ userId, offset, limit }),
  * });
  *
- * async load(serverId: string) {
- *   await this.peersHolder.load({ serverId });
+ * async load(userId: string) {
+ *   await this.ordersHolder.load({ userId });
  * }
  * ```
  */
@@ -75,7 +75,7 @@ export class PagedHolder<
   error: TError | null = null;
   pagination: IPagedHolderPagination;
 
-  /** Arguments used in the last successful load — for reload(). */
+  /** Аргументы последней успешной загрузки — используются в reload(). */
   lastArgs: TArgs | null = null;
 
   private readonly _onFetch?: PagedFetchFn<TItem, TArgs>;
@@ -164,7 +164,7 @@ export class PagedHolder<
     return this.items.length;
   }
 
-  /** Total pages based on server totalCount. */
+  /** Общее количество страниц на основе серверного totalCount. */
   get pageCount() {
     const { pageSize, totalCount } = this.pagination;
 
@@ -179,14 +179,14 @@ export class PagedHolder<
     return this.pagination.page > 1;
   }
 
-  /** Offset to send to the server for the current page. */
+  /** Offset для отправки на сервер для текущей страницы. */
   get offset() {
     const { page, pageSize } = this.pagination;
 
     return (page - 1) * pageSize;
   }
 
-  // ─── State setters ────────────────────────────────────────────────────────
+  // ─── Сеттеры состояния ────────────────────────────────────────────────────
 
   setLoading() {
     this.status = HolderStatus.Loading;
@@ -198,24 +198,24 @@ export class PagedHolder<
     this.error = null;
   }
 
-  /** Jump to page without fetching (combine with manual setItems). */
+  /** Переходит на страницу без запроса (совместно с ручным setItems). */
   setPage(page: number) {
     this.pagination = { ...this.pagination, page: Math.max(1, page) };
   }
 
-  /** Change page size and reset to page 1 (does NOT fetch). */
+  /** Меняет размер страницы и сбрасывает на страницу 1 (запрос НЕ выполняется). */
   setPageSize(pageSize: number) {
     this.pagination = { ...this.pagination, pageSize, page: 1 };
   }
 
-  /** Bulk-update any pagination fields (does NOT fetch). */
+  /** Массово обновляет поля пагинации (запрос НЕ выполняется). */
   setPagination(update: Partial<IPagedHolderPagination>) {
     this.pagination = { ...this.pagination, ...update };
   }
 
   /**
-   * Set items for the current page + the server's total count.
-   * Call this after a successful API response.
+   * Устанавливает элементы текущей страницы и общее количество от сервера.
+   * Вызывается после успешного API-ответа.
    */
   setItems(items: TItem[], totalCount: number) {
     this.items = items;
@@ -232,7 +232,7 @@ export class PagedHolder<
         : (error as TError);
   }
 
-  /** Reset items, pagination (except pageSize), and status to idle. */
+  /** Сбрасывает элементы, пагинацию (кроме pageSize) и статус в idle. */
   reset() {
     this.items = [];
     this.status = HolderStatus.Idle;
@@ -241,7 +241,7 @@ export class PagedHolder<
     this.pagination = { ...this.pagination, page: 1, totalCount: 0 };
   }
 
-  // ─── CRUD helpers (optimistic, current page only) ─────────────────────────
+  // ─── CRUD-хелперы (оптимистичные, только текущая страница) ───────────────
 
   prependItem(item: TItem) {
     this.items = [item, ...this.items];
@@ -292,16 +292,16 @@ export class PagedHolder<
     }
   }
 
-  // ─── Async helpers ────────────────────────────────────────────────────────
+  // ─── Async-хелперы ────────────────────────────────────────────────────────
 
   /**
-   * Wraps a **manual** API call that returns a paginated response.
-   * Handles loading state, error normalisation, and data storage.
+   * Оборачивает **ручной** API-вызов, возвращающий постраничный ответ.
+   * Управляет состоянием загрузки, нормализацией ошибок и сохранением данных.
    *
    * @example
    * ```ts
-   * await this.peersHolder.fromApi(
-   *   () => this._api.getPeersByServer({ serverId, offset: this.peersHolder.offset, limit: this.peersHolder.pagination.pageSize }),
+   * await this.ordersHolder.fromApi(
+   *   () => this._api.getOrders({ offset: this.ordersHolder.offset, limit: this.ordersHolder.pagination.pageSize }),
    *   res => ({ items: res.data ?? [], totalCount: res.totalCount ?? 0 }),
    * );
    * ```
@@ -347,8 +347,8 @@ export class PagedHolder<
   }
 
   /**
-   * Loads page 1 with new args.
-   * Resets the current page to 1 before fetching.
+   * Загружает страницу 1 с новыми аргументами.
+   * Сбрасывает текущую страницу в 1 перед запросом.
    */
   async load(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -362,7 +362,7 @@ export class PagedHolder<
   }
 
   /**
-   * Re-fetches the **current page** with the same args used last time.
+   * Перезапрашивает **текущую страницу** с теми же аргументами, что использовались последний раз.
    */
   async reload(options?: {
     refresh?: boolean;
@@ -371,7 +371,7 @@ export class PagedHolder<
   }
 
   /**
-   * Navigate to a specific page and fetch its data.
+   * Переходит на указанную страницу и загружает её данные.
    */
   async goToPage(
     page: number,
@@ -407,7 +407,7 @@ export class PagedHolder<
     return this.goToPage(this.pagination.page - 1);
   }
 
-  // ─── Private ──────────────────────────────────────────────────────────────
+  // ─── Приватное ────────────────────────────────────────────────────────────
 
   private _normalizePredicate(
     predicate: ((item: TItem) => boolean) | string | number,

@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { ServerModel } from "~@models";
 
-import { type ColumnDef, Table } from "../../ui2";
+import { type ColumnDef, Table } from "../../ui";
 
 export interface ServersTableProps {
   data: ServerModel[];

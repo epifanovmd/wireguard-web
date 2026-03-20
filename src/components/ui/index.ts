@@ -210,6 +210,7 @@ export {
 export { ThemeToggle } from "./theme-toggle";
 
 // Form system
+export { cn } from "./cn";
 export type {
   ControllerMapper,
   CreatedFormFieldProps,

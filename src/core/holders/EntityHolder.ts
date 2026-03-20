@@ -17,9 +17,9 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface IEntityHolderOptions<TData, TArgs = void> {
-  /** Called automatically from `load()` / `refresh()`. */
+  /** Вызывается автоматически из `load()` / `refresh()`. */
   onFetch?: EntityFetchFn<TData, TArgs>;
-  /** Initial data (status becomes 'success' immediately). */
+  /** Начальные данные (статус сразу становится 'success'). */
   initialData?: TData;
 }
 
@@ -31,31 +31,33 @@ export interface IEntityHolderResult<TData, TError extends IHolderError> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Holder for a **single API entity** — detail views, profile, current user, etc.
+ * Холдер для **одной сущности** — детальные страницы, профиль, текущий
+ * пользователь и т.п.
  *
- * Features:
- * - Full status lifecycle: idle → loading → success / error
- * - Silent background refresh (data stays visible, `isRefreshing` = true)
- * - `fromApi()` wrapper handles loading state, error normalisation, data set
- * - `load()` / `refresh()` for stores that provide `onFetch` in options
- * - Full MobX observability (all fields + computed)
+ * Возможности:
+ * - Полный жизненный цикл: idle → loading → success / error
+ * - Тихое фоновое обновление (данные остаются видны, `isRefreshing` = true)
+ * - Метод `fromApi()` сам управляет состоянием загрузки, нормализацией ошибок
+ *   и сохранением данных
+ * - `load()` / `refresh()` для сторов, передающих `onFetch` в опциях
+ * - Полная MobX-реактивность (все поля и вычисляемые свойства)
  *
  * @example
  * ```ts
- * // Manual usage (explicit control in store methods)
- * peerHolder = new EntityHolder<WgPeerDto>();
+ * // Ручное управление (явный вызов fromApi в методе стора)
+ * articleHolder = new EntityHolder<ArticleDto>();
  *
- * async loadPeer(id: string) {
- *   return this.peerHolder.fromApi(() => this._api.getPeer(id));
+ * async loadArticle(id: string) {
+ *   return this.articleHolder.fromApi(() => this._api.getArticle(id));
  * }
  *
- * // Auto-fetch usage
- * peerHolder = new EntityHolder<WgPeerDto, { id: string }>({
- *   onFetch: ({ id }) => this._api.getPeer(id),
+ * // Авто-загрузка через onFetch
+ * articleHolder = new EntityHolder<ArticleDto, string>({
+ *   onFetch: id => this._api.getArticle(id),
  * });
  *
- * async loadPeer(id: string) {
- *   return this.peerHolder.load({ id });
+ * async loadArticle(id: string) {
+ *   return this.articleHolder.load(id);
  * }
  * ```
  */
@@ -84,6 +86,7 @@ export class EntityHolder<
       isError: computed,
       isEmpty: computed,
       isFilled: computed,
+      isReady: computed,
 
       setLoading: action,
       setRefreshing: action,
@@ -102,47 +105,52 @@ export class EntityHolder<
 
   // ─── Computed ──────────────────────────────────────────────────────────────
 
-  /** No request has been made yet. */
+  /** Запрос ещё не выполнялся. */
   get isIdle() {
     return this.status === "idle";
   }
 
-  /** Full load in progress (no data visible yet). */
+  /** Идёт первичная загрузка (данных ещё нет). */
   get isLoading() {
     return this.status === "loading";
   }
 
-  /** Silent background reload (old data stays visible). */
+  /** Тихое фоновое обновление (старые данные остаются видны). */
   get isRefreshing() {
     return this.status === "refreshing";
   }
 
-  /** True while loading OR refreshing. */
+  /** True, пока идёт loading ИЛИ refreshing. */
   get isBusy() {
     return this.status === "loading" || this.status === "refreshing";
   }
 
-  /** Last request completed successfully. */
+  /** Последний запрос завершился успешно. */
   get isSuccess() {
     return this.status === "success";
   }
 
-  /** Last request failed. */
+  /** Последний запрос завершился с ошибкой. */
   get isError() {
     return this.status === "error";
   }
 
-  /** Success, but the server returned null / no data. */
+  /** Успех, но сервер вернул null / пустой ответ. */
   get isEmpty() {
     return this.isSuccess && this.data === null;
   }
 
-  /** Has non-null data (regardless of current status). */
+  /** Данные не null (независимо от текущего статуса). */
   get isFilled() {
     return this.data !== null;
   }
 
-  // ─── Manual state setters ─────────────────────────────────────────────────
+  /** Хотя бы один запрос завершён (успешно или с ошибкой). Не idle и не loading. */
+  get isReady() {
+    return this.isSuccess || this.isError;
+  }
+
+  // ─── Ручные сеттеры состояния ─────────────────────────────────────────────
 
   setLoading() {
     this.status = HolderStatus.Loading;
@@ -168,25 +176,27 @@ export class EntityHolder<
         : (error as TError);
   }
 
-  /** Clears data and resets to idle. */
+  /** Очищает данные и сбрасывает статус в idle. */
   reset() {
     this.data = null;
     this.status = HolderStatus.Idle;
     this.error = null;
   }
 
-  // ─── Async helpers ────────────────────────────────────────────────────────
+  // ─── Async-хелперы ────────────────────────────────────────────────────────
 
   /**
-   * Wraps **any** API call that returns `{ data?, error? }`.
-   * Automatically manages loading state, error normalisation, and data storage.
+   * Оборачивает **любой** API-вызов, возвращающий `{ data?, error? }`.
+   * Автоматически управляет состоянием загрузки, нормализацией ошибок и
+   * сохранением данных.
    *
-   * Pass `{ refresh: true }` to keep the existing data visible while reloading.
+   * Передайте `{ refresh: true }`, чтобы старые данные оставались видны во
+   * время перезагрузки.
    *
    * @example
    * ```ts
-   * const { data, error } = await this.peerHolder.fromApi(
-   *   () => this._api.getPeer(id),
+   * const { data, error } = await this.userHolder.fromApi(
+   *   () => this._api.getUser(id),
    * );
    * ```
    */
@@ -215,7 +225,7 @@ export class EntityHolder<
         return { data: res.data, error: null };
       }
 
-      // Server returned success with no body (204 / empty data)
+      // Сервер вернул успех без тела (204 / пустые данные)
       runInAction(() => {
         this.data = null;
         this.status = HolderStatus.Success;
@@ -232,12 +242,12 @@ export class EntityHolder<
   }
 
   /**
-   * Calls `onFetch` provided in constructor options.
-   * Performs a full load (spinner, clears old data on error).
+   * Вызывает `onFetch`, переданный в опциях конструктора.
+   * Выполняет полную загрузку (спиннер, при ошибке очищает старые данные).
    *
    * @example
    * ```ts
-   * await this.peerHolder.load({ id });
+   * await this.userHolder.load(userId);
    * ```
    */
   async load(
@@ -249,8 +259,8 @@ export class EntityHolder<
   }
 
   /**
-   * Calls `onFetch` silently — keeps existing data visible.
-   * Use for pull-to-refresh or background polling.
+   * Вызывает `onFetch` тихо — старые данные остаются видны.
+   * Используется для pull-to-refresh или фонового обновления.
    */
   async refresh(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -260,7 +270,7 @@ export class EntityHolder<
     return this._runFetch(args, true);
   }
 
-  // ─── Private ──────────────────────────────────────────────────────────────
+  // ─── Приватное ────────────────────────────────────────────────────────────
 
   private async _runFetch(
     args: TArgs,

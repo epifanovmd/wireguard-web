@@ -9,7 +9,7 @@ import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
 import { serverColumns } from "~@components/tables/servers/serverColumns";
-import { StatCard } from "~@components/ui2";
+import { StatCard } from "~@components/ui";
 import { ServerModel } from "~@models";
 import { useOverviewStatsStore, useServersListStore } from "~@store";
 

@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { Card } from "../ui2";
+import { Card } from "../ui";
 
 export interface IChartPoint {
   t: string;

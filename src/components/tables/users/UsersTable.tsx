@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { PublicUserModel } from "~@models";
 
-import { type ColumnDef, Table } from "../../ui2";
+import { type ColumnDef, Table } from "../../ui";
 
 export interface UsersTableProps {
   data: PublicUserModel[];

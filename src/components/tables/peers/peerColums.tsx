@@ -4,7 +4,7 @@ import { PeerModel } from "~@models";
 
 import { PeerHandshake } from "../../shared";
 import { PeerStatusLive } from "../../shared";
-import { Badge, CopyableText } from "../../ui2";
+import { Badge, CopyableText } from "../../ui";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [
   {

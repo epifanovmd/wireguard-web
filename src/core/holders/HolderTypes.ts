@@ -1,15 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Holder Types — shared primitives for the *Holder system
+// Holder Types — общие примитивы системы холдеров
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Lifecycle status of any holder.
+ * Статус жизненного цикла любого холдера.
  *
- * idle       — not yet requested (initial state after reset)
- * loading    — first/full load in progress (spinner, skeleton)
- * refreshing — silent background reload (data stays visible)
- * success    — last request succeeded
- * error      — last request failed
+ * idle       — запрос ещё не выполнялся (начальное состояние после reset)
+ * loading    — идёт первичная/полная загрузка (скелетон, спиннер)
+ * refreshing — тихое фоновое обновление (старые данные остаются видны)
+ * success    — последний запрос завершился успешно
+ * error      — последний запрос завершился с ошибкой
  */
 export enum HolderStatus {
   Idle = "idle",
@@ -19,7 +19,7 @@ export enum HolderStatus {
   Error = "error",
 }
 
-/** Mutation-only subset (no "refreshing" concept for mutations). */
+/** Статусы мутации — подмножество без понятия «refreshing». */
 export enum MutationStatus {
   Idle = "idle",
   Loading = "loading",
@@ -27,9 +27,9 @@ export enum MutationStatus {
   Error = "error",
 }
 
-// ─── Error ───────────────────────────────────────────────────────────────────
+// ─── Ошибка ──────────────────────────────────────────────────────────────────
 
-/** Normalized error stored inside every holder. */
+/** Нормализованная ошибка, хранящаяся внутри каждого холдера. */
 export interface IHolderError {
   message: string;
   status?: number;
@@ -38,8 +38,8 @@ export interface IHolderError {
 }
 
 /**
- * Converts any thrown value or string into an IHolderError.
- * Used internally by every holder's `fromApi` wrapper.
+ * Преобразует любое брошенное значение или строку в `IHolderError`.
+ * Используется внутри метода `fromApi` каждого холдера.
  */
 export function toHolderError(e: unknown): IHolderError {
   if (e instanceof Error) {
@@ -53,12 +53,11 @@ export function toHolderError(e: unknown): IHolderError {
   return { message: "Unknown error", details: e };
 }
 
-// ─── API response contract ────────────────────────────────────────────────────
+// ─── Контракт ответа API ─────────────────────────────────────────────────────
 
 /**
- * The shape that **every** API call must return so holders can consume it.
- * Matches what `@force-dev/utils ApiResponse` produces as well as the
- * project's own `ApiService` responses.
+ * Форма, которую **каждый** API-вызов должен возвращать, чтобы холдеры могли
+ * его обработать.
  */
 export interface IApiResponse<
   TData = unknown,
@@ -68,50 +67,50 @@ export interface IApiResponse<
   error?: TError | null;
 }
 
-// ─── Pagination params ────────────────────────────────────────────────────────
+// ─── Параметры пагинации ─────────────────────────────────────────────────────
 
-/** Offset-based params sent to the server. */
+/** Offset-параметры, отправляемые на сервер. */
 export interface IOffsetParams {
   offset: number;
   limit: number;
 }
 
-/** Page-number-based params (converted to offset internally). */
+/** Параметры на основе номера страницы (внутри конвертируются в offset). */
 export interface IPageParams {
   page: number; // 1-based
   pageSize: number;
 }
 
-/** Shape that a paginated API endpoint must return. */
+/** Форма ответа, которую должен возвращать постраничный API-эндпоинт. */
 export interface IPagedResponse<TItem> {
   data: TItem[];
-  /** Items on the current page */
+  /** Элементов на текущей странице */
   count?: number;
-  /** Total items across ALL pages */
+  /** Всего элементов по всем страницам */
   totalCount?: number;
   offset?: number;
   limit?: number;
 }
 
-// ─── Fetch function signatures ────────────────────────────────────────────────
+// ─── Сигнатуры функций загрузки ───────────────────────────────────────────────
 
 /**
- * onFetch for EntityHolder — returns a single item or null.
+ * `onFetch` для EntityHolder — возвращает одну сущность или null.
  */
 export type EntityFetchFn<TData, TArgs = void> = (
   args: TArgs,
 ) => Promise<IApiResponse<TData>>;
 
 /**
- * onFetch for CollectionHolder — returns an array.
+ * `onFetch` для CollectionHolder — возвращает массив элементов.
  */
 export type CollectionFetchFn<TItem, TArgs = void> = (
   args: TArgs,
 ) => Promise<IApiResponse<TItem[]>>;
 
 /**
- * onFetch for PagedHolder — receives paging params + custom args.
- * Must return items for the requested page + the server's total count.
+ * `onFetch` для PagedHolder — принимает параметры пагинации + пользовательские аргументы.
+ * Должна вернуть элементы текущей страницы и общее количество на сервере.
  */
 export type PagedFetchFn<TItem, TArgs = void> = (
   pagination: IOffsetParams,
@@ -119,8 +118,8 @@ export type PagedFetchFn<TItem, TArgs = void> = (
 ) => Promise<IApiResponse<IPagedResponse<TItem>>>;
 
 /**
- * onFetch for InfiniteHolder — receives offset/limit + custom args.
- * Must return the next slice of items + whether more pages exist.
+ * `onFetch` для InfiniteHolder — принимает offset/limit + пользовательские аргументы.
+ * Должна вернуть очередной срез элементов и флаг наличия следующих страниц.
  */
 export type InfiniteFetchFn<TItem, TArgs = void> = (
   pagination: IOffsetParams,
@@ -128,7 +127,7 @@ export type InfiniteFetchFn<TItem, TArgs = void> = (
 ) => Promise<IApiResponse<IPagedResponse<TItem>>>;
 
 /**
- * execute function for MutationHolder.
+ * Функция мутации для MutationHolder.
  */
 export type MutationFn<TArgs, TData> = (
   args: TArgs,

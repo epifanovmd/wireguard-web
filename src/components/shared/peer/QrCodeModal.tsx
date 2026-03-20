@@ -11,7 +11,7 @@ import {
   ModalOverlay,
   ModalTitle,
   Spinner,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 interface QrCodeModalProps {
   peerId: string;

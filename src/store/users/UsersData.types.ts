@@ -1,27 +1,34 @@
-import { createServiceDecorator, DataHolder, ListCollectionHolder } from "@force-dev/utils";
+import { ApiResponse, createServiceDecorator } from "@force-dev/utils";
 
+import { ApiError } from "~@api";
 import {
   IUserPrivilegesRequestDto,
   IUserUpdateRequestDto,
   PublicUserDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { EntityHolder, IHolderError, IMutationHolderResult, MutationHolder, PagedHolder } from "~@core/holders";
 import { PublicUserModel, UserModel } from "~@models";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();
 
 export interface IUsersDataStore {
-  listHolder: ListCollectionHolder<PublicUserDto>;
-  userHolder: DataHolder<UserDto>;
+  listHolder: PagedHolder<PublicUserDto>;
+  userHolder: EntityHolder<UserDto, string>;
+  setPrivilegesMutation: MutationHolder<
+    { id: string; params: IUserPrivilegesRequestDto },
+    UserDto
+  >;
+  deleteUserMutation: MutationHolder<string, boolean>;
   models: PublicUserModel[];
   total: number;
   isLoading: boolean;
-  user: UserDto | undefined;
-  userModel: UserModel | undefined;
+  user: UserDto | null;
+  userModel: UserModel | null;
 
-  load(pageOffset?: number): Promise<void>;
-  loadUser(id: string): Promise<UserDto | undefined>;
-  updateUser(id: string, params: IUserUpdateRequestDto): Promise<any>;
-  setPrivileges(id: string, params: IUserPrivilegesRequestDto): Promise<any>;
-  deleteUser(id: string): Promise<any>;
+  load(): Promise<void>;
+  loadUser(id: string): Promise<UserDto | null>;
+  updateUser(id: string, params: IUserUpdateRequestDto): Promise<ApiResponse<UserDto, ApiError>>;
+  setPrivileges(id: string, params: IUserPrivilegesRequestDto): Promise<IMutationHolderResult<UserDto, IHolderError>>;
+  deleteUser(id: string): Promise<IMutationHolderResult<boolean, IHolderError>>;
 }

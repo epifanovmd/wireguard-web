@@ -14,7 +14,7 @@ import {
   ModalContent,
   SelectFormField,
   SwitchFormField,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 

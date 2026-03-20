@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui";
 
 const schema = z.object({
   login: z.string().min(1, "Email или телефон обязателен"),

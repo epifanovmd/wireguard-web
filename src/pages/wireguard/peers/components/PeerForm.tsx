@@ -18,7 +18,7 @@ import {
   Select,
   SwitchFormField,
   TextareaFormField,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 const schema = z.object({
   name: z.string().min(1, "Название обязательно"),

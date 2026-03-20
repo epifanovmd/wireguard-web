@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
-import { Button, InputFormField, SelectFormField } from "~@components/ui2";
+import { Button, InputFormField, SelectFormField } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
 import { PermissionsEditor } from "./PermissionsEditor";

@@ -1,5 +1,4 @@
-import { DataHolder, ListCollectionHolder } from "@force-dev/utils";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import {
@@ -8,77 +7,59 @@ import {
   PublicUserDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { EntityHolder, MutationHolder, PagedHolder } from "~@core/holders";
 import { PublicUserModel, UserModel } from "~@models";
 
 import { IUsersDataStore } from "./UsersData.types";
 
 @IUsersDataStore({ inSingleton: true })
 export class UsersDataStore implements IUsersDataStore {
-  public listHolder = new ListCollectionHolder<PublicUserDto>();
-  public userHolder = new DataHolder<UserDto>();
-  public total = 0;
-
-  private _pageOffset = 0;
+  public listHolder = new PagedHolder<PublicUserDto>({
+    keyExtractor: u => u.userId,
+    pageSize: 1000,
+    onFetch: pagination => this._apiService.getUsers(pagination),
+  });
+  public userHolder = new EntityHolder<UserDto, string>({
+    onFetch: id => this._apiService.getUserById(id),
+  });
+  public setPrivilegesMutation = new MutationHolder<
+    { id: string; params: IUserPrivilegesRequestDto },
+    UserDto
+  >();
+  public deleteUserMutation = new MutationHolder<string, boolean>();
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
-
-    this.listHolder.initialize({
-      keyExtractor: u => u.userId,
-      onFetchData: async ({ limit }) => {
-        const res = await this._apiService.getUsers({
-          offset: this._pageOffset,
-          limit,
-        });
-
-        const data = res.data?.data ?? [];
-
-        runInAction(() => {
-          this.total = res.data?.count ?? this.total;
-        });
-
-        this.listHolder.updateData(data, { replace: true });
-
-        return data;
-      },
-      pageSize: 20,
-    });
   }
 
   get models() {
-    return this.listHolder.d.map(u => new PublicUserModel(u));
+    return this.listHolder.items.map(u => new PublicUserModel(u));
   }
 
   get isLoading() {
     return this.listHolder.isLoading;
   }
 
+  get total() {
+    return this.listHolder.pagination.totalCount;
+  }
+
   get user() {
-    return this.userHolder.d;
+    return this.userHolder.data;
   }
 
   get userModel() {
-    return this.userHolder.d ? new UserModel(this.userHolder.d) : undefined;
+    return this.userHolder.data ? new UserModel(this.userHolder.data) : null;
   }
 
-  async load(pageOffset = 0) {
-    this._pageOffset = pageOffset;
-    await this.listHolder.performRefresh();
+  async load() {
+    await this.listHolder.load();
   }
 
   async loadUser(id: string) {
-    this.userHolder.setLoading();
-    const res = await this._apiService.getUserById(id);
+    const res = await this.userHolder.load(id);
 
-    if (res.error) {
-      this.userHolder.setError(res.error.message);
-    } else if (res.data) {
-      this.userHolder.setData(res.data);
-
-      return res.data;
-    }
-
-    return undefined;
+    return res.data;
   }
 
   async updateUser(id: string, params: IUserUpdateRequestDto) {
@@ -86,38 +67,33 @@ export class UsersDataStore implements IUsersDataStore {
 
     if (res.data) {
       this.userHolder.setData(res.data);
-      this.listHolder.updateData(
-        this.listHolder.d.filter(u => u.userId !== id),
-        { replace: true },
-      );
+      this.listHolder.removeItem(id);
     }
 
     return res;
   }
 
   async setPrivileges(id: string, params: IUserPrivilegesRequestDto) {
-    const res = await this._apiService.setPrivileges(id, params);
+    return this.setPrivilegesMutation.execute({ id, params }, async args => {
+      const res = await this._apiService.setPrivileges(args.id, args.params);
 
-    if (res.data) {
-      this.userHolder.setData(res.data);
-    }
+      if (res.data) {
+        this.userHolder.setData(res.data);
+      }
 
-    return res;
+      return res;
+    });
   }
 
   async deleteUser(id: string) {
-    const res = await this._apiService.deleteUser(id);
+    return this.deleteUserMutation.execute(id, async args => {
+      const res = await this._apiService.deleteUser(args);
 
-    if (!res.error) {
-      this.listHolder.updateData(
-        this.listHolder.d.filter(u => u.userId !== id),
-        { replace: true },
-      );
-      runInAction(() => {
-        this.total = Math.max(0, this.total - 1);
-      });
-    }
+      if (!res.error) {
+        this.listHolder.removeItem(args);
+      }
 
-    return res;
+      return res;
+    });
   }
 }

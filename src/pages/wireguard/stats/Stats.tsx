@@ -11,7 +11,7 @@ import {
   Select,
   Spinner,
   StatCard,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 import { useStatsVM } from "./hooks/useStatsVM";
 import { PRESETS } from "./stats.constants";

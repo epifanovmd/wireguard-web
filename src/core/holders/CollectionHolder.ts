@@ -11,9 +11,9 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface ICollectionHolderOptions<TItem, TArgs = void> {
-  /** Called automatically from `load()` / `refresh()`. */
+  /** Вызывается автоматически из `load()` / `refresh()`. */
   onFetch?: CollectionFetchFn<TItem, TArgs>;
-  /** Key extractor for CRUD helpers (update/remove by id). */
+  /** Извлекатель ключа для CRUD-хелперов (обновление/удаление по id). */
   keyExtractor?: (item: TItem) => string | number;
 }
 
@@ -25,28 +25,28 @@ export interface ICollectionHolderResult<TItem, TError extends IHolderError> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Holder for a **flat list** of items with no server-side pagination.
- * Suitable for small datasets, dropdowns, lookup tables, etc.
+ * Холдер для **плоского списка** элементов без серверной пагинации.
+ * Подходит для небольших наборов данных, выпадающих списков, справочников и т.п.
  *
- * Features:
- * - Full status lifecycle + silent refresh
- * - Built-in CRUD helpers: `appendItem`, `prependItem`, `updateItem`, `removeItem`
- * - `fromApi()` wrapper with extractor support (for nested `{ data: [...] }` shapes)
- * - `load()` / `refresh()` for auto-fetch via options
+ * Возможности:
+ * - Полный жизненный цикл + тихое обновление
+ * - Встроенные CRUD-хелперы: `appendItem`, `prependItem`, `updateItem`, `removeItem`
+ * - Метод `fromApi()` с поддержкой извлекателя (для вложенных форм `{ data: [...] }`)
+ * - `load()` / `refresh()` для авто-загрузки через опции
  *
  * @example
  * ```ts
- * serversHolder = new CollectionHolder<WgServerDto>({
- *   onFetch: () => this._api.getServers(),
+ * categoriesHolder = new CollectionHolder<CategoryDto>({
+ *   onFetch: () => this._api.getCategories(),
  * });
  *
  * async load() {
- *   await this.serversHolder.load();
+ *   await this.categoriesHolder.load();
  * }
  *
- * // Or with nested response:
- * await this.serversHolder.fromApi(
- *   () => this._api.getServers(),
+ * // С вложенным ответом:
+ * await this.categoriesHolder.fromApi(
+ *   () => this._api.getCategories(),
  *   res => res.data ?? [],
  * );
  * ```
@@ -160,21 +160,21 @@ export class CollectionHolder<
     this.error = null;
   }
 
-  // ─── CRUD helpers ─────────────────────────────────────────────────────────
+  // ─── CRUD-хелперы ─────────────────────────────────────────────────────────
 
-  /** Add item at the beginning of the list. */
+  /** Добавляет элемент в начало списка. */
   prependItem(item: TItem) {
     this.items = [item, ...this.items];
   }
 
-  /** Add item at the end of the list. */
+  /** Добавляет элемент в конец списка. */
   appendItem(item: TItem) {
     this.items = [...this.items, item];
   }
 
   /**
-   * Replace the first item that matches `predicate`.
-   * If `keyExtractor` is configured, you can pass the item's key directly.
+   * Заменяет первый элемент, совпадающий с `predicate`.
+   * Если настроен `keyExtractor`, можно передать ключ элемента напрямую.
    */
   updateItem(
     predicate: ((item: TItem) => boolean) | string | number,
@@ -186,7 +186,7 @@ export class CollectionHolder<
   }
 
   /**
-   * Remove first item matching `predicate` or key.
+   * Удаляет первый элемент, совпадающий с `predicate` или ключом.
    */
   removeItem(predicate: ((item: TItem) => boolean) | string | number) {
     const fn = this._normalizePredicate(predicate);
@@ -195,8 +195,8 @@ export class CollectionHolder<
   }
 
   /**
-   * Insert item if no match found; update if found.
-   * Requires `keyExtractor` to be configured or a predicate.
+   * Обновляет элемент, если совпадение найдено; иначе добавляет в конец.
+   * Требует настроенного `keyExtractor` или функции-предиката.
    */
   upsertItem(
     predicate: ((item: TItem) => boolean) | string | number,
@@ -212,20 +212,20 @@ export class CollectionHolder<
     }
   }
 
-  // ─── Async helpers ────────────────────────────────────────────────────────
+  // ─── Async-хелперы ────────────────────────────────────────────────────────
 
   /**
-   * Wraps an API call, automatically managing loading state.
+   * Оборачивает API-вызов, автоматически управляя состоянием загрузки.
    *
-   * Supports both flat `TItem[]` responses and nested responses via
-   * the optional `extractor` — e.g. `res => res.data ?? []`.
+   * Поддерживает как плоский ответ `TItem[]`, так и вложенный — через
+   * необязательный `extractor`, например `res => res.data ?? []`.
    *
    * @example
    * ```ts
-   * // Flat response: API returns TItem[] directly
+   * // Плоский ответ: API возвращает TItem[] напрямую
    * await this.holder.fromApi(() => this._api.getItems());
    *
-   * // Nested response: API returns { data: TItem[], count: number }
+   * // Вложенный ответ: API возвращает { data: TItem[], count: number }
    * await this.holder.fromApi(
    *   () => this._api.getItems(),
    *   res => res.data,
@@ -275,7 +275,7 @@ export class CollectionHolder<
   }
 
   /**
-   * Calls `onFetch` provided in constructor options (full load).
+   * Вызывает `onFetch` из опций конструктора (полная загрузка).
    */
   async load(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -284,7 +284,7 @@ export class CollectionHolder<
   }
 
   /**
-   * Calls `onFetch` silently — keeps existing items visible.
+   * Вызывает `onFetch` тихо — старые элементы остаются видны.
    */
   async refresh(
     ..._args: TArgs extends void ? [] : [args: TArgs]
@@ -292,7 +292,7 @@ export class CollectionHolder<
     return this._runFetch(_args[0] as TArgs, true);
   }
 
-  // ─── Private ──────────────────────────────────────────────────────────────
+  // ─── Приватное ────────────────────────────────────────────────────────────
 
   private _normalizePredicate(
     predicate: ((item: TItem) => boolean) | string | number,

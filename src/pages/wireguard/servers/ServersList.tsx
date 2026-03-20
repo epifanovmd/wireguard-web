@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
-} from "~@components/ui2";
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
 import { ServerForm } from "./components/ServerForm";
@@ -59,7 +59,7 @@ export const ServersList: FC = observer(() => {
           </ModalHeader>
           <ModalBody>
             <ServerForm
-              loading={false}
+              loading={vm.createServerLoading}
               onCancel={() => setCreateOpen(false)}
               onSubmit={async data => {
                 const res = await vm.createServer(data);

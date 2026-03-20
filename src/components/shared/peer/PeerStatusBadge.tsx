@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 
-import { Badge } from "../../ui2";
+import { Badge } from "../../ui";
 
 const STATUS_CONFIG: Record<string, { variant: any; label: string }> = {
   [EWgServerStatus.Up]: { variant: "success", label: "Работает" },

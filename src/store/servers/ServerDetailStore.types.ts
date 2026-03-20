@@ -7,7 +7,14 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
-import { CombinedHolder, EntityHolder, PollingHolder } from "~@core/holders";
+import {
+  CombinedHolder,
+  EntityHolder,
+  IHolderError,
+  IMutationHolderResult,
+  MutationHolder,
+  PollingHolder,
+} from "~@core/holders";
 import { ServerModel } from "~@models";
 
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();
@@ -16,6 +23,11 @@ export interface IServerDetailStore {
   serverHolder: EntityHolder<WgServerDto, string>;
   statusHolder: PollingHolder<IWgServerStatusDto, string>;
   pageHolder: CombinedHolder;
+  serverActionMutation: MutationHolder<string, WgServerDto>;
+  updateServerMutation: MutationHolder<
+    { id: string; params: IWgServerUpdateRequestDto },
+    WgServerDto
+  >;
   server: WgServerDto | null;
   serverModel: ServerModel | null;
   liveStatus: IWgServerStatusDto | null;
@@ -28,9 +40,9 @@ export interface IServerDetailStore {
   updateServer(
     id: string,
     params: IWgServerUpdateRequestDto,
-  ): Promise<ApiResponse<WgServerDto, ApiError>>;
+  ): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
   deleteServer(id: string): Promise<ApiResponse<boolean, ApiError>>;
-  startServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
-  stopServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
-  restartServer(id: string): Promise<ApiResponse<WgServerDto, ApiError>>;
+  startServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
+  stopServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
+  restartServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
 }

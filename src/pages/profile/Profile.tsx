@@ -10,7 +10,7 @@ import {
   Card,
   DatePickerFormField,
   InputFormField,
-} from "~@components/ui2";
+} from "~@components/ui";
 
 import { ProfileFormData, useProfileVM } from "./hooks/useProfileVM";
 

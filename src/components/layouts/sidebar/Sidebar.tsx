@@ -15,11 +15,8 @@ import { observer } from "mobx-react-lite";
 import { FC, ReactNode, useState } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
-import { Button, ThemeToggle } from "~@components/ui2";
-import { cn } from "~@components/ui2/cn";
+import { Button, ButtonLink, cn, ThemeToggle } from "~@components/ui";
 import { useAuthStore } from "~@store";
-
-import { ButtonLink } from "../../ui2/button";
 
 interface NavItem {
   to: LinkProps["to"];
@@ -185,14 +182,12 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
       .join(" ") ||
     user?.email ||
     "Admin";
-  const initials = (
+  const initials =
     [user?.profile?.firstName, user?.profile?.lastName]
       .filter(Boolean)
       .map(s => s![0])
       .join("")
-      .toUpperCase() ||
-    (user?.email?.[0] ?? "A").toUpperCase()
-  );
+      .toUpperCase() || (user?.email?.[0] ?? "A").toUpperCase();
 
   return (
     <>

@@ -5,15 +5,17 @@ import { z } from "zod";
 
 import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui";
 
-const schema = z.object({
-  password: z.string().min(6, "Пароль должен содержать минимум 6 символов"),
-  confirmPassword: z.string().min(1, "Подтвердите пароль"),
-}).refine(d => d.password === d.confirmPassword, {
-  message: "Пароли не совпадают",
-  path: ["confirmPassword"],
-});
+const schema = z
+  .object({
+    password: z.string().min(6, "Пароль должен содержать минимум 6 символов"),
+    confirmPassword: z.string().min(1, "Подтвердите пароль"),
+  })
+  .refine(d => d.password === d.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -49,8 +51,12 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">Сброс пароля</h2>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">Введите новый пароль</p>
+          <h2 className="text-xl font-bold text-[var(--foreground)]">
+            Сброс пароля
+          </h2>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">
+            Введите новый пароль
+          </p>
         </div>
 
         {error && (

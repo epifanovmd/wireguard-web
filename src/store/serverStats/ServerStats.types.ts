@@ -1,18 +1,20 @@
-import { createServiceDecorator, DataHolder } from "@force-dev/utils";
+import { createServiceDecorator } from "@force-dev/utils";
 
 import { IChartPoint } from "~@components/wgChart";
+import { EntityHolder } from "~@core/holders";
 
 import { WgServerStatsPayload, WgServerStatusPayload } from "../../socket";
 
 export const IServerStatsStore = createServiceDecorator<IServerStatsStore>();
 
 export interface IServerStatsStore {
-  statusHolder: DataHolder<WgServerStatusPayload>;
-  speedPointsHolder: DataHolder<IChartPoint[]>;
-  trafficPointsHolder: DataHolder<IChartPoint[]>;
+  holder: EntityHolder<WgServerStatsPayload>;
+  statusHolder: EntityHolder<WgServerStatusPayload>;
+  speedPointsHolder: EntityHolder<IChartPoint[]>;
+  trafficPointsHolder: EntityHolder<IChartPoint[]>;
 
-  stats: WgServerStatsPayload | undefined;
-  status: WgServerStatusPayload | undefined;
+  stats: WgServerStatsPayload | null;
+  status: WgServerStatusPayload | null;
   speedPoints: IChartPoint[];
   trafficPoints: IChartPoint[];
 

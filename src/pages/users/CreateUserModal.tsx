@@ -1,10 +1,6 @@
 import React, { FC } from "react";
 
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-} from "~@components/ui2";
+import { Modal, ModalContent, ModalOverlay } from "~@components/ui";
 
 import { CreateUserForm } from "./components/CreateUserForm";
 

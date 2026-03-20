@@ -4,7 +4,7 @@ import React from "react";
 import { FormProvider } from "react-hook-form";
 
 import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui2";
+import { Button, Card, InputFormField } from "~@components/ui";
 import { useAuthStore } from "~@store";
 
 import { useSignUpVM } from "./hooks";
