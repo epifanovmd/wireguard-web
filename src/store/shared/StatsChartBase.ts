@@ -1,0 +1,56 @@
+import { IChartPoint } from "~@components/wgChart";
+import { EntityHolder } from "~@core/holders";
+
+export interface IChartPoints {
+  speed: IChartPoint[];
+  traffic: IChartPoint[];
+}
+
+const EMPTY: IChartPoints = { speed: [], traffic: [] };
+
+/**
+ * Base class for stats stores that manage speed/traffic chart points.
+ * Subclass must call makeAutoObservable(this) in its own constructor.
+ */
+export abstract class StatsChartBase {
+  public chartHolder = new EntityHolder<IChartPoints>({
+    initialData: EMPTY,
+  });
+
+  get speedPoints(): IChartPoint[] {
+    return this.chartHolder.data?.speed ?? [];
+  }
+
+  get trafficPoints(): IChartPoint[] {
+    return this.chartHolder.data?.traffic ?? [];
+  }
+
+  get isLoading(): boolean {
+    return this.chartHolder.isLoading;
+  }
+
+  protected _startLoading(): void {
+    this.chartHolder.setData(EMPTY);
+    this.chartHolder.setLoading();
+  }
+
+  protected _setPoints(speed: IChartPoint[], traffic: IChartPoint[]): void {
+    this.chartHolder.setData({ speed, traffic });
+  }
+
+  protected _appendStats(
+    speedPoint: IChartPoint,
+    trafficPoint: IChartPoint,
+  ): void {
+    const current = this.chartHolder.data ?? EMPTY;
+    const speed = current.speed.slice();
+    const traffic = current.traffic.slice();
+
+    speed.shift();
+    speed.push(speedPoint);
+    traffic.shift();
+    traffic.push(trafficPoint);
+
+    this.chartHolder.setData({ speed, traffic });
+  }
+}

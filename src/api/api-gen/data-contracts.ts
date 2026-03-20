@@ -814,6 +814,8 @@ export interface GetServerStatsParams {
   from?: string;
   /** ISO date string */
   to?: string;
+  /** Peer ID */
+  peerId?: string;
   /** Server ID */
   serverId: string;
 }

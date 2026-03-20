@@ -1,6 +1,5 @@
 import { createServiceDecorator } from "@force-dev/utils";
 
-import { IChartPoint } from "~@components/wgChart";
 import { EntityHolder } from "~@core/holders";
 
 import {
@@ -8,17 +7,19 @@ import {
   WgPeerStatsPayload,
   WgPeerStatusPayload,
 } from "../../socket/events";
+import { StatsChartBase } from "../shared/StatsChartBase";
 
 export const IPeerStatsStore = createServiceDecorator<IPeerStatsStore>();
 
-export interface IPeerStatsStore {
+export interface IPeerStatsStore extends StatsChartBase {
   holder: EntityHolder<WgPeerStatsPayload>;
   statusHolder: EntityHolder<WgPeerStatusPayload>;
   activeHolder: EntityHolder<WgPeerActivePayload>;
+
   stats: WgPeerStatsPayload | null;
   status: WgPeerStatusPayload | null;
   active: WgPeerActivePayload | null;
-  speedPoints: IChartPoint[];
-  trafficPoints: IChartPoint[];
+
+  load(peerId: string, from?: string, to?: string): Promise<void>;
   subscribe(peerId: string, from?: string, to?: string): () => void;
 }

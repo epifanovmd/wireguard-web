@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 
 export const datePickerTriggerVariants = cva(
   [
-    "flex items-center gap-2 rounded-lg px-3",
+    "flex grow items-center gap-2 rounded-lg px-3",
     "transition-all duration-200",
     "focus-visible:outline-none focus-visible:shadow-focus",
     "disabled:cursor-not-allowed disabled:opacity-50",

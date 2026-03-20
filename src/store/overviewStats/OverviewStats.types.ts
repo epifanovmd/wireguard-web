@@ -1,18 +1,17 @@
 import { createServiceDecorator } from "@force-dev/utils";
 
-import { IChartPoint } from "~@components/wgChart";
 import { EntityHolder } from "~@core/holders";
 
-import { WgOverviewStatsPayload } from "../../socket/events";
+import { WgOverviewStatsPayload } from "../../socket";
+import { StatsChartBase } from "../shared/StatsChartBase";
 
 export const IOverviewStatsStore =
   createServiceDecorator<IOverviewStatsStore>();
 
-export interface IOverviewStatsStore {
+export interface IOverviewStatsStore extends StatsChartBase {
   holder: EntityHolder<WgOverviewStatsPayload>;
-  isLoading: boolean;
   stats: WgOverviewStatsPayload | null;
-  speedPoints: IChartPoint[];
-  trafficPoints: IChartPoint[];
+
+  load(from?: string, to?: string): Promise<void>;
   subscribe(from?: string, to?: string): () => void;
 }

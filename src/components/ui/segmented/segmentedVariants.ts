@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const segmentedVariants = cva(
-  "inline-flex items-center gap-1 rounded-lg p-1 transition-colors",
+  "flex grow items-center gap-1 rounded-lg p-1 transition-colors",
   {
     variants: {
       variant: {
@@ -39,25 +39,22 @@ export const segmentedItemVariants = cva(
   },
 );
 
-export const segmentedIndicatorVariants = cva(
-  "absolute rounded-md shadow-sm",
-  {
-    variants: {
-      variant: {
-        default: "bg-background",
-        primary: "bg-primary text-primary-foreground",
-        secondary: "bg-secondary text-secondary-foreground",
-        outline: "bg-background border border-border",
-      },
-      size: {
-        sm: "h-6",
-        md: "h-8",
-        lg: "h-10",
-      },
+export const segmentedIndicatorVariants = cva("absolute rounded-md shadow-sm", {
+  variants: {
+    variant: {
+      default: "bg-background",
+      primary: "bg-primary text-primary-foreground",
+      secondary: "bg-secondary text-secondary-foreground",
+      outline: "bg-background border border-border",
     },
-    defaultVariants: {
-      variant: "default",
-      size: "md",
+    size: {
+      sm: "h-6",
+      md: "h-8",
+      lg: "h-10",
     },
   },
-);
+  defaultVariants: {
+    variant: "default",
+    size: "md",
+  },
+});

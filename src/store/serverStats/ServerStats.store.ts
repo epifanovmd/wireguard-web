@@ -1,9 +1,10 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { subHours } from "date-fns";
+import { computed, makeObservable, runInAction } from "mobx";
 
 import { IApiService } from "~@api";
 import { formatter } from "~@common";
-import { IChartPoint } from "~@components/wgChart";
 import { EntityHolder } from "~@core/holders";
+import { StatsChartBase } from "~@store/shared/StatsChartBase";
 
 import {
   IWgSocketService,
@@ -13,18 +14,28 @@ import {
 import { IServerStatsStore } from "./ServerStats.types";
 
 @IServerStatsStore({ inSingleton: true })
-export class ServerStatsStore implements IServerStatsStore {
+export class ServerStatsStore
+  extends StatsChartBase
+  implements IServerStatsStore
+{
   public holder = new EntityHolder<WgServerStatsPayload>();
   public statusHolder = new EntityHolder<WgServerStatusPayload>();
-  public isLoading = false;
-  public speedPoints: IChartPoint[] = [];
-  public trafficPoints: IChartPoint[] = [];
 
   constructor(
     @IApiService() private _apiService: IApiService,
     @IWgSocketService() private _wgSocket: IWgSocketService,
   ) {
-    makeAutoObservable(this, {}, { autoBind: true });
+    super();
+    makeObservable(
+      this,
+      {
+        stats: computed,
+        speedPoints: computed,
+        trafficPoints: computed,
+        isLoading: computed,
+      },
+      { autoBind: true },
+    );
   }
 
   get stats() {
@@ -35,32 +46,42 @@ export class ServerStatsStore implements IServerStatsStore {
     return this.statusHolder.data;
   }
 
-  async load(serverId: string, from?: string, to?: string) {
-    this.speedPoints = [];
-    this.trafficPoints = [];
-    this.isLoading = true;
-
-    const res = await this._apiService.getServerStats({ serverId, from, to });
+  async load(
+    serverId: string,
+    from: string = subHours(new Date(), 1).toISOString(),
+    to?: string,
+    peerId?: string,
+  ) {
+    this._startLoading();
+    const res = await this._apiService.getServerStats({
+      serverId,
+      peerId,
+      from,
+      to,
+    });
 
     runInAction(() => {
       if (res.data) {
-        this.speedPoints = res.data.speed.map(s => ({
-          t: formatter.date.formatTime(s.timestamp),
-          rx: s.rxSpeedBps,
-          tx: s.txSpeedBps,
-        }));
-        this.trafficPoints = res.data.traffic.map(t => ({
-          t: formatter.date.formatTime(t.timestamp),
-          rx: t.rxBytes,
-          tx: t.txBytes,
-        }));
+        this._setPoints(
+          res.data.speed.map(s => ({
+            t: formatter.date.formatTime(s.timestamp),
+            rx: s.rxSpeedBps,
+            tx: s.txSpeedBps,
+          })),
+          res.data.traffic.map(t => ({
+            t: formatter.date.formatTime(t.timestamp),
+            rx: t.rxBytes,
+            tx: t.txBytes,
+          })),
+        );
+      } else {
+        this._setPoints([], []);
       }
-      this.isLoading = false;
     });
   }
 
-  subscribe(serverId: string, from?: string, to?: string) {
-    this.load(serverId, from, to);
+  subscribe(serverId: string, from?: string, to?: string, peerId?: string) {
+    this.load(serverId, from, to, peerId);
 
     return this._wgSocket.subscribeServer(serverId, {
       onStats: s => {
@@ -68,30 +89,17 @@ export class ServerStatsStore implements IServerStatsStore {
         const t = formatter.date.formatTime(s.timestamp);
 
         runInAction(() => {
-          this._appendPoint(this.speedPoints, {
-            t,
-            rx: s.rxSpeedBps,
-            tx: s.txSpeedBps,
-          });
-          this._appendPoint(this.trafficPoints, {
-            t,
-            rx: s.totalRxBytes,
-            tx: s.totalTxBytes,
-          });
+          this._appendStats(
+            { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
+            { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
+          );
         });
       },
-      onStatus: s => {
-        this.statusHolder.setData(s);
-      },
+      onStatus: s => this.statusHolder.setData(s),
     });
   }
 
   unsubscribe(serverId: string) {
     this._wgSocket.unsubscribeServer(serverId);
-  }
-
-  private _appendPoint(points: IChartPoint[], point: IChartPoint): void {
-    points.shift();
-    points.push(point);
   }
 }

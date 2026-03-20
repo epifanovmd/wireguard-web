@@ -23,7 +23,6 @@ export interface SegmentedProps
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
-  block?: boolean;
 }
 
 const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
@@ -36,7 +35,6 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
       value: controlledValue,
       defaultValue,
       onChange,
-      block,
       ...props
     },
     ref,
@@ -62,11 +60,7 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          segmentedVariants({ variant, size }),
-          block && "flex w-full",
-          className,
-        )}
+        className={cn(segmentedVariants({ variant, size }), className)}
         {...props}
       >
         {options.map(option => {
@@ -86,7 +80,6 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
                       : "text-foreground"
                   : "text-muted-foreground hover:text-foreground",
                 isDisabled && "opacity-50 cursor-not-allowed",
-                block && "flex-1",
               )}
               onClick={() => handleSelect(option.value, option.disabled)}
               disabled={isDisabled}

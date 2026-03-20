@@ -15,15 +15,14 @@ import { useOverviewStatsStore, useServersListStore } from "~@store";
 
 export const Dashboard: FC = observer(() => {
   const serversStore = useServersListStore();
-  const { speedPoints, trafficPoints, stats, subscribe } =
-    useOverviewStatsStore();
+  const overviewStatsStore = useOverviewStatsStore();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     serversStore.load().then();
 
-    return subscribe();
+    return overviewStatsStore.subscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -39,6 +38,8 @@ export const Dashboard: FC = observer(() => {
   );
 
   const columns = useMemo(() => serverColumns, []);
+
+  const stats = overviewStatsStore.stats;
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -78,11 +79,11 @@ export const Dashboard: FC = observer(() => {
 
         <ServerSpeedChart
           title={"Скорость всех серверов"}
-          points={speedPoints}
+          points={overviewStatsStore.speedPoints}
         />
         <ServerTrafficChart
           title={"Трафик всех серверов"}
-          points={trafficPoints}
+          points={overviewStatsStore.trafficPoints}
         />
 
         <ServersTable

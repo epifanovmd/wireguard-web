@@ -5,6 +5,7 @@ import { formatter } from "~@common";
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
+  AsyncSelect,
   Button,
   DateRangePicker,
   Segmented,
@@ -25,17 +26,26 @@ export const Stats: FC = observer(() => {
       <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
-          <Select
-            options={vm.serversStore.listHolder.items.map(s => ({
-              value: s.id,
-              label: s.name,
-            }))}
-            value={vm.selectedServer}
-            loading={vm.serversStore.isLoading}
-            onValueChange={v => vm.setSelectedServer(v ?? "")}
-            placeholder="Выберите сервер"
-            triggerClassName="w-48"
-          />
+          <div className={"flex grow gap-3 flex-wrap"}>
+            <AsyncSelect
+              getOption={vm.getServerOption}
+              fetchOnMount={true}
+              fetchOptions={vm.onFetchServers}
+              value={vm.selectedServer}
+              onValueChange={v => vm.setSelectedServer(v ?? "")}
+              placeholder="Выберите сервер"
+            />
+            <AsyncSelect
+              getOption={vm.getPeerOption}
+              fetchOptions={vm.onFetchPeers}
+              value={vm.selectedPeer}
+              disabled={!vm.selectedServer}
+              onValueChange={v => vm.setSelectedPeer(v)}
+              onClear={() => vm.setSelectedPeer("")}
+              placeholder="Выберите peer"
+              clearable={true}
+            />
+          </div>
           <Segmented
             options={PRESETS}
             value={vm.customRange?.from ? undefined : vm.preset}
