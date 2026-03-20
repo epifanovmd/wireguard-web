@@ -18,10 +18,13 @@ export interface IPollingHolderOptions<TData, TArgs = void>
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Расширяет `EntityHolder` автоматическим опросом (на основе setInterval).
+ * Расширяет `EntityHolder` автоматическим опросом.
+ *
+ * Следующий запрос начинается через `interval` мс **после завершения предыдущего**,
+ * поэтому медленные ответы не вызывают гонки и не накапливают параллельных запросов.
  *
  * - `startPolling(options?)` — первичная загрузка (если idle) + периодическое тихое обновление
- * - `stopPolling()` — очищает интервал
+ * - `stopPolling()` — останавливает опрос
  * - `reset()` — останавливает опрос и сбрасывает в idle
  * - `isPolling` — observable-флаг
  *
@@ -49,7 +52,7 @@ export class PollingHolder<
 > extends EntityHolder<TData, TArgs, TError> {
   isPolling = false;
 
-  private _intervalId: ReturnType<typeof setInterval> | null = null;
+  private _timeoutId: ReturnType<typeof setTimeout> | null = null;
   private readonly _defaultInterval: number;
 
   constructor(options?: IPollingHolderOptions<TData, TArgs>) {
@@ -64,35 +67,44 @@ export class PollingHolder<
   }
 
   /**
-   * Запускает опрос. Выполняет немедленный `load()`, если холдер в состоянии idle,
-   * затем тихо вызывает `refresh()` на каждом тике интервала.
+   * Запускает опрос.
    *
-   * Повторный вызов `startPolling` во время активного опроса перезапускает интервал.
+   * Если холдер в состоянии idle — немедленно выполняет `load()`, иначе сразу
+   * начинает цикл обновлений. После завершения каждого запроса ждёт `interval` мс,
+   * затем тихо вызывает `refresh()`. Следующий запрос никогда не стартует раньше,
+   * чем завершится предыдущий, поэтому медленные ответы не накапливают параллельных запросов.
+   *
+   * Повторный вызов во время активного опроса перезапускает цикл.
    */
   startPolling(options?: PollingStartOptions<TArgs>): void {
     this.stopPolling();
 
     const args = (options as any)?.args as TArgs | undefined;
-    const interval =
-      (options as any)?.interval ?? this._defaultInterval;
-
-    const doLoad = () => (this as any).load(args);
-    const doRefresh = () => (this as any).refresh(args);
+    const interval = (options as any)?.interval ?? this._defaultInterval;
 
     this.isPolling = true;
 
-    if (this.isIdle) {
-      doLoad();
-    }
+    const schedule = () => {
+      if (!this.isPolling) return;
+      this._timeoutId = setTimeout(async () => {
+        if (!this.isPolling) return;
+        await (this as any).refresh(args);
+        schedule();
+      }, interval);
+    };
 
-    this._intervalId = setInterval(doRefresh, interval);
+    if (this.isIdle) {
+      (this as any).load(args).then(schedule);
+    } else {
+      schedule();
+    }
   }
 
-  /** Очищает интервал опроса. */
+  /** Останавливает опрос. */
   stopPolling(): void {
-    if (this._intervalId !== null) {
-      clearInterval(this._intervalId);
-      this._intervalId = null;
+    if (this._timeoutId !== null) {
+      clearTimeout(this._timeoutId);
+      this._timeoutId = null;
     }
     this.isPolling = false;
   }
