@@ -1,5 +1,6 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, makeObservable } from "mobx";
 
+import { BaseListHolder } from "./BaseListHolder";
 import {
   CollectionFetchFn,
   HolderStatus,
@@ -57,104 +58,26 @@ export class CollectionHolder<
   TItem,
   TArgs = void,
   TError extends IHolderError = IHolderError,
-> {
-  items: TItem[] = [];
-  status = HolderStatus.Idle;
-  error: TError | null = null;
-
+> extends BaseListHolder<TItem, TError> {
   private readonly _onFetch?: CollectionFetchFn<TItem, TArgs>;
-  private readonly _keyExtractor?: (item: TItem) => string | number;
-  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: ICollectionHolderOptions<TItem, TArgs>) {
+    super(options?.keyExtractor);
+
     makeObservable(this, {
-      items: observable,
-      status: observable,
-      error: observable.ref,
-
-      isIdle: computed,
-      isLoading: computed,
-      isRefreshing: computed,
-      isBusy: computed,
-      isSuccess: computed,
-      isError: computed,
-      isEmpty: computed,
-      count: computed,
-
-      setLoading: action,
-      setRefreshing: action,
       setItems: action,
-      prependItem: action,
-      appendItem: action,
-      updateItem: action,
-      removeItem: action,
-      upsertItem: action,
-      setError: action,
       reset: action,
     });
 
     this._onFetch = options?.onFetch;
-    this._keyExtractor = options?.keyExtractor;
-  }
-
-  // ─── Computed ──────────────────────────────────────────────────────────────
-
-  get isIdle() {
-    return this.status === "idle";
-  }
-
-  get isLoading() {
-    return this.status === "loading";
-  }
-
-  get isRefreshing() {
-    return this.status === "refreshing";
-  }
-
-  get isBusy() {
-    return this.status === "loading" || this.status === "refreshing";
-  }
-
-  get isSuccess() {
-    return this.status === "success";
-  }
-
-  get isError() {
-    return this.status === "error";
-  }
-
-  get isEmpty() {
-    return this.isSuccess && this.items.length === 0;
-  }
-
-  get count() {
-    return this.items.length;
   }
 
   // ─── State setters ────────────────────────────────────────────────────────
-
-  setLoading() {
-    this.status = HolderStatus.Loading;
-    this.error = null;
-  }
-
-  setRefreshing() {
-    this.status = HolderStatus.Refreshing;
-    this.error = null;
-  }
 
   setItems(items: TItem[]) {
     this.items = items;
     this.status = HolderStatus.Success;
     this.error = null;
-  }
-
-  setError(error: TError | IHolderError | string) {
-    this.status = HolderStatus.Error;
-    this.error =
-      typeof error === "string"
-        ? ({ message: error } as TError)
-        : (error as TError);
   }
 
   reset() {
@@ -176,43 +99,12 @@ export class CollectionHolder<
   }
 
   /**
-   * Заменяет первый элемент, совпадающий с `predicate`.
-   * Если настроен `keyExtractor`, можно передать ключ элемента напрямую.
-   */
-  updateItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    updated: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-
-    this.items = this.items.map(item => (fn(item) ? updated : item));
-  }
-
-  /**
    * Удаляет первый элемент, совпадающий с `predicate` или ключом.
    */
   removeItem(predicate: ((item: TItem) => boolean) | string | number) {
     const fn = this._normalizePredicate(predicate);
 
     this.items = this.items.filter(item => !fn(item));
-  }
-
-  /**
-   * Обновляет элемент, если совпадение найдено; иначе добавляет в конец.
-   * Требует настроенного `keyExtractor` или функции-предиката.
-   */
-  upsertItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    item: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-    const exists = this.items.some(fn);
-
-    if (exists) {
-      this.items = this.items.map(i => (fn(i) ? item : i));
-    } else {
-      this.items = [...this.items, item];
-    }
   }
 
   // ─── Async-хелперы ────────────────────────────────────────────────────────
@@ -310,20 +202,6 @@ export class CollectionHolder<
   }
 
   // ─── Приватное ────────────────────────────────────────────────────────────
-
-  private _normalizePredicate(
-    predicate: ((item: TItem) => boolean) | string | number,
-  ): (item: TItem) => boolean {
-    if (typeof predicate === "function") return predicate;
-    if (!this._keyExtractor) {
-      throw new Error(
-        "[CollectionHolder] keyExtractor must be configured to use string/number predicates.",
-      );
-    }
-    const key = predicate;
-
-    return item => this._keyExtractor!(item) === key;
-  }
 
   private async _runFetch(
     args: TArgs,

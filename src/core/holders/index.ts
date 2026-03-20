@@ -1,3 +1,5 @@
+export * from "./BaseHolder";
+export * from "./BaseListHolder";
 export * from "./CollectionHolder";
 export * from "./CombinedHolder";
 export * from "./EntityHolder";

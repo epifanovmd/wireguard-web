@@ -6,6 +6,7 @@ import {
   runInAction,
 } from "mobx";
 
+import { BaseListHolder } from "./BaseListHolder";
 import {
   HolderStatus,
   IApiResponse,
@@ -68,17 +69,10 @@ export class InfiniteHolder<
   TItem,
   TArgs = void,
   TError extends IHolderError = IHolderError,
-> {
-  /** Накопленные элементы со всех загруженных страниц. */
-  items: TItem[] = [];
-
-  /** Статус **первичной / refresh** загрузки. */
-  status = HolderStatus.Idle;
-
+> extends BaseListHolder<TItem, TError> {
   /** Статус действия **«загрузить ещё»** (независим от `status`). */
   loadMoreStatus = MutationStatus.Idle;
 
-  error: TError | null = null;
   loadMoreError: TError | null = null;
 
   /** Сервер сообщил, что есть ещё элементы. */
@@ -90,81 +84,32 @@ export class InfiniteHolder<
   private _currentOffset: number = 0;
   private readonly _pageSize: number;
   private readonly _onFetch?: InfiniteFetchFn<TItem, TArgs>;
-  private readonly _keyExtractor?: (item: TItem) => string | number;
-  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IInfiniteHolderOptions<TItem, TArgs>) {
+    super(options?.keyExtractor);
+
     this._pageSize = options?.pageSize ?? 20;
     this._onFetch = options?.onFetch;
-    this._keyExtractor = options?.keyExtractor;
 
     makeObservable(this, {
-      items: observable,
-      status: observable,
       loadMoreStatus: observable,
-      error: observable.ref,
       loadMoreError: observable.ref,
       hasMore: observable,
       lastArgs: observable.ref,
 
-      isIdle: computed,
-      isLoading: computed,
-      isRefreshing: computed,
-      isBusy: computed,
-      isSuccess: computed,
-      isError: computed,
-      isEmpty: computed,
       isLoadingMore: computed,
       isLoadMoreError: computed,
-      count: computed,
 
-      setLoading: action,
-      setRefreshing: action,
       setItems: action,
       appendItems: action,
       prependItem: action,
       appendItem: action,
-      updateItem: action,
       removeItem: action,
-      upsertItem: action,
-      setError: action,
       reset: action,
     });
   }
 
   // ─── Computed ──────────────────────────────────────────────────────────────
-
-  get isIdle() {
-    return this.status === HolderStatus.Idle;
-  }
-
-  get isLoading() {
-    return this.status === HolderStatus.Loading;
-  }
-
-  get isRefreshing() {
-    return this.status === HolderStatus.Refreshing;
-  }
-
-  /** True, пока идёт первичная загрузка ИЛИ refreshing. */
-  get isBusy() {
-    return (
-      this.status === HolderStatus.Loading ||
-      this.status === HolderStatus.Refreshing
-    );
-  }
-
-  get isSuccess() {
-    return this.status === HolderStatus.Success;
-  }
-
-  get isError() {
-    return this.status === HolderStatus.Error;
-  }
-
-  get isEmpty() {
-    return this.isSuccess && this.items.length === 0;
-  }
 
   get isLoadingMore() {
     return this.loadMoreStatus === MutationStatus.Loading;
@@ -174,21 +119,7 @@ export class InfiniteHolder<
     return this.loadMoreStatus === MutationStatus.Error;
   }
 
-  get count() {
-    return this.items.length;
-  }
-
   // ─── Сеттеры состояния ────────────────────────────────────────────────────
-
-  setLoading() {
-    this.status = HolderStatus.Loading;
-    this.error = null;
-  }
-
-  setRefreshing() {
-    this.status = HolderStatus.Refreshing;
-    this.error = null;
-  }
 
   /**
    * Заменяет все элементы (первая загрузка или refresh).
@@ -215,14 +146,6 @@ export class InfiniteHolder<
     this.loadMoreError = null;
   }
 
-  setError(error: TError | IHolderError | string) {
-    this.status = HolderStatus.Error;
-    this.error =
-      typeof error === "string"
-        ? ({ message: error } as TError)
-        : (error as TError);
-  }
-
   reset() {
     this.items = [];
     this.status = HolderStatus.Idle;
@@ -246,34 +169,11 @@ export class InfiniteHolder<
     this._currentOffset++;
   }
 
-  updateItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    updated: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-
-    this.items = this.items.map(item => (fn(item) ? updated : item));
-  }
-
   removeItem(predicate: ((item: TItem) => boolean) | string | number) {
     const fn = this._normalizePredicate(predicate);
 
     this.items = this.items.filter(item => !fn(item));
     this._currentOffset = Math.max(0, this._currentOffset - 1);
-  }
-
-  upsertItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    item: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-    const exists = this.items.some(fn);
-
-    if (exists) {
-      this.items = this.items.map(i => (fn(i) ? item : i));
-    } else {
-      this.appendItem(item);
-    }
   }
 
   // ─── Async-хелперы ────────────────────────────────────────────────────────
@@ -414,7 +314,8 @@ export class InfiniteHolder<
     } catch (e) {
       this._pendingFetch = null;
 
-      if (isCancelError(e)) return { data: null, hasMore: this.hasMore, error: null };
+      if (isCancelError(e))
+        return { data: null, hasMore: this.hasMore, error: null };
 
       const err = toHolderError(e) as unknown as TApiError;
 
@@ -432,20 +333,6 @@ export class InfiniteHolder<
   }
 
   // ─── Приватное ────────────────────────────────────────────────────────────
-
-  private _normalizePredicate(
-    predicate: ((item: TItem) => boolean) | string | number,
-  ): (item: TItem) => boolean {
-    if (typeof predicate === "function") return predicate;
-    if (!this._keyExtractor) {
-      throw new Error(
-        "[InfiniteHolder] keyExtractor must be configured to use string/number predicates.",
-      );
-    }
-    const key = predicate;
-
-    return item => this._keyExtractor!(item) === key;
-  }
 
   private async _runFetch(
     args: TArgs,
@@ -533,7 +420,8 @@ export class InfiniteHolder<
     } catch (e) {
       this._pendingFetch = null;
 
-      if (isCancelError(e)) return { data: null, hasMore: this.hasMore, error: null };
+      if (isCancelError(e))
+        return { data: null, hasMore: this.hasMore, error: null };
 
       const err = toHolderError(e) as TError;
 

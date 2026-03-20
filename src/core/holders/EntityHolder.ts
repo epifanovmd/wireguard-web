@@ -1,11 +1,6 @@
-import {
-  action,
-  computed,
-  makeObservable,
-  observable,
-  runInAction,
-} from "mobx";
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
 
+import { BaseHolder } from "./BaseHolder";
 import {
   EntityFetchFn,
   HolderStatus,
@@ -67,34 +62,22 @@ export class EntityHolder<
   TData,
   TArgs = void,
   TError extends IHolderError = IHolderError,
-> {
+> extends BaseHolder<TError> {
   data: TData | null = null;
-  status = HolderStatus.Idle;
-  error: TError | null = null;
 
   private readonly _onFetch?: EntityFetchFn<TData, TArgs>;
-  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IEntityHolderOptions<TData, TArgs>) {
+    super();
+
     makeObservable(this, {
       data: observable.ref,
-      status: observable,
-      error: observable.ref,
 
-      isIdle: computed,
-      isLoading: computed,
-      isRefreshing: computed,
-      isBusy: computed,
-      isSuccess: computed,
-      isError: computed,
       isEmpty: computed,
       isFilled: computed,
       isReady: computed,
 
-      setLoading: action,
-      setRefreshing: action,
       setData: action,
-      setError: action,
       reset: action,
     });
 
@@ -107,36 +90,6 @@ export class EntityHolder<
   }
 
   // ─── Computed ──────────────────────────────────────────────────────────────
-
-  /** Запрос ещё не выполнялся. */
-  get isIdle() {
-    return this.status === "idle";
-  }
-
-  /** Идёт первичная загрузка (данных ещё нет). */
-  get isLoading() {
-    return this.status === "loading";
-  }
-
-  /** Тихое фоновое обновление (старые данные остаются видны). */
-  get isRefreshing() {
-    return this.status === "refreshing";
-  }
-
-  /** True, пока идёт loading ИЛИ refreshing. */
-  get isBusy() {
-    return this.status === "loading" || this.status === "refreshing";
-  }
-
-  /** Последний запрос завершился успешно. */
-  get isSuccess() {
-    return this.status === "success";
-  }
-
-  /** Последний запрос завершился с ошибкой. */
-  get isError() {
-    return this.status === "error";
-  }
 
   /** Успех, но сервер вернул null / пустой ответ. */
   get isEmpty() {
@@ -155,28 +108,10 @@ export class EntityHolder<
 
   // ─── Ручные сеттеры состояния ─────────────────────────────────────────────
 
-  setLoading() {
-    this.status = HolderStatus.Loading;
-    this.error = null;
-  }
-
-  setRefreshing() {
-    this.status = HolderStatus.Refreshing;
-    this.error = null;
-  }
-
   setData(data: TData) {
     this.data = data;
     this.status = HolderStatus.Success;
     this.error = null;
-  }
-
-  setError(error: TError | IHolderError | string) {
-    this.status = HolderStatus.Error;
-    this.error =
-      typeof error === "string"
-        ? ({ message: error } as TError)
-        : (error as TError);
   }
 
   /** Очищает данные и сбрасывает статус в idle. */

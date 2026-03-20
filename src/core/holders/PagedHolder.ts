@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 
+import { BaseListHolder } from "./BaseListHolder";
 import {
   HolderStatus,
   IApiResponse,
@@ -71,20 +72,17 @@ export class PagedHolder<
   TItem,
   TArgs = void,
   TError extends IHolderError = IHolderError,
-> {
-  items: TItem[] = [];
-  status = HolderStatus.Idle;
-  error: TError | null = null;
+> extends BaseListHolder<TItem, TError> {
   pagination: IPagedHolderPagination;
 
   /** Аргументы последней успешной загрузки — используются в reload(). */
   lastArgs: TArgs | null = null;
 
   private readonly _onFetch?: PagedFetchFn<TItem, TArgs>;
-  private readonly _keyExtractor?: (item: TItem) => string | number;
-  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IPagedHolderOptions<TItem, TArgs>) {
+    super(options?.keyExtractor);
+
     this.pagination = {
       page: 1,
       pageSize: options?.pageSize ?? 20,
@@ -92,80 +90,28 @@ export class PagedHolder<
     };
 
     makeObservable(this, {
-      items: observable,
-      status: observable,
-      error: observable.ref,
       pagination: observable,
       lastArgs: observable.ref,
 
-      isIdle: computed,
-      isLoading: computed,
-      isRefreshing: computed,
-      isBusy: computed,
-      isSuccess: computed,
-      isError: computed,
-      isEmpty: computed,
-      count: computed,
       pageCount: computed,
       hasNextPage: computed,
       hasPrevPage: computed,
       offset: computed,
 
-      setLoading: action,
-      setRefreshing: action,
       setPage: action,
       setPageSize: action,
       setPagination: action,
       setItems: action,
       prependItem: action,
       appendItem: action,
-      updateItem: action,
       removeItem: action,
-      upsertItem: action,
-      setError: action,
       reset: action,
     });
 
     this._onFetch = options?.onFetch;
-    this._keyExtractor = options?.keyExtractor;
   }
 
   // ─── Computed ──────────────────────────────────────────────────────────────
-
-  get isIdle() {
-    return this.status === HolderStatus.Idle;
-  }
-
-  get isLoading() {
-    return this.status === HolderStatus.Loading;
-  }
-
-  get isRefreshing() {
-    return this.status === HolderStatus.Refreshing;
-  }
-
-  get isBusy() {
-    return (
-      this.status === HolderStatus.Loading ||
-      this.status === HolderStatus.Refreshing
-    );
-  }
-
-  get isSuccess() {
-    return this.status === HolderStatus.Success;
-  }
-
-  get isError() {
-    return this.status === HolderStatus.Error;
-  }
-
-  get isEmpty() {
-    return this.isSuccess && this.items.length === 0;
-  }
-
-  get count() {
-    return this.items.length;
-  }
 
   /** Общее количество страниц на основе серверного totalCount. */
   get pageCount() {
@@ -191,16 +137,6 @@ export class PagedHolder<
 
   // ─── Сеттеры состояния ────────────────────────────────────────────────────
 
-  setLoading() {
-    this.status = HolderStatus.Loading;
-    this.error = null;
-  }
-
-  setRefreshing() {
-    this.status = HolderStatus.Refreshing;
-    this.error = null;
-  }
-
   /** Переходит на страницу без запроса (совместно с ручным setItems). */
   setPage(page: number) {
     this.pagination = { ...this.pagination, page: Math.max(1, page) };
@@ -225,14 +161,6 @@ export class PagedHolder<
     this.pagination = { ...this.pagination, totalCount };
     this.status = HolderStatus.Success;
     this.error = null;
-  }
-
-  setError(error: TError | IHolderError | string) {
-    this.status = HolderStatus.Error;
-    this.error =
-      typeof error === "string"
-        ? ({ message: error } as TError)
-        : (error as TError);
   }
 
   /** Сбрасывает элементы, пагинацию (кроме pageSize) и статус в idle. */
@@ -262,15 +190,6 @@ export class PagedHolder<
     };
   }
 
-  updateItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    updated: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-
-    this.items = this.items.map(item => (fn(item) ? updated : item));
-  }
-
   removeItem(predicate: ((item: TItem) => boolean) | string | number) {
     const fn = this._normalizePredicate(predicate);
 
@@ -279,20 +198,6 @@ export class PagedHolder<
       ...this.pagination,
       totalCount: Math.max(0, this.pagination.totalCount - 1),
     };
-  }
-
-  upsertItem(
-    predicate: ((item: TItem) => boolean) | string | number,
-    item: TItem,
-  ) {
-    const fn = this._normalizePredicate(predicate);
-    const exists = this.items.some(fn);
-
-    if (exists) {
-      this.items = this.items.map(i => (fn(i) ? item : i));
-    } else {
-      this.appendItem(item);
-    }
   }
 
   // ─── Async-хелперы ────────────────────────────────────────────────────────
@@ -331,7 +236,8 @@ export class PagedHolder<
 
       this._pendingFetch = null;
 
-      if (isCancelResponse(res)) return { data: null, totalCount: 0, error: null };
+      if (isCancelResponse(res))
+        return { data: null, totalCount: 0, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -426,20 +332,6 @@ export class PagedHolder<
 
   // ─── Приватное ────────────────────────────────────────────────────────────
 
-  private _normalizePredicate(
-    predicate: ((item: TItem) => boolean) | string | number,
-  ): (item: TItem) => boolean {
-    if (typeof predicate === "function") return predicate;
-    if (!this._keyExtractor) {
-      throw new Error(
-        "[PagedHolder] keyExtractor must be configured to use string/number predicates.",
-      );
-    }
-    const key = predicate;
-
-    return item => this._keyExtractor!(item) === key;
-  }
-
   private async _runFetch(
     args: TArgs,
     isRefresh: boolean,
@@ -471,7 +363,8 @@ export class PagedHolder<
 
       this._pendingFetch = null;
 
-      if (isCancelResponse(res)) return { data: null, totalCount: 0, error: null };
+      if (isCancelResponse(res))
+        return { data: null, totalCount: 0, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
