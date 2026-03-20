@@ -153,7 +153,7 @@ export const usePeersListVM = (_serverId?: string) => {
     onPageChange,
     onPageSizeChange,
     servers: serversStore.models,
-    isLoadingServers: !serversStore.listHolder.isReady && !_serverId,
+    isLoadingServers: serversStore.listHolder.isLoading,
     qrPeer,
     setQrPeer,
     handleRowClick,
