@@ -5,6 +5,8 @@ import {
   HolderStatus,
   IApiResponse,
   IHolderError,
+  isCancelError,
+  isCancelResponse,
   toHolderError,
 } from "./HolderTypes";
 
@@ -62,6 +64,7 @@ export class CollectionHolder<
 
   private readonly _onFetch?: CollectionFetchFn<TItem, TArgs>;
   private readonly _keyExtractor?: (item: TItem) => string | number;
+  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: ICollectionHolderOptions<TItem, TArgs>) {
     makeObservable(this, {
@@ -237,14 +240,24 @@ export class CollectionHolder<
     extractor?: (response: TResponse) => TItem[],
     options?: { refresh?: boolean },
   ): Promise<ICollectionHolderResult<TItem, TApiError>> {
+    this._pendingFetch?.cancel?.();
+
     if (options?.refresh) {
       this.setRefreshing();
     } else {
       this.setLoading();
     }
 
+    const promise = fn();
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await fn();
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -266,6 +279,10 @@ export class CollectionHolder<
 
       return { data: [], error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as unknown as TApiError;
 
       this.setError(err as unknown as TError);
@@ -320,14 +337,24 @@ export class CollectionHolder<
       return { data: null, error: null };
     }
 
+    this._pendingFetch?.cancel?.();
+
     if (isRefresh) {
       this.setRefreshing();
     } else {
       this.setLoading();
     }
 
+    const promise = this._onFetch(args);
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await this._onFetch(args);
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -341,6 +368,10 @@ export class CollectionHolder<
 
       return { data: items, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as TError;
 
       this.setError(err);

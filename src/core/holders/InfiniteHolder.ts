@@ -12,6 +12,8 @@ import {
   IHolderError,
   InfiniteFetchFn,
   IPagedResponse,
+  isCancelError,
+  isCancelResponse,
   MutationStatus,
   toHolderError,
 } from "./HolderTypes";
@@ -89,6 +91,7 @@ export class InfiniteHolder<
   private readonly _pageSize: number;
   private readonly _onFetch?: InfiniteFetchFn<TItem, TArgs>;
   private readonly _keyExtractor?: (item: TItem) => string | number;
+  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IInfiniteHolderOptions<TItem, TArgs>) {
     this._pageSize = options?.pageSize ?? 20;
@@ -339,6 +342,8 @@ export class InfiniteHolder<
     ) => { items: TItem[]; hasMore: boolean },
     options?: { append?: boolean; refresh?: boolean },
   ): Promise<IInfiniteHolderResult<TItem, TApiError>> {
+    this._pendingFetch?.cancel?.();
+
     if (options?.append) {
       runInAction(() => {
         this.loadMoreStatus = MutationStatus.Loading;
@@ -353,8 +358,17 @@ export class InfiniteHolder<
       }
     }
 
+    const promise = fn();
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await fn();
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res))
+        return { data: null, hasMore: this.hasMore, error: null };
 
       if (res.error) {
         if (options?.append) {
@@ -398,6 +412,10 @@ export class InfiniteHolder<
 
       return { data: [], hasMore: false, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, hasMore: this.hasMore, error: null };
+
       const err = toHolderError(e) as unknown as TApiError;
 
       if (options?.append) {
@@ -443,6 +461,8 @@ export class InfiniteHolder<
 
     const isAppend = mode === "loadMore";
 
+    this._pendingFetch?.cancel?.();
+
     if (isAppend) {
       runInAction(() => {
         this.loadMoreStatus = MutationStatus.Loading;
@@ -455,9 +475,17 @@ export class InfiniteHolder<
     }
 
     const offset = isAppend ? this._currentOffset : 0;
+    const promise = this._onFetch({ offset, limit: this._pageSize }, args);
+
+    this._pendingFetch = promise as any;
 
     try {
-      const res = await this._onFetch({ offset, limit: this._pageSize }, args);
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res))
+        return { data: null, hasMore: this.hasMore, error: null };
 
       if (res.error) {
         if (isAppend) {
@@ -503,6 +531,10 @@ export class InfiniteHolder<
 
       return { data: [], hasMore: false, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, hasMore: this.hasMore, error: null };
+
       const err = toHolderError(e) as TError;
 
       if (isAppend) {

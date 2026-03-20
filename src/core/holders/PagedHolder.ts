@@ -5,6 +5,8 @@ import {
   IApiResponse,
   IHolderError,
   IPagedResponse,
+  isCancelError,
+  isCancelResponse,
   PagedFetchFn,
   toHolderError,
 } from "./HolderTypes";
@@ -80,6 +82,7 @@ export class PagedHolder<
 
   private readonly _onFetch?: PagedFetchFn<TItem, TArgs>;
   private readonly _keyExtractor?: (item: TItem) => string | number;
+  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IPagedHolderOptions<TItem, TArgs>) {
     this.pagination = {
@@ -311,14 +314,24 @@ export class PagedHolder<
     extractor: (response: TResponse) => { items: TItem[]; totalCount: number },
     options?: { refresh?: boolean },
   ): Promise<IPagedHolderResult<TItem, TApiError>> {
+    this._pendingFetch?.cancel?.();
+
     if (options?.refresh) {
       this.setRefreshing();
     } else {
       this.setLoading();
     }
 
+    const promise = fn();
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await fn();
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, totalCount: 0, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -338,6 +351,10 @@ export class PagedHolder<
 
       return { data: [], totalCount: 0, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, totalCount: 0, error: null };
+
       const err = toHolderError(e) as unknown as TApiError;
 
       this.setError(err as unknown as TError);
@@ -435,6 +452,8 @@ export class PagedHolder<
       return { data: null, totalCount: 0, error: null };
     }
 
+    this._pendingFetch?.cancel?.();
+
     if (isRefresh) {
       this.setRefreshing();
     } else {
@@ -443,9 +462,16 @@ export class PagedHolder<
 
     const { page, pageSize } = this.pagination;
     const offset = (page - 1) * pageSize;
+    const promise = this._onFetch({ offset, limit: pageSize }, args);
+
+    this._pendingFetch = promise as any;
 
     try {
-      const res = await this._onFetch({ offset, limit: pageSize }, args);
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, totalCount: 0, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -472,6 +498,10 @@ export class PagedHolder<
 
       return { data: [], totalCount: 0, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, totalCount: 0, error: null };
+
       const err = toHolderError(e) as TError;
 
       this.setError(err);

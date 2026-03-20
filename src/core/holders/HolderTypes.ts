@@ -38,6 +38,23 @@ export interface IHolderError {
 }
 
 /**
+ * Проверяет, является ли ответ результатом отменённого axios-запроса.
+ * ApiService резолвит (не бросает) отменённые запросы с флагом `isCanceled: true`.
+ * Используется холдерами, чтобы не затирать состояние при race condition.
+ */
+export function isCancelResponse(res: unknown): boolean {
+  return (res as any)?.isCanceled === true;
+}
+
+/**
+ * Проверяет, является ли брошенное значение ошибкой отмены axios.
+ * Запасной вариант на случай если промис всё же реджектится.
+ */
+export function isCancelError(e: unknown): boolean {
+  return (e as any)?.__CANCEL__ === true;
+}
+
+/**
  * Преобразует любое брошенное значение или строку в `IHolderError`.
  * Используется внутри метода `fromApi` каждого холдера.
  */

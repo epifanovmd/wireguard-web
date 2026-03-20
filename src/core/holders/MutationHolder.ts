@@ -9,6 +9,8 @@ import {
 import {
   IApiResponse,
   IHolderError,
+  isCancelError,
+  isCancelResponse,
   MutationFn,
   MutationStatus,
   toHolderError,
@@ -165,6 +167,8 @@ export class MutationHolder<
     try {
       const res = await fn(args);
 
+      if (isCancelResponse(res)) return { data: null, error: null };
+
       if (res.error) {
         runInAction(() => {
           this.status = MutationStatus.Error;
@@ -182,6 +186,8 @@ export class MutationHolder<
 
       return { data: (res.data ?? null) as TData | null, error: null };
     } catch (e) {
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as TError;
 
       runInAction(() => {
@@ -211,6 +217,8 @@ export class MutationHolder<
     try {
       const res = await fn();
 
+      if (isCancelResponse(res)) return { data: null, error: null };
+
       if (res.error) {
         runInAction(() => {
           this.status = MutationStatus.Error;
@@ -227,6 +235,8 @@ export class MutationHolder<
 
       return { data: (res.data ?? null) as TData | null, error: null };
     } catch (e) {
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as TError;
 
       runInAction(() => {

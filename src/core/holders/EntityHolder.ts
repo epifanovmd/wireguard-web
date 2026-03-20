@@ -11,6 +11,8 @@ import {
   HolderStatus,
   IApiResponse,
   IHolderError,
+  isCancelError,
+  isCancelResponse,
   toHolderError,
 } from "./HolderTypes";
 
@@ -71,6 +73,7 @@ export class EntityHolder<
   error: TError | null = null;
 
   private readonly _onFetch?: EntityFetchFn<TData, TArgs>;
+  private _pendingFetch: { cancel?: () => void } | null = null;
 
   constructor(options?: IEntityHolderOptions<TData, TArgs>) {
     makeObservable(this, {
@@ -204,14 +207,24 @@ export class EntityHolder<
     fn: () => Promise<IApiResponse<TData, TApiError>>,
     options?: { refresh?: boolean },
   ): Promise<IEntityHolderResult<TData, TApiError>> {
+    this._pendingFetch?.cancel?.();
+
     if (options?.refresh) {
       this.setRefreshing();
     } else {
       this.setLoading();
     }
 
+    const promise = fn();
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await fn();
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -233,6 +246,10 @@ export class EntityHolder<
 
       return { data: null, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as unknown as TApiError;
 
       this.setError(err as unknown as TError);
@@ -284,14 +301,24 @@ export class EntityHolder<
       return { data: null, error: null };
     }
 
+    this._pendingFetch?.cancel?.();
+
     if (isRefresh) {
       this.setRefreshing();
     } else {
       this.setLoading();
     }
 
+    const promise = this._onFetch(args);
+
+    this._pendingFetch = promise as any;
+
     try {
-      const res = await this._onFetch(args);
+      const res = await promise;
+
+      this._pendingFetch = null;
+
+      if (isCancelResponse(res)) return { data: null, error: null };
 
       if (res.error) {
         this.setError(res.error as unknown as TError);
@@ -312,6 +339,10 @@ export class EntityHolder<
 
       return { data: null, error: null };
     } catch (e) {
+      this._pendingFetch = null;
+
+      if (isCancelError(e)) return { data: null, error: null };
+
       const err = toHolderError(e) as TError;
 
       this.setError(err);
