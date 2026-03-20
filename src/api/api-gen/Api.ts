@@ -19,14 +19,10 @@ import {
   GetOverviewStatsParams,
   GetPeersByServerParams,
   GetPeersByUserParams,
-  GetPeerSpeedParams,
   GetPeerStatsParams,
-  GetPeerTrafficParams,
   GetProfilesParams,
   GetServersParams,
-  GetServerSpeedParams,
   GetServerStatsParams,
-  GetServerTrafficParams,
   GetUsersParams,
   IGenerateAuthenticationOptionsRequestDto,
   IProfileListDto,
@@ -47,11 +43,9 @@ import {
   IWgOverviewStatsResponse,
   IWgPeerCreateRequestDto,
   IWgPeerListDto,
-  IWgPeerStatsResponse,
   IWgPeerUpdateRequestDto,
   IWgServerCreateRequestDto,
   IWgServerListDto,
-  IWgServerStatsResponse,
   IWgServerStatusDto,
   IWgServerUpdateRequestDto,
   ProfileDto,
@@ -62,8 +56,6 @@ import {
   UserDto,
   WgPeerDto,
   WgServerDto,
-  WgSpeedSampleDto,
-  WgTrafficStatDto,
 } from "./data-contracts";
 import { EContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -983,127 +975,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get traffic history for a specific peer.
-   *
-   * @tags WireGuard Statistics
-   * @name GetPeerTraffic
-   * @summary Peer traffic history
-   * @request GET:/api/wg/statistics/peers/{peerId}/traffic
-   * @secure
-   */
-  getPeerTraffic = (
-    { peerId, ...query }: GetPeerTrafficParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<WgTrafficStatDto[], any>({
-      url: `/api/wg/statistics/peers/${peerId}/traffic`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get speed samples for a specific peer.
-   *
-   * @tags WireGuard Statistics
-   * @name GetPeerSpeed
-   * @summary Peer speed history
-   * @request GET:/api/wg/statistics/peers/{peerId}/speed
-   * @secure
-   */
-  getPeerSpeed = (
-    { peerId, ...query }: GetPeerSpeedParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<WgSpeedSampleDto[], any>({
-      url: `/api/wg/statistics/peers/${peerId}/speed`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get combined latest stats + history for a peer.
-   *
-   * @tags WireGuard Statistics
-   * @name GetPeerStats
-   * @summary Peer full stats
-   * @request GET:/api/wg/statistics/peers/{peerId}
-   * @secure
-   */
-  getPeerStats = (
-    { peerId, ...query }: GetPeerStatsParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<IWgPeerStatsResponse, any>({
-      url: `/api/wg/statistics/peers/${peerId}`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get traffic history for a server (all peers aggregated).
-   *
-   * @tags WireGuard Statistics
-   * @name GetServerTraffic
-   * @summary Server traffic history
-   * @request GET:/api/wg/statistics/servers/{serverId}/traffic
-   * @secure
-   */
-  getServerTraffic = (
-    { serverId, ...query }: GetServerTrafficParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<WgTrafficStatDto[], any>({
-      url: `/api/wg/statistics/servers/${serverId}/traffic`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get speed history for a server.
-   *
-   * @tags WireGuard Statistics
-   * @name GetServerSpeed
-   * @summary Server speed history
-   * @request GET:/api/wg/statistics/servers/{serverId}/speed
-   * @secure
-   */
-  getServerSpeed = (
-    { serverId, ...query }: GetServerSpeedParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<WgSpeedSampleDto[], any>({
-      url: `/api/wg/statistics/servers/${serverId}/speed`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get combined stats for a server.
-   *
-   * @tags WireGuard Statistics
-   * @name GetServerStats
-   * @summary Server full stats
-   * @request GET:/api/wg/statistics/servers/{serverId}
-   * @secure
-   */
-  getServerStats = (
-    { serverId, ...query }: GetServerStatsParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<IWgServerStatsResponse, any>({
-      url: `/api/wg/statistics/servers/${serverId}`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get aggregated overview stats across all servers.
+   * @description Aggregated traffic + speed across all servers and all peers. Traffic: cumulative total (monotonically increasing). Speed: sum of peer speeds at each minute bucket.
    *
    * @tags WireGuard Statistics
    * @name GetOverviewStats
@@ -1117,6 +989,46 @@ export class Api<
   ) =>
     this.request<IWgOverviewStatsResponse, any>({
       url: `/api/wg/statistics/overview`,
+      method: "GET",
+      params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Aggregated traffic + speed for a specific server (all its peers). Optionally filter by a single peer via peerId query param.
+   *
+   * @tags WireGuard Statistics
+   * @name GetServerStats
+   * @summary Server stats
+   * @request GET:/api/wg/statistics/servers/{serverId}
+   * @secure
+   */
+  getServerStats = (
+    { serverId, ...query }: GetServerStatsParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgOverviewStatsResponse, any>({
+      url: `/api/wg/statistics/servers/${serverId}`,
+      method: "GET",
+      params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Aggregated traffic + speed for a specific peer.
+   *
+   * @tags WireGuard Statistics
+   * @name GetPeerStats
+   * @summary Peer stats
+   * @request GET:/api/wg/statistics/peers/{peerId}
+   * @secure
+   */
+  getPeerStats = (
+    { peerId, ...query }: GetPeerStatsParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgOverviewStatsResponse, any>({
+      url: `/api/wg/statistics/peers/${peerId}`,
       method: "GET",
       params: query,
       responseType: "json",

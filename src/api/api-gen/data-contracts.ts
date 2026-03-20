@@ -622,59 +622,6 @@ export interface IWgServerStatusDto {
   publicKey: string;
 }
 
-export interface WgTrafficStatDto {
-  id: string;
-  peerId: string;
-  serverId: string;
-  /** @format double */
-  rxBytes: number;
-  /** @format double */
-  txBytes: number;
-  /** @format date-time */
-  lastHandshake: string | null;
-  endpoint: string | null;
-  /** @format date-time */
-  timestamp: string;
-}
-
-export interface WgSpeedSampleDto {
-  id: string;
-  peerId: string;
-  serverId: string;
-  /** @format double */
-  rxSpeedBps: number;
-  /** @format double */
-  txSpeedBps: number;
-  isActive: boolean;
-  /** @format date-time */
-  timestamp: string;
-}
-
-export interface IWgPeerStatsResponse {
-  peerId: string;
-  traffic: WgTrafficStatDto[];
-  speed: WgSpeedSampleDto[];
-  latest: {
-    /** @format date-time */
-    lastHandshake: string | null;
-    isActive: boolean;
-    /** @format double */
-    txSpeedBps: number;
-    /** @format double */
-    rxSpeedBps: number;
-    /** @format double */
-    txBytes: number;
-    /** @format double */
-    rxBytes: number;
-  };
-}
-
-export interface IWgServerStatsResponse {
-  serverId: string;
-  traffic: WgTrafficStatDto[];
-  speed: WgSpeedSampleDto[];
-}
-
 export interface WgOverviewTrafficPointDto {
   /** @format date-time */
   timestamp: string;
@@ -764,22 +711,22 @@ export interface GetServersParams {
   limit?: number;
 }
 
-export interface GetPeerTrafficParams {
+export interface GetOverviewStatsParams {
   /** ISO date string (default: 24h ago) */
   from?: string;
   /** ISO date string (default: now) */
   to?: string;
-  /** Peer ID */
-  peerId: string;
 }
 
-export interface GetPeerSpeedParams {
-  /** ISO date string (default: 1h ago) */
+export interface GetServerStatsParams {
+  /** ISO date string (default: 24h ago) */
   from?: string;
   /** ISO date string (default: now) */
   to?: string;
-  /** Peer ID */
-  peerId: string;
+  /** Optional peer ID to filter */
+  peerId?: string;
+  /** Server ID */
+  serverId: string;
 }
 
 export interface GetPeerStatsParams {
@@ -789,40 +736,4 @@ export interface GetPeerStatsParams {
   to?: string;
   /** Peer ID */
   peerId: string;
-}
-
-export interface GetServerTrafficParams {
-  /** ISO date string */
-  from?: string;
-  /** ISO date string */
-  to?: string;
-  /** Server ID */
-  serverId: string;
-}
-
-export interface GetServerSpeedParams {
-  /** ISO date string */
-  from?: string;
-  /** ISO date string */
-  to?: string;
-  /** Server ID */
-  serverId: string;
-}
-
-export interface GetServerStatsParams {
-  /** ISO date string */
-  from?: string;
-  /** ISO date string */
-  to?: string;
-  /** Peer ID */
-  peerId?: string;
-  /** Server ID */
-  serverId: string;
-}
-
-export interface GetOverviewStatsParams {
-  /** ISO date string (default: 24h ago) */
-  from?: string;
-  /** ISO date string (default: now) */
-  to?: string;
 }

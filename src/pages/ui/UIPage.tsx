@@ -1517,7 +1517,6 @@ export const UIPage = () => {
               <Segmented
                 defaultValue="all"
                 size="md"
-                block
                 options={[
                   { label: "All", value: "all" },
                   { label: "Active", value: "active" },
@@ -1528,7 +1527,6 @@ export const UIPage = () => {
                 defaultValue="tab1"
                 size="sm"
                 variant="primary"
-                block
                 options={[
                   {
                     label: "Tab 1",
