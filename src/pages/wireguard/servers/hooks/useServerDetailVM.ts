@@ -18,11 +18,7 @@ export const useServerDetailVM = (serverId: string, _onBack: () => void) => {
   const { status: liveSocketStatus } = useWgServer(serverId);
 
   useEffect(() => {
-    serverStatsStore.loadServerStats(serverId).then(() => {
-      serverStatsStore.subscribe(serverId);
-    });
-
-    return serverStatsStore.unsubscribe(serverId);
+    return serverStatsStore.subscribe(serverId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverId]);
 

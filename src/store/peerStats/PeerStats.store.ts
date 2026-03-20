@@ -18,6 +18,7 @@ export class PeerStatsStore implements IPeerStatsStore {
   public holder = new EntityHolder<WgPeerStatsPayload>();
   public statusHolder = new EntityHolder<WgPeerStatusPayload>();
   public activeHolder = new EntityHolder<WgPeerActivePayload>();
+  public isLoading = false;
   public speedPoints: IChartPoint[] = [];
   public trafficPoints: IChartPoint[] = [];
 
@@ -40,47 +41,49 @@ export class PeerStatsStore implements IPeerStatsStore {
     return this.activeHolder.data;
   }
 
-  subscribe(peerId: string, from?: string, to?: string) {
+  async load(peerId: string, from?: string, to?: string) {
     this.speedPoints = [];
     this.trafficPoints = [];
+    this.isLoading = true;
 
-    this._apiService.getPeerStats({ peerId, from, to }).then(res => {
+    const res = await this._apiService.getPeerStats({ peerId, from, to });
+
+    runInAction(() => {
       if (res.data) {
-        const speedPoints = res.data.speed.slice(-60).map(s => ({
+        this.speedPoints = res.data.speed.map(s => ({
           t: formatter.date.formatTime(s.timestamp),
           rx: s.rxSpeedBps,
           tx: s.txSpeedBps,
         }));
-        const trafficPoints = res.data.traffic.slice(-60).map(t => ({
+        this.trafficPoints = res.data.traffic.map(t => ({
           t: formatter.date.formatTime(t.timestamp),
           rx: t.rxBytes,
           tx: t.txBytes,
         }));
-
-        runInAction(() => {
-          this.speedPoints = speedPoints;
-          this.trafficPoints = trafficPoints;
-        });
       }
+      this.isLoading = false;
     });
+  }
+
+  subscribe(peerId: string, from?: string, to?: string) {
+    this.load(peerId, from, to);
 
     return this._wgSocket.subscribePeer(peerId, {
       onStats: s => {
         this.holder.setData(s);
         const t = formatter.date.formatTime(s.timestamp);
 
-        const speedPoints = [
-          ...this.speedPoints.slice(-59),
-          { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
-        ];
-        const trafficPoints = [
-          ...this.trafficPoints.slice(-59),
-          { t, rx: s.rxBytes, tx: s.txBytes },
-        ];
-
         runInAction(() => {
-          this.speedPoints = speedPoints;
-          this.trafficPoints = trafficPoints;
+          this._appendPoint(this.speedPoints, {
+            t,
+            rx: s.rxSpeedBps,
+            tx: s.txSpeedBps,
+          });
+          this._appendPoint(this.trafficPoints, {
+            t,
+            rx: s.rxBytes,
+            tx: s.txBytes,
+          });
         });
       },
       onStatus: s => {
@@ -90,5 +93,10 @@ export class PeerStatsStore implements IPeerStatsStore {
         this.activeHolder.setData(a);
       },
     });
+  }
+
+  private _appendPoint(points: IChartPoint[], point: IChartPoint): void {
+    points.shift();
+    points.push(point);
   }
 }

@@ -10,15 +10,14 @@ export const IServerStatsStore = createServiceDecorator<IServerStatsStore>();
 export interface IServerStatsStore {
   holder: EntityHolder<WgServerStatsPayload>;
   statusHolder: EntityHolder<WgServerStatusPayload>;
-  speedPointsHolder: EntityHolder<IChartPoint[]>;
-  trafficPointsHolder: EntityHolder<IChartPoint[]>;
+  isLoading: boolean;
 
   stats: WgServerStatsPayload | null;
   status: WgServerStatusPayload | null;
   speedPoints: IChartPoint[];
   trafficPoints: IChartPoint[];
 
-  loadServerStats(serverId: string, from?: string, to?: string): Promise<void>;
-  subscribe(serverId: string): () => void;
+  load(serverId: string, from?: string, to?: string): Promise<void>;
+  subscribe(serverId: string, from?: string, to?: string): () => void;
   unsubscribe(serverId: string): void;
 }

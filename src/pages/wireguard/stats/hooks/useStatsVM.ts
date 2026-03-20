@@ -36,13 +36,13 @@ export const useStatsVM = () => {
     const rangeReady = !customRange || (customRange.from && customRange.to);
 
     if (selectedServer && rangeReady) {
-      loadStats().then();
+      loadStats();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedServer, preset, customRange]);
 
-  const loadStats = async () => {
-    await serverStatsStore.loadServerStats(
+  const loadStats = () => {
+    serverStatsStore.load(
       selectedServer,
       activeFrom.toISOString(),
       activeTo.toISOString(),

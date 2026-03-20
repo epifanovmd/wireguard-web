@@ -10,8 +10,9 @@ export const IOverviewStatsStore =
 
 export interface IOverviewStatsStore {
   holder: EntityHolder<WgOverviewStatsPayload>;
+  isLoading: boolean;
   stats: WgOverviewStatsPayload | null;
   speedPoints: IChartPoint[];
   trafficPoints: IChartPoint[];
-  subscribe(): () => void;
+  subscribe(from?: string, to?: string): () => void;
 }

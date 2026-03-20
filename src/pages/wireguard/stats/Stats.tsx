@@ -55,7 +55,7 @@ export const Stats: FC = observer(() => {
           <div className="flex justify-center py-16 text-muted-foreground">
             Выберите сервер для просмотра статистики
           </div>
-        ) : vm.serverStatsStore.speedPointsHolder.isLoading ? (
+        ) : vm.serverStatsStore.isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>

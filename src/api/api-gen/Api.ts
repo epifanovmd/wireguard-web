@@ -16,6 +16,7 @@ import {
   AssignPeerParams,
   Base64URLString,
   GetMyPeersParams,
+  GetOverviewStatsParams,
   GetPeersByServerParams,
   GetPeersByUserParams,
   GetPeerSpeedParams,
@@ -43,6 +44,7 @@ import {
   IVerifyAuthenticationResponseDto,
   IVerifyRegistrationRequestDto,
   IVerifyRegistrationResponseDto,
+  IWgOverviewStatsResponse,
   IWgPeerCreateRequestDto,
   IWgPeerListDto,
   IWgPeerStatsResponse,
@@ -1095,6 +1097,26 @@ export class Api<
   ) =>
     this.request<IWgServerStatsResponse, any>({
       url: `/api/wg/statistics/servers/${serverId}`,
+      method: "GET",
+      params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Get aggregated overview stats across all servers.
+   *
+   * @tags WireGuard Statistics
+   * @name GetOverviewStats
+   * @summary Overview stats
+   * @request GET:/api/wg/statistics/overview
+   * @secure
+   */
+  getOverviewStats = (
+    query: GetOverviewStatsParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgOverviewStatsResponse, any>({
+      url: `/api/wg/statistics/overview`,
       method: "GET",
       params: query,
       responseType: "json",

@@ -483,9 +483,9 @@ export interface WgPeerDto {
   /** @format date-time */
   expiresAt: string | null;
   description: string | null;
-  isActive: boolean;
   /** @format date-time */
   lastHandshake: string | null;
+  isActive: boolean;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -675,6 +675,29 @@ export interface IWgServerStatsResponse {
   speed: WgSpeedSampleDto[];
 }
 
+export interface WgOverviewTrafficPointDto {
+  /** @format date-time */
+  timestamp: string;
+  /** @format double */
+  rxBytes: number;
+  /** @format double */
+  txBytes: number;
+}
+
+export interface WgOverviewSpeedPointDto {
+  /** @format date-time */
+  timestamp: string;
+  /** @format double */
+  rxSpeedBps: number;
+  /** @format double */
+  txSpeedBps: number;
+}
+
+export interface IWgOverviewStatsResponse {
+  traffic: WgOverviewTrafficPointDto[];
+  speed: WgOverviewSpeedPointDto[];
+}
+
 export interface GetProfilesParams {
   /**
    * Смещение для пагинации
@@ -793,4 +816,11 @@ export interface GetServerStatsParams {
   to?: string;
   /** Server ID */
   serverId: string;
+}
+
+export interface GetOverviewStatsParams {
+  /** ISO date string (default: 24h ago) */
+  from?: string;
+  /** ISO date string (default: now) */
+  to?: string;
 }
