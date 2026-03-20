@@ -34,12 +34,31 @@ export const useServersListVM = () => {
 
       let res;
 
-      if (action === "start") res = await detailStore.startServer(id);
-      else if (action === "stop") res = await detailStore.stopServer(id);
-      else if (action === "restart") res = await detailStore.restartServer(id);
+      if (action === "start") {
+        res = await detailStore.startServer(id);
+        if (detailStore.serverActionMutation.error) {
+          toast.error("Не удалось запустить сервер");
+        } else {
+          toast.success("Сервер успешно запущен");
+        }
+      } else if (action === "stop") {
+        res = await detailStore.stopServer(id);
+        if (detailStore.serverActionMutation.error) {
+          toast.error("Не удалось остановить сервер");
+        } else {
+          toast.success("Сервер успешно остановлен");
+        }
+      } else if (action === "restart") {
+        res = await detailStore.restartServer(id);
+        if (detailStore.serverActionMutation.error) {
+          toast.error("Не удалось перезапустить сервер");
+        } else {
+          toast.success("Сервер успешно перезапущен");
+        }
+      }
 
       if (res?.error) toast.error(res.error.message);
-      else if (action === "delete") toast.success("Сервер удалён");
+      else if (action === "delete") listStore.removeServer(id);
       else if (res?.data) listStore.updateServer(res.data);
       else {
         const r = await detailStore.deleteServer(id);

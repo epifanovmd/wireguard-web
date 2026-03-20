@@ -7,7 +7,13 @@ import {
   PublicUserDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
-import { EntityHolder, IHolderError, IMutationHolderResult, MutationHolder, PagedHolder } from "~@core/holders";
+import {
+  EntityHolder,
+  IHolderError,
+  IMutationHolderResult,
+  MutationHolder,
+  PagedHolder,
+} from "~@core/holders";
 import { PublicUserModel, UserModel } from "~@models";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();
@@ -28,7 +34,13 @@ export interface IUsersDataStore {
 
   load(): Promise<void>;
   loadUser(id: string): Promise<UserDto | null>;
-  updateUser(id: string, params: IUserUpdateRequestDto): Promise<ApiResponse<UserDto, ApiError>>;
-  setPrivileges(id: string, params: IUserPrivilegesRequestDto): Promise<IMutationHolderResult<UserDto, IHolderError>>;
-  deleteUser(id: string): Promise<IMutationHolderResult<boolean, IHolderError>>;
+  updateUser(
+    id: string,
+    params: IUserUpdateRequestDto,
+  ): Promise<ApiResponse<UserDto, ApiError>>;
+  setPrivileges(
+    id: string,
+    params: IUserPrivilegesRequestDto,
+  ): Promise<IMutationHolderResult<UserDto>>;
+  deleteUser(id: string): Promise<IMutationHolderResult<boolean>>;
 }

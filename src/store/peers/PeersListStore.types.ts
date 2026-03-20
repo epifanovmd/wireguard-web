@@ -4,7 +4,12 @@ import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
-import { IHolderError, IMutationHolderResult, MutationHolder, PagedHolder } from "~@core/holders";
+import {
+  IHolderError,
+  IMutationHolderResult,
+  MutationHolder,
+  PagedHolder,
+} from "~@core/holders";
 import { PeerModel } from "~@models";
 
 export type PeerListArgs = {
@@ -34,7 +39,7 @@ export interface IPeersListStore {
   createPeer(
     serverId: string,
     params: IWgPeerCreateRequestDto,
-  ): Promise<IMutationHolderResult<WgPeerDto, IHolderError>>;
+  ): Promise<IMutationHolderResult<WgPeerDto>>;
   addPeer(peer: WgPeerDto): void;
   removePeer(id: string): void;
   updatePeer(peer: WgPeerDto): void;

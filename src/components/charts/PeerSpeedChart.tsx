@@ -19,7 +19,7 @@ export const PeerSpeedChart: FC<IPeerSpeedChartProps> = ({
     title={title}
     description={description}
     points={points}
-    formatter={formatter.speed}
+    formatter={v => formatter.speed(v)}
     rxLabel="Загрузка"
     txLabel="Отдача"
   />

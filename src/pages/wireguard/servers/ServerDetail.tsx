@@ -5,6 +5,7 @@ import { formatter } from "~@common";
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
 import { PageHeader } from "~@components/layouts";
 import {
+  QrCodeModal,
   ServerActions,
   ServerConfigurationCard,
   ServerStatus,
@@ -100,34 +101,32 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
           </div>
 
           {/* Live speed stat cards */}
-          {liveStats && (
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-              <StatCard
-                title="Скорость RX"
-                value={formatter.speed(liveStats.rxSpeedBps)}
-                subtitle="Загрузка"
-                color="info"
-              />
-              <StatCard
-                title="Скорость TX"
-                value={formatter.speed(liveStats.txSpeedBps)}
-                subtitle="Отдача"
-                color="success"
-              />
-              <StatCard
-                title="Всего RX"
-                value={formatter.bytes(liveStats.totalRxBytes)}
-                subtitle="Загружено"
-                color="purple"
-              />
-              <StatCard
-                title="Всего TX"
-                value={formatter.bytes(liveStats.totalTxBytes)}
-                subtitle="Отдано"
-                color="warning"
-              />
-            </div>
-          )}
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+            <StatCard
+              title="Скорость RX"
+              value={formatter.speed(liveStats?.rxSpeedBps)}
+              subtitle="Загрузка"
+              color="info"
+            />
+            <StatCard
+              title="Скорость TX"
+              value={formatter.speed(liveStats?.txSpeedBps)}
+              subtitle="Отдача"
+              color="success"
+            />
+            <StatCard
+              title="Всего RX"
+              value={formatter.bytes(liveStats?.totalRxBytes)}
+              subtitle="Загружено"
+              color="purple"
+            />
+            <StatCard
+              title="Всего TX"
+              value={formatter.bytes(liveStats?.totalTxBytes)}
+              subtitle="Отдано"
+              color="warning"
+            />
+          </div>
 
           <Tabs defaultValue="charts">
             <TabsList>
@@ -173,6 +172,13 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
             </TabsContent>
           </Tabs>
         </div>
+
+        <QrCodeModal
+          open={!!vm.peersVM.qrPeer}
+          peerId={vm.peersVM.qrPeer?.id}
+          peerName={vm.peersVM.qrPeer?.name}
+          onClose={() => vm.peersVM.setQrPeer(null)}
+        />
 
         <Modal
           open={vm.editOpen}

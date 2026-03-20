@@ -19,7 +19,7 @@ export const PeerTrafficChart: FC<IPeerTrafficChartProps> = ({
     title={title}
     description={description}
     points={points}
-    formatter={formatter.bytes}
+    formatter={v => formatter.speed(v)}
     rxLabel="Получено"
     txLabel="Отправлено"
   />

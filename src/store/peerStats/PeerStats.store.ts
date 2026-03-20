@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { IApiService } from "~@api";
 import { formatter } from "~@common";
@@ -46,16 +46,21 @@ export class PeerStatsStore implements IPeerStatsStore {
 
     this._apiService.getPeerStats({ peerId, from, to }).then(res => {
       if (res.data) {
-        this.speedPoints = res.data.speed.slice(-60).map(s => ({
+        const speedPoints = res.data.speed.slice(-60).map(s => ({
           t: formatter.date.formatTime(s.timestamp),
           rx: s.rxSpeedBps,
           tx: s.txSpeedBps,
         }));
-        this.trafficPoints = res.data.traffic.slice(-60).map(t => ({
+        const trafficPoints = res.data.traffic.slice(-60).map(t => ({
           t: formatter.date.formatTime(t.timestamp),
           rx: t.rxBytes,
           tx: t.txBytes,
         }));
+
+        runInAction(() => {
+          this.speedPoints = speedPoints;
+          this.trafficPoints = trafficPoints;
+        });
       }
     });
 
@@ -64,14 +69,19 @@ export class PeerStatsStore implements IPeerStatsStore {
         this.holder.setData(s);
         const t = formatter.date.formatTime(s.timestamp);
 
-        this.speedPoints = [
+        const speedPoints = [
           ...this.speedPoints.slice(-59),
           { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
         ];
-        this.trafficPoints = [
+        const trafficPoints = [
           ...this.trafficPoints.slice(-59),
           { t, rx: s.rxBytes, tx: s.txBytes },
         ];
+
+        runInAction(() => {
+          this.speedPoints = speedPoints;
+          this.trafficPoints = trafficPoints;
+        });
       },
       onStatus: s => {
         this.statusHolder.setData(s);

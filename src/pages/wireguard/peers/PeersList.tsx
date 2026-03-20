@@ -80,14 +80,12 @@ export const PeersList: FC = observer(() => {
         </Card>
       </div>
 
-      {vm.qrPeer && (
-        <QrCodeModal
-          open
-          peerId={vm.qrPeer.id}
-          peerName={vm.qrPeer.name}
-          onClose={() => vm.setQrPeer(null)}
-        />
-      )}
+      <QrCodeModal
+        open={!!vm.qrPeer}
+        peerId={vm.qrPeer?.id}
+        peerName={vm.qrPeer?.name}
+        onClose={() => vm.setQrPeer(null)}
+      />
 
       <Modal
         open={createOpen}

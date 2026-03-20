@@ -6,7 +6,12 @@ import {
   IWgPeerUpdateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
-import { EntityHolder, IHolderError, IMutationHolderResult, MutationHolder } from "~@core/holders";
+import {
+  EntityHolder,
+  IHolderError,
+  IMutationHolderResult,
+  MutationHolder,
+} from "~@core/holders";
 import { PeerModel } from "~@models";
 
 export const IPeerDataStore = createServiceDecorator<IPeerDataStore>();
@@ -29,11 +34,14 @@ export interface IPeerDataStore {
   updatePeer(
     id: string,
     params: IWgPeerUpdateRequestDto,
-  ): Promise<IMutationHolderResult<WgPeerDto, IHolderError>>;
+  ): Promise<IMutationHolderResult<WgPeerDto>>;
   deletePeer(id: string): Promise<ApiResponse<boolean, ApiError>>;
   startPeer(id: string): Promise<ApiResponse<WgPeerDto, ApiError>>;
   stopPeer(id: string): Promise<ApiResponse<WgPeerDto, ApiError>>;
-  assignPeer(id: string, userId: string): Promise<ApiResponse<WgPeerDto, ApiError>>;
+  assignPeer(
+    id: string,
+    userId: string,
+  ): Promise<ApiResponse<WgPeerDto, ApiError>>;
   revokePeer(id: string): Promise<ApiResponse<WgPeerDto, ApiError>>;
   rotatePsk(id: string): Promise<ApiResponse<WgPeerDto, ApiError>>;
   removePsk(id: string): Promise<ApiResponse<WgPeerDto, ApiError>>;

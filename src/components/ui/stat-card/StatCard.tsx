@@ -11,12 +11,21 @@ export type StatCardColor =
   | "purple";
 
 const COLOR_CLASSES: Record<StatCardColor, { icon: string; text: string }> = {
-  default: { icon: "bg-secondary text-secondary-foreground", text: "text-foreground" },
+  default: {
+    icon: "bg-secondary text-secondary-foreground",
+    text: "text-foreground",
+  },
   success: { icon: "bg-success/15 text-success", text: "text-success" },
   warning: { icon: "bg-warning/15 text-warning", text: "text-warning" },
-  danger: { icon: "bg-destructive/15 text-destructive", text: "text-destructive" },
+  danger: {
+    icon: "bg-destructive/15 text-destructive",
+    text: "text-destructive",
+  },
   info: { icon: "bg-info/15 text-info", text: "text-info" },
-  purple: { icon: "bg-[oklch(0.55_0.2_280)/15] text-[oklch(0.55_0.2_280)]", text: "text-[oklch(0.55_0.2_280)]" },
+  purple: {
+    icon: "bg-[oklch(0.55_0.2_280)] text-[oklch(0.55_0.2_280)]",
+    text: "text-[oklch(0.55_0.2_280)]",
+  },
 };
 
 export interface StatCardProps {
@@ -52,7 +61,9 @@ export const StatCard: React.FC<StatCardProps> = ({
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </p>
-        <p className="text-xl font-bold text-foreground truncate">{value}</p>
+        <div className="text-xl font-bold text-foreground truncate">
+          {value}
+        </div>
         {subtitle && (
           <p className="text-xs text-muted-foreground">{subtitle}</p>
         )}

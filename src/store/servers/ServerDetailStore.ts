@@ -31,10 +31,23 @@ export class ServerDetailStore implements IServerDetailStore {
     this.statusHolder,
   ]);
   public serverActionMutation = new MutationHolder<string, WgServerDto>();
+  public deleteServerMutation = new MutationHolder<string, boolean>({
+    onMutate: async id => this._apiService.deleteServer(id),
+  });
   public updateServerMutation = new MutationHolder<
     { id: string; params: IWgServerUpdateRequestDto },
     WgServerDto
-  >();
+  >({
+    onMutate: async args => {
+      const res = await this._apiService.updateServer(args.id, args.params);
+
+      if (res.data) {
+        this.serverHolder.setData(res.data);
+      }
+
+      return res;
+    },
+  });
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -79,19 +92,11 @@ export class ServerDetailStore implements IServerDetailStore {
   }
 
   async updateServer(id: string, params: IWgServerUpdateRequestDto) {
-    return this.updateServerMutation.execute({ id, params }, async args => {
-      const res = await this._apiService.updateServer(args.id, args.params);
-
-      if (res.data) {
-        this.serverHolder.setData(res.data);
-      }
-
-      return res;
-    });
+    return this.updateServerMutation.execute({ id, params });
   }
 
   async deleteServer(id: string) {
-    return this._apiService.deleteServer(id);
+    return this.deleteServerMutation.execute(id);
   }
 
   async startServer(id: string) {

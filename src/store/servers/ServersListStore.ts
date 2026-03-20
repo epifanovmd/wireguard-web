@@ -20,7 +20,28 @@ export class ServersListStore implements IServersListStore {
   public createServerMutation = new MutationHolder<
     IWgServerCreateRequestDto,
     WgServerDto
-  >();
+  >({
+    onMutate: async args => {
+      const res = await this._apiService.createServer(args);
+
+      if (res.data) {
+        this.addServer(res.data);
+      }
+
+      return res;
+    },
+  });
+  public deleteServerMutation = new MutationHolder<string, boolean>({
+    onMutate: async id => {
+      const res = await this._apiService.deleteServer(id);
+
+      if (res.data) {
+        this.removeServer(id);
+      }
+
+      return res;
+    },
+  });
 
   constructor(@IApiService() private _apiService: IApiService) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -47,15 +68,11 @@ export class ServersListStore implements IServersListStore {
   }
 
   async createServer(params: IWgServerCreateRequestDto) {
-    return this.createServerMutation.execute(params, async args => {
-      const res = await this._apiService.createServer(args);
+    return this.createServerMutation.execute(params);
+  }
 
-      if (res.data) {
-        this.addServer(res.data);
-      }
-
-      return res;
-    });
+  async deleteServer(id: string) {
+    return this.deleteServerMutation.execute(id);
   }
 
   addServer(server: WgServerDto) {

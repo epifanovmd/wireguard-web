@@ -19,7 +19,7 @@ export const ServerTrafficChart: FC<IServerTrafficChartProps> = ({
     title={title}
     description={description}
     points={points}
-    formatter={formatter.bytes}
+    formatter={v => formatter.speed(v)}
     rxLabel="Получено"
     txLabel="Отправлено"
   />

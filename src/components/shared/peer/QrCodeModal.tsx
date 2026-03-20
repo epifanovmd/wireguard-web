@@ -14,8 +14,8 @@ import {
 } from "~@components/ui";
 
 interface QrCodeModalProps {
-  peerId: string;
-  peerName: string;
+  peerId?: string;
+  peerName?: string;
   open: boolean;
   onClose: () => void;
 }
@@ -40,19 +40,27 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
         setLoading(false);
       });
     }
+
+    return () => {
+      setQrUrl(null);
+      setLoading(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, peerId]);
 
   const handleDownload = async () => {
-    const res = await api.getPeerConfig(peerId);
-    if (res.data) {
-      const blob = new Blob([res.data as any], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${peerName}.conf`;
-      a.click();
-      URL.revokeObjectURL(url);
+    if (peerId) {
+      const res = await api.getPeerConfig(peerId);
+
+      if (res.data) {
+        const blob = new Blob([res.data as any], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${peerName}.conf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     }
   };
 

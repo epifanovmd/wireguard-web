@@ -40,9 +40,9 @@ export interface IServerDetailStore {
   updateServer(
     id: string,
     params: IWgServerUpdateRequestDto,
-  ): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
-  deleteServer(id: string): Promise<ApiResponse<boolean, ApiError>>;
-  startServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
-  stopServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
-  restartServer(id: string): Promise<IMutationHolderResult<WgServerDto, IHolderError>>;
+  ): Promise<IMutationHolderResult<WgServerDto>>;
+  deleteServer(id: string): Promise<IMutationHolderResult<boolean>>;
+  startServer(id: string): Promise<IMutationHolderResult<WgServerDto>>;
+  stopServer(id: string): Promise<IMutationHolderResult<WgServerDto>>;
+  restartServer(id: string): Promise<IMutationHolderResult<WgServerDto>>;
 }

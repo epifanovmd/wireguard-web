@@ -23,7 +23,10 @@ export interface IMutationHolderOptions<TArgs, TData> {
   onMutate?: MutationFn<TArgs, TData>;
 }
 
-export interface IMutationHolderResult<TData, TError extends IHolderError> {
+export interface IMutationHolderResult<
+  TData,
+  TError extends IHolderError = IHolderError,
+> {
   data: TData | null;
   error: TError | null;
 }
