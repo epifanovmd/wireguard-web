@@ -2,46 +2,67 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { ServerModel } from "~@models";
 
-import { ServerStatusLive } from "../../shared/server/ServerStatusLive";
+import {
+  ServerPeerCountLive,
+  ServerStatusLive,
+} from "../../shared/server";
 
 export const serverColumns: ColumnDef<ServerModel>[] = [
   {
     accessorKey: "name",
     header: "Название",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
-        <span className="font-mono">{row.original.name}</span>
+      <div>
+        <p className="font-medium text-foreground">{row.original.name}</p>
         {row.original.data.endpoint && (
-          <>
-            <span>·</span>
-            <span>{row.original.data.endpoint}</span>
-          </>
+          <span className="text-xs text-muted-foreground">
+            {row.original.data.endpoint}
+          </span>
         )}
       </div>
     ),
   },
   {
-    accessorKey: "status",
+    id: "status",
     header: "Статус",
     cell: ({ row }) => <ServerStatusLive row={row.original} />,
   },
   {
-    accessorKey: "interface",
-    header: "Интерфейс",
+    accessorKey: "address",
+    header: "Адрес",
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
-        {row.original.data.interface}
+        {row.original.data.address}
       </span>
     ),
   },
   {
-    accessorKey: "listenPort",
-    header: "Порт",
+    id: "interface",
+    header: "Интерфейс",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">
+      <span className="font-mono text-xs text-muted-foreground">
+        {row.original.data.interface}
+        <span className="text-muted-foreground/50"> : </span>
         {row.original.data.listenPort}
       </span>
     ),
+  },
+  {
+    id: "peers",
+    header: "Пиры",
+    cell: ({ row }) => <ServerPeerCountLive row={row.original} />,
+  },
+  {
+    id: "description",
+    header: "Описание",
+    cell: ({ row }) =>
+      row.original.data.description ? (
+        <span className="text-xs text-foreground">
+          {row.original.data.description}
+        </span>
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
   },
   {
     accessorKey: "createdAt",

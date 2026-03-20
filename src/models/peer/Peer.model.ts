@@ -17,6 +17,7 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
       status: computed,
       enabled: computed,
       enabledLabel: computed,
+      isActive: computed,
       description: computed,
       shortPublicKey: computed,
     });
@@ -32,6 +33,10 @@ export class PeerModel extends DataModelBase<WgPeerDto> {
 
   get enabled() {
     return this.data.enabled;
+  }
+
+  get isActive() {
+    return this.data.isActive;
   }
 
   get enabledLabel() {

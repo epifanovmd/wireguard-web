@@ -79,13 +79,15 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               status={liveStatus?.status ?? peer.status}
               enabled={peer.enabled}
             />
-            {liveActive?.lastHandshake &&
-              Date.now() - new Date(liveActive.lastHandshake).getTime() <
-                3 * 60 * 1000 && (
-                <Badge variant="success" dot>
-                  Подключён
-                </Badge>
-              )}
+            {(liveActive?.isActive ?? liveStats?.isActive ?? peer.isActive) ? (
+              <Badge variant="success" dot>
+                Активен
+              </Badge>
+            ) : (
+              <Badge variant="secondary" dot>
+                Нет активности
+              </Badge>
+            )}
             {peer.hasPresharedKey && (
               <Badge variant="info" dot>
                 PSK включён
@@ -96,11 +98,22 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
                 Назначен
               </Badge>
             )}
-            {liveActive?.lastHandshake && (
-              <span className="text-xs text-muted-foreground">
-                {`Последнее рукопожатие:${formatter.date.format(liveActive?.lastHandshake)}`}
-              </span>
-            )}
+            {(() => {
+              const lastHandshake =
+                liveActive?.lastHandshake ??
+                liveStats?.lastHandshake ??
+                peer.lastHandshake;
+
+              return (
+                <span
+                  className="text-xs text-muted-foreground"
+                  title={formatter.date.format(lastHandshake) || undefined}
+                >
+                  Рукопожатие:{" "}
+                  {formatter.date.formatDiff(lastHandshake) || "—"}
+                </span>
+              );
+            })()}
           </div>
 
           {/* Live stat cards */}

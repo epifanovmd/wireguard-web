@@ -1,4 +1,5 @@
 export * from "./PeerActions";
+export * from "./PeerActiveBadge";
 export * from "./PeerConfigurationCard";
 export * from "./PeerHandshake";
 export * from "./PeerStatus";

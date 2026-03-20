@@ -2,8 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { PeerModel } from "~@models";
 
-import { PeerHandshake } from "../../shared";
-import { PeerStatusLive } from "../../shared";
+import { PeerActiveBadge, PeerHandshake, PeerStatusLive } from "../../shared";
 import { Badge, CopyableText } from "../../ui";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [
@@ -12,9 +11,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     header: "Название",
     cell: ({ row }) => (
       <div>
-        <p className="font-medium text-foreground">
-          {row.original.name}
-        </p>
+        <p className="font-medium text-foreground">{row.original.name}</p>
         <CopyableText
           text={row.original.data.publicKey}
           displayText={row.original.shortPublicKey}
@@ -38,6 +35,28 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     cell: ({ row }) => <PeerStatusLive row={row.original} />,
   },
   {
+    id: "isActive",
+    header: "Активность",
+    cell: ({ row }) => <PeerActiveBadge row={row.original} />,
+  },
+  {
+    id: "lastHandshake",
+    header: "Рукопожатие",
+    cell: ({ row }) => <PeerHandshake row={row.original} />,
+  },
+  {
+    id: "description",
+    header: "Описание",
+    cell: ({ row }) =>
+      row.original.data.description ? (
+        <span className="text-xs text-foreground">
+          {row.original.data.description}
+        </span>
+      ) : (
+        <span className="text-xs text-muted-foreground">—</span>
+      ),
+  },
+  {
     id: "psk",
     header: "PSK",
     cell: ({ row }) =>
@@ -57,10 +76,5 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
         {row.original.expiresAtDate.formatted ?? "Никогда"}
       </span>
     ),
-  },
-  {
-    id: "lastHandshake",
-    header: "Последнее рукопожатие",
-    cell: ({ row }) => <PeerHandshake row={row.original} />,
   },
 ];

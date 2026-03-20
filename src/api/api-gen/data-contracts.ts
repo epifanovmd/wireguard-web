@@ -483,6 +483,7 @@ export interface WgPeerDto {
   /** @format date-time */
   expiresAt: string | null;
   description: string | null;
+  isActive: boolean;
   /** @format date-time */
   lastHandshake: string | null;
   /** @format date-time */

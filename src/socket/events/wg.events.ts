@@ -28,6 +28,7 @@ export interface WgPeerStatusPayload {
 export interface WgPeerActivePayload {
   peerId: string;
   serverId: string;
+  isActive: boolean;
   lastHandshake: string | null;
 }
 
