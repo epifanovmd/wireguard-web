@@ -12,7 +12,7 @@ export const AppLayout: FC<AppLayoutProps> = ({ children }) => {
   const auth = useAuthStore();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--background)]">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar onSignOut={() => auth.signOut()} />
       <main className="flex-1 overflow-y-auto min-w-0 pt-14 md:pt-0">
         {children}

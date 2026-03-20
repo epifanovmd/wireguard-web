@@ -17,20 +17,20 @@ export const PageHeader: FC<PageHeaderProps> = ({
   return (
     <div
       className={cn(
-        "relative px-6 py-4 border-b border-[var(--border)] bg-[var(--card)]",
+        "relative px-6 py-4 border-b border-border bg-card",
         className,
       )}
     >
       {/* accent bar */}
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#6366f1] rounded-r" />
+      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-brand rounded-r" />
 
       <div className="flex items-center justify-between gap-4 ml-3">
         <div>
-          <h1 className="text-xl font-bold text-[var(--foreground)] leading-tight tracking-tight">
+          <h1 className="text-xl font-bold text-foreground leading-tight tracking-tight">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {subtitle}
             </p>
           )}

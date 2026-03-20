@@ -20,7 +20,7 @@ export const SignUp = observer(() => {
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">
+          <h2 className="text-xl font-bold text-foreground">
             Создать аккаунт
           </h2>
         </div>

@@ -11,7 +11,7 @@ export const userColumns: ColumnDef<PublicUserModel>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-2.5">
         <UserAvatar name={row.original.displayName} />
-        <span className="font-medium text-[var(--foreground)]">
+        <span className="font-medium text-foreground">
           {row.original.displayName}
         </span>
       </div>
@@ -21,7 +21,7 @@ export const userColumns: ColumnDef<PublicUserModel>[] = [
     accessorKey: "email",
     header: "Эл. почта",
     cell: ({ row }) => (
-      <span className="text-[var(--muted-foreground)]">
+      <span className="text-muted-foreground">
         {row.original.data.email ?? "—"}
       </span>
     ),

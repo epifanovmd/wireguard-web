@@ -51,10 +51,10 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">
+          <h2 className="text-xl font-bold text-foreground">
             Сброс пароля
           </h2>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Введите новый пароль
           </p>
         </div>

@@ -102,7 +102,7 @@ export const PermissionsEditor: FC<PermissionsEditorProps> = ({
     <div className="flex flex-col gap-4">
       {PERMISSION_GROUPS.map(group => (
         <div key={group.label}>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             {group.label}
           </p>
           <div className="flex flex-col gap-2 pl-1">

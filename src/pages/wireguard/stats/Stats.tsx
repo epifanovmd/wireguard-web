@@ -52,7 +52,7 @@ export const Stats: FC = observer(() => {
         </div>
 
         {!vm.selectedServer ? (
-          <div className="flex justify-center py-16 text-[var(--muted-foreground)]">
+          <div className="flex justify-center py-16 text-muted-foreground">
             Выберите сервер для просмотра статистики
           </div>
         ) : vm.serverStatsStore.speedPointsHolder.isLoading ? (

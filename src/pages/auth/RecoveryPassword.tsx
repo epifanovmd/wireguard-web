@@ -32,10 +32,10 @@ export const RecoveryPassword = observer(() => {
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">
+          <h2 className="text-xl font-bold text-foreground">
             Восстановление пароля
           </h2>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Введите email для получения ссылки сброса
           </p>
         </div>

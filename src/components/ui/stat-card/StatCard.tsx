@@ -23,8 +23,8 @@ const COLOR_CLASSES: Record<StatCardColor, { icon: string; text: string }> = {
   },
   info: { icon: "bg-info/15 text-info", text: "text-info" },
   purple: {
-    icon: "bg-[oklch(0.55_0.2_280)] text-[oklch(0.55_0.2_280)]",
-    text: "text-[oklch(0.55_0.2_280)]",
+    icon: "bg-purple/15 text-purple",
+    text: "text-purple",
   },
 };
 

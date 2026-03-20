@@ -161,10 +161,10 @@ export const PeerForm: FC<PeerFormProps> = ({
 
         <div className="flex items-center justify-between py-1">
           <div>
-            <p className="text-sm font-medium text-[var(--foreground)]">
+            <p className="text-sm font-medium text-foreground">
               Общий ключ (PSK)
             </p>
-            <p className="text-xs text-[var(--muted-foreground)]">
+            <p className="text-xs text-muted-foreground">
               Добавляет дополнительный уровень симметричного шифрования
             </p>
           </div>
@@ -172,7 +172,7 @@ export const PeerForm: FC<PeerFormProps> = ({
         </div>
 
         <div className="flex items-center justify-between py-1">
-          <span className="text-sm font-medium text-[var(--foreground)]">
+          <span className="text-sm font-medium text-foreground">
             Включён
           </span>
           <SwitchFormField<PeerFormData> name="enabled" />

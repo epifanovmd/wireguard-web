@@ -76,16 +76,16 @@ export const NavContent: FC<NavContentProps> = ({
 }) => (
   <div className="flex flex-col h-full">
     {/* Logo */}
-    <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--sidebar-border)]">
+    <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border">
       <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+        <div className="w-7 h-7 bg-brand rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
           <ShieldCheck size={15} className="text-white" />
         </div>
         <div>
-          <p className="text-[var(--sidebar-foreground)] text-sm font-semibold leading-none">
+          <p className="text-sidebar-foreground text-sm font-semibold leading-none">
             WireGuard
           </p>
-          <p className="text-[var(--muted-foreground)] text-[11px] mt-0.5">
+          <p className="text-muted-foreground text-[11px] mt-0.5">
             Панель управления
           </p>
         </div>
@@ -96,8 +96,8 @@ export const NavContent: FC<NavContentProps> = ({
           size="sm"
           className={cn(
             "w-7 h-7 p-0",
-            "text-[var(--sidebar-foreground)]",
-            "hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+            "text-sidebar-foreground",
+            "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
           )}
           onClick={onClose}
           aria-label="Close menu"
@@ -112,7 +112,7 @@ export const NavContent: FC<NavContentProps> = ({
       {NAV_GROUPS.map((group, gi) => (
         <div key={gi} className="flex flex-col gap-0.5">
           {group.label && (
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted-foreground)] px-3 mb-1">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
               {group.label}
             </p>
           )}
@@ -134,7 +134,7 @@ export const NavContent: FC<NavContentProps> = ({
     </nav>
 
     {/* User area */}
-    <div className="px-2 py-2 border-t border-[var(--sidebar-border)]">
+    <div className="px-2 py-2 border-t border-sidebar-border">
       <div onClick={onClose}>
         <ButtonLink
           to="/profile"
@@ -142,11 +142,11 @@ export const NavContent: FC<NavContentProps> = ({
           size="sm"
           className="w-full justify-start gap-2.5 font-normal mb-0.5"
         >
-          <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-brand flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
             {initials}
           </div>
           <div className="flex-1 min-w-0 text-left">
-            <p className="text-xs font-medium text-[var(--sidebar-foreground)] truncate">
+            <p className="text-xs font-medium text-sidebar-foreground truncate">
               {displayName}
             </p>
           </div>
@@ -158,7 +158,7 @@ export const NavContent: FC<NavContentProps> = ({
         onClick={onSignOut}
         className={cn(
           "w-full justify-start gap-2.5 font-normal",
-          "hover:bg-[var(--sidebar-accent)] hover:text-destructive",
+          "hover:bg-sidebar-accent hover:text-destructive",
         )}
       >
         <LogOut size={15} className="opacity-70" />
@@ -192,7 +192,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="w-56 flex-shrink-0 h-screen hidden md:flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)]">
+      <aside className="w-56 flex-shrink-0 h-screen hidden md:flex flex-col bg-sidebar border-r border-sidebar-border">
         <NavContent
           onSignOut={onSignOut}
           displayName={displayName}
@@ -201,13 +201,13 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
       </aside>
 
       {/* Mobile header bar */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 flex items-center gap-3 px-3 bg-[var(--sidebar)] border-b border-[var(--sidebar-border)]">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 flex items-center gap-3 px-3 bg-sidebar border-b border-sidebar-border">
         <Button
           variant="ghost"
           size="sm"
           className={cn(
             "w-9 h-9 p-0",
-            "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]",
+            "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
           )}
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
@@ -215,10 +215,10 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
           <Menu size={18} />
         </Button>
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[#6366f1] rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+          <div className="w-7 h-7 bg-brand rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
             <ShieldCheck size={15} className="text-white" />
           </div>
-          <p className="text-[var(--sidebar-foreground)] text-sm font-semibold">
+          <p className="text-sidebar-foreground text-sm font-semibold">
             WireGuard
           </p>
         </div>
@@ -235,7 +235,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
             className="fixed inset-0 z-40 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] outline-none">
+          <DrawerPrimitive.Content className="fixed left-0 top-0 bottom-0 z-50 w-64 flex flex-col bg-sidebar border-r border-sidebar-border outline-none">
             <NavContent
               onSignOut={onSignOut}
               displayName={displayName}

@@ -24,20 +24,20 @@ export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
             ["Включён", server?.enabled ? "Да" : "Нет"],
           ].map(([k, v]) => (
             <div key={k}>
-              <dt className="text-xs text-[var(--muted-foreground)]">{k}</dt>
-              <dd className="font-medium text-[var(--foreground)] mt-0.5">
+              <dt className="text-xs text-muted-foreground">{k}</dt>
+              <dd className="font-medium text-foreground mt-0.5">
                 {v}
               </dd>
             </div>
           ))}
         </dl>
         {server?.publicKey && (
-          <div className="mt-4 pt-4 border-t border-[var(--border)]">
-            <p className="text-xs text-[var(--muted-foreground)] mb-1">
+          <div className="mt-4 pt-4 border-t border-border">
+            <p className="text-xs text-muted-foreground mb-1">
               Публичный ключ
             </p>
             <CopyableText
-              className="text-[var(--muted-foreground)]"
+              className="text-muted-foreground"
               truncate={false}
               text={server.publicKey}
             />

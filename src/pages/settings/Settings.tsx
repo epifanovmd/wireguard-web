@@ -151,10 +151,10 @@ export const Settings: FC = observer(() => {
               <Card title="Внешний вид" className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[var(--foreground)]">
+                    <p className="text-sm font-medium text-foreground">
                       Тёмная тема
                     </p>
-                    <p className="text-xs text-[var(--muted-foreground)]">
+                    <p className="text-xs text-muted-foreground">
                       Переключение между светлой и тёмной темой
                     </p>
                   </div>
@@ -170,7 +170,7 @@ export const Settings: FC = observer(() => {
                 {health ? (
                   <dl className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
-                      <dt className="text-sm text-[var(--muted-foreground)]">
+                      <dt className="text-sm text-muted-foreground">
                         База данных
                       </dt>
                       <dd>
@@ -185,26 +185,26 @@ export const Settings: FC = observer(() => {
                       </dd>
                     </div>
                     <div className="flex items-center justify-between">
-                      <dt className="text-sm text-[var(--muted-foreground)]">
+                      <dt className="text-sm text-muted-foreground">
                         Аптайм
                       </dt>
-                      <dd className="text-sm text-[var(--foreground)] font-medium">
+                      <dd className="text-sm text-foreground font-medium">
                         {formatUptime(health.uptime ?? 0)}
                       </dd>
                     </div>
                     {health.version && (
                       <div className="flex items-center justify-between">
-                        <dt className="text-sm text-[var(--muted-foreground)]">
+                        <dt className="text-sm text-muted-foreground">
                           Версия
                         </dt>
-                        <dd className="text-sm text-[var(--foreground)] font-mono">
+                        <dd className="text-sm text-foreground font-mono">
                           {health.version}
                         </dd>
                       </div>
                     )}
                   </dl>
                 ) : (
-                  <p className="text-sm text-[var(--muted-foreground)]">
+                  <p className="text-sm text-muted-foreground">
                     Загрузка данных...
                   </p>
                 )}
@@ -216,25 +216,25 @@ export const Settings: FC = observer(() => {
             <div className="flex flex-col gap-6 max-w-2xl mt-4">
               <Card title="Passkey (биометрический вход)" className="p-5">
                 {!passkey.support ? (
-                  <p className="text-sm text-[var(--muted-foreground)]">
+                  <p className="text-sm text-muted-foreground">
                     Ваш браузер не поддерживает passkey (WebAuthn).
                   </p>
                 ) : (
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 w-8 h-8 rounded-full bg-[var(--muted)] flex items-center justify-center flex-shrink-0">
+                      <div className="mt-0.5 w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
                         <Fingerprint
                           size={16}
-                          className="text-[var(--muted-foreground)]"
+                          className="text-muted-foreground"
                         />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-[var(--foreground)]">
+                        <p className="text-sm font-medium text-foreground">
                           {passkey.profileId
                             ? "Passkey зарегистрирован на этом устройстве"
                             : "Passkey не зарегистрирован на этом устройстве"}
                         </p>
-                        <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {passkey.profileId
                             ? `Логин: ${passkey.profileId}`
                             : "Зарегистрируйте passkey для входа через Face ID, Touch ID или ключ безопасности."}
@@ -289,8 +289,8 @@ export const Settings: FC = observer(() => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[var(--muted)] border-b border-[var(--border)]">
-                        <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+                      <tr className="bg-muted border-b border-border">
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                           Право
                         </th>
                         <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">
@@ -299,7 +299,7 @@ export const Settings: FC = observer(() => {
                         <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">
                           Пользователь
                         </th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                           Гость
                         </th>
                       </tr>
@@ -308,9 +308,9 @@ export const Settings: FC = observer(() => {
                       {PERMISSIONS_MATRIX.map(row => (
                         <tr
                           key={row.permission}
-                          className="border-b border-[var(--border)] hover:bg-[var(--accent)]"
+                          className="border-b border-border hover:bg-accent"
                         >
-                          <td className="px-4 py-2.5 font-mono text-xs text-[var(--muted-foreground)]">
+                          <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">
                             {row.permission}
                           </td>
                           {[row.admin, row.user, row.guest].map((has, i) => (
@@ -324,7 +324,7 @@ export const Settings: FC = observer(() => {
                               ) : (
                                 <X
                                   size={16}
-                                  className="inline text-[var(--muted-foreground)] opacity-30"
+                                  className="inline text-muted-foreground opacity-30"
                                 />
                               )}
                             </td>
@@ -357,10 +357,10 @@ export const Settings: FC = observer(() => {
                   ].map(r => (
                     <div
                       key={r.role}
-                      className="flex-1 min-w-[160px] bg-[var(--muted)] rounded-lg p-3"
+                      className="flex-1 min-w-[160px] bg-muted rounded-lg p-3"
                     >
                       <Badge variant={r.variant}>{r.role}</Badge>
-                      <p className="text-xs text-[var(--muted-foreground)] mt-2">
+                      <p className="text-xs text-muted-foreground mt-2">
                         {r.desc}
                       </p>
                     </div>

@@ -78,7 +78,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     if (!user)
       return (
-        <div className="p-6 text-[var(--muted-foreground)]">
+        <div className="p-6 text-muted-foreground">
           Пользователь не найден
         </div>
       );

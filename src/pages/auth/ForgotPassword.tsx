@@ -50,10 +50,10 @@ export const ForgotPassword = observer(() => {
             <div className="w-12 h-12 rounded-full bg-success/15 flex items-center justify-center mx-auto mb-4">
               <Check className="w-6 h-6 text-success" />
             </div>
-            <h2 className="text-lg font-bold text-[var(--foreground)] mb-2">
+            <h2 className="text-lg font-bold text-foreground mb-2">
               Письмо отправлено
             </h2>
-            <p className="text-sm text-[var(--muted-foreground)] mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               Если аккаунт с таким email существует, вы получите ссылку для
               сброса пароля.
             </p>
@@ -64,10 +64,10 @@ export const ForgotPassword = observer(() => {
         ) : (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-[var(--foreground)]">
+              <h2 className="text-xl font-bold text-foreground">
                 Восстановление пароля
               </h2>
-              <p className="text-sm text-[var(--muted-foreground)] mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Введите email или телефон для получения ссылки сброса
               </p>
             </div>

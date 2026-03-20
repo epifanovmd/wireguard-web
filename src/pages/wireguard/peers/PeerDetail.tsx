@@ -52,7 +52,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
 
     if (!peer || !model) {
       return (
-        <div className="p-6 text-[var(--muted-foreground)]">Пир не найден</div>
+        <div className="p-6 text-muted-foreground">Пир не найден</div>
       );
     }
 
@@ -97,7 +97,7 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               </Badge>
             )}
             {liveActive?.lastHandshake && (
-              <span className="text-xs text-[var(--muted-foreground)]">
+              <span className="text-xs text-muted-foreground">
                 {`Последнее рукопожатие:${formatter.date.format(liveActive?.lastHandshake)}`}
               </span>
             )}

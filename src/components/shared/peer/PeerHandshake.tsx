@@ -9,7 +9,7 @@ export const PeerHandshake: FC<{ row: PeerModel }> = ({ row }) => {
   const { active } = useWgPeer(row.data.id);
 
   return (
-    <span className="text-xs text-[var(--muted-foreground)]">
+    <span className="text-xs text-muted-foreground">
       {formatter.date.format(active?.lastHandshake) || "–"}
     </span>
   );

@@ -81,17 +81,17 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
               <img
                 src={qrUrl}
                 alt="QR Code"
-                className="w-48 h-48 rounded-lg border border-[var(--border)]"
+                className="w-48 h-48 rounded-lg border border-border"
               />
             ) : (
-              <div className="w-48 h-48 flex items-center justify-center bg-[var(--muted)] rounded-lg">
-                <p className="text-sm text-[var(--muted-foreground)]">
+              <div className="w-48 h-48 flex items-center justify-center bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">
                   QR-код недоступен
                 </p>
               </div>
             )}
             <div className="text-center">
-              <p className="text-sm text-[var(--muted-foreground)]">
+              <p className="text-sm text-muted-foreground">
                 Отсканируйте QR-код в приложении WireGuard
               </p>
               <p className="text-xs text-[var(--muted-foreground)] mt-1">

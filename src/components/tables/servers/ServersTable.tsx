@@ -25,7 +25,7 @@ export const ServersTable: FC<ServersTableProps> = ({
     getRowId={s => s.data.id}
     onRowClick={onRowClick}
     empty={
-      <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+      <div className="text-center py-8 text-muted-foreground text-sm">
         No servers configured
       </div>
     }

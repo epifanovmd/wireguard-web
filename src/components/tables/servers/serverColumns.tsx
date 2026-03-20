@@ -9,7 +9,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     accessorKey: "name",
     header: "Название",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 mt-0.5 text-xs text-[var(--muted-foreground)]">
+      <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
         <span className="font-mono">{row.original.name}</span>
         {row.original.data.endpoint && (
           <>
@@ -29,7 +29,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     accessorKey: "interface",
     header: "Интерфейс",
     cell: ({ row }) => (
-      <span className="font-mono text-xs text-[var(--muted-foreground)]">
+      <span className="font-mono text-xs text-muted-foreground">
         {row.original.data.interface}
       </span>
     ),
@@ -38,7 +38,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     accessorKey: "listenPort",
     header: "Порт",
     cell: ({ row }) => (
-      <span className="text-[var(--muted-foreground)]">
+      <span className="text-muted-foreground">
         {row.original.data.listenPort}
       </span>
     ),
@@ -47,7 +47,7 @@ export const serverColumns: ColumnDef<ServerModel>[] = [
     accessorKey: "createdAt",
     header: "Создан",
     cell: ({ row }) => (
-      <span className="text-xs text-[var(--muted-foreground)]">
+      <span className="text-xs text-muted-foreground">
         {row.original.createdAtDate.formattedDate}
       </span>
     ),

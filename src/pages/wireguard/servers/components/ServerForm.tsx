@@ -168,7 +168,7 @@ export const ServerForm: FC<ServerFormProps> = ({
         />
 
         <div className="flex items-center justify-between py-1">
-          <span className="text-sm font-medium text-[var(--foreground)]">
+          <span className="text-sm font-medium text-foreground">
             Включён
           </span>
           <SwitchFormField<ServerFormData> name="enabled" />

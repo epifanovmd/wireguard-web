@@ -24,7 +24,7 @@ export const UsersTable: FC<UsersTableProps> = ({
     getRowId={u => u.data.userId}
     onRowClick={onRowClick}
     empty={
-      <div className="text-center py-8 text-[var(--muted-foreground)] text-sm">
+      <div className="text-center py-8 text-muted-foreground text-sm">
         No users found
       </div>
     }

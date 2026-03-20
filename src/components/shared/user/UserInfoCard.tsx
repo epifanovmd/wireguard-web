@@ -28,9 +28,9 @@ export const UserInfoCard: FC<UserInfoCardProps> = ({
     <div className="flex flex-col items-center text-center gap-2.5">
       <UserAvatar name={displayName} size="lg" />
       <div>
-        <p className="font-semibold text-[var(--foreground)]">{displayName}</p>
+        <p className="font-semibold text-foreground">{displayName}</p>
         {login && (
-          <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {login}
           </p>
         )}
@@ -45,20 +45,20 @@ export const UserInfoCard: FC<UserInfoCardProps> = ({
     </div>
 
     {(registeredAt || lastOnline) && (
-      <div className="mt-4 pt-4 border-t border-[var(--border)] flex flex-col gap-2 text-xs">
+      <div className="mt-4 pt-4 border-t border-border flex flex-col gap-2 text-xs">
         {registeredAt && (
           <div className="flex justify-between">
-            <span className="text-[var(--muted-foreground)]">
+            <span className="text-muted-foreground">
               {`Зарегистрирован: ${registeredAt}`}
             </span>
           </div>
         )}
         {lastOnline && (
           <div className="flex justify-between">
-            <span className="text-[var(--muted-foreground)]">
+            <span className="text-muted-foreground">
               Последний визит
             </span>
-            <span className="text-[var(--muted-foreground)]">{lastOnline}</span>
+            <span className="text-muted-foreground">{lastOnline}</span>
           </div>
         )}
       </div>

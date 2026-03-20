@@ -92,18 +92,18 @@ export const Profile: FC = observer(() => {
               <Card title="Учётная запись" className="p-5">
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-sm text-[var(--muted-foreground)]">
+                    <span className="text-sm text-muted-foreground">
                       Email
                     </span>
-                    <span className="text-sm text-[var(--foreground)]">
+                    <span className="text-sm text-foreground">
                       {model?.email ?? "—"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-sm text-[var(--muted-foreground)]">
+                    <span className="text-sm text-muted-foreground">
                       Телефон
                     </span>
-                    <span className="text-sm text-[var(--foreground)]">
+                    <span className="text-sm text-foreground">
                       {model?.phone ?? "—"}
                     </span>
                   </div>

@@ -26,8 +26,8 @@ export const SignIn = observer(() => {
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">Вход</h2>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">
+          <h2 className="text-xl font-bold text-foreground">Вход</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Введите данные для входа в панель управления
           </p>
         </div>
@@ -54,7 +54,7 @@ export const SignIn = observer(() => {
 
             <div className="flex justify-end">
               <Link
-                className="text-sm text-[#6366f1] hover:underline"
+                className="text-sm text-brand hover:underline"
                 to={"/auth/recovery-password"}
               >
                 Забыли пароль?
@@ -73,11 +73,11 @@ export const SignIn = observer(() => {
             {passkey.support && passkey.profileId && (
               <>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-[var(--border)]" />
-                  <span className="text-xs text-[var(--muted-foreground)]">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs text-muted-foreground">
                     или
                   </span>
-                  <div className="flex-1 h-px bg-[var(--border)]" />
+                  <div className="flex-1 h-px bg-border" />
                 </div>
 
                 <Button

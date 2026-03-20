@@ -12,7 +12,7 @@ export const badgeVariants = cva(
         // aliases
         danger: "bg-destructive/15 text-destructive",
         gray: "bg-secondary text-secondary-foreground",
-        purple: "bg-[oklch(0.55_0.2_280)/15] text-[oklch(0.55_0.2_280)]",
+        purple: "bg-purple/15 text-purple",
         success: "bg-success/15 text-success",
         warning: "bg-warning/15 text-warning",
         info: "bg-info/15 text-info",

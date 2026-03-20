@@ -54,7 +54,7 @@ export const ServerDetail: FC<ServerDetailProps> = observer(
 
     if (!server) {
       return (
-        <div className="p-6 text-[var(--muted-foreground)]">
+        <div className="p-6 text-muted-foreground">
           Сервер не найден
         </div>
       );

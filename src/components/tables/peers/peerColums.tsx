@@ -12,13 +12,13 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     header: "Название",
     cell: ({ row }) => (
       <div>
-        <p className="font-medium text-[var(--foreground)]">
+        <p className="font-medium text-foreground">
           {row.original.name}
         </p>
         <CopyableText
           text={row.original.data.publicKey}
           displayText={row.original.shortPublicKey}
-          className="mt-0.5 text-[var(--muted-foreground)]"
+          className="mt-0.5 text-muted-foreground"
         />
       </div>
     ),
@@ -27,7 +27,7 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     accessorKey: "allowedIPs",
     header: "IP-адрес",
     cell: ({ row }) => (
-      <span className="font-mono text-xs text-[var(--muted-foreground)]">
+      <span className="font-mono text-xs text-muted-foreground">
         {row.original.data.allowedIPs}
       </span>
     ),
@@ -46,14 +46,14 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
           Да
         </Badge>
       ) : (
-        <span className="text-xs text-[var(--muted-foreground)]">Нет</span>
+        <span className="text-xs text-muted-foreground">Нет</span>
       ),
   },
   {
     accessorKey: "expiresAt",
     header: "Истекает",
     cell: ({ row }) => (
-      <span className="text-xs text-[var(--muted-foreground)]">
+      <span className="text-xs text-muted-foreground">
         {row.original.expiresAtDate.formatted ?? "Никогда"}
       </span>
     ),

@@ -60,29 +60,41 @@ export const WGChart = observer<IWGChartProps>(
             <Tooltip contentStyle={tooltipStyle} formatter={tooltipFormatter} />
 
             <Area
+              animationEasing={"linear"}
               type="monotone"
               dataKey="rx"
-              stroke="#6366f1"
-              fill="#6366f115"
+              stroke="var(--chart-1)"
+              fill="var(--chart-1)"
+              fillOpacity={0.08}
               strokeWidth={2}
               name="rx"
             />
             <Area
+              animationEasing={"linear"}
               type="monotone"
               dataKey="tx"
-              stroke="#22c55e"
-              fill="#22c55e15"
+              stroke="var(--chart-2)"
+              fill="var(--chart-2)"
+              fillOpacity={0.08}
               strokeWidth={2}
               name="tx"
             />
           </AreaChart>
         </ResponsiveContainer>
         <div className="flex gap-4 mt-2">
-          <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-            <span className="w-3 h-0.5 bg-[#6366f1] inline-block" /> {rxLabel}
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span
+              className="w-3 h-0.5 inline-block"
+              style={{ background: "var(--chart-1)" }}
+            />{" "}
+            {rxLabel}
           </span>
-          <span className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
-            <span className="w-3 h-0.5 bg-[#22c55e] inline-block" /> {txLabel}
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span
+              className="w-3 h-0.5 inline-block"
+              style={{ background: "var(--chart-2)" }}
+            />{" "}
+            {txLabel}
           </span>
         </div>
       </Card>

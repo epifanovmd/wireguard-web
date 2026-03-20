@@ -37,7 +37,7 @@ export const CustomToast: React.FC<CustomToastProps> = ({
     className={twMerge(
       clsx(
         "flex items-start gap-2.5 px-4 py-3 rounded-lg border shadow-lg",
-        "min-w-[280px] max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)]",
+        "min-w-[280px] max-w-[400px] bg-card text-card-foreground",
         VARIANT_CLASSES[variant],
         visible
           ? "animate-in slide-in-from-right-5 fade-in duration-300 ease-out"

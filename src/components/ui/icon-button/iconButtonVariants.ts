@@ -8,9 +8,9 @@ export const iconButtonVariants = cva(
         default:
           "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
         enable:
-          "text-muted-foreground hover:bg-[rgba(34,197,94,0.1)] hover:text-[#16a34a] dark:hover:text-[#22c55e]",
+          "text-muted-foreground hover:bg-success/10 hover:text-success",
         disable:
-          "text-muted-foreground hover:bg-[rgba(234,179,8,0.1)] hover:text-[#ca8a04] dark:hover:text-[#eab308]",
+          "text-muted-foreground hover:bg-warning/10 hover:text-warning",
         destructive:
           "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
         primary: "text-muted-foreground hover:bg-primary/10 hover:text-primary",

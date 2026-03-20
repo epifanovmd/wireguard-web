@@ -116,7 +116,7 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
         />
 
         <div>
-          <p className="text-sm font-medium text-[var(--foreground)] mb-3">
+          <p className="text-sm font-medium text-foreground mb-3">
             Права доступа
           </p>
           <PermissionsEditor value={permissions} onChange={setPermissions} />
