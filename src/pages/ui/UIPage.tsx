@@ -637,11 +637,10 @@ export const UIPage = () => {
                       { value: "option3", label: "Option 3" },
                     ]}
                     placeholder="default"
-                    triggerSize="sm"
+                    size="sm"
                     value={selectValue}
-                    onValueChange={setSelectValue}
                     clearable
-                    onClear={() => setSelectValue("")}
+                    onChange={(v: string | null) => setSelectValue(v ?? "")}
                   />
                   <Select
                     options={[
@@ -649,8 +648,8 @@ export const UIPage = () => {
                       { value: "b", label: "Option B" },
                     ]}
                     placeholder="filled"
-                    triggerSize="sm"
-                    triggerVariant="filled"
+                    size="sm"
+                    variant="filled"
                   />
                   <Select
                     options={[
@@ -658,8 +657,8 @@ export const UIPage = () => {
                       { value: "b", label: "Option B" },
                     ]}
                     placeholder="filled error"
-                    triggerSize="sm"
-                    triggerVariant="filled-error"
+                    size="sm"
+                    variant="filled-error"
                   />
                   <Select
                     options={[
@@ -667,8 +666,8 @@ export const UIPage = () => {
                       { value: "b", label: "Option B" },
                     ]}
                     placeholder="filled success"
-                    triggerSize="sm"
-                    triggerVariant="filled-success"
+                    size="sm"
+                    variant="filled-success"
                   />
                   <Select
                     options={[
@@ -676,8 +675,8 @@ export const UIPage = () => {
                       { value: "b", label: "Option B" },
                     ]}
                     placeholder="error state"
-                    triggerSize="sm"
-                    triggerVariant="error"
+                    size="sm"
+                    variant="error"
                   />
                   <Select
                     options={[
@@ -685,8 +684,8 @@ export const UIPage = () => {
                       { value: "b", label: "Option B" },
                     ]}
                     placeholder="success state"
-                    triggerSize="sm"
-                    triggerVariant="success"
+                    size="sm"
+                    variant="success"
                   />
                 </div>
               </div>
@@ -698,7 +697,7 @@ export const UIPage = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   <GroupedSelect
-                    options={[
+                    groups={[
                       {
                         group: "Fruits",
                         options: [
@@ -715,14 +714,14 @@ export const UIPage = () => {
                       },
                     ]}
                     placeholder="Grouped"
-                    triggerSize="sm"
+                    size="sm"
                   />
 
                   <AsyncSelect
                     fetchOptions={fetchCountries}
                     getOption={c => ({ value: c, label: c })}
                     placeholder="Async (lazy)"
-                    triggerSize="sm"
+                    size="sm"
                   />
                 </div>
               </div>
@@ -737,27 +736,15 @@ export const UIPage = () => {
                     fetchOptions={fetchCities}
                     getOption={c => ({ value: c, label: c })}
                     placeholder="Async (on mount)"
-                    triggerSize="sm"
+                    size="sm"
                     fetchOnMount
                   />
-                  <Select onOpenChange={handleLazyOpen}>
-                    <Select.Trigger size="sm" loading={isLoadingLazy}>
-                      <Select.Value placeholder="Manual mode" />
-                    </Select.Trigger>
-                    <Select.Content>
-                      {isLoadingLazy ? (
-                        <Select.Loading />
-                      ) : lazyOptions.length > 0 ? (
-                        lazyOptions.map(o => (
-                          <Select.Item key={o} value={o}>
-                            {o}
-                          </Select.Item>
-                        ))
-                      ) : (
-                        <Select.Empty>No items found</Select.Empty>
-                      )}
-                    </Select.Content>
-                  </Select>
+                  <Select
+                    options={lazyOptions.map(o => ({ value: o, label: o }))}
+                    placeholder="Manual mode"
+                    size="sm"
+                    onOpenChange={handleLazyOpen}
+                  />
                 </div>
               </div>
             </CardContent>

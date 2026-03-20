@@ -143,7 +143,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
                         { value: ERole.Guest, label: "Гость" },
                       ]}
                       value={selectedRole}
-                      onValueChange={v =>
+                      onChange={(v: ERole) =>
                         setSelectedRole((v ?? ERole.User) as ERole)
                       }
                     />

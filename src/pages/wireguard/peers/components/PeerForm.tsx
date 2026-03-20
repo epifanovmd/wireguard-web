@@ -118,11 +118,11 @@ export const PeerForm: FC<PeerFormProps> = ({
           <AsyncSelect
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
-            fetchOnMount
+            // fetchOnMount
             value={serverId}
             onValueChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
-            clearable
+            // clearable
           />
         )}
 

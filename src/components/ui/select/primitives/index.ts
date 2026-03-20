@@ -1,10 +1,17 @@
-export { SelectContent } from "./SelectContent";
-export { SelectEmpty } from "./SelectEmpty";
-export { SelectItem } from "./SelectItem";
-export { SelectLabel } from "./SelectLabel";
-export { SelectLoading } from "./SelectLoading";
-export { SelectSeparator } from "./SelectSeparator";
-export type { SelectTriggerProps } from "./SelectTrigger";
-export { SelectTrigger } from "./SelectTrigger";
+// New Popover-based primitives
+export type { SelectListGroupProps } from "./SelectListGroup";
+export { SelectListGroup } from "./SelectListGroup";
+export type { SelectListItemProps } from "./SelectListItem";
+export { SelectListItem } from "./SelectListItem";
+export type { SelectPopoverContentProps } from "./SelectPopoverContent";
+export { SelectPopoverContent } from "./SelectPopoverContent";
+export type { SelectTagProps } from "./SelectTag";
+export { SelectTag } from "./SelectTag";
+export type { SelectTriggerBaseProps } from "./SelectTriggerBase";
+export { SelectTriggerBase } from "./SelectTriggerBase";
 export type { SelectTriggerIconProps } from "./SelectTriggerIcon";
 export { SelectTriggerIcon } from "./SelectTriggerIcon";
+
+// Shared state components
+export { SelectEmpty } from "./SelectEmpty";
+export { SelectLoading } from "./SelectLoading";

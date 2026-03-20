@@ -1,100 +1,19 @@
-import * as SelectPrimitive from "@radix-ui/react-select";
 import * as React from "react";
 
-import { useAsyncSelect } from "./hooks";
-import {
-  SelectContent,
-  SelectEmpty,
-  SelectItem,
-  SelectLoading,
-  SelectTrigger,
-} from "./primitives";
-import {
-  type SelectOption,
-  type SelectRootProps,
-  type SelectTriggerAppearance,
-} from "./types";
+import { Select } from "./Select";
+import { type AsyncSelectProps } from "./types";
 
-export interface AsyncSelectProps<TData, TValue extends string = string>
-  extends SelectRootProps<TValue>,
-    SelectTriggerAppearance {
-  /** Function that fetches raw data. Receives a search query and AbortSignal. */
-  fetchOptions: (query: string, signal?: AbortSignal) => Promise<TData[]>;
-  /** Maps a raw data item to a SelectOption. */
-  getOption: (item: TData) => SelectOption<TValue>;
-  /** Fetch immediately on mount. Default: false (lazy — fetches on first open). */
-  fetchOnMount?: boolean;
-  /** Shown when loaded options list is empty. */
-  empty?: React.ReactNode;
-  /** Called when the dropdown opens/closes (in addition to internal fetch logic). */
-  onOpenChange?: (open: boolean) => void;
-}
+export { AsyncSelectProps };
 
-export const AsyncSelect = <TData, TValue extends string = string>({
-  fetchOptions,
-  getOption,
-  fetchOnMount,
-  placeholder,
-  empty,
-  triggerSize,
-  triggerVariant,
-  triggerClassName,
-  clearable,
-  onClear,
-  onOpenChange,
-  value,
-  defaultValue,
-  onValueChange,
-  ...props
-}: AsyncSelectProps<TData, TValue>) => {
-  const { options, loading, handleOpenChange } = useAsyncSelect<TData, TValue>({
-    fetchOptions,
-    getOption,
-    fetchOnMount,
-  });
-
-  const handleOpen = React.useCallback(
-    (open: boolean) => {
-      handleOpenChange(open);
-      onOpenChange?.(open);
-    },
-    [handleOpenChange, onOpenChange],
-  );
-
+export const AsyncSelect = <TData, TValue extends string = string>(
+  props: AsyncSelectProps<TData, TValue>,
+): React.ReactElement => {
+  const { onValueChange, ...rest } = props;
   return (
-    <SelectPrimitive.Root
-      value={value}
-      defaultValue={defaultValue}
-      onValueChange={onValueChange as ((v: string) => void) | undefined}
-      onOpenChange={handleOpen}
-      {...props}
-    >
-      <SelectTrigger
-        size={triggerSize}
-        variant={triggerVariant}
-        className={triggerClassName}
-        loading={loading}
-        value={value}
-        clearable={clearable}
-        onClear={onClear}
-        placeholder={placeholder}
-      >
-        <SelectPrimitive.Value placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {loading ? (
-          <SelectLoading />
-        ) : options.length === 0 ? (
-          <SelectEmpty>{empty}</SelectEmpty>
-        ) : (
-          options.map(opt => (
-            <SelectItem key={opt.value} value={opt.value} disabled={opt.disabled}>
-              {opt.label}
-            </SelectItem>
-          ))
-        )}
-      </SelectContent>
-    </SelectPrimitive.Root>
+    <Select<TData, TValue>
+      {...(rest as any)}
+      onChange={onValueChange as any}
+    />
   );
 };
 

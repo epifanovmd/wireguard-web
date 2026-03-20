@@ -48,7 +48,7 @@ export const PeersList: FC = observer(() => {
             value={vm.serverId}
             onValueChange={vm.setServerId}
             placeholder="Выберите сервер"
-            triggerClassName="w-48"
+            className="w-48"
           />
         </div>
 

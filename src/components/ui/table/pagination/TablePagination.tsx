@@ -50,9 +50,9 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
           <Select
             options={options}
             value={String(pageSize)}
-            onValueChange={v => onPageSizeChange!(Number(v))}
-            triggerSize="sm"
-            triggerClassName="w-[110px]"
+            onChange={(v: string) => onPageSizeChange!(Number(v))}
+            size="sm"
+            className="w-[110px]"
           />
         )}
       </div>

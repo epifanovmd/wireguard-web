@@ -5,7 +5,9 @@ import {
   AsyncSelect,
   Button,
   DateRangePicker,
+  SearchSelect,
   Segmented,
+  Select,
 } from "~@components/ui";
 
 import { StatsDisplay } from "./components/StatsDisplay";
@@ -30,15 +32,16 @@ export const Stats: FC = () => {
               onValueChange={v => vm.setSelectedServer(v ?? "")}
               placeholder="Выберите сервер"
             />
-            <AsyncSelect
+            <SearchSelect
               getOption={vm.peers.getOption}
               fetchOptions={vm.peers.fetchOptions}
               value={vm.selectedPeer}
               disabled={!vm.selectedServer}
-              onValueChange={v => vm.setSelectedPeer(v)}
-              onClear={() => vm.setSelectedPeer("")}
+              onValueChange={v => vm.setSelectedPeer(v ?? "")}
               placeholder="Выберите peer"
               clearable={true}
+              tagsDisplay={true}
+              // multi={true}
             />
           </div>
           <Segmented

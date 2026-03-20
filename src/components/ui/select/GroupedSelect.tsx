@@ -1,85 +1,54 @@
-import * as SelectPrimitive from "@radix-ui/react-select";
 import * as React from "react";
 
-import {
-  SelectContent,
-  SelectEmpty,
-  SelectItem,
-  SelectLabel,
-  SelectLoading,
-  SelectTrigger,
-} from "./primitives";
-import {
-  type SelectOptionGroup,
-  type SelectRootProps,
-  type SelectTriggerAppearance,
-} from "./types";
+import { SelectListGroup, SelectListItem } from "./primitives";
+import { Select } from "./Select";
+import { type GroupedSelectProps, type SelectOption } from "./types";
 
-export interface GroupedSelectProps<TValue extends string = string>
-  extends SelectRootProps<TValue>,
-    SelectTriggerAppearance {
-  /** Grouped options. Each group has a label and a list of options. */
-  options: SelectOptionGroup<TValue>[];
-  loading?: boolean;
-  /** Shown when all groups are empty (not loading). */
-  empty?: React.ReactNode;
-}
+export { GroupedSelectProps };
 
-export const GroupedSelect = <TValue extends string = string>({
-  options,
-  placeholder,
-  loading,
-  empty,
-  triggerSize,
-  triggerVariant,
-  triggerClassName,
-  clearable,
-  onClear,
-  value,
-  defaultValue,
-  onValueChange,
-  ...props
-}: GroupedSelectProps<TValue>) => {
-  const isEmpty = options.every(g => g.options.length === 0);
+export function GroupedSelect<V extends string = string>(
+  props: GroupedSelectProps<V>,
+): React.ReactElement {
+  const { groups = [], ...rest } = props;
+
+  const flatOptions = React.useMemo<SelectOption<V>[]>(
+    () => groups.flatMap(g => g.options as SelectOption<V>[]),
+    [groups],
+  );
 
   return (
-    <SelectPrimitive.Root
-      value={value}
-      defaultValue={defaultValue}
-      onValueChange={onValueChange as ((v: string) => void) | undefined}
-      {...props}
-    >
-      <SelectTrigger
-        size={triggerSize}
-        variant={triggerVariant}
-        className={triggerClassName}
-        loading={loading}
-        value={value}
-        clearable={clearable}
-        onClear={onClear}
-      >
-        <SelectPrimitive.Value placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {loading ? (
-          <SelectLoading />
-        ) : isEmpty ? (
-          <SelectEmpty>{empty}</SelectEmpty>
-        ) : (
-          options.map(group => (
-            <SelectPrimitive.Group key={group.group}>
-              <SelectLabel>{group.group}</SelectLabel>
-              {group.options.map(opt => (
-                <SelectItem key={opt.value} value={opt.value} disabled={opt.disabled}>
+    <Select<unknown, V>
+      {...(rest as any)}
+      options={flatOptions}
+      renderOptions={({
+        focusedIndex,
+        setFocusedIndex,
+        isSelected,
+        onSelect,
+      }) =>
+        groups.map(group => (
+          <SelectListGroup key={group.group} label={group.group}>
+            {group.options.map(opt => {
+              const flatIdx = flatOptions.indexOf(opt as SelectOption<V>);
+              return (
+                <SelectListItem
+                  key={opt.value}
+                  selected={isSelected(opt.value as V)}
+                  focused={flatIdx === focusedIndex}
+                  disabled={opt.disabled}
+                  onSelect={() => onSelect(opt.value as V)}
+                  onFocus={() => setFocusedIndex(flatIdx)}
+                  onBlur={() => setFocusedIndex(-1)}
+                >
                   {opt.label}
-                </SelectItem>
-              ))}
-            </SelectPrimitive.Group>
-          ))
-        )}
-      </SelectContent>
-    </SelectPrimitive.Root>
+                </SelectListItem>
+              );
+            })}
+          </SelectListGroup>
+        ))
+      }
+    />
   );
-};
+}
 
 GroupedSelect.displayName = "GroupedSelect";
