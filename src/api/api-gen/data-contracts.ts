@@ -190,6 +190,15 @@ export interface IUserListDto {
   data: PublicUserDto[];
 }
 
+export interface IUserOptionDto {
+  id: string;
+  name: string;
+}
+
+export interface IUserOptionsDto {
+  data: IUserOptionDto[];
+}
+
 export interface IUserPrivilegesRequestDto {
   roleName: ERole;
   permissions: EPermissions[];
@@ -504,6 +513,15 @@ export interface IWgPeerListDto {
   data: WgPeerDto[];
 }
 
+export interface IWgPeerOptionDto {
+  id: string;
+  name: string;
+}
+
+export interface IWgPeerOptionsDto {
+  data: IWgPeerOptionDto[];
+}
+
 export interface IWgPeerCreateRequestDto {
   name: string;
   presharedKey?: boolean;
@@ -571,6 +589,15 @@ export interface IWgServerListDto {
   /** @format double */
   limit?: number;
   data: WgServerDto[];
+}
+
+export interface IWgServerOptionDto {
+  id: string;
+  name: string;
+}
+
+export interface IWgServerOptionsDto {
+  data: IWgServerOptionDto[];
 }
 
 export interface IWgServerCreateRequestDto {
@@ -669,6 +696,13 @@ export interface GetUsersParams {
    * @format double
    */
   limit?: number;
+  /** Поиск по email */
+  query?: string;
+}
+
+export interface GetUserOptionsParams {
+  /** Поиск по email, имени или фамилии */
+  query?: string;
 }
 
 /** Тело запроса с refresh токеном */
@@ -681,6 +715,9 @@ export interface GetPeersByServerParams {
   offset?: number;
   /** @format double */
   limit?: number;
+  query?: string;
+  enabled?: boolean;
+  status?: EWgServerStatus;
   serverId: string;
 }
 
@@ -689,6 +726,10 @@ export interface GetMyPeersParams {
   offset?: number;
   /** @format double */
   limit?: number;
+  query?: string;
+  enabled?: boolean;
+  status?: EWgServerStatus;
+  serverId?: string;
 }
 
 export interface GetPeersByUserParams {
@@ -696,7 +737,16 @@ export interface GetPeersByUserParams {
   offset?: number;
   /** @format double */
   limit?: number;
+  query?: string;
+  enabled?: boolean;
+  status?: EWgServerStatus;
+  serverId?: string;
   userId: string;
+}
+
+export interface GetPeersOptionsParams {
+  serverId?: string;
+  query?: string;
 }
 
 export interface AssignPeerParams {
@@ -709,6 +759,13 @@ export interface GetServersParams {
   offset?: number;
   /** @format double */
   limit?: number;
+  query?: string;
+  status?: EWgServerStatus;
+  enabled?: boolean;
+}
+
+export interface GetServerOptionsParams {
+  query?: string;
 }
 
 export interface GetOverviewStatsParams {

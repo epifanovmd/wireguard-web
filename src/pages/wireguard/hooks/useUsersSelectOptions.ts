@@ -1,26 +1,22 @@
 import { useCallback } from "react";
 
 import { useApi } from "~@api";
-import { UserDto } from "~@api/api-gen/data-contracts";
+import { IUserOptionDto, IUserOptionsDto } from "~@api/api-gen/data-contracts";
 
 export const useUsersSelectOptions = () => {
   const api = useApi();
 
   const fetchOptions = useCallback(
-    (_query?: string) =>
+    (query?: string) =>
       api
-        .getUsers({ limit: 100 })
+        .getUserOptions({ query })
         .then(res => res.data?.data ?? [])
-        .catch(() => [] as UserDto[]),
+        .catch(() => [] as IUserOptionsDto[]),
     [api],
   );
 
-  const getOption = useCallback((u: UserDto) => {
-    const { firstName, lastName } = u.profile ?? {};
-    const name =
-      firstName || lastName ? [firstName, lastName].filter(Boolean).join(" ") : undefined;
-
-    return { value: u.id, label: name ?? u.email ?? u.id };
+  const getOption = useCallback((u: IUserOptionDto) => {
+    return { value: u.id, label: u.name };
   }, []);
 
   return { fetchOptions, getOption };

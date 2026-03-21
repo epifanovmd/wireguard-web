@@ -19,10 +19,13 @@ import {
   GetOverviewStatsParams,
   GetPeersByServerParams,
   GetPeersByUserParams,
+  GetPeersOptionsParams,
   GetPeerStatsParams,
   GetProfilesParams,
+  GetServerOptionsParams,
   GetServersParams,
   GetServerStatsParams,
+  GetUserOptionsParams,
   GetUsersParams,
   IGenerateAuthenticationOptionsRequestDto,
   IProfileListDto,
@@ -32,6 +35,7 @@ import {
   IUserChangePasswordDto,
   IUserListDto,
   IUserLoginRequestDto,
+  IUserOptionsDto,
   IUserPrivilegesRequestDto,
   IUserResetPasswordRequestDto,
   IUserUpdateRequestDto,
@@ -43,9 +47,11 @@ import {
   IWgOverviewStatsResponse,
   IWgPeerCreateRequestDto,
   IWgPeerListDto,
+  IWgPeerOptionsDto,
   IWgPeerUpdateRequestDto,
   IWgServerCreateRequestDto,
   IWgServerListDto,
+  IWgServerOptionsDto,
   IWgServerStatusDto,
   IWgServerUpdateRequestDto,
   ProfileDto,
@@ -238,7 +244,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Получить всех пользователей. Этот эндпоинт позволяет администраторам получить список всех пользователей системы. Он поддерживает пагинацию через параметры `offset` и `limit`.
+   * @description Получить всех пользователей. Поддерживает пагинацию и поиск по email.
    *
    * @tags User
    * @name GetUsers
@@ -249,6 +255,23 @@ export class Api<
   getUsers = (query: GetUsersParams, params: RequestParams = {}) =>
     this.request<IUserListDto, any>({
       url: `/api/user/all`,
+      method: "GET",
+      params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Получить опции пользователей для выпадающих списков (id + name). name — имя и фамилия или email если профиль не заполнен.
+   *
+   * @tags User
+   * @name GetUserOptions
+   * @summary Опции пользователей
+   * @request GET:/api/user/options
+   * @secure
+   */
+  getUserOptions = (query: GetUserOptionsParams, params: RequestParams = {}) =>
+    this.request<IUserOptionsDto, any>({
+      url: `/api/user/options`,
       method: "GET",
       params: query,
       responseType: "json",
@@ -549,7 +572,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description List all peers for a given server.
+   * @description List all peers for a given server with optional filters.
    *
    * @tags WireGuard Peers
    * @name GetPeersByServer
@@ -591,7 +614,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get all peers owned by the current user.
+   * @description Get all peers owned by the current user with optional filters.
    *
    * @tags WireGuard Peers
    * @name GetMyPeers
@@ -608,7 +631,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get all peers for a user (admin only).
+   * @description Get all peers for a user with optional filters (admin only).
    *
    * @tags WireGuard Peers
    * @name GetPeersByUser
@@ -622,6 +645,26 @@ export class Api<
   ) =>
     this.request<IWgPeerListDto, any>({
       url: `/api/wg/peers/user/${userId}`,
+      method: "GET",
+      params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Get peer options for dropdowns (id + name only).
+   *
+   * @tags WireGuard Peers
+   * @name GetPeersOptions
+   * @summary Get peer options
+   * @request GET:/api/wg/peers/options
+   * @secure
+   */
+  getPeersOptions = (
+    query: GetPeersOptionsParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgPeerOptionsDto, any>({
+      url: `/api/wg/peers/options`,
       method: "GET",
       params: query,
       responseType: "json",
@@ -819,7 +862,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description List all WireGuard servers.
+   * @description List all WireGuard servers with optional filters.
    *
    * @tags WireGuard Servers
    * @name GetServers
@@ -853,6 +896,26 @@ export class Api<
       method: "POST",
       data: data,
       type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Get server options for dropdowns (id + name only).
+   *
+   * @tags WireGuard Servers
+   * @name GetServerOptions
+   * @summary Get server options
+   * @request GET:/api/wg/servers/options
+   * @secure
+   */
+  getServerOptions = (
+    query: GetServerOptionsParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgServerOptionsDto, any>({
+      url: `/api/wg/servers/options`,
+      method: "GET",
+      params: query,
       responseType: "json",
       ...params,
     });
