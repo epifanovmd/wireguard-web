@@ -2,11 +2,13 @@ import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
-import { PageHeader } from "~@components/layouts";
+import { EPermissions } from "~@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
 import {
   Badge,
   Button,
+  CanAccess,
   Card,
   IconButton,
   Modal,
@@ -33,63 +35,58 @@ export const PeersList: FC = observer(() => {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <PageHeader
-        title="Пиры"
-        subtitle={`${vm.total} всего`}
-        actions={
-          <Tooltip content="Добавить пир">
-            <IconButton
-              variant="solid"
-              onClick={() => setCreateOpen(true)}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-            </IconButton>
-          </Tooltip>
-        }
-      />
-
-      <div className="flex flex-col p-4 sm:p-6 gap-6 overflow-auto">
-        {/* Controls */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <Select
-            fetchOptions={serversOptions.fetchOptions}
-            getOption={serversOptions.getOption}
-            fetchOnMount
-            value={vm.serverId}
-            onChange={vm.setServerId}
-            placeholder="Выберите сервер"
-            className="w-48"
-          />
-        </div>
-
-        <Card
+    <PageLayout
+      header={
+        <PageHeader
           title="Пиры"
-          extra={<Badge variant="gray">{vm.total} всего</Badge>}
-        >
-          <Table
-            data={vm.data}
-            columns={vm.columns}
-            loading={vm.loading}
-            refreshing={vm.refreshing}
-            getRowId={p => p.data.id}
-            onRowClick={vm.handleRowClick}
-            empty={
-              <div className="text-center py-8 text-muted-foreground text-sm">
-                Пиры не найдены
-              </div>
-            }
-          >
-            {/*<Table.Pagination*/}
-            {/*  totalPages={vm.totalPages}*/}
-            {/*  currentPage={vm.currentPage}*/}
-            {/*  pageSize={vm.pageSize}*/}
-            {/*  onPageChange={vm.onPageChange}*/}
-            {/*  onPageSizeChange={vm.onPageSizeChange}*/}
-            {/*/>*/}
-          </Table>
-        </Card>
+          subtitle={`${vm.total} всего`}
+          actions={
+            <CanAccess permission={EPermissions.WgPeerManage}>
+              <Tooltip content="Добавить пир">
+                <IconButton
+                  variant="solid"
+                  onClick={() => setCreateOpen(true)}
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                </IconButton>
+              </Tooltip>
+            </CanAccess>
+          }
+        />
+      }
+      contentClassName="flex flex-col gap-6"
+    >
+      {/* Controls */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <Select
+          fetchOptions={serversOptions.fetchOptions}
+          getOption={serversOptions.getOption}
+          fetchOnMount
+          value={vm.serverId}
+          onChange={vm.setServerId}
+          placeholder="Выберите сервер"
+          className="w-48"
+        />
       </div>
+
+      <Card
+        title="Пиры"
+        extra={<Badge variant="gray">{vm.total} всего</Badge>}
+      >
+        <Table
+          data={vm.data}
+          columns={vm.columns}
+          loading={vm.loading}
+          refreshing={vm.refreshing}
+          getRowId={p => p.data.id}
+          onRowClick={vm.handleRowClick}
+          empty={
+            <div className="text-center py-8 text-muted-foreground text-sm">
+              Пиры не найдены
+            </div>
+          }
+        />
+      </Card>
 
       <QrCodeModal
         open={!!vm.qrPeer}
@@ -142,6 +139,6 @@ export const PeersList: FC = observer(() => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </PageLayout>
   );
 });

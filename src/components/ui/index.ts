@@ -220,6 +220,9 @@ export { ErrorBoundary } from "./error-boundary";
 export type { FieldVariantProps } from "./fieldVariants";
 export { fieldVariants } from "./fieldVariants";
 
+// Access Control
+export { CanAccess } from "./can-access";
+
 // Form system
 export { cn } from "./cn";
 export type {

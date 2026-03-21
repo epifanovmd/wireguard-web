@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { PageHeader } from "~@components/layouts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import { UserInfoCard } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import {
@@ -33,8 +33,11 @@ export const UserDetail: FC<UserDetailProps> = observer(
     const peersStore = usePeersListStore();
     const confirm = useConfirm();
     const toast = useNotification();
+
+    // Роль пользователя (одна — первая из массива)
     const [selectedRole, setSelectedRole] = useState<ERole>(ERole.User);
-    const [selectedPerms, setSelectedPerms] = useState<EPermissions[]>([]);
+    // Прямые права (directPermissions) — редактируемые
+    const [directPerms, setDirectPerms] = useState<EPermissions[]>([]);
 
     useEffect(() => {
       store.loadUser(userId);
@@ -44,15 +47,17 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     useEffect(() => {
       if (store.user) {
-        setSelectedRole((store.user.role?.name as ERole) ?? ERole.User);
-        setSelectedPerms((store.user.role?.permissions ?? []).map(p => p.name));
+        // Берём первую роль из массива (текущая модель предполагает одну роль)
+        setSelectedRole((store.user.roles[0]?.name as ERole) ?? ERole.User);
+        // Инициализируем прямые права из directPermissions
+        setDirectPerms(store.user.directPermissions.map(p => p.name as EPermissions));
       }
     }, [store.user]);
 
     const handleSavePrivileges = async () => {
       const res = await store.setPrivileges(userId, {
-        roleName: selectedRole,
-        permissions: selectedPerms,
+        roles: [selectedRole],
+        permissions: directPerms,
       });
 
       if (res.error) {
@@ -64,12 +69,11 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     if (store.userHolder.isLoading || !store.userHolder.isReady) {
       return (
-        <div className="flex flex-col h-full">
-          <PageHeader title="Пользователь" />
+        <PageLayout header={<PageHeader title="Пользователь" />}>
           <div className="flex justify-center py-12">
             <Spinner />
           </div>
-        </div>
+        </PageLayout>
       );
     }
 
@@ -83,37 +87,45 @@ export const UserDetail: FC<UserDetailProps> = observer(
         </div>
       );
 
-    return (
-      <div className="flex flex-col h-full overflow-hidden">
-        <PageHeader
-          title={model?.displayName ?? "Пользователь"}
-          actions={
-            <Button
-              variant="destructive"
-              size="sm"
-              loading={store.deleteUserMutation.isLoading}
-              onClick={async () => {
-                const ok = await confirm({
-                  title: "Удалить пользователя",
-                  message: "Удалить этого пользователя навсегда?",
-                  variant: "danger",
-                });
-                if (!ok) return;
-                const res = await store.deleteUser(userId);
+    // Права, унаследованные от выбранной роли (для отображения в PermissionsEditor)
+    const rolePermissions = user.roles
+      .filter(r => r.name === selectedRole)
+      .flatMap(r => r.permissions.map(p => p.name as EPermissions));
 
-                if (res.error) {
-                  toast.error(res.error.message);
-                } else {
-                  toast.success("Удалено");
-                  onBack();
-                }
-              }}
-            >
-              Удалить пользователя
-            </Button>
-          }
-        />
-        <div className="p-4 sm:p-6 flex gap-6 flex-wrap xl:flex-nowrap overflow-auto">
+    return (
+      <PageLayout
+        header={
+          <PageHeader
+            title={model?.displayName ?? "Пользователь"}
+            actions={
+              <Button
+                variant="destructive"
+                size="sm"
+                loading={store.deleteUserMutation.isLoading}
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: "Удалить пользователя",
+                    message: "Удалить этого пользователя навсегда?",
+                    variant: "danger",
+                  });
+                  if (!ok) return;
+                  const res = await store.deleteUser(userId);
+
+                  if (res.error) {
+                    toast.error(res.error.message);
+                  } else {
+                    toast.success("Удалено");
+                    onBack();
+                  }
+                }}
+              >
+                Удалить пользователя
+              </Button>
+            }
+          />
+        }
+        contentClassName="flex gap-6 flex-wrap xl:flex-nowrap"
+      >
           {/* Sidebar - user info */}
           <div className="w-full xl:w-64 flex-shrink-0">
             <UserInfoCard
@@ -147,11 +159,21 @@ export const UserDetail: FC<UserDetailProps> = observer(
                         setSelectedRole((v ?? ERole.User) as ERole)
                       }
                     />
+                    {selectedRole === ERole.Admin && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Роль Администратор даёт полный доступ ко всему — прямые права не требуются.
+                      </p>
+                    )}
                   </Card>
                   <Card title="Права доступа" className="p-5">
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Серые права унаследованы от роли и не редактируются. Синие — назначены напрямую этому пользователю.
+                    </p>
                     <PermissionsEditor
-                      value={selectedPerms}
-                      onChange={setSelectedPerms}
+                      value={directPerms}
+                      onChange={setDirectPerms}
+                      rolePermissions={rolePermissions}
+                      role={selectedRole}
                     />
                   </Card>
                   <div className="flex justify-end">
@@ -181,8 +203,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
               </TabsContent>
             </Tabs>
           </div>
-        </div>
-      </div>
+      </PageLayout>
     );
   },
 );

@@ -1,11 +1,11 @@
 import { Check, Fingerprint, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { useApi } from "~@api";
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { usePasskeyAuth } from "~@common";
-import { PageHeader } from "~@components/layouts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import {
   AsyncButton,
   Badge,
@@ -18,8 +18,142 @@ import {
   TabsTrigger,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
-import { useAuthStore } from "~@store";
+import { useAuthStore, usePermissions } from "~@store";
 import { useTheme } from "~@theme";
+
+// ─── Статические метаданные разрешений ──────────────────────────────────────
+
+interface PermissionMeta {
+  label: string;
+  description: string;
+  group: string;
+}
+
+const PERMISSION_META: Record<EPermissions, PermissionMeta> = {
+  [EPermissions.Value]: {
+    label: "Суперправо *",
+    description: "Полный доступ ко всему",
+    group: "Суперправа",
+  },
+  [EPermissions.Wg]: {
+    label: "wg:*",
+    description: "Все WireGuard-права",
+    group: "Wildcards",
+  },
+  [EPermissions.WgServer]: {
+    label: "wg:server:*",
+    description: "Все права на серверы",
+    group: "Wildcards",
+  },
+  [EPermissions.WgPeer]: {
+    label: "wg:peer:*",
+    description: "Все права на пиры",
+    group: "Wildcards",
+  },
+  [EPermissions.WgStats]: {
+    label: "wg:stats:*",
+    description: "Все права на статистику",
+    group: "Wildcards",
+  },
+  [EPermissions.WgServerView]: {
+    label: "wg:server:view",
+    description: "Просмотр серверов",
+    group: "Серверы WireGuard",
+  },
+  [EPermissions.WgServerManage]: {
+    label: "wg:server:manage",
+    description: "Управление серверами (create/edit/delete)",
+    group: "Серверы WireGuard",
+  },
+  [EPermissions.WgServerControl]: {
+    label: "wg:server:control",
+    description: "Контроль серверов (start/stop/restart)",
+    group: "Серверы WireGuard",
+  },
+  [EPermissions.WgPeerView]: {
+    label: "wg:peer:view",
+    description: "Просмотр всех пиров",
+    group: "Пиры WireGuard",
+  },
+  [EPermissions.WgPeerManage]: {
+    label: "wg:peer:manage",
+    description: "Управление пирами (create/edit/delete)",
+    group: "Пиры WireGuard",
+  },
+  [EPermissions.WgPeerOwn]: {
+    label: "wg:peer:own",
+    description: "Только свои пиры",
+    group: "Пиры WireGuard",
+  },
+  [EPermissions.WgStatsView]: {
+    label: "wg:stats:view",
+    description: "Просмотр статистики",
+    group: "Статистика",
+  },
+  [EPermissions.WgStatsExport]: {
+    label: "wg:stats:export",
+    description: "Экспорт статистики",
+    group: "Статистика",
+  },
+  [EPermissions.UserView]: {
+    label: "user:view",
+    description: "Просмотр пользователей",
+    group: "Пользователи",
+  },
+  [EPermissions.UserManage]: {
+    label: "user:manage",
+    description: "Управление пользователями и правами",
+    group: "Пользователи",
+  },
+  [EPermissions.Read]: {
+    label: "read",
+    description: "Чтение данных",
+    group: "Общие",
+  },
+  [EPermissions.Write]: {
+    label: "write",
+    description: "Создание и редактирование",
+    group: "Общие",
+  },
+  [EPermissions.Delete]: {
+    label: "delete",
+    description: "Удаление данных",
+    group: "Общие",
+  },
+};
+
+// ─── Матрица прав по умолчанию для ролей ────────────────────────────────────
+// Источник истины: бэкенд (admin.bootstrap.ts), здесь — для отображения
+
+const ROLE_DEFAULT_PERMISSIONS: Record<ERole, EPermissions[]> = {
+  [ERole.Admin]: [EPermissions.Value], // superadmin bypass
+  [ERole.User]: [
+    EPermissions.Read,
+    EPermissions.WgPeerView,
+    EPermissions.WgPeerOwn,
+    EPermissions.WgStatsView,
+  ],
+  [ERole.Guest]: [EPermissions.Read],
+};
+
+// Права, которые показываем в матрице (исключаем wildcards — они суммарные)
+const MATRIX_PERMISSIONS: EPermissions[] = [
+  EPermissions.WgServerView,
+  EPermissions.WgServerManage,
+  EPermissions.WgServerControl,
+  EPermissions.WgPeerView,
+  EPermissions.WgPeerManage,
+  EPermissions.WgPeerOwn,
+  EPermissions.WgStatsView,
+  EPermissions.WgStatsExport,
+  EPermissions.UserView,
+  EPermissions.UserManage,
+  EPermissions.Read,
+  EPermissions.Write,
+  EPermissions.Delete,
+];
+
+// ─── Компонент ──────────────────────────────────────────────────────────────
 
 export const Settings: FC = observer(() => {
   const toast = useNotification();
@@ -32,6 +166,7 @@ export const Settings: FC = observer(() => {
 
   const api = useApi();
   const { user } = useAuthStore();
+  const { isAdmin, permissions, directPermissions, roles } = usePermissions();
   const profile = user?.profile;
   const passkey = usePasskeyAuth();
 
@@ -77,77 +212,48 @@ export const Settings: FC = observer(() => {
     passkey.removePasskey();
   };
 
-  const PERMISSIONS_MATRIX = [
-    { permission: EPermissions.Read, admin: true, user: true, guest: true },
-    { permission: EPermissions.Write, admin: true, user: false, guest: false },
-    { permission: EPermissions.Delete, admin: true, user: false, guest: false },
-    {
-      permission: EPermissions.WgServerView,
-      admin: true,
-      user: false,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgServerManage,
-      admin: true,
-      user: false,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgServerControl,
-      admin: true,
-      user: false,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgPeerView,
-      admin: true,
-      user: true,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgPeerManage,
-      admin: true,
-      user: false,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgPeerOwn,
-      admin: true,
-      user: true,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgStatsView,
-      admin: true,
-      user: true,
-      guest: false,
-    },
-    {
-      permission: EPermissions.WgStatsExport,
-      admin: true,
-      user: false,
-      guest: false,
-    },
-  ];
+  // Есть ли право у роли (с учётом admin bypass)
+  const roleHas = (role: ERole, perm: EPermissions): boolean => {
+    if (role === ERole.Admin) return true; // admin bypass
+    const rolePerms = ROLE_DEFAULT_PERMISSIONS[role];
+
+    return rolePerms.includes(EPermissions.Value) || rolePerms.includes(perm);
+  };
+
+  // Группировка прав пользователя по источнику
+  const rolePermissions = user?.roles.flatMap(r =>
+    r.permissions.map(p => p.name as EPermissions),
+  ) ?? [];
+
+  const myPermGroups = Object.entries(
+    MATRIX_PERMISSIONS.reduce<Record<string, EPermissions[]>>((acc, perm) => {
+      const group = PERMISSION_META[perm]?.group ?? "Прочее";
+
+      (acc[group] ??= []).push(perm);
+      return acc;
+    }, {}),
+  );
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <PageHeader
-        title="Настройки"
-        subtitle="Системная конфигурация и информация"
-      />
-      <div className="p-4 sm:p-6 overflow-auto">
+    <PageLayout
+      header={
+        <PageHeader
+          title="Настройки"
+          subtitle="Системная конфигурация и информация"
+        />
+      }
+    >
         <Tabs defaultValue="system">
           <TabsList>
             <TabsTrigger value="system">Система</TabsTrigger>
             <TabsTrigger value="security">Безопасность</TabsTrigger>
             <TabsTrigger value="roles">Роли и права</TabsTrigger>
+            <TabsTrigger value="my-permissions">Мои права</TabsTrigger>
           </TabsList>
 
+          {/* ── Система ─────────────────────────────────────────────────── */}
           <TabsContent value="system">
             <div className="flex flex-col gap-6 max-w-2xl mt-4">
-              {/* Theme */}
               <Card title="Внешний вид" className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -165,7 +271,6 @@ export const Settings: FC = observer(() => {
                 </div>
               </Card>
 
-              {/* Health */}
               <Card title="Состояние системы" className="p-5">
                 {health ? (
                   <dl className="flex flex-col gap-3">
@@ -212,6 +317,7 @@ export const Settings: FC = observer(() => {
             </div>
           </TabsContent>
 
+          {/* ── Безопасность ─────────────────────────────────────────────── */}
           <TabsContent value="security">
             <div className="flex flex-col gap-6 max-w-2xl mt-4">
               <Card title="Passkey (биометрический вход)" className="p-5">
@@ -283,81 +389,32 @@ export const Settings: FC = observer(() => {
             </div>
           </TabsContent>
 
+          {/* ── Роли и права ─────────────────────────────────────────────── */}
           <TabsContent value="roles">
-            <div className="flex flex-col gap-6 max-w-3xl mt-4">
-              <Card title="Матрица прав" className="overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-muted border-b border-border">
-                        <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                          Право
-                        </th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">
-                          Админ
-                        </th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">
-                          Пользователь
-                        </th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                          Гость
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {PERMISSIONS_MATRIX.map(row => (
-                        <tr
-                          key={row.permission}
-                          className="border-b border-border hover:bg-accent"
-                        >
-                          <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">
-                            {row.permission}
-                          </td>
-                          {[row.admin, row.user, row.guest].map((has, i) => (
-                            <td key={i} className="px-4 py-2.5 text-center">
-                              {has ? (
-                                <Check
-                                  size={16}
-                                  className="inline text-success"
-                                  strokeWidth={2.5}
-                                />
-                              ) : (
-                                <X
-                                  size={16}
-                                  className="inline text-muted-foreground opacity-30"
-                                />
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-
-              <Card title="Доступные роли" className="p-5">
+            <div className="flex flex-col gap-6 max-w-4xl mt-4">
+              {/* Описание ролей */}
+              <Card title="Роли" className="p-5">
                 <div className="flex gap-3 flex-wrap">
                   {[
                     {
                       role: ERole.Admin,
-                      desc: "Полный доступ ко всем функциям",
+                      desc: "Полный доступ ко всем функциям. Superadmin bypass — все проверки прав пропускаются.",
                       variant: "purple" as const,
                     },
                     {
                       role: ERole.User,
-                      desc: "Стандартный доступ пользователя",
+                      desc: "Стандартный доступ: просмотр пиров, статистики, только свои пиры.",
                       variant: "info" as const,
                     },
                     {
                       role: ERole.Guest,
-                      desc: "Минимальный доступ только для чтения",
+                      desc: "Минимальный доступ — только чтение общих данных.",
                       variant: "gray" as const,
                     },
                   ].map(r => (
                     <div
                       key={r.role}
-                      className="flex-1 min-w-[160px] bg-muted rounded-lg p-3"
+                      className="flex-1 min-w-[180px] bg-muted rounded-lg p-3"
                     >
                       <Badge variant={r.variant}>{r.role}</Badge>
                       <p className="text-xs text-muted-foreground mt-2">
@@ -367,10 +424,239 @@ export const Settings: FC = observer(() => {
                   ))}
                 </div>
               </Card>
+
+              {/* Матрица прав по умолчанию */}
+              <Card title="Матрица прав по умолчанию" className="overflow-hidden">
+                <p className="text-xs text-muted-foreground px-4 pt-3 pb-2">
+                  Права назначаются ролям по умолчанию. Администратор обходит все проверки. Пользователям можно добавить дополнительные права напрямую (на странице пользователя).
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-muted border-b border-border">
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-1/2">
+                          Право
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-purple-500 uppercase tracking-wider">
+                          Admin
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-blue-500 uppercase tracking-wider">
+                          User
+                        </th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                          Guest
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {MATRIX_PERMISSIONS.map(perm => {
+                        const meta = PERMISSION_META[perm];
+                        const group = meta?.group;
+
+                        return (
+                          <tr
+                            key={perm}
+                            className="border-b border-border hover:bg-accent"
+                          >
+                            <td className="px-4 py-2.5">
+                              <div className="flex items-center gap-2">
+                                <code className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                                  {perm}
+                                </code>
+                                {group && (
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {group}
+                                  </span>
+                                )}
+                              </div>
+                              {meta?.description && (
+                                <p className="text-[11px] text-muted-foreground mt-0.5 pl-0.5">
+                                  {meta.description}
+                                </p>
+                              )}
+                            </td>
+                            {[ERole.Admin, ERole.User, ERole.Guest].map(role => (
+                              <td key={role} className="px-4 py-2.5 text-center">
+                                {roleHas(role, perm) ? (
+                                  <Check
+                                    size={16}
+                                    className="inline text-success"
+                                    strokeWidth={2.5}
+                                  />
+                                ) : (
+                                  <X
+                                    size={16}
+                                    className="inline text-muted-foreground opacity-30"
+                                  />
+                                )}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* ── Мои права ────────────────────────────────────────────────── */}
+          <TabsContent value="my-permissions">
+            <div className="flex flex-col gap-6 max-w-3xl mt-4">
+              {/* Текущий пользователь */}
+              <Card title="Текущий аккаунт" className="p-5">
+                <dl className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm text-muted-foreground">Email</dt>
+                    <dd className="text-sm font-medium">{user?.email ?? "—"}</dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm text-muted-foreground">Роли</dt>
+                    <dd className="flex gap-1.5 flex-wrap justify-end">
+                      {roles.length > 0 ? (
+                        roles.map(role => (
+                          <Badge
+                            key={role}
+                            variant={
+                              role === ERole.Admin
+                                ? "purple"
+                                : role === ERole.User
+                                  ? "info"
+                                  : "gray"
+                            }
+                          >
+                            {role}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          Нет ролей
+                        </span>
+                      )}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm text-muted-foreground">
+                      Статус доступа
+                    </dt>
+                    <dd>
+                      <Badge variant={isAdmin ? "purple" : "success"} dot>
+                        {isAdmin ? "Суперадмин" : "Ограниченный"}
+                      </Badge>
+                    </dd>
+                  </div>
+                </dl>
+              </Card>
+
+              {/* Прямые права */}
+              {directPermissions.length > 0 && (
+                <Card title="Прямые права (дополнительные)" className="p-5">
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Назначены этому аккаунту напрямую, дополнительно к правам роли.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {directPermissions.map(perm => (
+                      <div
+                        key={perm}
+                        className="flex items-center gap-1.5 px-2 py-1 bg-primary/10 rounded-md border border-primary/20"
+                      >
+                        <code className="text-xs text-primary">{perm}</code>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* Effective permissions по группам */}
+              <Card title="Эффективные права" className="overflow-hidden">
+                <p className="text-xs text-muted-foreground px-4 pt-3 pb-2">
+                  {isAdmin
+                    ? "Администратор — доступ ко всему без ограничений."
+                    : "Итоговые права = права роли + прямые права. Wildcards покрывают все дочерние права."}
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <tbody>
+                      {myPermGroups.map(([group, perms]) => (
+                        <>
+                          <tr key={`group-${group}`} className="bg-muted/50">
+                            <td
+                              colSpan={3}
+                              className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground"
+                            >
+                              {group}
+                            </td>
+                          </tr>
+                          {perms.map(perm => {
+                            const fromRole = rolePermissions.includes(perm);
+                            const fromDirect = directPermissions.includes(perm);
+                            const effective =
+                              isAdmin ||
+                              permissions.includes(perm) ||
+                              permissions.includes(EPermissions.Value) ||
+                              permissions.includes(EPermissions.Wg);
+
+                            return (
+                              <tr
+                                key={perm}
+                                className="border-b border-border hover:bg-accent"
+                              >
+                                <td className="px-4 py-2">
+                                  <code className="text-xs text-muted-foreground">
+                                    {perm}
+                                  </code>
+                                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                                    {PERMISSION_META[perm]?.description}
+                                  </p>
+                                </td>
+                                <td className="px-4 py-2 text-center">
+                                  {effective ? (
+                                    <Check
+                                      size={16}
+                                      className="inline text-success"
+                                      strokeWidth={2.5}
+                                    />
+                                  ) : (
+                                    <X
+                                      size={16}
+                                      className="inline text-muted-foreground opacity-30"
+                                    />
+                                  )}
+                                </td>
+                                <td className="px-3 py-2">
+                                  {effective && (
+                                    <div className="flex gap-1 flex-wrap justify-end">
+                                      {isAdmin && (
+                                        <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-1.5 py-0.5 rounded">
+                                          admin
+                                        </span>
+                                      )}
+                                      {!isAdmin && fromRole && (
+                                        <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
+                                          через роль
+                                        </span>
+                                      )}
+                                      {!isAdmin && fromDirect && (
+                                        <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                                          напрямую
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+    </PageLayout>
   );
 });

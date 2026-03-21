@@ -1,8 +1,10 @@
 import { createEnumModelBase } from "@force-dev/utils";
-import { makeAutoObservable } from "mobx";
+import { computed, makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
 import {
+  EPermissions,
+  ERole,
   IProfileUpdateRequestDto,
   ISignInRequestDto,
   ITokensDto,
@@ -12,6 +14,11 @@ import {
 } from "~@api/api-gen/data-contracts";
 import { IAuthSessionService } from "~@core/auth";
 import { EntityHolder } from "~@core/holders";
+import {
+  canAccess,
+  computeEffectivePermissions,
+  isAdminRole,
+} from "~@core/permissions";
 import { ProfileModel } from "~@models";
 
 import { AuthStatus, IAuthStore } from "./Auth.types";
@@ -41,6 +48,29 @@ class AuthStore implements IAuthStore {
 
   get user() {
     return this._userHolder.data;
+  }
+
+  get roles(): ERole[] {
+    return this.user?.roles.map(r => r.name) ?? [];
+  }
+
+  get directPermissions(): EPermissions[] {
+    return this.user?.directPermissions.map(p => p.name) ?? [];
+  }
+
+  get permissions(): EPermissions[] {
+    const rolePerms =
+      this.user?.roles.flatMap(r => r.permissions.map(p => p.name)) ?? [];
+
+    return computeEffectivePermissions(rolePerms, this.directPermissions);
+  }
+
+  get isAdmin(): boolean {
+    return isAdminRole(this.roles);
+  }
+
+  hasPermission(required: EPermissions): boolean {
+    return canAccess(this.roles, this.permissions, required);
   }
 
   get profile() {

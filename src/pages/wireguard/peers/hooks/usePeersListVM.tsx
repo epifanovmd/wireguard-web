@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
+  EPermissions,
   EWgServerStatus,
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
@@ -10,7 +11,7 @@ import { PeerActions } from "~@components/shared";
 import { peerColumns } from "~@components/tables/peers";
 import { useNotification } from "~@core/notifications";
 import { PeerModel } from "~@models";
-import { usePeerDataStore, usePeersListStore } from "~@store";
+import { usePeerDataStore, usePeersListStore, usePermissions } from "~@store";
 
 import { type ColumnDef, useConfirm } from "../../../../components/ui";
 
@@ -20,6 +21,8 @@ export const usePeersListVM = (_serverId?: string) => {
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useNotification();
+  const { hasPermission } = usePermissions();
+  const canManage = hasPermission(EPermissions.WgPeerManage);
 
   const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
     null,
@@ -89,6 +92,7 @@ export const usePeersListVM = (_serverId?: string) => {
         cell: ({ row }) => (
           <PeerActions
             status={row.original.status}
+            canManage={canManage}
             onToggle={() =>
               handleToggle(row.original.data.id, row.original.status)
             }
@@ -102,7 +106,7 @@ export const usePeersListVM = (_serverId?: string) => {
         ),
       },
     ],
-    [handleToggle, handleDelete],
+    [handleToggle, handleDelete, canManage],
   );
 
   const createPeer = useCallback(

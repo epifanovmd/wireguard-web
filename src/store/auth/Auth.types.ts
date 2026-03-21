@@ -1,6 +1,8 @@
 import { createServiceDecorator } from "@force-dev/utils";
 
 import {
+  EPermissions,
+  ERole,
   IProfileUpdateRequestDto,
   ISignInRequestDto,
   ITokensDto,
@@ -28,6 +30,18 @@ export interface IAuthStore {
   readonly isAuthenticated: boolean;
   readonly isLoading: boolean;
   readonly isReady: boolean;
+
+  /** Роли текущего пользователя */
+  readonly roles: ERole[];
+  /** Прямые права текущего пользователя */
+  readonly directPermissions: EPermissions[];
+  /** Effective permissions = union(role permissions) + directPermissions */
+  readonly permissions: EPermissions[];
+  /** true если у пользователя роль ADMIN (superadmin bypass) */
+  readonly isAdmin: boolean;
+
+  /** Проверяет право с wildcard-иерархией (admin всегда true) */
+  hasPermission(required: EPermissions): boolean;
 
   load(): Promise<IEntityHolderResult<UserDto, IHolderError>>;
   signIn(params: ISignInRequestDto): Promise<void>;

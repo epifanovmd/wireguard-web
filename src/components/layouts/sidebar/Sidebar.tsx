@@ -15,14 +15,17 @@ import { observer } from "mobx-react-lite";
 import { FC, ReactNode, useState } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
+import { EPermissions } from "~@api/api-gen/data-contracts";
 import { Button, ButtonLink, cn, ThemeToggle } from "~@components/ui";
-import { useAuthStore } from "~@store";
+import { useAuthStore, usePermissions } from "~@store";
 
 interface NavItem {
   to: LinkProps["to"];
   label: string;
   icon: ReactNode;
   badge?: number;
+  /** Право, необходимое для отображения пункта. Отсутствие = доступно всем. */
+  permission?: EPermissions;
 }
 
 interface NavGroup {
@@ -36,7 +39,14 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Управление",
-    items: [{ to: "/users", label: "Пользователи", icon: <Users size={17} /> }],
+    items: [
+      {
+        to: "/users",
+        label: "Пользователи",
+        icon: <Users size={17} />,
+        permission: EPermissions.UserView,
+      },
+    ],
   },
   {
     label: "WireGuard VPN",
@@ -45,12 +55,19 @@ const NAV_GROUPS: NavGroup[] = [
         to: "/wireguard/servers",
         label: "Серверы",
         icon: <Server size={17} />,
+        permission: EPermissions.WgServerView,
       },
-      { to: "/wireguard/peers", label: "Пиры", icon: <Zap size={17} /> },
+      {
+        to: "/wireguard/peers",
+        label: "Пиры",
+        icon: <Zap size={17} />,
+        permission: EPermissions.WgPeerView,
+      },
       {
         to: "/wireguard/stats",
         label: "Статистика",
         icon: <BarChart3 size={17} />,
+        permission: EPermissions.WgStatsView,
       },
     ],
   },
@@ -65,6 +82,7 @@ interface NavContentProps {
   onSignOut: () => void;
   displayName: string;
   initials: string;
+  visibleGroups: NavGroup[];
   onClose?: () => void;
 }
 
@@ -72,6 +90,7 @@ export const NavContent: FC<NavContentProps> = ({
   onSignOut,
   displayName,
   initials,
+  visibleGroups,
   onClose,
 }) => (
   <div className="flex flex-col h-full">
@@ -109,7 +128,7 @@ export const NavContent: FC<NavContentProps> = ({
 
     {/* Nav */}
     <nav className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-4">
-      {NAV_GROUPS.map((group, gi) => (
+      {visibleGroups.map((group, gi) => (
         <div key={gi} className="flex flex-col gap-0.5">
           {group.label && (
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
@@ -174,6 +193,7 @@ interface SidebarProps {
 
 export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
   const { user } = useAuthStore();
+  const { hasPermission } = usePermissions();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const displayName =
@@ -189,6 +209,13 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
       .join("")
       .toUpperCase() || (user?.email?.[0] ?? "A").toUpperCase();
 
+  const visibleGroups = NAV_GROUPS.map(group => ({
+    ...group,
+    items: group.items.filter(
+      item => !item.permission || hasPermission(item.permission),
+    ),
+  })).filter(group => group.items.length > 0);
+
   return (
     <>
       {/* Desktop sidebar */}
@@ -197,6 +224,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
           onSignOut={onSignOut}
           displayName={displayName}
           initials={initials}
+          visibleGroups={visibleGroups}
         />
       </aside>
 
@@ -240,6 +268,7 @@ export const Sidebar: FC<SidebarProps> = observer(({ onSignOut }) => {
               onSignOut={onSignOut}
               displayName={displayName}
               initials={initials}
+              visibleGroups={visibleGroups}
               onClose={() => setMobileOpen(false)}
             />
           </DrawerPrimitive.Content>

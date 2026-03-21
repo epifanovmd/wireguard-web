@@ -1,7 +1,11 @@
 import { DataModelBase } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
-import { ERole, UserDto } from "~@api/api-gen/data-contracts";
+import { EPermissions, ERole, UserDto } from "~@api/api-gen/data-contracts";
+import {
+  computeEffectivePermissions,
+  isAdminRole,
+} from "~@core/permissions";
 
 import { DateModel } from "../date";
 
@@ -18,6 +22,9 @@ export class UserModel extends DataModelBase<UserDto> {
       displayName: computed,
       initials: computed,
       login: computed,
+      roles: computed,
+      directPermissions: computed,
+      effectivePermissions: computed,
       isAdmin: computed,
       roleLabel: computed,
       emailVerified: computed,
@@ -47,12 +54,32 @@ export class UserModel extends DataModelBase<UserDto> {
     return this.data.email ?? this.data.phone;
   }
 
-  get isAdmin() {
-    return this.data.role?.name === ERole.Admin;
+  /** Роли пользователя (массив ERole) */
+  get roles(): ERole[] {
+    return this.data.roles.map(r => r.name);
   }
 
-  get roleLabel() {
-    return this.data.role?.name ?? ERole.User;
+  /** Прямые права пользователя */
+  get directPermissions(): EPermissions[] {
+    return this.data.directPermissions.map(p => p.name);
+  }
+
+  /** Effective permissions = union(роль.permissions) + directPermissions */
+  get effectivePermissions(): EPermissions[] {
+    const rolePerms = this.data.roles.flatMap(r =>
+      r.permissions.map(p => p.name),
+    );
+
+    return computeEffectivePermissions(rolePerms, this.directPermissions);
+  }
+
+  get isAdmin(): boolean {
+    return isAdminRole(this.roles);
+  }
+
+  /** Отображаемое имя первой роли */
+  get roleLabel(): string {
+    return this.data.roles[0]?.name ?? ERole.User;
   }
 
   get emailVerified() {

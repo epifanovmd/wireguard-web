@@ -9,6 +9,10 @@ import { AsyncIconButton, iconButtonVariants } from "../../ui";
 interface ServerActionsProps
   extends Pick<VariantProps<typeof iconButtonVariants>, "size"> {
   status?: EWgServerStatus;
+  /** Разрешено ли управление сервером (create/edit/delete) */
+  canManage?: boolean;
+  /** Разрешено ли управление состоянием (start/stop/restart) */
+  canControl?: boolean;
   onEdit?: () => void;
   onStart: () => Promise<void>;
   onStop: () => Promise<void>;
@@ -19,6 +23,8 @@ interface ServerActionsProps
 export const ServerActions: FC<ServerActionsProps> = ({
   status,
   size,
+  canManage = false,
+  canControl = false,
   onEdit,
   onStart,
   onStop,
@@ -33,24 +39,32 @@ export const ServerActions: FC<ServerActionsProps> = ({
       className="flex items-center justify-end gap-0.5"
       onClick={e => e.stopPropagation()}
     >
-      {onEdit && (
+      {canManage && onEdit && (
         <AsyncIconButton title="Редактировать" size={size} onClick={onEdit}>
           <Pencil size={15} />
         </AsyncIconButton>
       )}
-      {isDown ? (
-        <AsyncIconButton title="Запустить" size={size} onClick={onStart}>
-          <Play size={15} className="text-success" />
-        </AsyncIconButton>
-      ) : (
-        <AsyncIconButton title="Остановить" size={size} onClick={onStop}>
-          <Square size={15} className="text-warning" />
-        </AsyncIconButton>
+      {canControl && (
+        <>
+          {isDown ? (
+            <AsyncIconButton title="Запустить" size={size} onClick={onStart}>
+              <Play size={15} className="text-success" />
+            </AsyncIconButton>
+          ) : (
+            <AsyncIconButton title="Остановить" size={size} onClick={onStop}>
+              <Square size={15} className="text-warning" />
+            </AsyncIconButton>
+          )}
+          <AsyncIconButton
+            title="Перезапустить"
+            size={size}
+            onClick={onRestart}
+          >
+            <RotateCcw size={15} />
+          </AsyncIconButton>
+        </>
       )}
-      <AsyncIconButton title="Перезапустить" size={size} onClick={onRestart}>
-        <RotateCcw size={15} />
-      </AsyncIconButton>
-      {onDelete && (
+      {canManage && onDelete && (
         <AsyncIconButton
           title="Удалить"
           size={size}

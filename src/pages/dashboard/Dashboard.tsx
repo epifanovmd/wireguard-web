@@ -6,7 +6,7 @@ import { FC, useCallback, useEffect, useMemo } from "react";
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { formatter } from "~@common";
 import { ServerSpeedChart, ServerTrafficChart } from "~@components";
-import { PageHeader } from "~@components/layouts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
 import { serverColumns } from "~@components/tables/servers/serverColumns";
 import { StatCard } from "~@components/ui";
@@ -48,57 +48,57 @@ export const Dashboard: FC = observer(() => {
   const stats = overviewStatsStore.stats;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />
-      <div className="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
-        {/* Stat cards */}
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-          <StatCard
-            title="Серверов"
-            value={serversStore.total}
-            subtitle={`${activeServers.length} активных`}
-            color="info"
-            icon={<Server size={20} />}
-          />
-          <StatCard
-            title="Пиров"
-            value={stats?.totalPeers ?? 0}
-            subtitle={`${stats?.activePeers ?? 0} активных`}
-            color="success"
-            icon={<Zap size={20} />}
-          />
-          <StatCard
-            title="Скорость RX"
-            value={formatter.speed(stats?.rxSpeedBps ?? 0)}
-            subtitle="Загрузка"
-            color="purple"
-            icon={<Download size={20} />}
-          />
-          <StatCard
-            title="Скорость TX"
-            value={formatter.speed(stats?.txSpeedBps ?? 0)}
-            subtitle="Отдача"
-            color="warning"
-            icon={<Upload size={20} />}
-          />
-        </div>
-
-        <ServerSpeedChart
-          title={"Скорость всех серверов"}
-          points={overviewStatsStore.speedPoints}
+    <PageLayout
+      header={<PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />}
+      contentClassName="flex flex-col gap-6"
+    >
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <StatCard
+          title="Серверов"
+          value={serversStore.total}
+          subtitle={`${activeServers.length} активных`}
+          color="info"
+          icon={<Server size={20} />}
         />
-        <ServerTrafficChart
-          title={"Трафик всех серверов"}
-          points={overviewStatsStore.trafficPoints}
+        <StatCard
+          title="Пиров"
+          value={stats?.totalPeers ?? 0}
+          subtitle={`${stats?.activePeers ?? 0} активных`}
+          color="success"
+          icon={<Zap size={20} />}
         />
-
-        <ServersTable
-          data={serversStore.models}
-          columns={columns}
-          loading={serversStore.isLoading}
-          onRowClick={onServerClick}
+        <StatCard
+          title="Скорость RX"
+          value={formatter.speed(stats?.rxSpeedBps ?? 0)}
+          subtitle="Загрузка"
+          color="purple"
+          icon={<Download size={20} />}
+        />
+        <StatCard
+          title="Скорость TX"
+          value={formatter.speed(stats?.txSpeedBps ?? 0)}
+          subtitle="Отдача"
+          color="warning"
+          icon={<Upload size={20} />}
         />
       </div>
-    </div>
+
+      <ServerSpeedChart
+        title={"Скорость всех серверов"}
+        points={overviewStatsStore.speedPoints}
+      />
+      <ServerTrafficChart
+        title={"Трафик всех серверов"}
+        points={overviewStatsStore.trafficPoints}
+      />
+
+      <ServersTable
+        data={serversStore.models}
+        columns={columns}
+        loading={serversStore.isLoading}
+        onRowClick={onServerClick}
+      />
+    </PageLayout>
   );
 });

@@ -2,11 +2,13 @@ import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
-import { PageHeader } from "~@components/layouts";
+import { EPermissions } from "~@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
 import {
   Badge,
   Button,
+  CanAccess,
   Card,
   IconButton,
   Modal,
@@ -29,35 +31,37 @@ export const ServersList: FC = observer(() => {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <PageHeader
-        title="Серверы"
-        subtitle={`${vm.total} всего`}
-        actions={
-          <Tooltip content="Добавить сервер">
-            <IconButton
-              variant="solid"
-              onClick={() => setCreateOpen(true)}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-            </IconButton>
-          </Tooltip>
-        }
-      />
-
-      <div className="p-4 sm:p-6 overflow-auto">
-        <Card
+    <PageLayout
+      header={
+        <PageHeader
           title="Серверы"
-          extra={<Badge variant="gray">{vm.total} всего</Badge>}
-        >
-          <ServersTable
-            data={vm.data}
-            columns={vm.columns}
-            loading={vm.loading}
-            onRowClick={vm.handleRowClick}
-          />
-        </Card>
-      </div>
+          subtitle={`${vm.total} всего`}
+          actions={
+            <CanAccess permission={EPermissions.WgServerManage}>
+              <Tooltip content="Добавить сервер">
+                <IconButton
+                  variant="solid"
+                  onClick={() => setCreateOpen(true)}
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                </IconButton>
+              </Tooltip>
+            </CanAccess>
+          }
+        />
+      }
+    >
+      <Card
+        title="Серверы"
+        extra={<Badge variant="gray">{vm.total} всего</Badge>}
+      >
+        <ServersTable
+          data={vm.data}
+          columns={vm.columns}
+          loading={vm.loading}
+          onRowClick={vm.handleRowClick}
+        />
+      </Card>
 
       <Modal
         open={createOpen}
@@ -100,6 +104,6 @@ export const ServersList: FC = observer(() => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </PageLayout>
   );
 });

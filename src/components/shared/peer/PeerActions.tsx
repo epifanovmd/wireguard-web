@@ -9,6 +9,8 @@ import { AsyncIconButton, iconButtonVariants } from "../../ui";
 interface PeerActionsProps
   extends Pick<VariantProps<typeof iconButtonVariants>, "size"> {
   status: EWgServerStatus;
+  /** Разрешено ли управление пиром (edit/delete/toggle/PSK) */
+  canManage?: boolean;
   onQr?: () => void;
   onToggle: () => Promise<void>;
   onEdit?: () => void;
@@ -18,6 +20,7 @@ interface PeerActionsProps
 export const PeerActions: FC<PeerActionsProps> = ({
   status,
   size,
+  canManage = false,
   onQr,
   onToggle,
   onEdit,
@@ -40,20 +43,22 @@ export const PeerActions: FC<PeerActionsProps> = ({
           <QrCode size={15} />
         </AsyncIconButton>
       )}
-      <AsyncIconButton
-        title={isRunning ? "Остановить" : "Запустить"}
-        size={size}
-        variant={isRunning ? "disable" : "enable"}
-        onClick={onToggle}
-      >
-        <Power size={15} />
-      </AsyncIconButton>
-      {onEdit && (
+      {canManage && (
+        <AsyncIconButton
+          title={isRunning ? "Остановить" : "Запустить"}
+          size={size}
+          variant={isRunning ? "disable" : "enable"}
+          onClick={onToggle}
+        >
+          <Power size={15} />
+        </AsyncIconButton>
+      )}
+      {canManage && onEdit && (
         <AsyncIconButton title="Редактировать" size={size} onClick={onEdit}>
           <Pencil size={15} />
         </AsyncIconButton>
       )}
-      {onDelete && (
+      {canManage && onDelete && (
         <AsyncIconButton
           title="Удалить"
           size={size}

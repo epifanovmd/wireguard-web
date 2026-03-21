@@ -66,9 +66,11 @@ export enum EProfileStatus {
 }
 
 export enum EPermissions {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
+  Value = "*",
+  Wg = "wg:*",
+  WgServer = "wg:server:*",
+  WgPeer = "wg:peer:*",
+  WgStats = "wg:stats:*",
   WgServerView = "wg:server:view",
   WgServerManage = "wg:server:manage",
   WgServerControl = "wg:server:control",
@@ -77,6 +79,11 @@ export enum EPermissions {
   WgPeerOwn = "wg:peer:own",
   WgStatsView = "wg:stats:view",
   WgStatsExport = "wg:stats:export",
+  UserView = "user:view",
+  UserManage = "user:manage",
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
 }
 
 export enum ERole {
@@ -128,7 +135,8 @@ export interface UserDto {
   emailVerified?: boolean;
   phone?: string;
   profile?: ProfileDto;
-  role: IRoleDto;
+  roles: IRoleDto[];
+  directPermissions: IPermissionDto[];
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -200,7 +208,12 @@ export interface IUserOptionsDto {
 }
 
 export interface IUserPrivilegesRequestDto {
-  roleName: ERole;
+  /** Roles to assign to the user (replaces current roles). */
+  roles: ERole[];
+  /**
+   * Direct permissions granted to this user on top of role permissions.
+   * Replaces current direct permissions.
+   */
   permissions: EPermissions[];
 }
 
@@ -224,7 +237,8 @@ export interface IUserWithTokensDto {
   emailVerified?: boolean;
   phone?: string;
   profile?: ProfileDto;
-  role: IRoleDto;
+  roles: IRoleDto[];
+  directPermissions: IPermissionDto[];
   /** @format date-time */
   createdAt: string;
   /** @format date-time */

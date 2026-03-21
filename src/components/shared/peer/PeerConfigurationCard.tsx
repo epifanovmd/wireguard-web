@@ -6,12 +6,14 @@ import { AsyncButton, Card, CardProps, CopyableText } from "../../ui";
 
 export interface IPeerConfigurationCardProps extends CardProps {
   peer: PeerModel;
+  /** Разрешено ли управление пиром (PSK rotate/remove) */
+  canManage?: boolean;
   handleRotatePsk?: () => void;
   handleRemovePsk?: () => void;
 }
 
 export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
-  ({ peer, handleRotatePsk, handleRemovePsk }) => {
+  ({ peer, canManage = false, handleRotatePsk, handleRemovePsk }) => {
     return (
       <Card title="Конфигурация пира">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -42,7 +44,7 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
             className="text-muted-foreground"
           />
         </div>
-        {peer.data.hasPresharedKey && (
+        {canManage && peer.data.hasPresharedKey && (
           <div className="mt-4 flex gap-2">
             <AsyncButton size="sm" variant="outline" onClick={handleRotatePsk}>
               Обновить PSK

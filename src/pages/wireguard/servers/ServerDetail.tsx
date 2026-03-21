@@ -1,7 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
-import { PageHeader } from "~@components/layouts";
+import { EPermissions } from "~@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "~@components/layouts";
 import {
   QrCodeModal,
   ServerActions,
@@ -27,6 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "~@components/ui";
+import { usePermissions } from "~@store";
 
 import { ServerForm } from "./components/ServerForm";
 import { ServerLiveCharts } from "./components/ServerLiveCharts";
@@ -41,15 +43,18 @@ interface ServerDetailProps {
 export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   const vm = useServerDetailVM(serverId);
   const { server, peersVM } = vm;
+  const { hasPermission } = usePermissions();
+
+  const canManage = hasPermission(EPermissions.WgServerManage);
+  const canControl = hasPermission(EPermissions.WgServerControl);
 
   if (vm.isLoading || !vm.isFilled) {
     return (
-      <div className="flex flex-col h-full overflow-hidden">
-        <PageHeader title="Сервер" />
-        <div className="flex justify-center py-12 overflow-auto">
+      <PageLayout header={<PageHeader title="Сервер" />}>
+        <div className="flex justify-center py-12">
           <Spinner />
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -58,22 +63,26 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <PageHeader
-        title={server.name}
-        actions={
-          <ServerActions
-            status={vm.effectiveStatus}
-            size="sm"
-            onEdit={() => vm.setEditOpen(true)}
-            onStart={() => vm.handleAction("start")}
-            onStop={() => vm.handleAction("stop")}
-            onRestart={() => vm.handleAction("restart")}
-          />
-        }
-      />
-
-      <div className="p-4 sm:p-6 flex flex-col gap-6 overflow-auto">
+    <PageLayout
+      header={
+        <PageHeader
+          title={server.name}
+          actions={
+            <ServerActions
+              status={vm.effectiveStatus}
+              size="sm"
+              canManage={canManage}
+              canControl={canControl}
+              onEdit={() => vm.setEditOpen(true)}
+              onStart={() => vm.handleAction("start")}
+              onStop={() => vm.handleAction("stop")}
+              onRestart={() => vm.handleAction("restart")}
+            />
+          }
+        />
+      }
+      contentClassName="flex flex-col gap-6"
+    >
         {/* Status cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
@@ -124,20 +133,11 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
                       Пиры не найдены
                     </div>
                   }
-                >
-                  {/*<Table.Pagination*/}
-                  {/*  totalPages={peersVM.totalPages}*/}
-                  {/*  currentPage={peersVM.currentPage}*/}
-                  {/*  pageSize={peersVM.pageSize}*/}
-                  {/*  onPageChange={peersVM.onPageChange}*/}
-                  {/*  onPageSizeChange={peersVM.onPageSizeChange}*/}
-                  {/*/>*/}
-                </Table>
+                />
               </div>
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
 
       <QrCodeModal
         open={!!vm.peersVM.qrPeer}
@@ -146,40 +146,42 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         onClose={() => vm.peersVM.setQrPeer(null)}
       />
 
-      <Modal
-        open={vm.editOpen}
-        onOpenChange={open => !open && vm.setEditOpen(false)}
-      >
-        <ModalOverlay />
-        <ModalContent className="max-w-lg">
-          <ModalHeader>
-            <ModalTitle>Редактировать сервер</ModalTitle>
-          </ModalHeader>
-          <ModalBody>
-            <ServerForm
-              isEdit
-              defaultValues={server}
-              onSubmit={vm.handleUpdate}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => vm.setEditOpen(false)}
-            >
-              Отмена
-            </Button>
-            <Button
-              type="submit"
-              form="server-form"
-              loading={vm.isUpdateLoading}
-            >
-              Сохранить
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
+      {canManage && (
+        <Modal
+          open={vm.editOpen}
+          onOpenChange={open => !open && vm.setEditOpen(false)}
+        >
+          <ModalOverlay />
+          <ModalContent className="max-w-lg">
+            <ModalHeader>
+              <ModalTitle>Редактировать сервер</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <ServerForm
+                isEdit
+                defaultValues={server}
+                onSubmit={vm.handleUpdate}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => vm.setEditOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="submit"
+                form="server-form"
+                loading={vm.isUpdateLoading}
+              >
+                Сохранить
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </PageLayout>
   );
 });

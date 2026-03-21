@@ -57,6 +57,7 @@ import {
   ProfileDto,
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
+  PublicProfileDto,
   RefreshPayload,
   TSignUpRequestDto,
   UserDto,
@@ -149,7 +150,7 @@ export class Api<
    * @secure
    */
   getProfileById = (userId: string, params: RequestParams = {}) =>
-    this.request<ProfileDto, any>({
+    this.request<PublicProfileDto, any>({
       url: `/api/profile/${userId}`,
       method: "GET",
       responseType: "json",
@@ -825,7 +826,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Download the WireGuard client .conf file for this peer.
+   * @description Download the WireGuard client .conf file for this peer. Only accessible by the peer owner or admin.
    *
    * @tags WireGuard Peers
    * @name GetPeerConfig
@@ -841,7 +842,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get QR code PNG image for the client config. Returns base64-encoded PNG data URL.
+   * @description Get QR code PNG image for the client config. Only accessible by the peer owner or admin. Returns base64-encoded PNG data URL.
    *
    * @tags WireGuard Peers
    * @name GetPeerQrCode
