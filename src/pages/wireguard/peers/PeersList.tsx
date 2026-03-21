@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
@@ -5,8 +6,8 @@ import { PageHeader } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
 import {
   Badge,
-  Button,
   Card,
+  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -15,6 +16,7 @@ import {
   ModalTitle,
   Select,
   Table,
+  Tooltip,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
@@ -34,7 +36,14 @@ export const PeersList: FC = observer(() => {
         title="Пиры"
         subtitle={`${vm.total} всего`}
         actions={
-          <Button onClick={() => setCreateOpen(true)}>Добавить пир</Button>
+          <Tooltip content="Добавить пир">
+            <IconButton
+              variant="solid"
+              onClick={() => setCreateOpen(true)}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+            </IconButton>
+          </Tooltip>
         }
       />
 

@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
@@ -5,14 +6,15 @@ import { PageHeader } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
 import {
   Badge,
-  Button,
   Card,
+  IconButton,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  Tooltip,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 
@@ -30,7 +32,14 @@ export const ServersList: FC = observer(() => {
         title="Серверы"
         subtitle={`${vm.total} всего`}
         actions={
-          <Button onClick={() => setCreateOpen(true)}>Добавить сервер</Button>
+          <Tooltip content="Добавить сервер">
+            <IconButton
+              variant="solid"
+              onClick={() => setCreateOpen(true)}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+            </IconButton>
+          </Tooltip>
         }
       />
 

@@ -15,6 +15,8 @@ export const iconButtonVariants = cva(
           "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
         primary: "text-muted-foreground hover:bg-primary/10 hover:text-primary",
         ghost: "text-muted-foreground hover:text-foreground",
+        solid:
+          "rounded-full bg-primary text-primary-foreground hover:bg-primary/85 shadow-sm hover:shadow-md",
       },
       size: {
         sm: "h-7 w-7 p-1",

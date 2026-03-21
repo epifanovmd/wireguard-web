@@ -1,10 +1,10 @@
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
 import { PageHeader } from "~@components/layouts";
 import { UsersTable } from "~@components/tables/users";
-import { Badge, Button, Card, Input } from "~@components/ui";
+import { Badge, Card, IconButton, Input, Tooltip } from "~@components/ui";
 
 import { CreateUserModal } from "./CreateUserModal";
 import { useUsersListVM } from "./hooks";
@@ -19,9 +19,14 @@ export const UsersList: FC = observer(() => {
         title="Пользователи"
         subtitle={`${vm.total} всего`}
         actions={
-          <Button onClick={() => setCreateOpen(true)}>
-            Добавить пользователя
-          </Button>
+          <Tooltip content="Добавить пользователя">
+            <IconButton
+              variant="solid"
+              onClick={() => setCreateOpen(true)}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+            </IconButton>
+          </Tooltip>
         }
       />
 
