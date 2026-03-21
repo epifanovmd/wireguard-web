@@ -81,6 +81,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={isPassword && !showPassword ? "password" : "text"}
           className={cn(
             inputVariants({ size, variant }),
+            "flex w-full py-2 placeholder:text-muted-foreground",
             leftIcon && "pl-10",
             (rightIcon || showClearButton || showPasswordToggle || loading) && "pr-10",
             error && "border-destructive focus:ring-destructive/30",

@@ -37,6 +37,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref}
         className={cn(
           textareaVariants({ size, variant: error ? "error" : variant }),
+          "flex w-full h-auto py-2 placeholder:text-muted-foreground resize-vertical min-h-[80px]",
           className,
         )}
         required={required}

@@ -212,6 +212,10 @@ export {
 // Theme Toggle
 export { ThemeToggle } from "./theme-toggle";
 
+// Field variants (shared: Input, Textarea, Select, DatePicker)
+export type { FieldVariantProps } from "./fieldVariants";
+export { fieldVariants } from "./fieldVariants";
+
 // Form system
 export { cn } from "./cn";
 export type {
