@@ -1,8 +1,20 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
-import { Modal, ModalContent, ModalOverlay } from "~@components/ui";
+import { EPermissions, TSignUpRequestDto } from "~@api/api-gen/data-contracts";
+import { useApi } from "~@api/hooks";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
+} from "~@components/ui";
+import { useNotification } from "~@core/notifications";
 
-import { CreateUserForm } from "./components/CreateUserForm";
+import { CreateUserForm, CreateUserFormData } from "./components/CreateUserForm";
 
 interface CreateUserModalProps {
   open: boolean;
@@ -14,11 +26,64 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
   open,
   onClose,
   onCreated,
-}) => (
-  <Modal open={open} onOpenChange={open => !open && onClose()}>
-    <ModalOverlay />
-    <ModalContent className="max-w-lg" title="Создать пользователя">
-      <CreateUserForm onCancel={onClose} onCreated={onCreated} />
-    </ModalContent>
-  </Modal>
-);
+}) => {
+  const api = useApi();
+  const toast = useNotification();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (
+    data: CreateUserFormData,
+    permissions: EPermissions[],
+  ) => {
+    setLoading(true);
+    try {
+      const signUpData: TSignUpRequestDto = {
+        password: data.password,
+        email: data.email,
+        ...(data.phone && { phone: data.phone }),
+        ...(data.firstName && { firstName: data.firstName }),
+        ...(data.lastName && { lastName: data.lastName }),
+      };
+
+      const res = await api.signUp(signUpData);
+
+      if (res.error) {
+        toast.error(res.error.message);
+        return;
+      }
+
+      if (res.data) {
+        await api.setPrivileges(res.data.id, {
+          roleName: data.role,
+          permissions,
+        });
+        toast.success("Пользователь создан");
+        onCreated();
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onOpenChange={open => !open && onClose()}>
+      <ModalOverlay />
+      <ModalContent className="max-w-lg">
+        <ModalHeader>
+          <ModalTitle>Создать пользователя</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <CreateUserForm loading={loading} onSubmit={handleSubmit} />
+        </ModalBody>
+        <ModalFooter>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Отмена
+          </Button>
+          <Button type="submit" form="create-user-form" loading={loading}>
+            Создать
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};

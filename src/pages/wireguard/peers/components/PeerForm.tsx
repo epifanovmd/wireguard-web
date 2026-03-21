@@ -12,7 +12,6 @@ import {
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
 import {
-  Button,
   DatePickerFormField,
   InputFormField,
   SelectFormField,
@@ -45,21 +44,17 @@ interface PeerFormProps {
   defaultValues?: Partial<WgPeerDto>;
   initialServerId?: string;
   isEdit?: boolean;
-  loading?: boolean;
   onSubmit: (
     data: IWgPeerCreateRequestDto | IWgPeerUpdateRequestDto,
     serverId?: string,
   ) => Promise<void>;
-  onCancel: () => void;
 }
 
 export const PeerForm: FC<PeerFormProps> = ({
   defaultValues,
   initialServerId,
   isEdit,
-  loading,
   onSubmit,
-  onCancel,
 }) => {
   const serversOptions = useServersSelectOptions();
 
@@ -110,7 +105,11 @@ export const PeerForm: FC<PeerFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col gap-4 mb-4">
+      <form
+        id="peer-form"
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="flex flex-col gap-4 my-4"
+      >
         {!isEdit && (
           <SelectFormField<PeerFormData, IWgServerOptionDto>
             name="serverId"
@@ -183,20 +182,7 @@ export const PeerForm: FC<PeerFormProps> = ({
           <span className="text-sm font-medium text-foreground">Включён</span>
           <SwitchFormField<PeerFormData> name="enabled" />
         </div>
-
-        <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Отмена
-          </Button>
-          <Button
-            type="button"
-            loading={loading}
-            onClick={handleSubmit(handleFormSubmit)}
-          >
-            {isEdit ? "Сохранить" : "Создать пир"}
-          </Button>
-        </div>
-      </div>
+      </form>
     </FormProvider>
   );
 };

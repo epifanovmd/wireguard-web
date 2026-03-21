@@ -6,11 +6,13 @@ import { PageHeader } from "~@components/layouts";
 import { QrCodeModal } from "~@components/shared";
 import {
   Badge,
+  Button,
   Card,
   IconButton,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ModalTitle,
@@ -107,8 +109,6 @@ export const PeersList: FC = observer(() => {
           </ModalHeader>
           <ModalBody>
             <PeerForm
-              onCancel={() => setCreateOpen(false)}
-              loading={vm.createPeerLoading}
               onSubmit={async (data, serverId) => {
                 if (!serverId) {
                   toast.error("Выберите сервер");
@@ -124,6 +124,22 @@ export const PeersList: FC = observer(() => {
               }}
             />
           </ModalBody>
+          <ModalFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCreateOpen(false)}
+            >
+              Отмена
+            </Button>
+            <Button
+              type="submit"
+              form="peer-form"
+              loading={vm.createPeerLoading}
+            >
+              Создать пир
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>

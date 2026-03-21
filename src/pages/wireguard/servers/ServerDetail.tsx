@@ -10,10 +10,12 @@ import {
 } from "~@components/shared";
 import {
   Badge,
+  Button,
   Card,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ModalTitle,
@@ -157,11 +159,25 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             <ServerForm
               isEdit
               defaultValues={server}
-              loading={vm.isUpdateLoading}
-              onCancel={() => vm.setEditOpen(false)}
               onSubmit={vm.handleUpdate}
             />
           </ModalBody>
+          <ModalFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => vm.setEditOpen(false)}
+            >
+              Отмена
+            </Button>
+            <Button
+              type="submit"
+              form="server-form"
+              loading={vm.isUpdateLoading}
+            >
+              Сохранить
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>

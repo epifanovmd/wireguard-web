@@ -4,14 +4,8 @@ import React, { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  EPermissions,
-  ERole,
-  TSignUpRequestDto,
-} from "~@api/api-gen/data-contracts";
-import { useApi } from "~@api/hooks";
-import { Button, InputFormField, SelectFormField } from "~@components/ui";
-import { useNotification } from "~@core/notifications";
+import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
+import { InputFormField, SelectFormField } from "~@components/ui";
 
 import { PermissionsEditor } from "./PermissionsEditor";
 
@@ -37,17 +31,17 @@ const schema = z
 export type CreateUserFormData = z.infer<typeof schema>;
 
 interface CreateUserFormProps {
-  onCancel: () => void;
-  onCreated: () => void;
+  loading?: boolean;
+  onSubmit: (
+    data: CreateUserFormData,
+    permissions: EPermissions[],
+  ) => Promise<void>;
 }
 
 export const CreateUserForm: FC<CreateUserFormProps> = ({
-  onCancel,
-  onCreated,
+  loading: _loading,
+  onSubmit,
 }) => {
-  const api = useApi();
-  const toast = useNotification();
-  const [loading, setLoading] = useState(false);
   const [permissions, setPermissions] = useState<EPermissions[]>([
     EPermissions.Read,
   ]);
@@ -57,38 +51,21 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
     defaultValues: { role: ERole.User },
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit } = methods;
 
-  const onSubmit = async (data: CreateUserFormData) => {
-    setLoading(true);
-    const signUpData: TSignUpRequestDto = {
-      password: data.password,
-      email: data.email,
-      ...(data.phone && { phone: data.phone }),
-      ...(data.firstName && { firstName: data.firstName }),
-      ...(data.lastName && { lastName: data.lastName }),
-    };
-
-    const res = await api.signUp(signUpData);
-    if (res.error) {
-      toast.error(res.error.message);
-    } else if (res.data) {
-      await api.setPrivileges(res.data.id, {
-        roleName: data.role,
-        permissions,
-      });
-      toast.success("Пользователь создан");
-      reset();
-      onCreated();
-    }
-    setLoading(false);
+  const handleFormSubmit = async (data: CreateUserFormData) => {
+    await onSubmit(data, permissions);
   };
 
-  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], ["SELECT"]);
+  useHotkeys([["Enter", () => handleSubmit(handleFormSubmit)()]], ["SELECT"]);
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col gap-4 mb-4">
+      <form
+        id="create-user-form"
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="flex flex-col gap-4 my-4"
+      >
         <div className="grid grid-cols-2 gap-3">
           <InputFormField<CreateUserFormData> name="firstName" label="Имя" />
           <InputFormField<CreateUserFormData> name="lastName" label="Фамилия" />
@@ -127,16 +104,7 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
           </p>
           <PermissionsEditor value={permissions} onChange={setPermissions} />
         </div>
-
-        <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" onClick={onCancel}>
-            Отмена
-          </Button>
-          <Button loading={loading} onClick={handleSubmit(onSubmit)}>
-            Создать
-          </Button>
-        </div>
-      </div>
+      </form>
     </FormProvider>
   );
 };

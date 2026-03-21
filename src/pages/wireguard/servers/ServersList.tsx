@@ -6,11 +6,13 @@ import { PageHeader } from "~@components/layouts";
 import { ServersTable } from "~@components/tables/servers";
 import {
   Badge,
+  Button,
   Card,
   IconButton,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ModalTitle,
@@ -68,8 +70,6 @@ export const ServersList: FC = observer(() => {
           </ModalHeader>
           <ModalBody>
             <ServerForm
-              loading={vm.createServerLoading}
-              onCancel={() => setCreateOpen(false)}
               onSubmit={async data => {
                 const res = await vm.createServer(data);
 
@@ -82,6 +82,22 @@ export const ServersList: FC = observer(() => {
               }}
             />
           </ModalBody>
+          <ModalFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCreateOpen(false)}
+            >
+              Отмена
+            </Button>
+            <Button
+              type="submit"
+              form="server-form"
+              loading={vm.createServerLoading}
+            >
+              Создать сервер
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>

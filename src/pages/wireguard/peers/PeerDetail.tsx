@@ -8,9 +8,11 @@ import {
   QrCodeModal,
 } from "~@components/shared";
 import {
+  Button,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ModalTitle,
@@ -108,11 +110,25 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               <PeerForm
                 isEdit
                 defaultValues={peer}
-                loading={vm.isUpdateLoading}
-                onCancel={() => vm.setEditOpen(false)}
                 onSubmit={vm.handleUpdate}
               />
             </ModalBody>
+            <ModalFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => vm.setEditOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="submit"
+                form="peer-form"
+                loading={vm.isUpdateLoading}
+              >
+                Сохранить
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Modal>
 

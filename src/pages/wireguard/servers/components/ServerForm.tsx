@@ -11,7 +11,6 @@ import {
   WgServerDto,
 } from "~@api/api-gen/data-contracts";
 import {
-  Button,
   Collapse,
   InputFormField,
   SwitchFormField,
@@ -45,19 +44,15 @@ export type ServerFormData = z.infer<typeof schema>;
 interface ServerFormProps {
   defaultValues?: Partial<WgServerDto>;
   isEdit?: boolean;
-  loading?: boolean;
   onSubmit: (
     data: IWgServerCreateRequestDto | IWgServerUpdateRequestDto,
   ) => Promise<void>;
-  onCancel: () => void;
 }
 
 export const ServerForm: FC<ServerFormProps> = ({
   defaultValues,
   isEdit,
-  loading,
   onSubmit,
-  onCancel,
 }) => {
   const methods = useForm<ServerFormData>({
     resolver: zodResolver(schema),
@@ -110,7 +105,11 @@ export const ServerForm: FC<ServerFormProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col gap-4 mb-4">
+      <form
+        id="server-form"
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="flex flex-col gap-4 my-4"
+      >
         <InputFormField<ServerFormData>
           name="name"
           label="Название сервера"
@@ -170,9 +169,7 @@ export const ServerForm: FC<ServerFormProps> = ({
         />
 
         <div className="flex items-center justify-between py-1">
-          <span className="text-sm font-medium text-foreground">
-            Включён
-          </span>
+          <span className="text-sm font-medium text-foreground">Включён</span>
           <SwitchFormField<ServerFormData> name="enabled" />
         </div>
 
@@ -204,20 +201,7 @@ export const ServerForm: FC<ServerFormProps> = ({
             />
           </Collapse.Content>
         </Collapse>
-
-        <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Отмена
-          </Button>
-          <Button
-            type="button"
-            loading={loading}
-            onClick={handleSubmit(handleFormSubmit)}
-          >
-            {isEdit ? "Сохранить" : "Создать сервер"}
-          </Button>
-        </div>
-      </div>
+      </form>
     </FormProvider>
   );
 };
