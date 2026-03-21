@@ -65,6 +65,7 @@ function SelectInner<TData = unknown, V extends string = string>(
   React.useImperativeHandle(ref, () => ({
     focus() {
       if (search) {
+        handleOpen(true);
         inputRef.current?.focus();
       } else {
         triggerRef.current?.focus();
