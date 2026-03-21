@@ -15,6 +15,8 @@ import {
   ApiResponseDto,
   AssignPeerParams,
   Base64URLString,
+  EPermissions,
+  IRoleDto,
   GetMyPeersParams,
   GetOverviewStatsParams,
   GetPeersByServerParams,
@@ -310,6 +312,40 @@ export class Api<
   ) =>
     this.request<UserDto, any>({
       url: `/api/user/setPrivileges/${id}`,
+      method: "PATCH",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @tags Role
+   * @name GetRoles
+   * @summary Список ролей с правами
+   * @request GET:/api/roles
+   * @secure
+   */
+  getRoles = (params: RequestParams = {}) =>
+    this.request<IRoleDto[], any>({
+      url: `/api/roles`,
+      method: "GET",
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @tags Role
+   * @name SetRolePermissions
+   * @summary Установка прав роли
+   * @request PATCH:/api/roles/{id}/permissions
+   * @secure
+   */
+  setRolePermissions = (
+    id: string,
+    data: { permissions: EPermissions[] },
+    params: RequestParams = {},
+  ) =>
+    this.request<IRoleDto, any>({
+      url: `/api/roles/${id}/permissions`,
       method: "PATCH",
       data: data,
       type: EContentType.Json,

@@ -57,7 +57,7 @@ export class ProfileModel extends DataModelBase<ProfileDto> {
   }
 
   get roleLabel() {
-    return this.data.user?.role?.name ?? ERole.User;
+    return this.data.user?.roles?.[0]?.name ?? ERole.User;
   }
 
   get emailVerified() {

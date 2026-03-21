@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 
 import { EPermissions, TSignUpRequestDto } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
+import { CreateUserForm, CreateUserFormData } from "~@components/forms";
 import {
   Button,
   Modal,
@@ -13,8 +14,6 @@ import {
   ModalTitle,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
-
-import { CreateUserForm, CreateUserFormData } from "./components/CreateUserForm";
 
 interface CreateUserModalProps {
   open: boolean;
@@ -54,7 +53,7 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
 
       if (res.data) {
         await api.setPrivileges(res.data.id, {
-          roleName: data.role,
+          roles: [data.role],
           permissions,
         });
         toast.success("Пользователь создан");
@@ -73,7 +72,7 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
           <ModalTitle>Создать пользователя</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <CreateUserForm loading={loading} onSubmit={handleSubmit} />
+          <CreateUserForm onSubmit={handleSubmit} />
         </ModalBody>
         <ModalFooter>
           <Button type="button" variant="outline" onClick={onClose}>

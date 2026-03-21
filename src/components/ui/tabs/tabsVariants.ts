@@ -1,12 +1,25 @@
 import { cva } from "class-variance-authority";
 
+export const tabsMotionVariants = cva("absolute z-0", {
+  variants: {
+    variant: {
+      default: "inset-0 bg-background shadow-sm rounded-md",
+      underline:
+        "-inset-1 border-b-2 border-primary top-auto h-0.5 rounded-none",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
 export const tabsListVariants = cva(
   "inline-flex items-center justify-center rounded-lg p-1 text-muted-foreground",
   {
     variants: {
       variant: {
         default: "bg-muted",
-        underline: "bg-transparent border-b border-border",
+        underline: "rounded-none bg-transparent border-b border-border",
       },
       size: {
         sm: "h-8 text-xs",

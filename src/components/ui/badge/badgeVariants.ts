@@ -17,6 +17,7 @@ export const badgeVariants = cva(
         warning: "bg-warning/15 text-warning",
         info: "bg-info/15 text-info",
         outline: "border border-border bg-background text-foreground",
+        muted: "bg-muted text-muted-foreground",
       },
       size: {
         sm: "h-5 min-w-5 px-1.5 text-xs",

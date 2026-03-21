@@ -2,10 +2,7 @@ import { DataModelBase } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { EPermissions, ERole, UserDto } from "~@api/api-gen/data-contracts";
-import {
-  computeEffectivePermissions,
-  isAdminRole,
-} from "~@core/permissions";
+import { computeEffectivePermissions, isAdminRole } from "~@core/permissions";
 
 import { DateModel } from "../date";
 
@@ -45,7 +42,11 @@ export class UserModel extends DataModelBase<UserDto> {
     const p = this.data.profile;
     const parts = [p?.firstName, p?.lastName].filter(Boolean);
 
-    if (parts.length > 0) return parts.map(s => s![0]).join("").toUpperCase();
+    if (parts.length > 0)
+      return parts
+        .map(s => s![0])
+        .join("")
+        .toUpperCase();
 
     return (this.data.email?.[0] ?? "U").toUpperCase();
   }
@@ -78,7 +79,7 @@ export class UserModel extends DataModelBase<UserDto> {
   }
 
   /** Отображаемое имя первой роли */
-  get roleLabel(): string {
+  get roleLabel() {
     return this.data.roles[0]?.name ?? ERole.User;
   }
 

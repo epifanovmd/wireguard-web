@@ -81,9 +81,6 @@ export enum EPermissions {
   WgStatsExport = "wg:stats:export",
   UserView = "user:view",
   UserManage = "user:manage",
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
 }
 
 export enum ERole {

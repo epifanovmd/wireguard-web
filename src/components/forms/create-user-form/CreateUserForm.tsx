@@ -1,57 +1,36 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { InputFormField, SelectFormField } from "~@components/ui";
 
-import { PermissionsEditor } from "./PermissionsEditor";
+import { useRolesSelectOptions } from "../../../hooks/useRolesSelectOptions";
+import { PermissionsEditor } from "../permissions-editor";
+import { CreateUserFormData, createUserSchema } from "./schema";
 
-const schema = z
-  .object({
-    email: z
-      .string()
-      .refine(
-        v => v === "" || z.string().email().safeParse(v).success,
-        "Неверный email",
-      ),
-    phone: z.string().optional(),
-    password: z.string().min(6, "Минимум 6 символов"),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    role: z.nativeEnum(ERole),
-  })
-  .refine(d => d.email || d.phone, {
-    message: "Email или телефон обязателен",
-    path: ["email"],
-  });
-
-export type CreateUserFormData = z.infer<typeof schema>;
+export type { CreateUserFormData };
 
 interface CreateUserFormProps {
-  loading?: boolean;
   onSubmit: (
     data: CreateUserFormData,
     permissions: EPermissions[],
   ) => Promise<void>;
 }
 
-export const CreateUserForm: FC<CreateUserFormProps> = ({
-  loading: _loading,
-  onSubmit,
-}) => {
-  const [permissions, setPermissions] = useState<EPermissions[]>([
-    EPermissions.Read,
-  ]);
+export const CreateUserForm: FC<CreateUserFormProps> = ({ onSubmit }) => {
+  const [permissions, setPermissions] = useState<EPermissions[]>([]);
+  const { options: roleOptions, getRolePermissions } = useRolesSelectOptions();
 
   const methods = useForm<CreateUserFormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createUserSchema),
     defaultValues: { role: ERole.User },
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
+  const selectedRole = watch("role");
+  const rolePermissions = getRolePermissions(selectedRole);
 
   const handleFormSubmit = async (data: CreateUserFormData) => {
     await onSubmit(data, permissions);
@@ -91,18 +70,19 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
           name="role"
           label="Роль"
           placeholder="Выберите роль"
-          options={[
-            { value: ERole.Admin, label: "Администратор" },
-            { value: ERole.User, label: "Пользователь" },
-            { value: ERole.Guest, label: "Гость" },
-          ]}
+          options={roleOptions}
         />
 
         <div>
           <p className="text-sm font-medium text-foreground mb-3">
             Права доступа
           </p>
-          <PermissionsEditor value={permissions} onChange={setPermissions} />
+          <PermissionsEditor
+            value={permissions}
+            onChange={setPermissions}
+            rolePermissions={rolePermissions}
+            role={selectedRole}
+          />
         </div>
       </form>
     </FormProvider>

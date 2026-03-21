@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { ERole } from "~@api/api-gen/data-contracts";
 import { Badge } from "~@components/ui";
 
-export const UserRoleBadge: FC<{ role: string }> = ({ role }) => {
+export const UserRoleBadge: FC<{ role: ERole }> = ({ role }) => {
   const map: Record<string, { variant: any }> = {
     [ERole.Admin]: { variant: "purple" },
     [ERole.User]: { variant: "info" },

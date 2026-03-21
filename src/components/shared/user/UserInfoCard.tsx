@@ -1,5 +1,6 @@
 import React, { FC, ReactNode } from "react";
 
+import { ERole } from "~@api/api-gen/data-contracts";
 import { Badge, Button, Card } from "~@components/ui";
 
 import { UserAvatar } from "./UserAvatar";
@@ -8,7 +9,7 @@ import { UserRoleBadge } from "./UserRoleBadge";
 interface UserInfoCardProps {
   displayName: string;
   login?: string;
-  role?: string;
+  role?: ERole;
   emailVerified?: boolean;
   registeredAt?: string;
   lastOnline?: string;
@@ -30,9 +31,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = ({
       <div>
         <p className="font-semibold text-foreground">{displayName}</p>
         {login && (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {login}
-          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">{login}</p>
         )}
       </div>
       {role && <UserRoleBadge role={role} />}
@@ -55,9 +54,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = ({
         )}
         {lastOnline && (
           <div className="flex justify-between">
-            <span className="text-muted-foreground">
-              Последний визит
-            </span>
+            <span className="text-muted-foreground">Последний визит</span>
             <span className="text-muted-foreground">{lastOnline}</span>
           </div>
         )}
