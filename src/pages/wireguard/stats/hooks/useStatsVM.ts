@@ -10,7 +10,7 @@ export const useStatsVM = () => {
   const serverStatsStore = useServerStatsStore();
 
   const [selectedServer, setSelectedServer] = useState<string>();
-  const [selectedPeer, setSelectedPeer] = useState<string>();
+  const [selectedPeer, setSelectedPeer] = useState<string | null>();
   const [preset, setPreset] = useState<Preset>("1h");
   const [customRange, setCustomRange] = useState<DateRange | undefined>(
     undefined,

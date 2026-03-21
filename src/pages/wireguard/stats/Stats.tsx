@@ -30,9 +30,11 @@ export const Stats: FC = () => {
               getOption={vm.peers.getOption}
               fetchOptions={vm.peers.fetchOptions}
               value={vm.selectedPeer}
+              loadOnce={true}
               disabled={!vm.selectedServer}
               onChange={vm.setSelectedPeer}
               placeholder="Выберите peer"
+              clearable={true}
             />
           </div>
           <Segmented
