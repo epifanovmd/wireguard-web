@@ -1,3 +1,11 @@
+import { cva, type VariantProps } from "class-variance-authority";
+
+import {
+  FIELD_BASE,
+  FIELD_SIZE_VARIANTS,
+  FIELD_VARIANT_MAP,
+} from "../fieldVariants";
+
 // ─── Shared dropdown content classes ──────────────────────────────────────────
 // Used by both SelectContent (Radix Select) and SearchSelect (Radix Popover)
 // so they stay visually identical.
@@ -19,4 +27,18 @@ export const selectItemClasses = [
 
 export const selectItemHighlightedClasses = "bg-accent text-accent-foreground";
 
-export { fieldVariants as selectTriggerVariants } from "../fieldVariants";
+export const selectTriggerVariants = cva(
+  `${FIELD_BASE} items-center whitespace-nowrap gap-2 justify-between py-2`,
+  {
+    variants: {
+      size: FIELD_SIZE_VARIANTS,
+      variant: FIELD_VARIANT_MAP,
+    },
+    defaultVariants: {
+      size: "md",
+      variant: "default",
+    },
+  },
+);
+
+export type SelectTriggerVariantProps = VariantProps<typeof selectTriggerVariants>;

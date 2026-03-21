@@ -36,7 +36,6 @@ export const SelectTriggerBase = React.forwardRef<
       ref={ref}
       className={cn(
         selectTriggerVariants({ size, variant }),
-        "flex grow items-center whitespace-nowrap gap-2 justify-between py-2",
         cursorText ? "cursor-text" : "cursor-pointer",
         className,
       )}

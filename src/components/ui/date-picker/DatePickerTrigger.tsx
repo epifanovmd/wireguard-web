@@ -13,11 +13,7 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
     <button
       ref={ref}
       type="button"
-      className={cn(
-        datePickerTriggerVariants({ size, variant }),
-        "flex grow items-center gap-2 cursor-pointer",
-        className,
-      )}
+      className={cn(datePickerTriggerVariants({ size, variant }), className)}
       {...props}
     />
   ),
