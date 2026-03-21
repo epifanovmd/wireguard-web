@@ -114,17 +114,6 @@ export const PeerForm: FC<PeerFormProps> = ({
             clearable
           />
         )}
-        {!isEdit && (
-          <Select
-            fetchOptions={serversOptions.fetchOptions}
-            getOption={serversOptions.getOption}
-            // fetchOnMount
-            value={serverId}
-            onChange={v => setServerId(v ?? "")}
-            placeholder="Выберите сервер"
-            // clearable
-          />
-        )}
 
         <InputFormField<PeerFormData>
           name="name"
