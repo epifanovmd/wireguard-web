@@ -21,8 +21,13 @@ import { type SelectProps } from "./types";
 
 // ─── Select ────────────────────────────────────────────────────────────────────
 
-export function Select<TData = unknown, V extends string = string>(
+export interface SelectHandle {
+  focus(): void;
+}
+
+function SelectInner<TData = unknown, V extends string = string>(
   props: SelectProps<TData, V>,
+  ref: React.ForwardedRef<SelectHandle>,
 ): React.ReactElement {
   const {
     options: optionsProp,
@@ -55,6 +60,18 @@ export function Select<TData = unknown, V extends string = string>(
     | undefined;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useImperativeHandle(ref, () => ({
+    focus() {
+      if (search) {
+        inputRef.current?.focus();
+      } else {
+        triggerRef.current?.focus();
+      }
+    },
+  }));
+
   const { open, query, setQuery, handleOpen } = useSelectState(search);
 
   const { options, loading: optionsLoading } = useSelectOptions<TData, V>({
@@ -304,6 +321,7 @@ export function Select<TData = unknown, V extends string = string>(
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild disabled={disabled}>
         <SelectTriggerBase
+          ref={triggerRef}
           size={size}
           variant={variant}
           className={className}
@@ -359,4 +377,11 @@ export function Select<TData = unknown, V extends string = string>(
   );
 }
 
-Select.displayName = "Select";
+export const Select = React.forwardRef(SelectInner) as <
+  TData = unknown,
+  V extends string = string,
+>(
+  props: SelectProps<TData, V> & { ref?: React.Ref<SelectHandle> },
+) => React.ReactElement;
+
+(Select as { displayName?: string }).displayName = "Select";

@@ -1,5 +1,6 @@
 // Main components
 export { GroupedSelect } from "./GroupedSelect";
+export type { SelectHandle } from "./Select";
 export { Select } from "./Select";
 export type { GroupedSelectProps, SelectProps } from "./types";
 

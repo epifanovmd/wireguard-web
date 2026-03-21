@@ -1,20 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
 import { formatISO, parseISO } from "date-fns";
-import React, { FC } from "react";
+import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
+  IWgServerOptionDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
 import {
   Button,
   DatePickerFormField,
   InputFormField,
-  Select,
+  SelectFormField,
   SwitchFormField,
   TextareaFormField,
 } from "~@components/ui";
@@ -22,6 +23,7 @@ import {
 import { useServersSelectOptions } from "../../hooks";
 
 const schema = z.object({
+  serverId: z.string().optional(),
   name: z.string().min(1, "Название обязательно"),
   description: z.string().optional().or(z.literal("")),
   presharedKey: z.boolean(),
@@ -31,6 +33,10 @@ const schema = z.object({
   clientAllowedIPs: z.string().optional().or(z.literal("")),
   expiresAt: z.date().optional(),
   enabled: z.boolean(),
+});
+
+const createSchema = schema.extend({
+  serverId: z.string().min(1, "Выберите сервер"),
 });
 
 export type PeerFormData = z.infer<typeof schema>;
@@ -55,12 +61,12 @@ export const PeerForm: FC<PeerFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [serverId, setServerId] = React.useState(initialServerId ?? "");
   const serversOptions = useServersSelectOptions();
 
   const methods = useForm<PeerFormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(isEdit ? schema : createSchema),
     defaultValues: {
+      serverId: initialServerId ?? "",
       name: defaultValues?.name ?? "",
       description: defaultValues?.description ?? "",
       presharedKey: defaultValues?.hasPresharedKey ?? false,
@@ -91,7 +97,7 @@ export const PeerForm: FC<PeerFormProps> = ({
     if (data.clientAllowedIPs) payload.clientAllowedIPs = data.clientAllowedIPs;
     if (data.expiresAt) payload.expiresAt = formatISO(data.expiresAt);
 
-    await onSubmit(payload, serverId);
+    await onSubmit(payload, data.serverId);
   };
 
   useHotkeys(
@@ -103,15 +109,15 @@ export const PeerForm: FC<PeerFormProps> = ({
     <FormProvider {...methods}>
       <div className="flex flex-col gap-4 mb-4">
         {!isEdit && (
-          <Select
+          <SelectFormField<PeerFormData, IWgServerOptionDto>
+            name="serverId"
+            label="Сервер"
+            required
             search
             fetchOptions={serversOptions.fetchOptions}
             getOption={serversOptions.getOption}
             fetchOnMount
-            value={serverId}
-            onChange={v => setServerId(v ?? "")}
             placeholder="Выберите сервер"
-            clearable
           />
         )}
 
