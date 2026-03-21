@@ -134,7 +134,7 @@ export const NavContent: FC<NavContentProps> = ({
     </nav>
 
     {/* User area */}
-    <div className="px-2 py-2 border-t border-sidebar-border">
+    <div className="flex flex-col px-2 py-2 gap-2 border-t border-sidebar-border">
       <div onClick={onClose}>
         <ButtonLink
           to="/profile"
@@ -157,7 +157,7 @@ export const NavContent: FC<NavContentProps> = ({
         size="sm"
         onClick={onSignOut}
         className={cn(
-          "w-full justify-start gap-2.5 font-normal",
+          "w-full justify-start gap-2.5",
           "hover:bg-sidebar-accent hover:text-destructive",
         )}
       >
