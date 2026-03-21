@@ -59,7 +59,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const showPasswordToggle = isPassword && internalValue;
 
     return (
-      <div className="relative w-full">
+      <div className="flex grow relative w-full">
         {leftIcon && (
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {leftIcon}
@@ -70,7 +70,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             inputVariants({ size, variant }),
             leftIcon && "pl-10",
-            (rightIcon || showClearButton || showPasswordToggle || loading) && "pr-10",
+            (rightIcon || showClearButton || showPasswordToggle || loading) &&
+              "pr-10",
             className,
           )}
           ref={ref}

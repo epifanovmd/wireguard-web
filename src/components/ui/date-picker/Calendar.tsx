@@ -50,11 +50,13 @@ export const Calendar = React.memo(({ selected, onSelect, className }: CalendarP
         currentMonth === selected.getMonth() &&
         currentYear === selected.getFullYear();
 
-      return cn(
-        isToday && !isSelected && "bg-accent text-accent-foreground",
-        isSelected &&
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-      );
+      return {
+        button: cn(
+          isToday && !isSelected && "bg-accent text-accent-foreground",
+          isSelected &&
+            "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+        ),
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentMonth, currentYear, selected],

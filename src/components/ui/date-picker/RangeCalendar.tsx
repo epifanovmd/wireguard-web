@@ -49,23 +49,38 @@ export const RangeCalendar = React.memo(
           day === today.getDate() &&
           currentMonth === today.getMonth() &&
           currentYear === today.getFullYear();
-        const isStart = !!selected?.from && date.getTime() === selected.from.getTime();
-        const isEnd = !!selected?.to && date.getTime() === selected.to.getTime();
+        const isStart =
+          !!selected?.from && date.getTime() === selected.from.getTime();
+        const isEnd =
+          !!selected?.to && date.getTime() === selected.to.getTime();
+        const hasRange = !!selected?.from && !!selected?.to;
+        const isSingle = isStart && isEnd;
         const isInRange =
-          !!selected?.from &&
-          !!selected?.to &&
-          date >= selected.from &&
-          date <= selected.to;
+          hasRange && date > selected.from! && date < selected.to!;
 
-        return cn(
-          isToday && !isStart && !isEnd && "bg-accent text-accent-foreground",
-          isInRange &&
-            !isStart &&
-            !isEnd &&
-            "bg-accent/60 text-accent-foreground rounded-none",
-          (isStart || isEnd) &&
-            "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-        );
+        return {
+          wrapper: cn(
+            // Middle days — full strip
+            isInRange && "absolute inset-y-1 left-0 right-0 bg-primary/15",
+            // Start day — right half strip (only when range is complete)
+            hasRange && isStart && !isSingle && "absolute inset-y-1 left-1/2 right-0 bg-primary/15",
+            // End day — left half strip (only when range is complete)
+            hasRange && isEnd && !isSingle && "absolute inset-y-1 left-0 right-1/2 bg-primary/15",
+          ),
+          button: cn(
+            "rounded-full",
+            isToday &&
+              !isStart &&
+              !isEnd &&
+              !isInRange &&
+              "bg-accent text-accent-foreground",
+            isToday &&
+              isInRange &&
+              "ring-1 ring-primary/40",
+            (isStart || isEnd) &&
+              "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+          ),
+        };
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [currentMonth, currentYear, selected],

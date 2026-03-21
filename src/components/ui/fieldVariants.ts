@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const FIELD_BASE =
-  "flex grow w-full rounded-lg px-3 transition-all duration-200 focus-visible:outline-none focus-visible:shadow-focus disabled:cursor-not-allowed disabled:opacity-50";
+  "flex grow rounded-lg px-3 transition-all duration-200 focus-visible:outline-none focus-visible:shadow-focus disabled:cursor-not-allowed disabled:opacity-50";
 
 export const FIELD_SIZE_VARIANTS = {
   sm: "h-8 text-sm px-2",
