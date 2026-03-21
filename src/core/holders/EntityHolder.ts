@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable, runInAction } from "mobx"
 
 import { BaseHolder } from "./BaseHolder";
 import {
+  CancellablePromise,
   EntityFetchFn,
   HolderStatus,
   IApiResponse,
@@ -152,7 +153,7 @@ export class EntityHolder<
 
     const promise = fn();
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;
@@ -246,7 +247,7 @@ export class EntityHolder<
 
     const promise = this._onFetch(args);
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;

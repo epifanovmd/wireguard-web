@@ -4,7 +4,11 @@ import React, { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
+import {
+  EPermissions,
+  ERole,
+  TSignUpRequestDto,
+} from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";
 import { Button, InputFormField, SelectFormField } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
@@ -57,11 +61,13 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({
 
   const onSubmit = async (data: CreateUserFormData) => {
     setLoading(true);
-    const signUpData: any = { password: data.password };
-    if (data.email) signUpData.email = data.email;
-    if (data.phone) signUpData.phone = data.phone;
-    if (data.firstName) signUpData.firstName = data.firstName;
-    if (data.lastName) signUpData.lastName = data.lastName;
+    const signUpData: TSignUpRequestDto = {
+      password: data.password,
+      email: data.email,
+      ...(data.phone && { phone: data.phone }),
+      ...(data.firstName && { firstName: data.firstName }),
+      ...(data.lastName && { lastName: data.lastName }),
+    };
 
     const res = await api.signUp(signUpData);
     if (res.error) {

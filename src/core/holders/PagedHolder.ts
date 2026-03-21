@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable } from "mobx";
 
 import { BaseListHolder } from "./BaseListHolder";
 import {
+  CancellablePromise,
   HolderStatus,
   IApiResponse,
   IHolderError,
@@ -229,7 +230,7 @@ export class PagedHolder<
 
     const promise = fn();
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;
@@ -356,7 +357,7 @@ export class PagedHolder<
     const offset = (page - 1) * pageSize;
     const promise = this._onFetch({ offset, limit: pageSize }, args);
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;

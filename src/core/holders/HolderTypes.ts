@@ -27,6 +27,14 @@ export enum MutationStatus {
   Error = "error",
 }
 
+// ─── Отменяемый промис ───────────────────────────────────────────────────────
+
+/**
+ * Промис с опциональным методом cancel().
+ * Используется в холдерах для отмены предыдущего запроса при race condition.
+ */
+export type CancellablePromise = Promise<unknown> & { cancel?: () => void };
+
 // ─── Ошибка ──────────────────────────────────────────────────────────────────
 
 /** Нормализованная ошибка, хранящаяся внутри каждого холдера. */
@@ -43,7 +51,12 @@ export interface IHolderError {
  * Используется холдерами, чтобы не затирать состояние при race condition.
  */
 export function isCancelResponse(res: unknown): boolean {
-  return (res as any)?.isCanceled === true;
+  return (
+    typeof res === "object" &&
+    res !== null &&
+    "isCanceled" in res &&
+    (res as { isCanceled: unknown }).isCanceled === true
+  );
 }
 
 /**
@@ -51,7 +64,12 @@ export function isCancelResponse(res: unknown): boolean {
  * Запасной вариант на случай если промис всё же реджектится.
  */
 export function isCancelError(e: unknown): boolean {
-  return (e as any)?.__CANCEL__ === true;
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "__CANCEL__" in e &&
+    (e as { __CANCEL__: unknown }).__CANCEL__ === true
+  );
 }
 
 /**

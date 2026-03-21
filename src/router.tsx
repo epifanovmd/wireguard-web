@@ -2,6 +2,7 @@ import { createRouter } from "@tanstack/react-router";
 
 import { Spinner } from "~@components/ui";
 
+import { RouterErrorFallback } from "./RouterErrorFallback";
 import { routeTree } from "./routeTree.gen";
 
 export const router = createRouter({
@@ -13,6 +14,7 @@ export const router = createRouter({
       <Spinner size="lg" />
     </div>
   ),
+  defaultErrorComponent: RouterErrorFallback,
 });
 
 declare module "@tanstack/react-router" {

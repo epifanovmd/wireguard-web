@@ -2,6 +2,7 @@ import { action, makeObservable } from "mobx";
 
 import { BaseListHolder } from "./BaseListHolder";
 import {
+  CancellablePromise,
   CollectionFetchFn,
   HolderStatus,
   IApiResponse,
@@ -142,7 +143,7 @@ export class CollectionHolder<
 
     const promise = fn();
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;
@@ -225,7 +226,7 @@ export class CollectionHolder<
 
     const promise = this._onFetch(args);
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;

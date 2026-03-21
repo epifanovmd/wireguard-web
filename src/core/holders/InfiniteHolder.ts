@@ -8,6 +8,7 @@ import {
 
 import { BaseListHolder } from "./BaseListHolder";
 import {
+  CancellablePromise,
   HolderStatus,
   IApiResponse,
   IHolderError,
@@ -260,7 +261,7 @@ export class InfiniteHolder<
 
     const promise = fn();
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;
@@ -364,7 +365,7 @@ export class InfiniteHolder<
     const offset = isAppend ? this._currentOffset : 0;
     const promise = this._onFetch({ offset, limit: this._pageSize }, args);
 
-    this._pendingFetch = promise as any;
+    this._pendingFetch = promise as CancellablePromise;
 
     try {
       const res = await promise;

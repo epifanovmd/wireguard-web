@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import React from "react";
 
 import { AppLayout } from "~@components/layouts";
+import { ErrorBoundary } from "~@components/ui";
 import { IAuthStore } from "~@store";
 
 export const Route = createFileRoute("/_private")({
@@ -14,7 +15,9 @@ export const Route = createFileRoute("/_private")({
   },
   component: () => (
     <AppLayout>
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
     </AppLayout>
   ),
 });

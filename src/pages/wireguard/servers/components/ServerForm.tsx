@@ -81,23 +81,25 @@ export const ServerForm: FC<ServerFormProps> = ({
   const { handleSubmit } = methods;
 
   const handleFormSubmit = async (data: ServerFormData) => {
-    const payload: any = {
+    const base = {
       name: data.name,
       listenPort: data.listenPort,
       address: data.address,
       enabled: data.enabled,
+      ...(data.endpoint && { endpoint: data.endpoint }),
+      ...(data.dns && { dns: data.dns }),
+      ...(data.mtu && { mtu: data.mtu }),
+      ...(data.description && { description: data.description }),
+      ...(data.preUp && { preUp: data.preUp }),
+      ...(data.postUp && { postUp: data.postUp }),
+      ...(data.preDown && { preDown: data.preDown }),
+      ...(data.postDown && { postDown: data.postDown }),
     };
-    if (data.endpoint) payload.endpoint = data.endpoint;
-    if (data.dns) payload.dns = data.dns;
-    if (data.mtu) payload.mtu = data.mtu;
-    if (data.description) payload.description = data.description;
-    if (data.preUp) payload.preUp = data.preUp;
-    if (data.postUp) payload.postUp = data.postUp;
-    if (data.preDown) payload.preDown = data.preDown;
-    if (data.postDown) payload.postDown = data.postDown;
-    if (!isEdit) {
-      payload.interface = data.interface;
-    }
+
+    const payload = isEdit
+      ? (base as IWgServerUpdateRequestDto)
+      : ({ ...base, interface: data.interface } as IWgServerCreateRequestDto);
+
     await onSubmit(payload);
   };
 

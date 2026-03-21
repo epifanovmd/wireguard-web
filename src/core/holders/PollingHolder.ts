@@ -79,22 +79,25 @@ export class PollingHolder<
   startPolling(options?: PollingStartOptions<TArgs>): void {
     this.stopPolling();
 
-    const args = (options as any)?.args as TArgs | undefined;
-    const interval = (options as any)?.interval ?? this._defaultInterval;
+    const typedOptions = options as { args?: TArgs; interval?: number } | undefined;
+    const args = typedOptions?.args as TArgs;
+    const interval = typedOptions?.interval ?? this._defaultInterval;
 
     this.isPolling = true;
+
+    type AnyLoadFn = (args: TArgs) => Promise<unknown>;
 
     const schedule = () => {
       if (!this.isPolling) return;
       this._timeoutId = setTimeout(async () => {
         if (!this.isPolling) return;
-        await (this as any).refresh(args);
+        await (this.refresh as unknown as AnyLoadFn)(args);
         schedule();
       }, interval);
     };
 
     if (this.isIdle) {
-      (this as any).load(args).then(schedule);
+      (this.load as unknown as AnyLoadFn)(args).then(schedule);
     } else {
       schedule();
     }

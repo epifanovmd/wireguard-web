@@ -1,10 +1,16 @@
 services:
   wg-admin:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wireguard-web:latest
     container_name: wireguard-web
     ports:
-      - "3001:4173"
+      - "${APP_PORT:-3001}:4173"
     restart: unless-stopped
+    networks:
+      - wg-net
 
-volumes:
-  wireguard:
+networks:
+  wg-net:
+    driver: bridge

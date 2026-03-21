@@ -212,6 +212,10 @@ export {
 // Theme Toggle
 export { ThemeToggle } from "./theme-toggle";
 
+// Error Boundary
+export type { ErrorBoundaryProps } from "./error-boundary";
+export { ErrorBoundary } from "./error-boundary";
+
 // Field variants (shared: Input, Textarea, Select, DatePicker)
 export type { FieldVariantProps } from "./fieldVariants";
 export { fieldVariants } from "./fieldVariants";

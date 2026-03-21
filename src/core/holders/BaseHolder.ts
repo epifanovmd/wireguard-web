@@ -1,6 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 
-import { HolderStatus, IHolderError } from "./HolderTypes";
+import { CancellablePromise, HolderStatus, IHolderError } from "./HolderTypes";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -12,7 +12,7 @@ export abstract class BaseHolder<TError extends IHolderError = IHolderError> {
   status = HolderStatus.Idle;
   error: TError | null = null;
 
-  protected _pendingFetch: { cancel?: () => void } | null = null;
+  protected _pendingFetch: CancellablePromise | null = null;
 
   constructor() {
     makeObservable(this, {

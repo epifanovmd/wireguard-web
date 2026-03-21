@@ -16,11 +16,7 @@ export const AsyncButton = forwardRef<HTMLButtonElement, AsyncButtonProps>(
         if (onClick && !disabled) {
           setLoading(true);
           try {
-            await onClick?.(e);
-          } catch (e) {
-            if (e instanceof Error) {
-              console.log("AsyncButton onClick ERROR: ", e);
-            }
+            await onClick(e);
           } finally {
             setLoading(false);
           }

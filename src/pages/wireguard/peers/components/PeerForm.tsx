@@ -84,18 +84,21 @@ export const PeerForm: FC<PeerFormProps> = ({
   const { handleSubmit } = methods;
 
   const handleFormSubmit = async (data: PeerFormData) => {
-    const payload: any = {
+    const payload = {
       name: data.name,
       enabled: data.enabled,
-    };
-    if (data.presharedKey) payload.presharedKey = true;
-    if (data.description) payload.description = data.description;
-    if (data.persistentKeepalive)
-      payload.persistentKeepalive = data.persistentKeepalive;
-    if (data.dns) payload.dns = data.dns;
-    if (data.mtu) payload.mtu = data.mtu;
-    if (data.clientAllowedIPs) payload.clientAllowedIPs = data.clientAllowedIPs;
-    if (data.expiresAt) payload.expiresAt = formatISO(data.expiresAt);
+      ...(data.presharedKey && { presharedKey: true as const }),
+      ...(data.description && { description: data.description }),
+      ...(data.persistentKeepalive && {
+        persistentKeepalive: data.persistentKeepalive,
+      }),
+      ...(data.dns && { dns: data.dns }),
+      ...(data.mtu && { mtu: data.mtu }),
+      ...(data.clientAllowedIPs && {
+        clientAllowedIPs: data.clientAllowedIPs,
+      }),
+      ...(data.expiresAt && { expiresAt: formatISO(data.expiresAt) }),
+    } as IWgPeerCreateRequestDto | IWgPeerUpdateRequestDto;
 
     await onSubmit(payload, data.serverId);
   };

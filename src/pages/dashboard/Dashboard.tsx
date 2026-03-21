@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Download, Server, Upload, Zap } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { FC, useEffect, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo } from "react";
 
 import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { formatter } from "~@common";
@@ -19,6 +19,9 @@ export const Dashboard: FC = observer(() => {
 
   const navigate = useNavigate();
 
+  // Инициализация только при монтировании.
+  // serversStore и overviewStatsStore — DI-синглтоны, их референсы стабильны.
+
   useEffect(() => {
     serversStore.load().then();
 
@@ -26,12 +29,15 @@ export const Dashboard: FC = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onServerClick = (server: ServerModel) => {
-    return navigate({
-      to: "/wireguard/servers/$serverId",
-      params: { serverId: server.data.id },
-    });
-  };
+  const onServerClick = useCallback(
+    (server: ServerModel) => {
+      return navigate({
+        to: "/wireguard/servers/$serverId",
+        params: { serverId: server.data.id },
+      });
+    },
+    [navigate],
+  );
 
   const activeServers = serversStore.listHolder.items.filter(
     s => s.status === EWgServerStatus.Up,
