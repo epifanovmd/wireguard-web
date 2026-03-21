@@ -1,12 +1,7 @@
 import { FC } from "react";
 
 import { PageHeader } from "~@components/layouts";
-import {
-  Button,
-  DateRangePicker,
-  Segmented,
-  Select,
-} from "~@components/ui";
+import { Button, DateRangePicker, Segmented, Select } from "~@components/ui";
 
 import { StatsDisplay } from "./components/StatsDisplay";
 import { useStatsVM } from "./hooks/useStatsVM";
@@ -36,10 +31,8 @@ export const Stats: FC = () => {
               fetchOptions={vm.peers.fetchOptions}
               value={vm.selectedPeer}
               disabled={!vm.selectedServer}
-              onChange={v => vm.setSelectedPeer(v ?? "")}
+              onChange={vm.setSelectedPeer}
               placeholder="Выберите peer"
-              clearable
-              // multi
             />
           </div>
           <Segmented

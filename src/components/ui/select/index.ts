@@ -10,10 +10,6 @@ export type { UseSelectOptionsProps, UseSelectOptionsResult } from "./hooks/useS
 export { useSelectOptions } from "./hooks/useSelectOptions";
 export type { UseSelectStateResult } from "./hooks/useSelectState";
 export { useSelectState } from "./hooks/useSelectState";
-// Legacy hook (kept for external consumers)
-export type { UseAsyncSelectOptions, UseAsyncSelectResult } from "./hooks/useAsyncSelect";
-export { useAsyncSelect } from "./hooks/useAsyncSelect";
-
 // Types
 export type {
   SelectOption,

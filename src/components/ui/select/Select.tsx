@@ -1,8 +1,14 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as React from "react";
+import { ComponentPropsWithRef } from "react";
 
 import { cn } from "../cn";
-import { useKeyboardNav, useSelectOptions, useSelectState } from "./hooks";
+import {
+  useKeyboardNav,
+  useLabelCache,
+  useSelectOptions,
+  useSelectState,
+} from "./hooks";
 import {
   SelectEmpty,
   SelectListItem,
@@ -11,26 +17,7 @@ import {
   SelectTag,
   SelectTriggerBase,
 } from "./primitives";
-import { type SelectOption, type SelectProps } from "./types";
-
-// ─── Label cache ───────────────────────────────────────────────────────────────
-
-function useLabelCache<V extends string>() {
-  const cacheRef = React.useRef<Partial<Record<string, React.ReactNode>>>({});
-
-  const updateCache = React.useCallback((opts: SelectOption<V>[]) => {
-    opts.forEach(o => {
-      cacheRef.current[o.value] = o.label;
-    });
-  }, []);
-
-  const getLabel = React.useCallback(
-    (v: V): React.ReactNode => cacheRef.current[v] ?? v,
-    [],
-  );
-
-  return { updateCache, getLabel };
-}
+import { type SelectProps } from "./types";
 
 // ─── Select ────────────────────────────────────────────────────────────────────
 
@@ -154,43 +141,94 @@ export function Select<TData = unknown, V extends string = string>(
     });
 
   const hasValue = multi
-    ? ((rawValue as V[] | undefined) ?? []).length > 0
+    ? selectedValues.length > 0
     : rawValue != null && rawValue !== "";
 
   const showClear = clearable && !loading && hasValue;
 
   // ─── Trigger content ───────────────────────────────────────────────────────
 
-  const renderInput = () => (
-    <input
-      ref={inputRef}
-      className="flex-1 min-w-0 bg-transparent outline-none text-inherit placeholder:text-muted-foreground cursor-text text-sm"
-      value={open ? query : ""}
-      placeholder={selectedValues.length === 0 ? placeholder : undefined}
-      readOnly={!open}
-      onChange={e => setQuery(e.target.value)}
-      onKeyDown={handleKeyDown}
-      onPointerDown={e => {
-        if (open) e.stopPropagation();
-      }}
-    />
-  );
+  const searchInputProps: ComponentPropsWithRef<"input"> = {
+    ref: inputRef,
+    className:
+      "flex-1 min-w-0 bg-transparent outline-none text-inherit placeholder:text-muted-foreground cursor-text text-sm",
+    readOnly: !open,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      setQuery(e.target.value),
+    onKeyDown: handleKeyDown,
+    onPointerDown: (e: React.PointerEvent) => {
+      if (open) e.stopPropagation();
+    },
+  };
 
   const renderTriggerContent = () => {
-    // ── Multi + search ─────────────────────────────────────────────────────
-    if (multi && search) {
+    // ── Multi ──────────────────────────────────────────────────────────────
+    if (multi) {
+      const vals = selectedValues;
+
+      if (tagsDisplay) {
+        // No values + no search → plain placeholder span
+        if (!search && vals.length === 0) {
+          return (
+            <span className="flex-1 truncate text-sm text-muted-foreground">
+              {placeholder}
+            </span>
+          );
+        }
+        // Tags (+ search input when enabled)
+        return (
+          <div className="flex flex-wrap gap-1 flex-1 min-w-0 overflow-hidden items-center py-0.5">
+            {vals.map(v => (
+              <SelectTag
+                key={v}
+                label={getLabel(v)}
+                onRemove={() => handleRemoveTag(v)}
+                disabled={disabled}
+              />
+            ))}
+            {search && (
+              <input
+                {...searchInputProps}
+                value={open ? query : ""}
+                placeholder={vals.length === 0 ? placeholder : undefined}
+              />
+            )}
+          </div>
+        );
+      }
+
+      // Comma-separated — same pattern as single + search:
+      // closed → comma text as value; open → search query, comma text as placeholder
+      const commaLabel =
+        vals.length > 0
+          ? vals.map(v => String(getLabel(v))).join(", ")
+          : undefined;
+
+      if (search) {
+        return (
+          <input
+            {...searchInputProps}
+            value={open ? query : (commaLabel ?? "")}
+            placeholder={
+              open
+                ? (commaLabel ?? placeholder)
+                : commaLabel
+                  ? undefined
+                  : placeholder
+            }
+          />
+        );
+      }
+
       return (
-        <div className="flex flex-wrap gap-1 flex-1 min-w-0 overflow-hidden items-center py-0.5">
-          {selectedValues.map(v => (
-            <SelectTag
-              key={v}
-              label={getLabel(v)}
-              onRemove={() => handleRemoveTag(v)}
-              disabled={disabled}
-            />
-          ))}
-          {renderInput()}
-        </div>
+        <span
+          className={cn(
+            "flex-1 truncate text-sm",
+            !commaLabel && "text-muted-foreground",
+          )}
+        >
+          {commaLabel ?? placeholder}
+        </span>
       );
     }
 
@@ -202,8 +240,7 @@ export function Select<TData = unknown, V extends string = string>(
 
       return (
         <input
-          ref={inputRef}
-          className="flex-1 min-w-0 bg-transparent outline-none text-inherit placeholder:text-muted-foreground cursor-text text-sm"
+          {...searchInputProps}
           value={open ? query : (displayLabel ?? "")}
           placeholder={
             open
@@ -212,44 +249,7 @@ export function Select<TData = unknown, V extends string = string>(
                 ? undefined
                 : placeholder
           }
-          readOnly={!open}
-          onChange={e => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onPointerDown={e => {
-            if (open) e.stopPropagation();
-          }}
         />
-      );
-    }
-
-    // ── Multi, no search ───────────────────────────────────────────────────
-    if (multi) {
-      const vals = (rawValue as V[] | undefined) ?? [];
-      if (vals.length === 0) {
-        return (
-          <span className="flex-1 truncate text-muted-foreground text-sm">
-            {placeholder}
-          </span>
-        );
-      }
-      if (tagsDisplay) {
-        return (
-          <div className="flex flex-wrap gap-1 flex-1 min-w-0 overflow-hidden py-0.5">
-            {vals.map(v => (
-              <SelectTag
-                key={v}
-                label={getLabel(v)}
-                onRemove={() => handleRemoveTag(v)}
-                disabled={disabled}
-              />
-            ))}
-          </div>
-        );
-      }
-      return (
-        <span className="flex-1 truncate text-sm">
-          {vals.map(v => String(getLabel(v))).join(", ")}
-        </span>
       );
     }
 

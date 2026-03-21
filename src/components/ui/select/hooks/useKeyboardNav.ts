@@ -21,6 +21,15 @@ export function useKeyboardNav({
   const [focusedIndex, setFocusedIndex] = React.useState(-1);
   const listRef = React.useRef<HTMLDivElement>(null);
 
+  // Stable refs — handleKeyDown always calls the latest version without being
+  // recreated when these callbacks or focusedIndex change.
+  const onSelectRef = React.useRef(onSelect);
+  const onCloseRef = React.useRef(onClose);
+  const focusedIndexRef = React.useRef(focusedIndex);
+  onSelectRef.current = onSelect;
+  onCloseRef.current = onClose;
+  focusedIndexRef.current = focusedIndex;
+
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
@@ -34,18 +43,19 @@ export function useKeyboardNav({
           break;
         case "Enter":
           e.preventDefault();
-          if (focusedIndex >= 0) onSelect(focusedIndex);
+          if (focusedIndexRef.current >= 0)
+            onSelectRef.current(focusedIndexRef.current);
           break;
         case "Escape":
           e.preventDefault();
-          onClose();
+          onCloseRef.current();
           break;
         case "Tab":
-          onClose();
+          onCloseRef.current();
           break;
       }
     },
-    [count, focusedIndex, onSelect, onClose],
+    [count], // only count matters for arrow bounds; rest read from refs
   );
 
   // Scroll focused item into view
