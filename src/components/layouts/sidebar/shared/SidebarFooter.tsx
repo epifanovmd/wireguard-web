@@ -39,16 +39,18 @@ export const SidebarFooter: FC<SidebarFooterProps> = ({
     </div>
 
     {/* Settings + ThemeToggle */}
-    <div className="flex items-center gap-1" onClick={onClose}>
-      <ButtonLink
-        to="/settings"
-        variant="ghost"
-        size="sm"
-        leftIcon={<Settings size={ICON_SIZE} />}
-        className="flex-1 justify-start"
-      >
-        Настройки
-      </ButtonLink>
+    <div className="flex items-center gap-2">
+      <div className={"flex grow"} onClick={onClose}>
+        <ButtonLink
+          to="/settings"
+          variant="ghost"
+          size="sm"
+          leftIcon={<Settings size={ICON_SIZE} />}
+          className="flex-1 justify-start"
+        >
+          Настройки
+        </ButtonLink>
+      </div>
       <ThemeToggle />
     </div>
 
