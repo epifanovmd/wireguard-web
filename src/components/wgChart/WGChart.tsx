@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   Area,
   AreaChart,
@@ -60,7 +59,7 @@ export const WGChart = observer<IWGChartProps>(
             <Tooltip contentStyle={tooltipStyle} formatter={tooltipFormatter} />
 
             <Area
-              animationEasing={"linear"}
+              isAnimationActive={false}
               type="monotone"
               dataKey="rx"
               stroke="var(--chart-1)"
@@ -70,7 +69,7 @@ export const WGChart = observer<IWGChartProps>(
               name="rx"
             />
             <Area
-              animationEasing={"linear"}
+              isAnimationActive={false}
               type="monotone"
               dataKey="tx"
               stroke="var(--chart-2)"
