@@ -43,8 +43,11 @@ export abstract class StatsChartBase {
     trafficPoint: IChartPoint,
   ): void {
     const current = this.chartHolder.data ?? EMPTY;
-    const speed = current.speed.slice(1);
-    const traffic = current.traffic.slice(1);
+    const shouldTrim = current.speed.length + 1 > 100;
+    const speed = shouldTrim ? current.speed.slice(1) : [...current.speed];
+    const traffic = shouldTrim
+      ? current.traffic.slice(1)
+      : [...current.traffic];
 
     speed.push(speedPoint);
     traffic.push(trafficPoint);
