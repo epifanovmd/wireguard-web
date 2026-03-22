@@ -20,9 +20,9 @@ export const badgeVariants = cva(
         muted: "bg-muted text-muted-foreground",
       },
       size: {
-        sm: "h-5 min-w-5 px-1.5 text-xs",
-        md: "h-6 min-w-6 px-2 text-sm",
-        lg: "h-7 min-w-7 px-2.5 text-base",
+        sm: "h-5 min-w-5 px-2 text-xs",
+        md: "h-6 min-w-6 px-2.5 text-sm",
+        lg: "h-7 min-w-7 px-3 text-base",
       },
     },
     defaultVariants: {

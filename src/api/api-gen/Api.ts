@@ -15,13 +15,9 @@ import {
   ApiResponseDto,
   AssignPeerParams,
   Base64URLString,
-  EPermissions,
-  IRoleDto,
-  GetMyPeersParams,
   GetOverviewStatsParams,
-  GetPeersByServerParams,
-  GetPeersByUserParams,
   GetPeersOptionsParams,
+  GetPeersParams,
   GetPeerStatsParams,
   GetProfilesParams,
   GetServerOptionsParams,
@@ -32,6 +28,8 @@ import {
   IGenerateAuthenticationOptionsRequestDto,
   IProfileListDto,
   IProfileUpdateRequestDto,
+  IRoleDto,
+  IRolePermissionsRequestDto,
   ISignInRequestDto,
   ITokensDto,
   IUserChangePasswordDto,
@@ -197,6 +195,44 @@ export class Api<
       ...params,
     });
   /**
+   * @description Получить все роли с их правами.
+   *
+   * @tags Role
+   * @name GetRoles
+   * @summary Список ролей
+   * @request GET:/api/roles
+   * @secure
+   */
+  getRoles = (params: RequestParams = {}) =>
+    this.request<IRoleDto[], any>({
+      url: `/api/roles`,
+      method: "GET",
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Установить права для роли. Заменяет текущий набор прав роли указанным.
+   *
+   * @tags Role
+   * @name SetRolePermissions
+   * @summary Установка прав роли
+   * @request PATCH:/api/roles/{id}/permissions
+   * @secure
+   */
+  setRolePermissions = (
+    id: string,
+    data: IRolePermissionsRequestDto,
+    params: RequestParams = {},
+  ) =>
+    this.request<IRoleDto, any>({
+      url: `/api/roles/${id}/permissions`,
+      method: "PATCH",
+      data: data,
+      type: EContentType.Json,
+      responseType: "json",
+      ...params,
+    });
+  /**
    * @description Получить пользователя. Этот эндпоинт позволяет получить данные пользователя, который выполнил запрос.
    *
    * @tags User
@@ -312,40 +348,6 @@ export class Api<
   ) =>
     this.request<UserDto, any>({
       url: `/api/user/setPrivileges/${id}`,
-      method: "PATCH",
-      data: data,
-      type: EContentType.Json,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @tags Role
-   * @name GetRoles
-   * @summary Список ролей с правами
-   * @request GET:/api/roles
-   * @secure
-   */
-  getRoles = (params: RequestParams = {}) =>
-    this.request<IRoleDto[], any>({
-      url: `/api/roles`,
-      method: "GET",
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @tags Role
-   * @name SetRolePermissions
-   * @summary Установка прав роли
-   * @request PATCH:/api/roles/{id}/permissions
-   * @secure
-   */
-  setRolePermissions = (
-    id: string,
-    data: { permissions: EPermissions[] },
-    params: RequestParams = {},
-  ) =>
-    this.request<IRoleDto, any>({
-      url: `/api/roles/${id}/permissions`,
       method: "PATCH",
       data: data,
       type: EContentType.Json,
@@ -609,86 +611,24 @@ export class Api<
       ...params,
     });
   /**
-   * @description List all peers for a given server with optional filters.
+   * @description List all peers. Returns all peers for wg:peer:view (with optional userId filter), own peers for wg:peer:own.
    *
    * @tags WireGuard Peers
-   * @name GetPeersByServer
-   * @summary Get peers by server
-   * @request GET:/api/wg/servers/{serverId}/peers
+   * @name GetPeers
+   * @summary Get peers
+   * @request GET:/api/wg/peers
    * @secure
    */
-  getPeersByServer = (
-    { serverId, ...query }: GetPeersByServerParams,
-    params: RequestParams = {},
-  ) =>
+  getPeers = (query: GetPeersParams, params: RequestParams = {}) =>
     this.request<IWgPeerListDto, any>({
-      url: `/api/wg/servers/${serverId}/peers`,
+      url: `/api/wg/peers`,
       method: "GET",
       params: query,
       responseType: "json",
       ...params,
     });
   /**
-   * @description Create a new peer on a server. Keys are auto-generated. Peer is applied to live interface if server is up.
-   *
-   * @tags WireGuard Peers
-   * @name CreatePeer
-   * @summary Create peer
-   * @request POST:/api/wg/servers/{serverId}/peers
-   * @secure
-   */
-  createPeer = (
-    serverId: string,
-    data: IWgPeerCreateRequestDto,
-    params: RequestParams = {},
-  ) =>
-    this.request<WgPeerDto, any>({
-      url: `/api/wg/servers/${serverId}/peers`,
-      method: "POST",
-      data: data,
-      type: EContentType.Json,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get all peers owned by the current user with optional filters.
-   *
-   * @tags WireGuard Peers
-   * @name GetMyPeers
-   * @summary Get my peers
-   * @request GET:/api/wg/peers/my
-   * @secure
-   */
-  getMyPeers = (query: GetMyPeersParams, params: RequestParams = {}) =>
-    this.request<IWgPeerListDto, any>({
-      url: `/api/wg/peers/my`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get all peers for a user with optional filters (admin only).
-   *
-   * @tags WireGuard Peers
-   * @name GetPeersByUser
-   * @summary Get peers by user
-   * @request GET:/api/wg/peers/user/{userId}
-   * @secure
-   */
-  getPeersByUser = (
-    { userId, ...query }: GetPeersByUserParams,
-    params: RequestParams = {},
-  ) =>
-    this.request<IWgPeerListDto, any>({
-      url: `/api/wg/peers/user/${userId}`,
-      method: "GET",
-      params: query,
-      responseType: "json",
-      ...params,
-    });
-  /**
-   * @description Get peer options for dropdowns (id + name only).
+   * @description Get peer options for dropdowns. Returns all options for wg:peer:view, own options for wg:peer:own.
    *
    * @tags WireGuard Peers
    * @name GetPeersOptions
@@ -708,7 +648,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get a peer by ID.
+   * @description Get a peer by ID. Ownership check for wg:peer:own users.
    *
    * @tags WireGuard Peers
    * @name GetPeer
@@ -758,6 +698,28 @@ export class Api<
     this.request<boolean, any>({
       url: `/api/wg/peers/${id}`,
       method: "DELETE",
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Create a new peer on a server. Keys are auto-generated. Peer is applied to live interface if server is up.
+   *
+   * @tags WireGuard Peers
+   * @name CreatePeer
+   * @summary Create peer
+   * @request POST:/api/wg/servers/{serverId}/peers
+   * @secure
+   */
+  createPeer = (
+    serverId: string,
+    data: IWgPeerCreateRequestDto,
+    params: RequestParams = {},
+  ) =>
+    this.request<WgPeerDto, any>({
+      url: `/api/wg/servers/${serverId}/peers`,
+      method: "POST",
+      data: data,
+      type: EContentType.Json,
       responseType: "json",
       ...params,
     });
@@ -862,7 +824,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Download the WireGuard client .conf file for this peer. Only accessible by the peer owner or admin.
+   * @description Download the WireGuard client .conf file for this peer. wg:peer:view can access any peer; wg:peer:own only their own.
    *
    * @tags WireGuard Peers
    * @name GetPeerConfig
@@ -878,7 +840,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get QR code PNG image for the client config. Only accessible by the peer owner or admin. Returns base64-encoded PNG data URL.
+   * @description Get QR code PNG image for the client config. wg:peer:view can access any peer; wg:peer:own only their own. Returns base64-encoded PNG data URL.
    *
    * @tags WireGuard Peers
    * @name GetPeerQrCode
@@ -899,7 +861,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description List all WireGuard servers with optional filters.
+   * @description List all WireGuard servers with optional filters. Returns all servers for wg:server:view, own servers for wg:server:own.
    *
    * @tags WireGuard Servers
    * @name GetServers
@@ -937,7 +899,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get server options for dropdowns (id + name only).
+   * @description Get server options for dropdowns (id + name only). Returns all options for wg:server:view, own options for wg:server:own.
    *
    * @tags WireGuard Servers
    * @name GetServerOptions
@@ -957,7 +919,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get a WireGuard server by ID.
+   * @description Get a WireGuard server by ID. Ownership check for wg:server:own users.
    *
    * @tags WireGuard Servers
    * @name GetServer
@@ -1075,7 +1037,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Aggregated traffic + speed across all servers and all peers. Traffic: cumulative total (monotonically increasing). Speed: sum of peer speeds at each minute bucket.
+   * @description Aggregated traffic + speed across all servers and all peers. wg:stats:view — full overview; wg:server:own — own servers only; wg:peer:own — own peers only.
    *
    * @tags WireGuard Statistics
    * @name GetOverviewStats
@@ -1115,7 +1077,7 @@ export class Api<
       ...params,
     });
   /**
-   * @description Aggregated traffic + speed for a specific peer.
+   * @description Aggregated traffic + speed for a specific peer. wg:stats:view can view any peer; wg:peer:own only their own.
    *
    * @tags WireGuard Statistics
    * @name GetPeerStats

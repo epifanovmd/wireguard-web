@@ -15,13 +15,13 @@ import { Route as UiRouteImport } from './routes/ui'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PrivateRouteImport } from './routes/_private'
+import { Route as PrivateIndexRouteImport } from './routes/_private/index'
 import { Route as PrivateWireguardRouteImport } from './routes/_private/wireguard'
 import { Route as PrivateUsersRouteImport } from './routes/_private/users'
 import { Route as PrivateWireguardStatsRouteImport } from './routes/_private/wireguard/stats'
 import { Route as PrivateWireguardServersRouteImport } from './routes/_private/wireguard/servers'
 import { Route as PrivateWireguardPeersRouteImport } from './routes/_private/wireguard/peers'
 
-const PrivateIndexLazyRouteImport = createFileRoute('/_private/')()
 const AuthSignUpLazyRouteImport = createFileRoute('/auth/signUp')()
 const AuthSignInLazyRouteImport = createFileRoute('/auth/signIn')()
 const AuthRecoveryPasswordLazyRouteImport = createFileRoute(
@@ -65,7 +65,7 @@ const PrivateRoute = PrivateRouteImport.update({
   id: '/_private',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivateIndexLazyRoute = PrivateIndexLazyRouteImport.update({
+const PrivateIndexRoute = PrivateIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PrivateRoute,
@@ -195,7 +195,7 @@ export interface FileRoutesByFullPath {
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
-  '/': typeof PrivateIndexLazyRoute
+  '/': typeof PrivateIndexRoute
   '/wireguard/peers': typeof PrivateWireguardPeersRouteWithChildren
   '/wireguard/servers': typeof PrivateWireguardServersRouteWithChildren
   '/wireguard/stats': typeof PrivateWireguardStatsRoute
@@ -216,7 +216,7 @@ export interface FileRoutesByTo {
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
-  '/': typeof PrivateIndexLazyRoute
+  '/': typeof PrivateIndexRoute
   '/wireguard/stats': typeof PrivateWireguardStatsRoute
   '/users/$userId': typeof PrivateUsersUserIdLazyRoute
   '/users': typeof PrivateUsersIndexLazyRoute
@@ -238,7 +238,7 @@ export interface FileRoutesById {
   '/auth/recovery-password': typeof AuthRecoveryPasswordLazyRoute
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
-  '/_private/': typeof PrivateIndexLazyRoute
+  '/_private/': typeof PrivateIndexRoute
   '/_private/wireguard/peers': typeof PrivateWireguardPeersRouteWithChildren
   '/_private/wireguard/servers': typeof PrivateWireguardServersRouteWithChildren
   '/_private/wireguard/stats': typeof PrivateWireguardStatsRoute
@@ -357,7 +357,7 @@ declare module '@tanstack/react-router' {
       id: '/_private/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof PrivateIndexLazyRouteImport
+      preLoaderRoute: typeof PrivateIndexRouteImport
       parentRoute: typeof PrivateRoute
     }
     '/auth/signUp': {
@@ -542,7 +542,7 @@ interface PrivateRouteChildren {
   PrivateWireguardRoute: typeof PrivateWireguardRouteWithChildren
   PrivateProfileLazyRoute: typeof PrivateProfileLazyRoute
   PrivateSettingsLazyRoute: typeof PrivateSettingsLazyRoute
-  PrivateIndexLazyRoute: typeof PrivateIndexLazyRoute
+  PrivateIndexRoute: typeof PrivateIndexRoute
 }
 
 const PrivateRouteChildren: PrivateRouteChildren = {
@@ -550,7 +550,7 @@ const PrivateRouteChildren: PrivateRouteChildren = {
   PrivateWireguardRoute: PrivateWireguardRouteWithChildren,
   PrivateProfileLazyRoute: PrivateProfileLazyRoute,
   PrivateSettingsLazyRoute: PrivateSettingsLazyRoute,
-  PrivateIndexLazyRoute: PrivateIndexLazyRoute,
+  PrivateIndexRoute: PrivateIndexRoute,
 }
 
 const PrivateRouteWithChildren =

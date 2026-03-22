@@ -46,7 +46,9 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
   const { hasPermission } = usePermissions();
 
   const canManage = hasPermission(EPermissions.WgServerManage);
-  const canControl = hasPermission(EPermissions.WgServerControl);
+  const canControl = canManage;
+  const canViewStats = hasPermission(EPermissions.WgStatsView);
+  const canViewPeers = hasPermission(EPermissions.WgPeerView);
 
   if (vm.isLoading || !vm.isFilled) {
     return (
@@ -102,41 +104,45 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         </div>
 
         {/* Live speed stat cards */}
-        <ServerLiveStatCards />
+        {canViewStats && <ServerLiveStatCards />}
 
-        <Tabs defaultValue="charts">
+        <Tabs defaultValue={canViewStats ? "charts" : "config"}>
           <TabsList>
-            <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>
+            {canViewStats && <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>}
             <TabsTrigger value="config">Конфигурация</TabsTrigger>
-            <TabsTrigger value="peers">Пиры</TabsTrigger>
+            {canViewPeers && <TabsTrigger value="peers">Пиры</TabsTrigger>}
           </TabsList>
-          <TabsContent value="charts" className={"flex flex-col gap-4"}>
-            <ServerLiveCharts />
-          </TabsContent>
+          {canViewStats && (
+            <TabsContent value="charts" className={"flex flex-col gap-4"}>
+              <ServerLiveCharts />
+            </TabsContent>
+          )}
           <TabsContent value="config">
             <ServerConfigurationCard server={server} />
           </TabsContent>
-          <TabsContent value="peers">
-            <Card
-              title="Пиры"
-              extra={<Badge variant="gray">{peersVM.total} всего</Badge>}
-            >
-              <div className="flex flex-col gap-2">
-                <Table
-                  data={peersVM.data}
-                  columns={peersVM.columns}
-                  loading={peersVM.loading}
-                  getRowId={p => p.data.id}
-                  onRowClick={peersVM.handleRowClick}
-                  empty={
-                    <div className="text-center py-8 text-muted-foreground text-sm">
-                      Пиры не найдены
-                    </div>
-                  }
-                />
-              </div>
-            </Card>
-          </TabsContent>
+          {canViewPeers && (
+            <TabsContent value="peers">
+              <Card
+                title="Пиры"
+                extra={<Badge variant="gray">{peersVM.total} всего</Badge>}
+              >
+                <div className="flex flex-col gap-2">
+                  <Table
+                    data={peersVM.data}
+                    columns={peersVM.columns}
+                    loading={peersVM.loading}
+                    getRowId={p => p.data.id}
+                    onRowClick={peersVM.handleRowClick}
+                    empty={
+                      <div className="text-center py-8 text-muted-foreground text-sm">
+                        Пиры не найдены
+                      </div>
+                    }
+                  />
+                </div>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
 
       <QrCodeModal

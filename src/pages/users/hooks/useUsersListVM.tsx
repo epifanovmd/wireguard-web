@@ -2,17 +2,20 @@ import { useNavigate } from "@tanstack/react-router";
 import { Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { EPermissions } from "~@api/api-gen/data-contracts";
 import { userColumns } from "~@components/tables/users";
 import { type ColumnDef, IconButton, useConfirm } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { PublicUserModel } from "~@models";
-import { useUsersDataStore } from "~@store";
+import { usePermissions, useUsersDataStore } from "~@store";
 
 export const useUsersListVM = () => {
   const store = useUsersDataStore();
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useNotification();
+  const { hasPermission } = usePermissions();
+  const canManage = hasPermission(EPermissions.UserManage);
 
   const [search, setSearch] = useState("");
 
@@ -63,29 +66,35 @@ export const useUsersListVM = () => {
   );
 
   const columns: ColumnDef<PublicUserModel>[] = useMemo(
-    () => [
-      ...userColumns,
-      {
-        id: "actions",
-        header: "",
-        cell: ({ row }) => (
-          <div
-            className="flex items-center justify-end gap-1"
-            onClick={e => e.stopPropagation()}
-          >
-            <IconButton
-              title="Удалить"
-              onClick={() =>
-                handleDelete(row.original.data.userId, row.original.displayName)
-              }
-            >
-              <Trash2 size={15} className="text-destructive" />
-            </IconButton>
-          </div>
-        ),
-      },
-    ],
-    [handleDelete],
+    () =>
+      canManage
+        ? [
+            ...userColumns,
+            {
+              id: "actions",
+              header: "",
+              cell: ({ row }) => (
+                <div
+                  className="flex items-center justify-end gap-1"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <IconButton
+                    title="Удалить"
+                    onClick={() =>
+                      handleDelete(
+                        row.original.data.userId,
+                        row.original.displayName,
+                      )
+                    }
+                  >
+                    <Trash2 size={15} className="text-destructive" />
+                  </IconButton>
+                </div>
+              ),
+            },
+          ]
+        : userColumns,
+    [handleDelete, canManage],
   );
 
   return {

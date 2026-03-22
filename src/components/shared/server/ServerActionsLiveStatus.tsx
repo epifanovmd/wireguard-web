@@ -24,7 +24,7 @@ export const ServerActionsLiveStatus = observer<IServerActionsLiveStatusProps>(
       <ServerActions
         status={liveStatus?.status ?? server.data.status}
         canManage={hasPermission(EPermissions.WgServerManage)}
-        canControl={hasPermission(EPermissions.WgServerControl)}
+        canControl={hasPermission(EPermissions.WgServerManage)}
         onEdit={undefined}
         onStart={() => onAction(server.data.id, "start")}
         onStop={() => onAction(server.data.id, "stop")}

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
 import {
+  EPermissions,
   EWgServerStatus,
   IWgServerUpdateRequestDto,
 } from "~@api/api-gen/data-contracts";
 import { useNotification } from "~@core/notifications";
-import { useServerDetailStore } from "~@store";
+import { usePermissions, useServerDetailStore } from "~@store";
 import { useServerStatsStore } from "~@store/serverStats";
 
 import { useWgServer } from "../../../../socket";
@@ -15,15 +16,20 @@ export const useServerDetailVM = (serverId: string) => {
   const serverStore = useServerDetailStore();
   const serverStatsStore = useServerStatsStore();
   const toast = useNotification();
+  const { hasPermission } = usePermissions();
+
+  const canViewStats = hasPermission(EPermissions.WgStatsView);
 
   const [editOpen, setEditOpen] = useState(false);
 
   const { status: liveSocketStatus } = useWgServer(serverId);
 
   useEffect(() => {
+    if (!canViewStats) return;
+
     return serverStatsStore.subscribe(serverId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverId]);
+  }, [serverId, canViewStats]);
 
   useEffect(() => {
     serverStore.loadServer(serverId);

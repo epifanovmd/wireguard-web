@@ -73,12 +73,11 @@ export enum EPermissions {
   WgStats = "wg:stats:*",
   WgServerView = "wg:server:view",
   WgServerManage = "wg:server:manage",
-  WgServerControl = "wg:server:control",
+  WgServerOwn = "wg:server:own",
   WgPeerView = "wg:peer:view",
   WgPeerManage = "wg:peer:manage",
   WgPeerOwn = "wg:peer:own",
   WgStatsView = "wg:stats:view",
-  WgStatsExport = "wg:stats:export",
   UserView = "user:view",
   UserManage = "user:manage",
 }
@@ -169,6 +168,10 @@ export interface IProfileListDto {
   /** @format double */
   limit?: number;
   data: PublicProfileDto[];
+}
+
+export interface IRolePermissionsRequestDto {
+  permissions: EPermissions[];
 }
 
 export interface IUserUpdateRequestDto {
@@ -488,6 +491,7 @@ export interface WgPeerDto {
   id: string;
   serverId: string;
   userId: string | null;
+  user: PublicUserDto | null;
   name: string;
   publicKey: string;
   hasPresharedKey: boolean;
@@ -721,18 +725,7 @@ export interface RefreshPayload {
   refreshToken: string;
 }
 
-export interface GetPeersByServerParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
-  query?: string;
-  enabled?: boolean;
-  status?: EWgServerStatus;
-  serverId: string;
-}
-
-export interface GetMyPeersParams {
+export interface GetPeersParams {
   /** @format double */
   offset?: number;
   /** @format double */
@@ -741,18 +734,7 @@ export interface GetMyPeersParams {
   enabled?: boolean;
   status?: EWgServerStatus;
   serverId?: string;
-}
-
-export interface GetPeersByUserParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
-  query?: string;
-  enabled?: boolean;
-  status?: EWgServerStatus;
-  serverId?: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface GetPeersOptionsParams {

@@ -5,8 +5,9 @@ import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 import { PermissionsEditor } from "~@components/forms";
 import { PageHeader, PageLayout } from "~@components/layouts";
 import { UserInfoCard } from "~@components/shared";
-import { peerColumns } from "~@components/tables/peers";
+import { peerColumns as basePeerColumns } from "~@components/tables/peers";
 import {
+  AsyncButton,
   Button,
   Card,
   Select,
@@ -19,8 +20,15 @@ import {
   useConfirm,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
-import { usePeersListStore, useUsersDataStore } from "~@store";
+import { PeerModel } from "~@models";
+import {
+  usePeerDataStore,
+  usePeersListStore,
+  usePermissions,
+  useUsersDataStore,
+} from "~@store";
 
+import { type ColumnDef } from "../../components/ui";
 import { useRolesSelectOptions } from "../../hooks/useRolesSelectOptions";
 
 interface UserDetailProps {
@@ -32,8 +40,46 @@ export const UserDetail: FC<UserDetailProps> = observer(
   ({ userId, onBack }) => {
     const store = useUsersDataStore();
     const peersStore = usePeersListStore();
+    const peerDataStore = usePeerDataStore();
     const confirm = useConfirm();
     const toast = useNotification();
+    const { hasPermission } = usePermissions();
+    const canManage = hasPermission(EPermissions.UserManage);
+
+    const revokeColumn: ColumnDef<PeerModel> = {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <AsyncButton
+          variant="outline"
+          size="sm"
+          onClick={async e => {
+            e.stopPropagation();
+            const ok = await confirm({
+              title: "Отозвать пир",
+              message: `Отозвать пир «${row.original.name}» от этого пользователя?`,
+              variant: "danger",
+            });
+
+            if (!ok) return;
+            const res = await peerDataStore.revokePeer(row.original.data.id);
+
+            if (res.error) {
+              toast.error(res.error.message);
+            } else {
+              toast.success("Пир отозван");
+              peersStore.load({ userId });
+            }
+          }}
+        >
+          Отозвать
+        </AsyncButton>
+      ),
+    };
+
+    const peerColumns: ColumnDef<PeerModel>[] = canManage
+      ? [...basePeerColumns, revokeColumn]
+      : basePeerColumns;
 
     const { options: roleOptions, getRolePermissions } =
       useRolesSelectOptions();
@@ -45,7 +91,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
     useEffect(() => {
       store.loadUser(userId);
-      peersStore.loadByUser(userId);
+      peersStore.load({ userId });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
@@ -100,29 +146,31 @@ export const UserDetail: FC<UserDetailProps> = observer(
           <PageHeader
             title={model?.displayName ?? "Пользователь"}
             actions={
-              <Button
-                variant="destructive"
-                size="sm"
-                loading={store.deleteUserMutation.isLoading}
-                onClick={async () => {
-                  const ok = await confirm({
-                    title: "Удалить пользователя",
-                    message: "Удалить этого пользователя навсегда?",
-                    variant: "danger",
-                  });
-                  if (!ok) return;
-                  const res = await store.deleteUser(userId);
+              canManage && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  loading={store.deleteUserMutation.isLoading}
+                  onClick={async () => {
+                    const ok = await confirm({
+                      title: "Удалить пользователя",
+                      message: "Удалить этого пользователя навсегда?",
+                      variant: "danger",
+                    });
+                    if (!ok) return;
+                    const res = await store.deleteUser(userId);
 
-                  if (res.error) {
-                    toast.error(res.error.message);
-                  } else {
-                    toast.success("Удалено");
-                    onBack();
-                  }
-                }}
-              >
-                Удалить пользователя
-              </Button>
+                    if (res.error) {
+                      toast.error(res.error.message);
+                    } else {
+                      toast.success("Удалено");
+                      onBack();
+                    }
+                  }}
+                >
+                  Удалить пользователя
+                </Button>
+              )
             }
           />
         }
@@ -142,50 +190,54 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          <Tabs defaultValue="privileges">
+          <Tabs defaultValue={canManage ? "privileges" : "peers"}>
             <TabsList>
-              <TabsTrigger value="privileges">Права</TabsTrigger>
+              {canManage && (
+                <TabsTrigger value="privileges">Права</TabsTrigger>
+              )}
               <TabsTrigger value="peers">VPN пиры</TabsTrigger>
             </TabsList>
-            <TabsContent value="privileges">
-              <div className="flex flex-col gap-6 mt-4">
-                <Card title="Роль" className="p-5">
-                  <Select
-                    options={roleOptions}
-                    value={selectedRole}
-                    onChange={(v: ERole) =>
-                      setSelectedRole((v ?? ERole.User) as ERole)
-                    }
-                  />
-                  {selectedRole === ERole.Admin && (
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Роль Администратор даёт полный доступ ко всему — прямые
-                      права не требуются.
+            {canManage && (
+              <TabsContent value="privileges">
+                <div className="flex flex-col gap-6 mt-4">
+                  <Card title="Роль" className="p-5">
+                    <Select
+                      options={roleOptions}
+                      value={selectedRole}
+                      onChange={(v: ERole) =>
+                        setSelectedRole((v ?? ERole.User) as ERole)
+                      }
+                    />
+                    {selectedRole === ERole.Admin && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Роль Администратор даёт полный доступ ко всему — прямые
+                        права не требуются.
+                      </p>
+                    )}
+                  </Card>
+                  <Card title="Права доступа" className="p-5">
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Серые права унаследованы от роли и не редактируются.
+                      Синие — назначены напрямую этому пользователю.
                     </p>
-                  )}
-                </Card>
-                <Card title="Права доступа" className="p-5">
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Серые права унаследованы от роли и не редактируются. Синие —
-                    назначены напрямую этому пользователю.
-                  </p>
-                  <PermissionsEditor
-                    value={directPerms}
-                    onChange={setDirectPerms}
-                    rolePermissions={rolePermissions}
-                    role={selectedRole}
-                  />
-                </Card>
-                <div className="flex justify-end">
-                  <Button
-                    loading={store.setPrivilegesMutation.isLoading}
-                    onClick={handleSavePrivileges}
-                  >
-                    Сохранить права
-                  </Button>
+                    <PermissionsEditor
+                      value={directPerms}
+                      onChange={setDirectPerms}
+                      rolePermissions={rolePermissions}
+                      role={selectedRole}
+                    />
+                  </Card>
+                  <div className="flex justify-end">
+                    <Button
+                      loading={store.setPrivilegesMutation.isLoading}
+                      onClick={handleSavePrivileges}
+                    >
+                      Сохранить права
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
+            )}
             <TabsContent value="peers">
               <div className="mt-4">
                 <Table

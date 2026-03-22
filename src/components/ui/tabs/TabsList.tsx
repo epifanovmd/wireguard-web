@@ -13,8 +13,14 @@ export interface TabsListProps
 const TabsList = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.List>,
   TabsListProps
->(({ className, variant, size, ...props }, ref) => {
+>(({ className, variant, size, children, ...props }, ref) => {
   const layoutId = React.useId();
+
+  const count = React.Children.toArray(children).length;
+
+  if (count <= 1) {
+    return null;
+  }
 
   return (
     <TabsContext.Provider value={{ layoutId, variant, size }}>
@@ -22,7 +28,9 @@ const TabsList = React.forwardRef<
         ref={ref}
         className={cn(tabsListVariants({ variant, size, className }))}
         {...props}
-      />
+      >
+        {children}
+      </TabsPrimitive.List>
     </TabsContext.Provider>
   );
 });

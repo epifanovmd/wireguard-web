@@ -20,15 +20,7 @@ export class PeersListStore implements IPeersListStore {
     pageSize: 1000,
     keyExtractor: p => p.id,
     onFetch: async ({ offset, limit }, { serverId, userId } = {}) => {
-      if (serverId) {
-        return this._apiService.getPeersByServer({ serverId, offset, limit });
-      }
-
-      if (userId) {
-        return this._apiService.getPeersByUser({ userId, offset, limit });
-      }
-
-      return this._apiService.getMyPeers({ offset, limit });
+      return this._apiService.getPeers({ serverId, userId, offset, limit });
     },
   });
 
@@ -52,16 +44,8 @@ export class PeersListStore implements IPeersListStore {
     return this.peersHolder.pageCount;
   }
 
-  async loadByServer(serverId: string) {
-    await this.peersHolder.load({ serverId });
-  }
-
-  async loadByUser(userId: string) {
-    await this.peersHolder.load({ userId });
-  }
-
-  async loadMine() {
-    await this.peersHolder.load({});
+  async load(filters?: { serverId?: string; userId?: string }) {
+    await this.peersHolder.load(filters ?? {});
   }
 
   async goToPage(page: number) {

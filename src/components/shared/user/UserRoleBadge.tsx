@@ -1,14 +1,19 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 import { ERole } from "~@api/api-gen/data-contracts";
 import { Badge } from "~@components/ui";
+import { RoleModel } from "~@models";
+
+const ROLE_VARIANT: Record<string, string> = {
+  [ERole.Admin]: "purple",
+  [ERole.User]: "info",
+  [ERole.Guest]: "gray",
+};
 
 export const UserRoleBadge: FC<{ role: ERole }> = ({ role }) => {
-  const map: Record<string, { variant: any }> = {
-    [ERole.Admin]: { variant: "purple" },
-    [ERole.User]: { variant: "info" },
-    [ERole.Guest]: { variant: "gray" },
-  };
+  const label = new RoleModel(role).label;
 
-  return <Badge variant={map[role]?.variant ?? "default"}>{role}</Badge>;
+  return (
+    <Badge variant={(ROLE_VARIANT[role] ?? "default") as any}>{label}</Badge>
+  );
 };

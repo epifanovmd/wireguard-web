@@ -2,15 +2,19 @@ import { Plus, Search } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 
+import { EPermissions } from "~@api/api-gen/data-contracts";
 import { PageHeader, PageLayout } from "~@components/layouts";
 import { UsersTable } from "~@components/tables/users";
 import { Badge, Card, IconButton, Input, Tooltip } from "~@components/ui";
+import { usePermissions } from "~@store";
 
 import { CreateUserModal } from "./CreateUserModal";
 import { useUsersListVM } from "./hooks";
 
 export const UsersList: FC = observer(() => {
   const vm = useUsersListVM();
+  const { hasPermission } = usePermissions();
+  const canManage = hasPermission(EPermissions.UserManage);
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
@@ -20,14 +24,16 @@ export const UsersList: FC = observer(() => {
           title="Пользователи"
           subtitle={`${vm.total} всего`}
           actions={
-            <Tooltip content="Добавить пользователя">
-              <IconButton
-                variant="solid"
-                onClick={() => setCreateOpen(true)}
-              >
-                <Plus size={16} strokeWidth={2.5} />
-              </IconButton>
-            </Tooltip>
+            canManage && (
+              <Tooltip content="Добавить пользователя">
+                <IconButton
+                  variant="solid"
+                  onClick={() => setCreateOpen(true)}
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                </IconButton>
+              </Tooltip>
+            )
           }
         />
       }

@@ -23,6 +23,7 @@ import {
   Tooltip,
 } from "~@components/ui";
 import { useNotification } from "~@core/notifications";
+import { usePermissions } from "~@store";
 
 import { useServersSelectOptions } from "../hooks";
 import { PeerForm } from "./components/PeerForm";
@@ -32,6 +33,8 @@ export const PeersList: FC = observer(() => {
   const vm = usePeersListVM();
   const serversOptions = useServersSelectOptions();
   const toast = useNotification();
+  const { hasPermission } = usePermissions();
+  const canViewServers = hasPermission(EPermissions.WgServerView);
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
@@ -57,17 +60,19 @@ export const PeersList: FC = observer(() => {
       contentClassName="flex flex-col gap-6"
     >
       {/* Controls */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <Select
-          fetchOptions={serversOptions.fetchOptions}
-          getOption={serversOptions.getOption}
-          fetchOnMount
-          value={vm.serverId}
-          onChange={vm.setServerId}
-          placeholder="Выберите сервер"
-          className="w-48"
-        />
-      </div>
+      {canViewServers && (
+        <div className="flex items-center gap-3 flex-wrap">
+          <Select
+            fetchOptions={serversOptions.fetchOptions}
+            getOption={serversOptions.getOption}
+            fetchOnMount
+            value={vm.serverId}
+            onChange={vm.setServerId}
+            placeholder="Выберите сервер"
+            className="w-48"
+          />
+        </div>
+      )}
 
       <Card
         title="Пиры"

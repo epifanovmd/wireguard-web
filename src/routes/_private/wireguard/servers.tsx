@@ -7,7 +7,10 @@ export const Route = createFileRoute("/_private/wireguard/servers")({
   beforeLoad: () => {
     const auth = IAuthStore.getInstance();
 
-    if (!auth.hasPermission(EPermissions.WgServerView)) {
+    if (
+      !auth.hasPermission(EPermissions.WgServerView) &&
+      !auth.hasPermission(EPermissions.WgServerOwn)
+    ) {
       throw redirect({ to: "/wireguard/peers" });
     }
   },

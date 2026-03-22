@@ -7,12 +7,11 @@ import { IAuthStore } from "~@store";
 const WG_PERMISSIONS = [
   EPermissions.WgServerView,
   EPermissions.WgServerManage,
-  EPermissions.WgServerControl,
+  EPermissions.WgServerOwn,
   EPermissions.WgPeerView,
   EPermissions.WgPeerManage,
   EPermissions.WgPeerOwn,
   EPermissions.WgStatsView,
-  EPermissions.WgStatsExport,
 ];
 
 export const Route = createFileRoute("/_private/wireguard")({

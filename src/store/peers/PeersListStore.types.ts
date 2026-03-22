@@ -5,7 +5,6 @@ import {
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
 import {
-  IHolderError,
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
@@ -30,9 +29,7 @@ export interface IPeersListStore {
   total: number;
   pageCount: number;
 
-  loadByServer(serverId: string): Promise<void>;
-  loadByUser(userId: string): Promise<void>;
-  loadMine(): Promise<void>;
+  load(filters?: PeerListArgs): Promise<void>;
   goToPage(page: number): Promise<void>;
   setPageSize(pageSize: number): Promise<void>;
 

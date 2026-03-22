@@ -22,6 +22,9 @@ export const usePeersListVM = (_serverId?: string) => {
   const confirm = useConfirm();
   const toast = useNotification();
   const { hasPermission } = usePermissions();
+  const canView =
+    hasPermission(EPermissions.WgPeerView) ||
+    hasPermission(EPermissions.WgPeerOwn);
   const canManage = hasPermission(EPermissions.WgPeerManage);
 
   const [qrPeer, setQrPeer] = useState<{ id: string; name: string } | null>(
@@ -30,11 +33,11 @@ export const usePeersListVM = (_serverId?: string) => {
   const [serverId, setServerId] = useState<string | undefined>(_serverId);
 
   useEffect(() => {
-    if (serverId) {
-      listStore.loadByServer(serverId).then();
-    }
+    if (!canView) return;
+
+    listStore.load(serverId ? { serverId } : undefined).then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverId]);
+  }, [serverId, canView]);
 
   const handleToggle = useCallback(
     async (id: string, status: EWgServerStatus) => {
