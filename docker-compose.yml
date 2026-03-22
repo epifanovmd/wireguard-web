@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file: .env.production
     image: wireguard-web:latest
     container_name: wireguard-web
     ports:
