@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 
 import { useAuthStore } from "~@store";
 
@@ -14,7 +14,7 @@ export const AppLayout: FC<AppLayoutProps> = ({ children }) => {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar onSignOut={() => auth.signOut()} />
-      <main className="flex-1 flex flex-col min-w-0 pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto min-w-0 pt-14 md:pt-0">
         {children}
       </main>
     </div>
