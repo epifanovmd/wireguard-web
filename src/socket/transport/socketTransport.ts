@@ -50,10 +50,31 @@ export class SocketTransport implements ISocketTransport {
       },
     );
 
+    const handleVisibilityChange = () => {
+      if (
+        document.visibilityState === "visible" &&
+        !this._isManualDisconnect &&
+        !this._socket?.connected
+      ) {
+        this.connect().catch(() => {});
+      }
+    };
+
+    const handleOnline = () => {
+      if (!this._isManualDisconnect && !this._socket?.connected) {
+        this.connect().catch(() => {});
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("online", handleOnline);
+
     this.connect().catch(() => {});
 
     return () => {
       disposeTokenReaction();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("online", handleOnline);
       this.disconnect();
     };
   }
