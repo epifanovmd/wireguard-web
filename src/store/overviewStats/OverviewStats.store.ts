@@ -64,21 +64,27 @@ export class OverviewStatsStore
     });
   }
 
-  subscribe(from?: string, to?: string) {
-    this.load(from, to);
+  subscribe(from?: string, to?: string): () => void {
+    let unsubFn: (() => void) | undefined;
 
-    return this._wgSocket.subscribeOverview({
-      onStats: s => {
-        this.holder.setData(s);
-        const t = formatter.date.formatTime(s.timestamp);
+    this.load(from, to).then(() => {
+      unsubFn = this._wgSocket.subscribeOverview({
+        onStats: s => {
+          this.holder.setData(s);
+          const t = formatter.date.formatTime(s.timestamp);
 
-        runInAction(() => {
-          this._appendStats(
-            { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
-            { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
-          );
-        });
-      },
+          if (this.chartHolder.data?.speed.length) {
+            runInAction(() => {
+              this._appendStats(
+                { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
+                { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
+              );
+            });
+          }
+        },
+      });
     });
+
+    return () => unsubFn?.();
   }
 }

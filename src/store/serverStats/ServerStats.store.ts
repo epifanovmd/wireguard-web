@@ -80,23 +80,34 @@ export class ServerStatsStore
     });
   }
 
-  subscribe(serverId: string, from?: string, to?: string, peerId?: string) {
-    this.load(serverId, from, to, peerId);
+  subscribe(
+    serverId: string,
+    from?: string,
+    to?: string,
+    peerId?: string,
+  ): () => void {
+    let unsubFn: (() => void) | undefined;
 
-    return this._wgSocket.subscribeServer(serverId, {
-      onStats: s => {
-        this.holder.setData(s);
-        const t = formatter.date.formatTime(s.timestamp);
+    this.load(serverId, from, to, peerId).then(() => {
+      unsubFn = this._wgSocket.subscribeServer(serverId, {
+        onStats: s => {
+          this.holder.setData(s);
+          const t = formatter.date.formatTime(s.timestamp);
 
-        runInAction(() => {
-          this._appendStats(
-            { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
-            { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
-          );
-        });
-      },
-      onStatus: s => this.statusHolder.setData(s),
+          if (this.chartHolder.data?.speed.length) {
+            runInAction(() => {
+              this._appendStats(
+                { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
+                { t, rx: s.totalRxBytes, tx: s.totalTxBytes },
+              );
+            });
+          }
+        },
+        onStatus: s => this.statusHolder.setData(s),
+      });
     });
+
+    return () => unsubFn?.();
   }
 
   unsubscribe(serverId: string) {

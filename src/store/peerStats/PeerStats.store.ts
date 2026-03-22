@@ -79,23 +79,29 @@ export class PeerStatsStore extends StatsChartBase implements IPeerStatsStore {
     });
   }
 
-  subscribe(peerId: string, from?: string, to?: string) {
-    this.load(peerId, from, to);
+  subscribe(peerId: string, from?: string, to?: string): () => void {
+    let unsubFn: (() => void) | undefined;
 
-    return this._wgSocket.subscribePeer(peerId, {
-      onStats: s => {
-        this.holder.setData(s);
-        const t = formatter.date.formatTime(s.timestamp);
+    this.load(peerId, from, to).then(() => {
+      unsubFn = this._wgSocket.subscribePeer(peerId, {
+        onStats: s => {
+          this.holder.setData(s);
+          const t = formatter.date.formatTime(s.timestamp);
 
-        runInAction(() => {
-          this._appendStats(
-            { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
-            { t, rx: s.rxBytes, tx: s.txBytes },
-          );
-        });
-      },
-      onStatus: s => this.statusHolder.setData(s),
-      onActive: a => this.activeHolder.setData(a),
+          if (this.chartHolder.data?.speed.length) {
+            runInAction(() => {
+              this._appendStats(
+                { t, rx: s.rxSpeedBps, tx: s.txSpeedBps },
+                { t, rx: s.rxBytes, tx: s.txBytes },
+              );
+            });
+          }
+        },
+        onStatus: s => this.statusHolder.setData(s),
+        onActive: a => this.activeHolder.setData(a),
+      });
     });
+
+    return () => unsubFn?.();
   }
 }
