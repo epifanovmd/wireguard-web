@@ -1,10 +1,17 @@
-import { Fingerprint } from "lucide-react";
+import { Fingerprint, Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
 import { useApi } from "~@api";
 import { usePasskeyAuth } from "~@common";
-import { AsyncButton, Badge, Button, Card } from "~@components/ui";
+import {
+  AsyncButton,
+  AsyncIconButton,
+  Badge,
+  Button,
+  Card,
+  IconButton,
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { useAuthStore } from "~@store";
 
@@ -74,25 +81,25 @@ export const SecurityTab: FC = observer(() => {
             </div>
           )}
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex items-center gap-2 pt-1">
             <AsyncButton
               size="sm"
               variant={passkey.profileId ? "outline" : "default"}
               loading={passkey.loading}
               onClick={handlePasskeyRegister}
             >
-              {passkey.profileId
+              {!passkey.profileId
                 ? "Перерегистрировать passkey"
                 : "Зарегистрировать passkey"}
             </AsyncButton>
             {passkey.profileId && (
-              <Button
+              <IconButton
                 size="sm"
-                variant="destructive"
+                variant={"destructive"}
                 onClick={handlePasskeyRemove}
               >
-                Удалить
-              </Button>
+                <Trash2 className={"text-destructive"} />
+              </IconButton>
             )}
           </div>
         </div>

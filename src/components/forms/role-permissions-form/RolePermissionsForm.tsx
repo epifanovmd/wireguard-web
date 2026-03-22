@@ -51,11 +51,7 @@ export const RolePermissionsForm: FC = memo(() => {
             const model = new RoleModel(role.name);
 
             return (
-              <Tabs.Trigger
-                key={role.id}
-                value={role.id}
-                className="flex items-center gap-2"
-              >
+              <Tabs.Trigger key={role.id} value={role.id} className={"px-1"}>
                 <Badge
                   size={"sm"}
                   variant={ROLE_BADGE_VARIANT[role.name] ?? "gray"}

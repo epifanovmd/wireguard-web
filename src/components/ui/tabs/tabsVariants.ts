@@ -14,7 +14,7 @@ export const tabsMotionVariants = cva("absolute z-0", {
 });
 
 export const tabsListVariants = cva(
-  "inline-flex items-center justify-center rounded-lg p-1 text-muted-foreground",
+  "flex w-full items-center justify-center rounded-lg p-1 text-muted-foreground",
   {
     variants: {
       variant: {
@@ -35,7 +35,7 @@ export const tabsListVariants = cva(
 );
 
 export const tabsTriggerVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer relative",
+  "flex flex-1 min-w-0 overflow-hidden items-center justify-center truncate rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer relative",
   {
     variants: {
       variant: {
@@ -43,9 +43,9 @@ export const tabsTriggerVariants = cva(
         underline: "rounded-none data-[state=active]:text-foreground",
       },
       size: {
-        sm: "px-2 py-1 text-xs",
-        md: "px-3 py-1.5 text-sm",
-        lg: "px-4 py-2 text-base",
+        sm: "px-1 sm:px-2 py-1 text-xs",
+        md: "px-2 sm:px-3 py-1.5 text-sm",
+        lg: "px-3 sm:px-4 py-2 text-base",
       },
     },
     defaultVariants: {

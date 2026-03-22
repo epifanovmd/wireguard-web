@@ -20,7 +20,7 @@ export const Settings: FC = observer(() => {
         />
       }
     >
-      <Tabs defaultValue="security">
+      <Tabs defaultValue="security" className={"max-w-3xl"}>
         <TabsList>
           <TabsTrigger value="security">Безопасность</TabsTrigger>
           {isAdmin && <TabsTrigger value="roles">Роли и права</TabsTrigger>}

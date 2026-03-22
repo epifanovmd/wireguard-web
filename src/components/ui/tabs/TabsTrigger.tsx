@@ -65,7 +65,7 @@ const TabsTrigger = React.forwardRef<
             }}
           />
         )}
-        <span className="relative z-10">{children}</span>
+        <span className="relative z-10 min-w-0 overflow-hidden shrink truncate">{children}</span>
       </TabsPrimitive.Trigger>
     );
   },

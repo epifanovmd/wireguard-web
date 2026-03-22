@@ -21,7 +21,7 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
         {dot && (
           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 flex-shrink-0" />
         )}
-        {children}
+        <span className="truncate min-w-0">{children}</span>
       </div>
     );
   },
