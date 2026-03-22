@@ -38,7 +38,6 @@ export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
             </p>
             <CopyableText
               className="text-muted-foreground"
-              truncate={false}
               text={server.publicKey}
             />
           </div>

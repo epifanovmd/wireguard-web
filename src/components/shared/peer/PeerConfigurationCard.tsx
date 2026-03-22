@@ -28,19 +28,14 @@ export const PeerConfigurationCard = memo<IPeerConfigurationCardProps>(
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-xs text-muted-foreground">{k}</dt>
-              <dd className="font-medium text-foreground mt-0.5">
-                {v}
-              </dd>
+              <dd className="font-medium text-foreground mt-0.5">{v}</dd>
             </div>
           ))}
         </dl>
         <div className="mt-4 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground mb-1">
-            Публичный ключ
-          </p>
+          <p className="text-xs text-muted-foreground mb-1">Публичный ключ</p>
           <CopyableText
             text={peer.data.publicKey}
-            truncate={false}
             className="text-muted-foreground"
           />
         </div>

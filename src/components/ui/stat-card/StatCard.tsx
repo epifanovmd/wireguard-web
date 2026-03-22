@@ -33,7 +33,6 @@ export interface StatCardProps {
   value: React.ReactNode;
   subtitle?: string;
   icon?: React.ReactNode;
-  trend?: { value: number; label?: string };
   className?: string;
   color?: StatCardColor;
 }
@@ -43,17 +42,15 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtitle,
   icon,
-  trend,
   className,
   color = "default",
 }) => {
   const colors = COLOR_CLASSES[color];
-  const trendPositive = trend && trend.value >= 0;
 
   return (
     <div
       className={cn(
-        "rounded-xl border bg-card text-card-foreground shadow-sm p-5 flex items-start justify-between gap-3",
+        "rounded-xl border bg-card text-card-foreground shadow-sm p-3 sm:p-5 flex items-start justify-between gap-3",
         className,
       )}
     >
@@ -61,33 +58,17 @@ export const StatCard: React.FC<StatCardProps> = ({
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </p>
-        <div className="text-xl font-bold text-foreground truncate">
+        <div className="sm:text-xl font-bold text-foreground truncate">
           {value}
         </div>
         {subtitle && (
           <p className="text-xs text-muted-foreground">{subtitle}</p>
         )}
-        {trend && (
-          <p
-            className={cn(
-              "text-xs font-semibold",
-              trendPositive ? "text-success" : "text-destructive",
-            )}
-          >
-            {trendPositive ? "+" : ""}
-            {trend.value}%
-            {trend.label && (
-              <span className="font-normal text-muted-foreground ml-1">
-                {trend.label}
-              </span>
-            )}
-          </p>
-        )}
       </div>
       {icon && (
         <div
           className={cn(
-            "w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0",
+            "w-8 h-8 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center flex-shrink-0",
             colors.icon,
           )}
         >

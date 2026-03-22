@@ -31,16 +31,20 @@ export const CopyableText: React.FC<CopyableTextProps> = ({
       type="button"
       onClick={handleCopy}
       className={cn(
-        "inline-flex items-center gap-1.5 text-xs font-mono group cursor-pointer",
+        "inline-flex items-center gap-1.5 text-xs font-mono group cursor-pointer min-w-0 max-w-full",
         className,
       )}
       title={text}
     >
-      <span className={cn(truncate && "truncate max-w-[200px]")}>
+      <span className={cn("min-w-0", truncate && "truncate flex-1")}>
         {displayText ?? text}
       </span>
       <span className="flex-shrink-0 text-muted-foreground group-hover:text-foreground transition-colors">
-        {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
+        {copied ? (
+          <Check size={12} className="text-success" />
+        ) : (
+          <Copy size={12} />
+        )}
       </span>
     </button>
   );
