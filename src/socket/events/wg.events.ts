@@ -1,20 +1,15 @@
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
+import {
+  EWgServerStatus,
+  WgOverviewStatsPayload,
+  WgPeerStatsPayload,
+  WgServerStatsPayload,
+} from "~@api/api-gen/data-contracts";
+
+export type { WgOverviewStatsPayload, WgPeerStatsPayload, WgServerStatsPayload };
 
 export interface WgServerStatusPayload {
   serverId: string;
   status: EWgServerStatus;
-  timestamp: string;
-}
-
-export interface WgServerStatsPayload {
-  serverId: string;
-  interface: string;
-  totalRxBytes: number;
-  totalTxBytes: number;
-  rxSpeedBps: number;
-  txSpeedBps: number;
-  peerCount: number;
-  activePeerCount: number;
   timestamp: string;
 }
 
@@ -30,30 +25,6 @@ export interface WgPeerActivePayload {
   serverId: string;
   isActive: boolean;
   lastHandshake: string | null;
-}
-
-export interface WgPeerStatsPayload {
-  peerId: string;
-  serverId: string;
-  rxBytes: number;
-  txBytes: number;
-  rxSpeedBps: number;
-  txSpeedBps: number;
-  lastHandshake: string | null;
-  isActive: boolean;
-  timestamp: string;
-}
-
-export interface WgOverviewStatsPayload {
-  totalServers: number;
-  activeServers: number;
-  totalPeers: number;
-  activePeers: number;
-  totalRxBytes: number;
-  totalTxBytes: number;
-  rxSpeedBps: number;
-  txSpeedBps: number;
-  timestamp: string;
 }
 
 // ─── Socket event maps ────────────────────────────────────────────────────────

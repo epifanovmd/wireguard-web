@@ -687,6 +687,64 @@ export interface IWgOverviewStatsResponse {
   speed: WgOverviewSpeedPointDto[];
 }
 
+export interface WgOverviewStatsPayload {
+  /** @format double */
+  totalServers: number;
+  /** @format double */
+  activeServers: number;
+  /** @format double */
+  totalPeers: number;
+  /** @format double */
+  activePeers: number;
+  /** @format double */
+  totalRxBytes: number;
+  /** @format double */
+  totalTxBytes: number;
+  /** @format double */
+  rxSpeedBps: number;
+  /** @format double */
+  txSpeedBps: number;
+  /** @format date-time */
+  timestamp: string;
+}
+
+export interface WgServerStatsPayload {
+  serverId: string;
+  interface: string;
+  /** @format double */
+  totalRxBytes: number;
+  /** @format double */
+  totalTxBytes: number;
+  /** @format double */
+  rxSpeedBps: number;
+  /** @format double */
+  txSpeedBps: number;
+  /** @format double */
+  peerCount: number;
+  /** @format double */
+  activePeerCount: number;
+  /** @format date-time */
+  timestamp: string;
+}
+
+export interface WgPeerStatsPayload {
+  peerId: string;
+  serverId: string;
+  /** @format double */
+  rxBytes: number;
+  /** @format double */
+  txBytes: number;
+  /** @format double */
+  rxSpeedBps: number;
+  /** @format double */
+  txSpeedBps: number;
+  /** @format date-time */
+  lastHandshake: string | null;
+  isActive: boolean;
+  /** @format date-time */
+  timestamp: string;
+}
+
 export interface GetProfilesParams {
   /**
    * Смещение для пагинации

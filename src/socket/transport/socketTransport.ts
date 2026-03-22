@@ -8,6 +8,8 @@ import {
   SocketClientToServerEvents,
   SocketServerToClientEvents,
 } from "../events";
+import { EmitQueue } from "./emitQueue";
+import { PersistentListeners } from "./persistentListeners";
 import {
   AppSocket,
   ISocketTransport,
@@ -19,15 +21,16 @@ import {
 export class SocketTransport implements ISocketTransport {
   private _socket: AppSocket | null = null;
   private _isManualDisconnect = false;
+
+  // Guards against concurrent connect() calls (e.g. visibilitychange + online
+  // firing at the same time, or auth_error handler racing with a retry).
+  private _connectingPromise: Promise<void> | null = null;
+
   private _statusListeners = new Set<SocketStatusListener>();
+  private _persistentListeners = new PersistentListeners();
+  private _emitQueue = new EmitQueue();
 
-  // Pending emits while socket is not yet connected
-  private _emitQueue: Array<() => void> = [];
-
-  private _state: SocketTransportState = {
-    status: "idle",
-    error: null,
-  };
+  private _state: SocketTransportState = { status: "idle", error: null };
 
   constructor(
     @IAuthTokenStore() private _tokenStore: IAuthTokenStore,
@@ -45,7 +48,11 @@ export class SocketTransport implements ISocketTransport {
       () => this._tokenStore.accessToken,
       token => {
         if (this._socket && token) {
+          // Update both auth and query so the token is fresh on the next
+          // reconnection attempt regardless of which mechanism the server reads.
           this._socket.auth = { token };
+          (this._socket.io.opts.query as Record<string, string>).access_token =
+            token;
         }
       },
     );
@@ -80,12 +87,94 @@ export class SocketTransport implements ISocketTransport {
   }
 
   connect(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (this._socket?.connected) {
-        resolve();
-        return;
-      }
+    if (this._socket?.connected) return Promise.resolve();
+    if (this._connectingPromise) return this._connectingPromise;
 
+    this._connectingPromise = this._doConnect().finally(() => {
+      this._connectingPromise = null;
+    });
+
+    return this._connectingPromise;
+  }
+
+  disconnect(): void {
+    this._isManualDisconnect = true;
+    this._emitQueue.clear();
+    this._persistentListeners.clear();
+    this._teardown();
+    this._setState({ status: "disconnected", error: null });
+  }
+
+  // ─── Pub/Sub ────────────────────────────────────────────────────────────────
+
+  on<K extends keyof SocketServerToClientEvents>(
+    event: K,
+    handler: SocketServerToClientEvents[K],
+  ): () => void {
+    const removeFromStore = this._persistentListeners.add(
+      event as string,
+      handler,
+    );
+    this._socket?.on(event, handler as never);
+
+    return () => {
+      removeFromStore();
+      this._socket?.off(event, handler as never);
+    };
+  }
+
+  emit<K extends keyof SocketClientToServerEvents>(
+    event: K,
+    ...args: Parameters<SocketClientToServerEvents[K]>
+  ): void {
+    type EmitFn = (
+      e: K,
+      ...a: Parameters<SocketClientToServerEvents[K]>
+    ) => void;
+
+    const doEmit = (socket: AppSocket) =>
+      (socket.emit as EmitFn)(event, ...args);
+
+    if (this._socket?.connected) {
+      doEmit(this._socket);
+    } else {
+      this._emitQueue.enqueue(socket => doEmit(socket));
+    }
+  }
+
+  onConnect(handler: () => void): () => void {
+    const removeFromStore = this._persistentListeners.add("connect", handler);
+    this._socket?.on("connect", handler);
+
+    return () => {
+      removeFromStore();
+      this._socket?.off("connect", handler);
+    };
+  }
+
+  onDisconnect(handler: (reason: string) => void): () => void {
+    const removeFromStore = this._persistentListeners.add(
+      "disconnect",
+      handler,
+    );
+    this._socket?.on("disconnect", handler as never);
+
+    return () => {
+      removeFromStore();
+      this._socket?.off("disconnect", handler as never);
+    };
+  }
+
+  onStatusChange(listener: SocketStatusListener): () => void {
+    this._statusListeners.add(listener);
+
+    return () => this._statusListeners.delete(listener);
+  }
+
+  // ─── Private ────────────────────────────────────────────────────────────────
+
+  private _doConnect(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       this._teardown();
 
       const accessToken = this._tokenStore.accessToken;
@@ -94,6 +183,7 @@ export class SocketTransport implements ISocketTransport {
         const err = new Error("[Socket] No access token available");
         this._setState({ status: "error", error: err });
         reject(err);
+
         return;
       }
 
@@ -104,8 +194,9 @@ export class SocketTransport implements ISocketTransport {
         withCredentials: true,
         autoConnect: false,
         reconnection: true,
-        reconnectionAttempts: 5,
+        reconnectionAttempts: Infinity,
         reconnectionDelay: 3000,
+        reconnectionDelayMax: 30_000,
         transports: ["websocket"],
         timeout: 10_000,
         auth: { token: accessToken },
@@ -114,7 +205,11 @@ export class SocketTransport implements ISocketTransport {
 
       this._socket = socket;
 
-      // One-time connect/error for the Promise
+      // Re-attach all handlers (onConnect / onDisconnect / on) to the
+      // fresh socket instance so nothing is lost after teardown.
+      this._persistentListeners.bindTo(socket);
+
+      // One-shot handlers that settle the Promise.
       const onFirstConnect = () => {
         socket.off("connect_error", onFirstError);
         resolve();
@@ -127,7 +222,7 @@ export class SocketTransport implements ISocketTransport {
       socket.once("connect", onFirstConnect);
       socket.once("connect_error", onFirstError);
 
-      // Persistent lifecycle handlers
+      // Internal lifecycle handlers (not user-facing, registered every time).
       socket.on("connect", this._onConnect);
       socket.on("connect_error", this._onConnectError);
       socket.on("disconnect", this._onDisconnect);
@@ -136,67 +231,6 @@ export class SocketTransport implements ISocketTransport {
       socket.connect();
     });
   }
-
-  disconnect(): void {
-    this._isManualDisconnect = true;
-    this._emitQueue = [];
-    this._teardown();
-    this._setState({ status: "disconnected", error: null });
-  }
-
-  // ─── Pub/Sub ────────────────────────────────────────────────────────────────
-
-  on<K extends keyof SocketServerToClientEvents>(
-    event: K,
-    handler: SocketServerToClientEvents[K],
-  ): () => void {
-    if (!this._socket) {
-      console.warn(`[Socket] on("${String(event)}") called before connect()`);
-      return () => {};
-    }
-    this._socket.on(event, handler as never);
-    return () => this._socket?.off(event, handler as never);
-  }
-
-  emit<K extends keyof SocketClientToServerEvents>(
-    event: K,
-    ...args: Parameters<SocketClientToServerEvents[K]>
-  ): void {
-    const doEmit = (s: AppSocket) =>
-      (
-        s.emit as (
-          e: K,
-          ...a: Parameters<SocketClientToServerEvents[K]>
-        ) => void
-      )(event, ...args);
-
-    if (this._socket?.connected) {
-      doEmit(this._socket);
-    } else if (this._socket) {
-      const socket = this._socket;
-      const queued = () => doEmit(socket);
-      this._emitQueue.push(queued);
-    }
-  }
-
-  onConnect(handler: () => void): () => void {
-    if (!this._socket) return () => {};
-    this._socket.on("connect", handler);
-    return () => this._socket?.off("connect", handler);
-  }
-
-  onDisconnect(handler: (reason: string) => void): () => void {
-    if (!this._socket) return () => {};
-    this._socket.on("disconnect", handler as never);
-    return () => this._socket?.off("disconnect", handler as never);
-  }
-
-  onStatusChange(listener: SocketStatusListener): () => void {
-    this._statusListeners.add(listener);
-    return () => this._statusListeners.delete(listener);
-  }
-
-  // ─── Private ────────────────────────────────────────────────────────────────
 
   private _teardown(): void {
     if (this._socket) {
@@ -211,15 +245,11 @@ export class SocketTransport implements ISocketTransport {
     this._statusListeners.forEach(l => l(this._state));
   }
 
-  private _flushEmitQueue(): void {
-    const queue = this._emitQueue.splice(0);
-
-    queue.forEach(fn => fn());
-  }
-
   private _onConnect = (): void => {
     this._setState({ status: "connected", error: null });
-    this._flushEmitQueue();
+    if (this._socket) {
+      this._emitQueue.flush(this._socket);
+    }
   };
 
   private _onDisconnect = (reason: string): void => {
@@ -227,14 +257,16 @@ export class SocketTransport implements ISocketTransport {
 
     this._setState({ status: "disconnected" });
 
-    // Server-side kick → refresh token and reconnect
+    // socket.io handles most disconnect reasons internally (transport error,
+    // ping timeout, etc.) via built-in reconnection.
+    // "io server disconnect" is the only case where the server intentionally
+    // closes the connection and socket.io will NOT retry on its own.
     if (reason === "io server disconnect") {
       this._session
         .refreshToken()
         .then(() => this.connect())
         .catch(err => this._setState({ status: "error", error: err }));
     }
-    // Other reasons handled by socket.io's built-in reconnection
   };
 
   private _onConnectError = (err: Error): void => {

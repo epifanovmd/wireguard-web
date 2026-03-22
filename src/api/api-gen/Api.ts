@@ -61,8 +61,11 @@ import {
   RefreshPayload,
   TSignUpRequestDto,
   UserDto,
+  WgOverviewStatsPayload,
   WgPeerDto,
+  WgPeerStatsPayload,
   WgServerDto,
+  WgServerStatsPayload,
 } from "./data-contracts";
 import { EContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -1093,6 +1096,54 @@ export class Api<
       url: `/api/wg/statistics/peers/${peerId}`,
       method: "GET",
       params: query,
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Current real-time stats across all servers — use for initial page load before WebSocket delivers the first wg:stats:overview event.
+   *
+   * @tags WireGuard Statistics
+   * @name GetOverviewCurrent
+   * @summary Current overview stats
+   * @request GET:/api/wg/statistics/overview/current
+   * @secure
+   */
+  getOverviewCurrent = (params: RequestParams = {}) =>
+    this.request<WgOverviewStatsPayload | null, any>({
+      url: `/api/wg/statistics/overview/current`,
+      method: "GET",
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Current real-time stats for a specific server — use for initial page load before WebSocket delivers the first wg:server:stats event.
+   *
+   * @tags WireGuard Statistics
+   * @name GetServerCurrent
+   * @summary Current server stats
+   * @request GET:/api/wg/statistics/servers/{serverId}/current
+   * @secure
+   */
+  getServerCurrent = (serverId: string, params: RequestParams = {}) =>
+    this.request<WgServerStatsPayload | null, any>({
+      url: `/api/wg/statistics/servers/${serverId}/current`,
+      method: "GET",
+      responseType: "json",
+      ...params,
+    });
+  /**
+   * @description Current real-time stats for a specific peer — use for initial page load before WebSocket delivers the first wg:peer:stats event.
+   *
+   * @tags WireGuard Statistics
+   * @name GetPeerCurrent
+   * @summary Current peer stats
+   * @request GET:/api/wg/statistics/peers/{peerId}/current
+   * @secure
+   */
+  getPeerCurrent = (peerId: string, params: RequestParams = {}) =>
+    this.request<WgPeerStatsPayload | null, any>({
+      url: `/api/wg/statistics/peers/${peerId}/current`,
+      method: "GET",
       responseType: "json",
       ...params,
     });
