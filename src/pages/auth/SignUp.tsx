@@ -1,6 +1,5 @@
 import { useHotkeys } from "@mantine/hooks";
 import { observer } from "mobx-react-lite";
-import React from "react";
 import { FormProvider } from "react-hook-form";
 
 import { AuthLayout } from "~@components/layouts";

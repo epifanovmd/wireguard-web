@@ -34,6 +34,15 @@ export class DateFormatter {
     return format(parseISO(isoString), "HH:mm:ss");
   };
 
+  /** "HH:mm:ss" если сегодня, иначе "d MMM, HH:mm:ss" */
+  formatChartTime = (isoString: MaybeString): string => {
+    if (!isoString) return "";
+
+    const date = parseISO(isoString);
+
+    return format(date, isToday(date) ? "HH:mm:ss" : "d MMM, HH:mm:ss");
+  };
+
   /** "yyyy-MM-dd" (для HTML date input) */
   formatInputDate = (isoString: MaybeString): string => {
     if (!isoString) return "";

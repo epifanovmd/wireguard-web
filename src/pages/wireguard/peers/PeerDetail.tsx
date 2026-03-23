@@ -78,7 +78,6 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
           <PageEmpty icon="question" title="Пир не найден" />
         ) : (
           <>
-            {/* Status strip */}
             <PeerLiveStatusStrip
               peer={peer}
               canManage={canManage}
@@ -89,7 +88,6 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
               onRevoke={vm.handleRevoke}
             />
 
-            {/* Live stat cards */}
             {canViewStats && <PeerLiveStatCards />}
 
             <Tabs defaultValue={canViewStats ? "charts" : "config"}>

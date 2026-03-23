@@ -88,7 +88,7 @@ export const SecurityTab: FC = observer(() => {
               loading={passkey.loading}
               onClick={handlePasskeyRegister}
             >
-              {!passkey.profileId
+              {passkey.profileId
                 ? "Перерегистрировать passkey"
                 : "Зарегистрировать passkey"}
             </AsyncButton>

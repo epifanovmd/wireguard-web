@@ -9,9 +9,7 @@ import { AsyncIconButton, iconButtonVariants } from "../../ui";
 interface ServerActionsProps
   extends Pick<VariantProps<typeof iconButtonVariants>, "size"> {
   status?: EWgServerStatus;
-  /** Разрешено ли управление сервером (create/edit/delete) */
   canManage?: boolean;
-  /** Разрешено ли управление состоянием (start/stop/restart) */
   canControl?: boolean;
   onEdit?: () => void;
   onStart: () => Promise<void>;

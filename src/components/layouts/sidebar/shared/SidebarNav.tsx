@@ -12,7 +12,7 @@ interface SidebarNavProps {
 export const SidebarNav: FC<SidebarNavProps> = ({ visibleGroups, onClose }) => (
   <nav className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-4">
     {visibleGroups.map((group, gi) => (
-      <div key={gi} className="flex flex-col gap-0.5">
+      <div key={group.label ?? gi} className="flex flex-col gap-0.5">
         {group.label && (
           <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
             {group.label}

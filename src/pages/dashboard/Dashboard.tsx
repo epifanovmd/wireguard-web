@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Download, Server, Upload, Zap } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { FC, useCallback, useEffect, useMemo } from "react";
+import { FC, useCallback, useEffect } from "react";
 
 import { EPermissions, EWgServerStatus } from "~@api/api-gen/data-contracts";
 import { formatter } from "~@common";
@@ -55,8 +55,6 @@ export const Dashboard: FC = observer(() => {
     s => s.status === EWgServerStatus.Up,
   );
 
-  const columns = useMemo(() => serverColumns, []);
-
   const stats = overviewStatsStore.stats;
 
   return (
@@ -64,7 +62,6 @@ export const Dashboard: FC = observer(() => {
       header={<PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />}
       contentClassName="gap-3 sm:gap-6"
     >
-      {/* Stat cards */}
       {canViewStats && (
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
@@ -116,7 +113,7 @@ export const Dashboard: FC = observer(() => {
       {canViewServers && (
         <ServersTable
           data={serversStore.models}
-          columns={columns}
+          columns={serverColumns}
           loading={serversStore.isLoading}
           onRowClick={onServerClick}
         />

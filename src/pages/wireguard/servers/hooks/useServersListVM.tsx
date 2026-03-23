@@ -28,8 +28,8 @@ export const useServersListVM = () => {
     async (id: string, action: "start" | "stop" | "restart" | "delete") => {
       if (action === "delete") {
         const ok = await confirm({
-          title: "Delete server",
-          message: "This will permanently delete the server and all its peers.",
+          title: "Удалить сервер",
+          message: "Сервер и все его пиры будут удалены безвозвратно.",
           variant: "danger",
         });
 
@@ -91,11 +91,6 @@ export const useServersListVM = () => {
     [handleAction],
   );
 
-  const columnsReadOnly: ColumnDef<ServerModel>[] = useMemo(
-    () => serverColumns,
-    [],
-  );
-
   const createServer = useCallback(
     async (params: IWgServerCreateRequestDto | IWgServerUpdateRequestDto) => {
       return listStore.createServer(params as IWgServerCreateRequestDto);
@@ -106,7 +101,6 @@ export const useServersListVM = () => {
   return {
     data: listStore.models,
     columns,
-    columnsReadOnly,
     loading: listStore.isLoading,
     createServerLoading: listStore.createServerMutation.isLoading,
     total: listStore.total,

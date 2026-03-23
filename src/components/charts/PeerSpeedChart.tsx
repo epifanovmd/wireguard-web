@@ -2,16 +2,10 @@ import { FC } from "react";
 
 import { formatter } from "~@common";
 
-import { IChartPoint, WGChart } from "../wgChart";
+import { WGChart } from "../wgChart";
+import { ChartProps } from "./types";
 
-interface IPeerSpeedChartProps {
-  points: IChartPoint[];
-  title?: string;
-  description?: string;
-  isLoading?: boolean;
-}
-
-export const PeerSpeedChart: FC<IPeerSpeedChartProps> = ({
+export const PeerSpeedChart: FC<ChartProps> = ({
   points,
   title = "Скорость пира",
   description = "Загрузка / отдача в реальном времени",

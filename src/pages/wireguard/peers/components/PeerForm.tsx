@@ -19,7 +19,7 @@ import {
   TextareaFormField,
 } from "~@components/ui";
 
-import { useServersSelectOptions } from "../../hooks";
+import { useServersSelectOptions } from "../../../../hooks";
 
 const schema = z.object({
   serverId: z.string().optional(),

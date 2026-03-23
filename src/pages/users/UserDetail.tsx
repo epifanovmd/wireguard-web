@@ -60,7 +60,6 @@ export const UserDetail: FC<UserDetailProps> = observer(
           <PageEmpty icon="question" title="Пользователь не найден" />
         ) : (
           <div className={"flex gap-3 sm:gap-6 flex-wrap xl:flex-nowrap"}>
-            {/* Sidebar - user info */}
             <div className="w-full xl:w-64 flex-shrink-0">
               <UserInfoCard
                 displayName={vm.model?.displayName ?? "?"}
@@ -72,7 +71,6 @@ export const UserDetail: FC<UserDetailProps> = observer(
               />
             </div>
 
-            {/* Main content */}
             <div className="flex-1 min-w-0">
               <Tabs defaultValue={vm.canManage ? "privileges" : "peers"}>
                 <TabsList>

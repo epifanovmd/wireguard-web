@@ -16,7 +16,7 @@ export const PeerStatus: FC<PeerStatusProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {<PeerStatusBadge status={status} />}
+      <PeerStatusBadge status={status} />
       {!enabled && <Badge variant="warning">Disabled</Badge>}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 
 import { EPermissions, TSignUpRequestDto } from "~@api/api-gen/data-contracts";
 import { useApi } from "~@api/hooks";

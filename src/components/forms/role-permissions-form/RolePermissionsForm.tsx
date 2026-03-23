@@ -1,17 +1,12 @@
 import { FC, memo } from "react";
 
 import { ERole } from "~@api/api-gen/data-contracts";
+import { ROLE_BADGE_VARIANT } from "~@components/shared/user/constants";
 import { Badge, Card, Spinner, Tabs } from "~@components/ui";
 import { RoleModel } from "~@models";
 
 import { useRolePermissionsForm } from "./hooks";
 import { RoleTabContent } from "./shared";
-
-const ROLE_BADGE_VARIANT: Record<string, "purple" | "info" | "gray"> = {
-  [ERole.Admin]: "purple",
-  [ERole.User]: "info",
-  [ERole.Guest]: "gray",
-};
 
 export const RolePermissionsForm: FC = memo(() => {
   const {
@@ -41,9 +36,9 @@ export const RolePermissionsForm: FC = memo(() => {
   return (
     <Card title="Права ролей" className="overflow-hidden p-5">
       <p className="text-xs text-muted-foreground pt-3 pb-1">
-        {"Права назначаются ролям и автоматически применяются ко всем"}
-        {"пользователям с этой ролью. Изменения вступают в силу при следующем"}
-        {"входе пользователя."}
+        Права назначаются ролям и автоматически применяются ко всем
+        пользователям с этой ролью. Изменения вступают в силу при следующем
+        входе пользователя.
       </p>
       <Tabs defaultValue={defaultTab} className="pb-5 pt-3">
         <Tabs.List variant={"underline"}>

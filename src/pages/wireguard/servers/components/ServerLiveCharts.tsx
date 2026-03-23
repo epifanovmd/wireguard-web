@@ -9,8 +9,8 @@ export const ServerLiveCharts: FC = observer(() => {
 
   return (
     <>
-      <ServerSpeedChart points={store.speedPoints} isLoading={store.isLoading} />
-      <ServerTrafficChart points={store.trafficPoints} isLoading={store.isLoading} />
+      <ServerSpeedChart title="Скорость" points={store.speedPoints} isLoading={store.isLoading} />
+      <ServerTrafficChart title="Трафик" points={store.trafficPoints} isLoading={store.isLoading} />
     </>
   );
 });

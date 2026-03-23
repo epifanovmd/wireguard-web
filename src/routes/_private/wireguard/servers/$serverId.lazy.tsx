@@ -1,12 +1,10 @@
-import { createLazyFileRoute, useNavigate, useParams } from "@tanstack/react-router";
-import React from "react";
+import { createLazyFileRoute, useParams } from "@tanstack/react-router";
 
 import { ServerDetail } from "../../../../pages/wireguard/servers/ServerDetail";
 
 const Component = () => {
-  const navigate = useNavigate();
   const { serverId } = useParams({ from: "/_private/wireguard/servers/$serverId" });
-  return <ServerDetail serverId={serverId} onBack={() => navigate({ to: "/wireguard/servers" })} />;
+  return <ServerDetail serverId={serverId} />;
 };
 
 export const Route = createLazyFileRoute("/_private/wireguard/servers/$serverId")({

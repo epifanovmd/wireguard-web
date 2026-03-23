@@ -2,8 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { PeerModel } from "~@models";
 
-import { PeerActiveBadge, PeerHandshake, PeerStatusLive } from "../../shared";
-import { Badge, CopyableText } from "../../ui";
+import {
+  PeerActiveBadge,
+  PeerBytesLive,
+  PeerHandshake,
+  PeerSpeedLive,
+  PeerStatusLive,
+} from "../../shared";
+import { Badge } from "../../ui";
 
 export const peerColumns: ColumnDef<PeerModel>[] = [
   {
@@ -12,27 +18,23 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     cell: ({ row }) => (
       <div>
         <p className="font-medium text-foreground">{row.original.name}</p>
-        <CopyableText
-          text={row.original.data.publicKey}
-          displayText={row.original.shortPublicKey}
-          className="mt-0.5 text-muted-foreground"
-        />
+        {row.original.data.allowedIPs && (
+          <span className="mt-0.5 font-mono text-xs text-muted-foreground">
+            {row.original.data.allowedIPs}
+          </span>
+        )}
       </div>
     ),
   },
   {
-    accessorKey: "allowedIPs",
-    header: "IP-адрес",
-    cell: ({ row }) => (
-      <span className="font-mono text-xs text-muted-foreground">
-        {row.original.data.allowedIPs}
-      </span>
-    ),
+    id: "speed",
+    header: "Скорость",
+    cell: ({ row }) => <PeerSpeedLive row={row.original} />,
   },
   {
-    id: "status",
-    header: "Статус",
-    cell: ({ row }) => <PeerStatusLive row={row.original} />,
+    id: "traffic",
+    header: "Трафик",
+    cell: ({ row }) => <PeerBytesLive row={row.original} />,
   },
   {
     id: "isActive",
@@ -43,6 +45,11 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
     id: "lastHandshake",
     header: "Рукопожатие",
     cell: ({ row }) => <PeerHandshake row={row.original} />,
+  },
+  {
+    id: "status",
+    header: "Статус",
+    cell: ({ row }) => <PeerStatusLive row={row.original} />,
   },
   {
     id: "description",
@@ -71,10 +78,13 @@ export const peerColumns: ColumnDef<PeerModel>[] = [
   {
     accessorKey: "expiresAt",
     header: "Истекает",
-    cell: ({ row }) => (
-      <span className="text-xs text-muted-foreground">
-        {row.original.expiresAtDate.formatted ?? "Никогда"}
-      </span>
-    ),
+    cell: ({ row }) =>
+      row.original.expiresAtDate.formatted ? (
+        <span className="text-xs text-foreground">
+          {row.original.expiresAtDate.formatted}
+        </span>
+      ) : (
+        <span className="text-xs italic text-muted-foreground">—</span>
+      ),
   },
 ];

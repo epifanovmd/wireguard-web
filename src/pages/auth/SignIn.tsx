@@ -2,7 +2,6 @@ import { useHotkeys } from "@mantine/hooks";
 import { Link } from "@tanstack/react-router";
 import { Fingerprint } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import React from "react";
 import { FormProvider } from "react-hook-form";
 
 import { usePasskeyAuth } from "~@common";

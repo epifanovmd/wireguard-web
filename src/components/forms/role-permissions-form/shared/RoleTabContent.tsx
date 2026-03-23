@@ -38,7 +38,7 @@ export const RoleTabContent = memo<RoleTabContentProps>(
                 disabled={!changed || saving}
                 onClick={() => onReset(role)}
               >
-                {"Сбросить"}
+                Сбросить
               </Button>
               <AsyncButton
                 size="sm"
@@ -46,7 +46,7 @@ export const RoleTabContent = memo<RoleTabContentProps>(
                 loading={saving}
                 onClick={() => onSave(role)}
               >
-                {"Сохранить"}
+                Сохранить
               </AsyncButton>
             </div>
           </div>

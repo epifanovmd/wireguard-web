@@ -4,10 +4,10 @@ import { useApi } from "~@api";
 import { EPermissions, ERole, IRoleDto } from "~@api/api-gen/data-contracts";
 import { useNotification } from "~@core/notifications";
 
-const ROLE_ORDERS = {
+const ROLE_ORDERS: Record<string, number> = {
   [ERole.Admin]: 0,
   [ERole.User]: 1,
-  [ERole.Guest]: 12,
+  [ERole.Guest]: 2,
 };
 
 export const useRolePermissionsForm = () => {

@@ -11,12 +11,9 @@ import { usePermissionsEditor } from "./hooks";
 import { PermissionGroupSection } from "./shared";
 
 export interface PermissionsEditorProps {
-  /** Прямые права пользователя (редактируемые) */
   value: EPermissions[];
   onChange: (perms: EPermissions[]) => void;
-  /** Права, унаследованные от роли (read-only) */
   rolePermissions?: EPermissions[];
-  /** Роль пользователя — если admin, все чекбоксы неактивны */
   role?: ERole;
 }
 

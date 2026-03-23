@@ -2,16 +2,10 @@ import { FC } from "react";
 
 import { formatter } from "~@common";
 
-import { IChartPoint, WGChart } from "../wgChart";
+import { WGChart } from "../wgChart";
+import { ChartProps } from "./types";
 
-interface IServerTrafficChartProps {
-  points: IChartPoint[];
-  title?: string;
-  description?: string;
-  isLoading?: boolean;
-}
-
-export const ServerTrafficChart: FC<IServerTrafficChartProps> = ({
+export const ServerTrafficChart: FC<ChartProps> = ({
   points,
   title = "Трафик сервера",
   description = "Накопленный RX / TX трафик",

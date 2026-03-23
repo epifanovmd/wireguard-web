@@ -9,7 +9,6 @@ import { AsyncIconButton, iconButtonVariants } from "../../ui";
 interface PeerActionsProps
   extends Pick<VariantProps<typeof iconButtonVariants>, "size"> {
   status: EWgServerStatus;
-  /** Разрешено ли управление пиром (edit/delete/toggle/PSK) */
   canManage?: boolean;
   onQr?: () => void;
   onToggle: () => Promise<void>;

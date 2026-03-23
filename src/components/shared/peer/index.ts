@@ -5,4 +5,5 @@ export * from "./PeerHandshake";
 export * from "./PeerStatus";
 export * from "./PeerStatusBadge";
 export * from "./PeerStatusLive";
+export * from "./PeerTrafficLive";
 export * from "./QrCodeModal";

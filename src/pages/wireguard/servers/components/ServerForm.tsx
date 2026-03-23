@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
 import { Terminal } from "lucide-react";
-import React, { FC } from "react";
+import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 

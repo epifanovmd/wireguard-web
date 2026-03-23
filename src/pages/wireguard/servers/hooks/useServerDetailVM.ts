@@ -29,7 +29,7 @@ export const useServerDetailVM = (serverId: string) => {
 
     return serverStatsStore.subscribe(serverId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverId, canViewStats]);
+  }, [serverId]);
 
   useEffect(() => {
     serverStore.loadServer(serverId);

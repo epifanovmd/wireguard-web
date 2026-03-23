@@ -1,46 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHotkeys } from "@mantine/hooks";
-import { useNavigate } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
+import { FormProvider } from "react-hook-form";
 
-import { useApi } from "~@api/hooks";
 import { AuthLayout } from "~@components/layouts";
 import { Button, Card, InputFormField } from "~@components/ui";
 
-const schema = z.object({
-  login: z.string().min(1, "Email или телефон обязателен"),
-});
-
-type FormData = z.infer<typeof schema>;
+import { ForgotPasswordFormData, useForgotPasswordVM } from "./hooks";
 
 export const ForgotPassword = observer(() => {
-  const api = useApi();
-  const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
-  const navigate = useNavigate();
-
-  const methods = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
-  const { handleSubmit } = methods;
-
-  const onBack = useCallback(() => {
-    return navigate({ to: "/auth/signIn" });
-  }, [navigate]);
-
-  const onSubmit = async (data: FormData) => {
-    setLoading(true);
-    await api.requestResetPassword({ login: data.login });
-    setLoading(false);
-    setSent(true);
-  };
-
-  useHotkeys([["Enter", () => handleSubmit(onSubmit)()]], []);
+  const { methods, handleSubmit, onSubmit, onBack, loading, sent } =
+    useForgotPasswordVM();
 
   return (
     <AuthLayout>
@@ -74,7 +43,7 @@ export const ForgotPassword = observer(() => {
 
             <FormProvider {...methods}>
               <div className="flex flex-col gap-4">
-                <InputFormField<FormData>
+                <InputFormField<ForgotPasswordFormData>
                   name="login"
                   label="Email или телефон"
                   placeholder="email@example.com"

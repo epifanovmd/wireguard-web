@@ -6,7 +6,6 @@ import { AsyncButton, Card, CardProps, CopyableText } from "../../ui";
 
 export interface IPeerConfigurationCardProps extends CardProps {
   peer: PeerModel;
-  /** Разрешено ли управление пиром (PSK rotate/remove) */
   canManage?: boolean;
   handleRotatePsk?: () => void;
   handleRemovePsk?: () => void;

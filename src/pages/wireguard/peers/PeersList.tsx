@@ -26,7 +26,7 @@ import {
 import { useNotification } from "~@core/notifications";
 import { usePermissions } from "~@store";
 
-import { useServersSelectOptions } from "../hooks";
+import { useServersSelectOptions } from "../../../hooks";
 import { PeerForm } from "./components/PeerForm";
 import { usePeersListVM } from "./hooks";
 
@@ -57,7 +57,6 @@ export const PeersList: FC = observer(() => {
       }
       contentClassName="gap-3 sm:gap-6"
     >
-      {/* Controls */}
       {canViewServers && (
         <div className="flex items-center gap-3 flex-wrap">
           <Select

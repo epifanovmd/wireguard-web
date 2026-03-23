@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
-import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 

@@ -63,12 +63,12 @@ export class PeerStatsStore extends StatsChartBase implements IPeerStatsStore {
       if (res.data) {
         this._setPoints(
           res.data.speed.map(s => ({
-            t: formatter.date.formatTime(s.timestamp),
+            t: formatter.date.formatChartTime(s.timestamp),
             rx: s.rxSpeedBps,
             tx: s.txSpeedBps,
           })),
           res.data.traffic.map(t => ({
-            t: formatter.date.formatTime(t.timestamp),
+            t: formatter.date.formatChartTime(t.timestamp),
             rx: t.rxBytes,
             tx: t.txBytes,
           })),
@@ -84,7 +84,7 @@ export class PeerStatsStore extends StatsChartBase implements IPeerStatsStore {
       unsubFn = this._wgSocket.subscribePeer(peerId, {
         onStats: s => {
           this.holder.setData(s);
-          const t = formatter.date.formatTime(s.timestamp);
+          const t = formatter.date.formatChartTime(s.timestamp);
 
           if (this.chartHolder.data?.speed.length) {
             runInAction(() => {

@@ -1,12 +1,13 @@
+import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
 import { PeerModel } from "~@models";
 
-import { useWgPeer } from "../../../socket";
+import { usePeerLive } from "../../../hooks/usePeerLive";
 import { Badge } from "../../ui";
 
-export const PeerActiveBadge: FC<{ row: PeerModel }> = ({ row }) => {
-  const { active, stats } = useWgPeer(row.data.id);
+export const PeerActiveBadge: FC<{ row: PeerModel }> = observer(({ row }) => {
+  const { active, stats } = usePeerLive(row.data.id);
 
   const isActive = active?.isActive ?? stats?.isActive ?? row.isActive;
 
@@ -19,4 +20,4 @@ export const PeerActiveBadge: FC<{ row: PeerModel }> = ({ row }) => {
   }
 
   return <span className="text-xs text-muted-foreground">Нет активности</span>;
-};
+});

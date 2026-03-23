@@ -17,7 +17,6 @@ export const Stats: FC = () => {
       }
       contentClassName="gap-3 sm:gap-6"
     >
-      {/* Controls */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className={"flex grow gap-3 flex-wrap"}>
           <Select

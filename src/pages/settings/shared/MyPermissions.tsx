@@ -28,7 +28,7 @@ export const MyPermissions: FC = observer(() => {
             <dt className="text-sm text-muted-foreground">Роли</dt>
             <dd className="flex gap-1.5 flex-wrap justify-end">
               {roles.length > 0 ? (
-                roles.map(role => <UserRoleBadge role={role} />)
+                roles.map(role => <UserRoleBadge key={role} role={role} />)
               ) : (
                 <span className="text-sm text-muted-foreground">Нет ролей</span>
               )}

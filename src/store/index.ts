@@ -2,6 +2,7 @@ export * from "./app";
 export * from "./auth";
 export * from "./overviewStats";
 export * from "./peers";
+export * from "./peersLive";
 export * from "./peerStats";
 export * from "./servers";
 export * from "./serverStats";

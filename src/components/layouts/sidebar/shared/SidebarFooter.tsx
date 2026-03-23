@@ -19,7 +19,6 @@ export const SidebarFooter: FC<SidebarFooterProps> = ({
   onClose,
 }) => (
   <div className="flex flex-col px-2 py-2 gap-1 border-t border-sidebar-border">
-    {/* Profile */}
     <div onClick={onClose}>
       <ButtonLink
         to="/profile"
@@ -38,7 +37,6 @@ export const SidebarFooter: FC<SidebarFooterProps> = ({
       </ButtonLink>
     </div>
 
-    {/* Settings + ThemeToggle */}
     <div className="flex items-center gap-2">
       <div className={"flex grow"} onClick={onClose}>
         <ButtonLink
@@ -56,7 +54,6 @@ export const SidebarFooter: FC<SidebarFooterProps> = ({
 
     <div className="border-t border-sidebar-border my-1" />
 
-    {/* Logout */}
     <Button
       variant="ghost"
       size="sm"

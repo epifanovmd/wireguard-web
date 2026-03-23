@@ -2,19 +2,13 @@ import { FC } from "react";
 
 import { formatter } from "~@common";
 
-import { IChartPoint, WGChart } from "../wgChart";
+import { WGChart } from "../wgChart";
+import { ChartProps } from "./types";
 
-interface IServerSpeedChartProps {
-  points: IChartPoint[];
-  title?: string;
-  description?: string;
-  isLoading?: boolean;
-}
-
-export const ServerSpeedChart: FC<IServerSpeedChartProps> = ({
+export const ServerSpeedChart: FC<ChartProps> = ({
+  points,
   title = "Скорость сервера",
   description = "Загрузка / отдача в реальном времени",
-  points,
   isLoading,
 }) => (
   <WGChart

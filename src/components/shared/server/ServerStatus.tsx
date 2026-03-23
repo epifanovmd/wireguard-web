@@ -16,7 +16,7 @@ export const ServerStatus: FC<ServerStatusProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {<ServerStatusBadge status={status} />}
+      <ServerStatusBadge status={status} />
       {!enabled && <Badge variant="warning">Disabled</Badge>}
     </div>
   );

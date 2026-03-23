@@ -8,16 +8,15 @@ export const useRolesSelectOptions = () => {
   const api = useApi();
   const [roles, setRoles] = useState<IRoleDto[]>([]);
 
-  useEffect(() => {
-    load().then();
-    // eslint-disable-next-line
-  }, [api]);
-
   const load = useCallback(() => {
     return api
       .getRoles()
       .then(res => setRoles((res.data ?? []).sort()))
       .catch(() => {});
+  }, [api]);
+
+  useEffect(() => {
+    load().then();
     // eslint-disable-next-line
   }, []);
 

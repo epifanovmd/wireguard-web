@@ -39,7 +39,6 @@ import { useServerDetailVM } from "./hooks";
 
 interface ServerDetailProps {
   serverId: string;
-  onBack: () => void;
 }
 
 export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
@@ -81,7 +80,6 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
         <PageEmpty icon="question" title="Сервер не найден" />
       ) : (
         <>
-          {/* Status cards */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Статус"
@@ -102,7 +100,6 @@ export const ServerDetail: FC<ServerDetailProps> = observer(({ serverId }) => {
             />
           </div>
 
-          {/* Live speed stat cards */}
           {canViewStats && <ServerLiveStatCards />}
 
           <Tabs defaultValue={canViewStats ? "charts" : "config"}>
