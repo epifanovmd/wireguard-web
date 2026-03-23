@@ -30,19 +30,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }), "relative")}
         ref={ref}
         disabled={disabled || loading}
         {...props}
       >
-        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-        {!loading && leftIcon && (
-          <span className="inline-flex">{leftIcon}</span>
+        {loading && (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <Loader2 className="h-4 w-4 animate-spin" />
+          </span>
         )}
-        {children}
-        {!loading && rightIcon && (
-          <span className="inline-flex">{rightIcon}</span>
-        )}
+        <span
+          className={cn(
+            "inline-flex items-center gap-2",
+            loading && "invisible",
+          )}
+        >
+          {leftIcon && <span className="inline-flex">{leftIcon}</span>}
+          {children}
+          {rightIcon && <span className="inline-flex">{rightIcon}</span>}
+        </span>
       </button>
     );
   },
