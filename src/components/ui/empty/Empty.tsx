@@ -1,5 +1,5 @@
 import { type VariantProps } from "class-variance-authority";
-import { Database, FileQuestion, Inbox, Package, Search } from "lucide-react";
+import { Database, Inbox, Package, PackageSearch, Search } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../cn";
@@ -20,13 +20,21 @@ export interface EmptyProps
   action?: React.ReactNode;
 }
 
+const iconMap = {
+  inbox: Inbox,
+  search: Search,
+  package: Package,
+  database: Database,
+  question: PackageSearch,
+};
+
 const Empty = React.forwardRef<HTMLDivElement, EmptyProps>(
   (
     {
       className,
       size,
       icon = "inbox",
-      title = "No data",
+      title = "Нет данных",
       description,
       action,
       children,
@@ -34,21 +42,22 @@ const Empty = React.forwardRef<HTMLDivElement, EmptyProps>(
     },
     ref,
   ) => {
-    const iconMap = {
-      inbox: Inbox,
-      search: Search,
-      package: Package,
-      database: Database,
-      question: FileQuestion,
-    };
-
     const renderIcon = () => {
       if (React.isValidElement(icon)) {
         return icon;
       }
 
-      const IconComponent = iconMap[icon as keyof typeof iconMap] || Inbox;
-      return <IconComponent className={cn(emptyIconVariants({ size }))} />;
+      const IconComponent =
+        iconMap[icon as keyof typeof iconMap] || Inbox;
+
+      return (
+        <div className="relative flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full bg-muted/60 blur-xl" />
+          <div className="relative rounded-2xl border border-border/60 bg-muted/40 p-4 shadow-sm backdrop-blur-sm">
+            <IconComponent className={cn(emptyIconVariants({ size }))} />
+          </div>
+        </div>
+      );
     };
 
     return (
@@ -57,20 +66,18 @@ const Empty = React.forwardRef<HTMLDivElement, EmptyProps>(
         className={cn(emptyVariants({ size }), className)}
         {...props}
       >
-        <div className="flex flex-col items-center gap-3">
-          {renderIcon()}
-          <div className="space-y-1">
-            {title && (
-              <h3 className="font-semibold text-foreground">{title}</h3>
-            )}
-            {description && (
-              <p className="text-sm text-muted-foreground max-w-sm">
-                {description}
-              </p>
-            )}
-          </div>
+        {renderIcon()}
+        <div className="flex flex-col items-center gap-1">
+          {title && (
+            <p className="font-medium text-foreground">{title}</p>
+          )}
+          {description && (
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              {description}
+            </p>
+          )}
         </div>
-        {action && <div className="mt-2">{action}</div>}
+        {action && <div>{action}</div>}
         {children}
       </div>
     );

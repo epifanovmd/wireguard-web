@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { NavGroup } from "../constants";
 import { SidebarFooter } from "./SidebarFooter";
-import { SidebarLogo } from "./SidebarLogo";
+import { SidebarHeader } from "./SidebarHeader";
 import { SidebarNav } from "./SidebarNav";
 
 export interface NavContentProps {
@@ -21,7 +21,7 @@ export const NavContent: FC<NavContentProps> = ({
   onClose,
 }) => (
   <div className="flex flex-col h-full">
-    <SidebarLogo onClose={onClose} />
+    <SidebarHeader onClose={onClose} />
     <SidebarNav visibleGroups={visibleGroups} onClose={onClose} />
     <SidebarFooter
       displayName={displayName}

@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { PublicUserModel } from "~@models";
 
-import { type ColumnDef, Table } from "../../ui";
+import { type ColumnDef, Empty, Table } from "../../ui";
 
 export interface UsersTableProps {
   data: PublicUserModel[];
@@ -23,10 +23,6 @@ export const UsersTable: FC<UsersTableProps> = ({
     loading={loading}
     getRowId={u => u.data.userId}
     onRowClick={onRowClick}
-    empty={
-      <div className="text-center py-8 text-muted-foreground text-sm">
-        No users found
-      </div>
-    }
+    empty={<Empty size="sm" icon="search" title="Пользователи не найдены" />}
   />
 );

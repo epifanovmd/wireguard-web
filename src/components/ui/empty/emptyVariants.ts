@@ -1,13 +1,13 @@
 import { cva } from "class-variance-authority";
 
 export const emptyVariants = cva(
-  "flex flex-col items-center justify-center text-center py-12 px-4",
+  "flex flex-col items-center justify-center text-center px-4 gap-4",
   {
     variants: {
       size: {
-        sm: "py-8 gap-2",
-        md: "py-12 gap-3",
-        lg: "py-16 gap-4",
+        sm: "py-10 gap-3",
+        md: "py-16 gap-4",
+        lg: "py-24 gap-5",
       },
     },
     defaultVariants: {
@@ -16,12 +16,12 @@ export const emptyVariants = cva(
   },
 );
 
-export const emptyIconVariants = cva("text-muted-foreground/50", {
+export const emptyIconVariants = cva("text-muted-foreground/70", {
   variants: {
     size: {
-      sm: "h-12 w-12",
-      md: "h-16 w-16",
-      lg: "h-24 w-24",
+      sm: "h-8 w-8",
+      md: "h-10 w-10",
+      lg: "h-14 w-14",
     },
   },
   defaultVariants: {

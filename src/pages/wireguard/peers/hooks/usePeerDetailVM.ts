@@ -121,6 +121,7 @@ export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
     peer: peerStore.peer,
     model: peerStore.peerModel,
     isLoading: peerStore.peerHolder.isLoading,
+    isError: peerStore.peerHolder.isError,
     isReady: peerStore.peerHolder.isFilled,
     isUpdateLoading: peerStore.updatePeerMutation.isLoading,
     editOpen,

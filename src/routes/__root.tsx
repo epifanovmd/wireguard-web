@@ -2,6 +2,8 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 import { IAuthStore } from "~@store";
 
+import { NotFoundPage } from "../pages/not-found/NotFoundPage";
+
 export const Route = createRootRoute({
   beforeLoad: async () => {
     const auth = IAuthStore.getInstance();
@@ -10,7 +12,6 @@ export const Route = createRootRoute({
       await auth.restore();
     }
   },
-  component: () => {
-    return <Outlet />;
-  },
+  component: () => <Outlet />,
+  notFoundComponent: NotFoundPage,
 });

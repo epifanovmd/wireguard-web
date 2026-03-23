@@ -8,6 +8,7 @@ import {
   PeerConfigurationCard,
   QrCodeModal,
 } from "~@components/shared";
+import { PageLoader } from "~@components/shared/loaders";
 import {
   Button,
   Modal,
@@ -17,8 +18,8 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  PageEmpty,
   Select,
-  Spinner,
   Tabs,
   TabsContent,
   TabsList,
@@ -49,159 +50,157 @@ export const PeerDetail: FC<PeerDetailProps> = observer(
     const canViewStats = hasPermission(EPermissions.WgStatsView);
     const [assignUserId, setAssignUserId] = useState<string | undefined>();
 
-    if (vm.isLoading || !vm.isReady) {
-      return (
-        <PageLayout header={<PageHeader title="Пир" />}>
-          <div className="flex justify-center py-12">
-            <Spinner />
-          </div>
-        </PageLayout>
-      );
-    }
-
-    if (!peer || !model) {
-      return <div className="p-6 text-muted-foreground">Пир не найден</div>;
-    }
-
     return (
       <PageLayout
         header={
           <PageHeader
-            title={peer.name}
+            title={peer?.name ?? "Пир"}
             actions={
-              <PeerActions
-                status={peer.status}
-                size="sm"
-                canManage={canManage}
-                onQr={() => vm.setQrOpen(true)}
-                onToggle={vm.handleToggle}
-                onEdit={() => vm.setEditOpen(true)}
-                onDelete={vm.handleDelete}
-              />
+              peer && (
+                <PeerActions
+                  status={peer.status}
+                  size="sm"
+                  canManage={canManage}
+                  onQr={() => vm.setQrOpen(true)}
+                  onToggle={vm.handleToggle}
+                  onEdit={() => vm.setEditOpen(true)}
+                  onDelete={vm.handleDelete}
+                />
+              )
             }
           />
         }
-        contentClassName="flex flex-col gap-6"
+        contentClassName="gap-3 sm:gap-6"
       >
-        {/* Status strip */}
-        <PeerLiveStatusStrip
-          peer={peer}
-          canManage={canManage}
-          onAssign={() => {
-            setAssignUserId(undefined);
-            vm.setAssignOpen(true);
-          }}
-          onRevoke={vm.handleRevoke}
-        />
-
-        {/* Live stat cards */}
-        {canViewStats && <PeerLiveStatCards />}
-
-        <Tabs defaultValue={canViewStats ? "charts" : "config"}>
-          <TabsList>
-            {canViewStats && (
-              <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>
-            )}
-            <TabsTrigger value="config">Конфигурация</TabsTrigger>
-          </TabsList>
-
-          {canViewStats && (
-            <TabsContent value="charts" className={"flex flex-col gap-4"}>
-              <PeerLiveCharts />
-            </TabsContent>
-          )}
-
-          <TabsContent value="config">
-            <PeerConfigurationCard
-              peer={model}
+        {vm.isLoading ? (
+          <PageLoader />
+        ) : !peer || !model ? (
+          <PageEmpty icon="question" title="Пир не найден" />
+        ) : (
+          <>
+            {/* Status strip */}
+            <PeerLiveStatusStrip
+              peer={peer}
               canManage={canManage}
-              handleRotatePsk={vm.handleRotatePsk}
-              handleRemovePsk={vm.handleRemovePsk}
+              onAssign={() => {
+                setAssignUserId(undefined);
+                vm.setAssignOpen(true);
+              }}
+              onRevoke={vm.handleRevoke}
             />
-          </TabsContent>
-        </Tabs>
 
-        {canManage && (
-          <Modal
-            open={vm.editOpen}
-            onOpenChange={open => !open && vm.setEditOpen(false)}
-          >
-            <ModalOverlay />
-            <ModalContent className="max-w-lg">
-              <ModalHeader>
-                <ModalTitle>Редактировать пир</ModalTitle>
-              </ModalHeader>
-              <ModalBody>
-                <PeerForm
-                  isEdit
-                  defaultValues={peer}
-                  onSubmit={vm.handleUpdate}
+            {/* Live stat cards */}
+            {canViewStats && <PeerLiveStatCards />}
+
+            <Tabs defaultValue={canViewStats ? "charts" : "config"}>
+              <TabsList>
+                {canViewStats && (
+                  <TabsTrigger value="charts">Скорость / Трафик</TabsTrigger>
+                )}
+                <TabsTrigger value="config">Конфигурация</TabsTrigger>
+              </TabsList>
+
+              {canViewStats && (
+                <TabsContent value="charts" className={"flex flex-col gap-4"}>
+                  <PeerLiveCharts />
+                </TabsContent>
+              )}
+
+              <TabsContent value="config">
+                <PeerConfigurationCard
+                  peer={model}
+                  canManage={canManage}
+                  handleRotatePsk={vm.handleRotatePsk}
+                  handleRemovePsk={vm.handleRemovePsk}
                 />
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => vm.setEditOpen(false)}
-                >
-                  Отмена
-                </Button>
-                <Button
-                  type="submit"
-                  form="peer-form"
-                  loading={vm.isUpdateLoading}
-                >
-                  Сохранить
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+              </TabsContent>
+            </Tabs>
+
+            {canManage && (
+              <Modal
+                open={vm.editOpen}
+                onOpenChange={open => !open && vm.setEditOpen(false)}
+              >
+                <ModalOverlay />
+                <ModalContent className="max-w-lg">
+                  <ModalHeader>
+                    <ModalTitle>Редактировать пир</ModalTitle>
+                  </ModalHeader>
+                  <ModalBody>
+                    <PeerForm
+                      isEdit
+                      defaultValues={peer}
+                      onSubmit={vm.handleUpdate}
+                    />
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => vm.setEditOpen(false)}
+                    >
+                      Отмена
+                    </Button>
+                    <Button
+                      type="submit"
+                      form="peer-form"
+                      loading={vm.isUpdateLoading}
+                    >
+                      Сохранить
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            )}
+
+            <Modal
+              open={vm.assignOpen}
+              onOpenChange={open => !open && vm.setAssignOpen(false)}
+            >
+              <ModalOverlay />
+              <ModalContent className="max-w-sm">
+                <ModalHeader>
+                  <ModalTitle>Назначить пользователю</ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                  <Select
+                    fetchOptions={usersOptions.fetchOptions}
+                    getOption={usersOptions.getOption}
+                    fetchOnMount
+                    value={assignUserId}
+                    onChange={setAssignUserId}
+                    placeholder="Выберите пользователя"
+                  />
+
+                  <div className={"flex grow justify-end gap-2 py-4"}>
+                    <Button
+                      variant="outline"
+                      onClick={() => vm.setAssignOpen(false)}
+                    >
+                      Отмена
+                    </Button>
+                    <Button
+                      disabled={!assignUserId}
+                      loading={vm.assignLoading}
+                      onClick={() =>
+                        assignUserId && vm.handleAssign(assignUserId)
+                      }
+                    >
+                      Назначить
+                    </Button>
+                  </div>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+
+            <QrCodeModal
+              open={vm.qrOpen}
+              peerId={peerId}
+              peerName={peer.name}
+              onClose={() => vm.setQrOpen(false)}
+            />
+          </>
         )}
-
-        <Modal
-          open={vm.assignOpen}
-          onOpenChange={open => !open && vm.setAssignOpen(false)}
-        >
-          <ModalOverlay />
-          <ModalContent className="max-w-sm">
-            <ModalHeader>
-              <ModalTitle>Назначить пользователю</ModalTitle>
-            </ModalHeader>
-            <ModalBody>
-              <Select
-                fetchOptions={usersOptions.fetchOptions}
-                getOption={usersOptions.getOption}
-                fetchOnMount
-                value={assignUserId}
-                onChange={setAssignUserId}
-                placeholder="Выберите пользователя"
-              />
-
-              <div className={"flex grow justify-end gap-2 py-4"}>
-                <Button
-                  variant="outline"
-                  onClick={() => vm.setAssignOpen(false)}
-                >
-                  Отмена
-                </Button>
-                <Button
-                  disabled={!assignUserId}
-                  loading={vm.assignLoading}
-                  onClick={() => assignUserId && vm.handleAssign(assignUserId)}
-                >
-                  Назначить
-                </Button>
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-
-        <QrCodeModal
-          open={vm.qrOpen}
-          peerId={peerId}
-          peerName={peer.name}
-          onClose={() => vm.setQrOpen(false)}
-        />
       </PageLayout>
     );
   },

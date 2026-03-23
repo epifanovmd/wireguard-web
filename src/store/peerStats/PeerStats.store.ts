@@ -73,8 +73,6 @@ export class PeerStatsStore extends StatsChartBase implements IPeerStatsStore {
             tx: t.txBytes,
           })),
         );
-      } else {
-        this._setPoints([], []);
       }
     });
   }

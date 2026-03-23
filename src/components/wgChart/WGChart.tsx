@@ -9,7 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { Card } from "../ui";
+import { Card, Spinner } from "../ui";
 
 export interface IChartPoint {
   t: string;
@@ -21,6 +21,7 @@ export interface IWGChartProps {
   title: string;
   description?: string;
   points: IChartPoint[];
+  isLoading?: boolean;
   formatter?: (v: number) => string;
   rxLabel?: string;
   txLabel?: string;
@@ -40,6 +41,7 @@ export const WGChart = observer<IWGChartProps>(
     points,
     title,
     description,
+    isLoading,
     formatter = v => String(v),
     rxLabel = "Download",
     txLabel = "Upload",
@@ -50,7 +52,11 @@ export const WGChart = observer<IWGChartProps>(
     ];
 
     return (
-      <Card title={title} description={description}>
+      <Card
+        title={title}
+        description={description}
+        extra={isLoading && <Spinner className={"self-stretch"} />}
+      >
         <ResponsiveContainer width="100%" height={192}>
           <AreaChart data={points}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />

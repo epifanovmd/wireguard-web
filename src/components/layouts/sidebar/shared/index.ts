@@ -1,4 +1,4 @@
 export { NavContent } from "./NavContent";
 export { SidebarFooter } from "./SidebarFooter";
-export { SidebarLogo } from "./SidebarLogo";
+export { SidebarHeader } from "./SidebarHeader";
 export { SidebarNav } from "./SidebarNav";

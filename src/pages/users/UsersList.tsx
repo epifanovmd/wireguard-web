@@ -26,10 +26,7 @@ export const UsersList: FC = observer(() => {
           actions={
             canManage && (
               <Tooltip content="Добавить пользователя">
-                <IconButton
-                  variant="solid"
-                  onClick={() => setCreateOpen(true)}
-                >
+                <IconButton variant="solid" onClick={() => setCreateOpen(true)}>
                   <Plus size={16} strokeWidth={2.5} />
                 </IconButton>
               </Tooltip>
@@ -37,7 +34,6 @@ export const UsersList: FC = observer(() => {
           }
         />
       }
-      contentClassName="flex flex-col gap-4"
     >
       <Card
         title="Пользователи"

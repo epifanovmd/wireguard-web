@@ -79,6 +79,7 @@ export const useServerDetailVM = (serverId: string) => {
     server,
     serverModel: serverStore.serverModel,
     isLoading: serverStore.pageHolder.isLoading,
+    isError: serverStore.serverHolder.isError,
     isActionLoading: serverStore.serverActionMutation.isLoading,
     isUpdateLoading: serverStore.updateServerMutation.isLoading,
     isFilled: serverStore.serverHolder.isFilled,

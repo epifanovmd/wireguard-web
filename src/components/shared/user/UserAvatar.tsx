@@ -1,4 +1,4 @@
-import cn from "classnames";
+import { cva, VariantProps } from "class-variance-authority";
 import { FC } from "react";
 
 const COLORS = [
@@ -19,7 +19,25 @@ function colorFromString(s: string): string {
   return COLORS[Math.abs(h) % COLORS.length];
 }
 
-export const UserAvatar: FC<{ name: string; size?: "sm" | "md" | "lg" }> = ({
+const avatarVariants = cva(
+  "rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0",
+  {
+    variants: {
+      size: {
+        sm: "w-7 h-7 text-xs",
+        md: "w-8 h-8 text-sm",
+        lg: "w-10 h-10 text-base",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  },
+);
+
+type UserAvatarProps = { name: string } & VariantProps<typeof avatarVariants>;
+
+export const UserAvatar: FC<UserAvatarProps> = ({
   name,
   size = "md",
 }) => {
@@ -30,21 +48,9 @@ export const UserAvatar: FC<{ name: string; size?: "sm" | "md" | "lg" }> = ({
       .join("")
       .slice(0, 2)
       .toUpperCase() || "?";
-  const color = colorFromString(name);
-  const sizeClass = {
-    sm: "w-7 h-7 text-xs",
-    md: "w-8 h-8 text-sm",
-    lg: "w-10 h-10 text-base",
-  }[size];
 
   return (
-    <div
-      className={cn(
-        "rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0",
-        color,
-        sizeClass,
-      )}
-    >
+    <div className={avatarVariants({ size, className: colorFromString(name) })}>
       {initials}
     </div>
   );

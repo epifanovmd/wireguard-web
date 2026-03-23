@@ -74,8 +74,6 @@ export class ServerStatsStore
             tx: t.txBytes,
           })),
         );
-      } else {
-        this._setPoints([], []);
       }
     });
   }

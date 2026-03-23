@@ -5,16 +5,12 @@ export const iconButtonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-        enable:
-          "text-muted-foreground hover:bg-success/10 hover:text-success",
-        disable:
-          "text-muted-foreground hover:bg-warning/10 hover:text-warning",
-        destructive:
-          "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+        default: "hover:bg-accent text-accent-foreground",
+        enable: "hover:bg-success/10 text-success",
+        disable: "hover:bg-warning/10 text-warning",
+        destructive: "hover:bg-destructive/10 text-destructive",
         primary: "text-muted-foreground hover:bg-primary/10 hover:text-primary",
-        ghost: "text-muted-foreground hover:text-foreground",
+        ghost: "text-foreground",
         solid:
           "rounded-full bg-primary text-primary-foreground hover:bg-primary/85 shadow-sm hover:shadow-md",
       },

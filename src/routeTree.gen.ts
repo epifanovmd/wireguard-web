@@ -21,6 +21,7 @@ import { Route as PrivateUsersRouteImport } from './routes/_private/users'
 import { Route as PrivateWireguardStatsRouteImport } from './routes/_private/wireguard/stats'
 import { Route as PrivateWireguardServersRouteImport } from './routes/_private/wireguard/servers'
 import { Route as PrivateWireguardPeersRouteImport } from './routes/_private/wireguard/peers'
+import { Route as PrivateUsersUserIdRouteImport } from './routes/_private/users/$userId'
 
 const AuthSignUpLazyRouteImport = createFileRoute('/auth/signUp')()
 const AuthSignInLazyRouteImport = createFileRoute('/auth/signIn')()
@@ -30,9 +31,6 @@ const AuthRecoveryPasswordLazyRouteImport = createFileRoute(
 const PrivateSettingsLazyRouteImport = createFileRoute('/_private/settings')()
 const PrivateProfileLazyRouteImport = createFileRoute('/_private/profile')()
 const PrivateUsersIndexLazyRouteImport = createFileRoute('/_private/users/')()
-const PrivateUsersUserIdLazyRouteImport = createFileRoute(
-  '/_private/users/$userId',
-)()
 const PrivateWireguardServersIndexLazyRouteImport = createFileRoute(
   '/_private/wireguard/servers/',
 )()
@@ -121,13 +119,6 @@ const PrivateUsersIndexLazyRoute = PrivateUsersIndexLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_private/users/index.lazy').then((d) => d.Route),
 )
-const PrivateUsersUserIdLazyRoute = PrivateUsersUserIdLazyRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
-  getParentRoute: () => PrivateUsersRoute,
-} as any).lazy(() =>
-  import('./routes/_private/users/$userId.lazy').then((d) => d.Route),
-)
 const PrivateWireguardStatsRoute = PrivateWireguardStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
@@ -145,6 +136,13 @@ const PrivateWireguardPeersRoute = PrivateWireguardPeersRouteImport.update({
   path: '/peers',
   getParentRoute: () => PrivateWireguardRoute,
 } as any)
+const PrivateUsersUserIdRoute = PrivateUsersUserIdRouteImport.update({
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => PrivateUsersRoute,
+} as any).lazy(() =>
+  import('./routes/_private/users/$userId.lazy').then((d) => d.Route),
+)
 const PrivateWireguardServersIndexLazyRoute =
   PrivateWireguardServersIndexLazyRouteImport.update({
     id: '/',
@@ -196,10 +194,10 @@ export interface FileRoutesByFullPath {
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/': typeof PrivateIndexRoute
+  '/users/$userId': typeof PrivateUsersUserIdRoute
   '/wireguard/peers': typeof PrivateWireguardPeersRouteWithChildren
   '/wireguard/servers': typeof PrivateWireguardServersRouteWithChildren
   '/wireguard/stats': typeof PrivateWireguardStatsRoute
-  '/users/$userId': typeof PrivateUsersUserIdLazyRoute
   '/users/': typeof PrivateUsersIndexLazyRoute
   '/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
   '/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
@@ -217,8 +215,8 @@ export interface FileRoutesByTo {
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/': typeof PrivateIndexRoute
+  '/users/$userId': typeof PrivateUsersUserIdRoute
   '/wireguard/stats': typeof PrivateWireguardStatsRoute
-  '/users/$userId': typeof PrivateUsersUserIdLazyRoute
   '/users': typeof PrivateUsersIndexLazyRoute
   '/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
   '/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
@@ -239,10 +237,10 @@ export interface FileRoutesById {
   '/auth/signIn': typeof AuthSignInLazyRoute
   '/auth/signUp': typeof AuthSignUpLazyRoute
   '/_private/': typeof PrivateIndexRoute
+  '/_private/users/$userId': typeof PrivateUsersUserIdRoute
   '/_private/wireguard/peers': typeof PrivateWireguardPeersRouteWithChildren
   '/_private/wireguard/servers': typeof PrivateWireguardServersRouteWithChildren
   '/_private/wireguard/stats': typeof PrivateWireguardStatsRoute
-  '/_private/users/$userId': typeof PrivateUsersUserIdLazyRoute
   '/_private/users/': typeof PrivateUsersIndexLazyRoute
   '/_private/wireguard/peers/$peerId': typeof PrivateWireguardPeersPeerIdLazyRoute
   '/_private/wireguard/servers/$serverId': typeof PrivateWireguardServersServerIdLazyRoute
@@ -263,10 +261,10 @@ export interface FileRouteTypes {
     | '/auth/signIn'
     | '/auth/signUp'
     | '/'
+    | '/users/$userId'
     | '/wireguard/peers'
     | '/wireguard/servers'
     | '/wireguard/stats'
-    | '/users/$userId'
     | '/users/'
     | '/wireguard/peers/$peerId'
     | '/wireguard/servers/$serverId'
@@ -284,8 +282,8 @@ export interface FileRouteTypes {
     | '/auth/signIn'
     | '/auth/signUp'
     | '/'
-    | '/wireguard/stats'
     | '/users/$userId'
+    | '/wireguard/stats'
     | '/users'
     | '/wireguard/peers/$peerId'
     | '/wireguard/servers/$serverId'
@@ -305,10 +303,10 @@ export interface FileRouteTypes {
     | '/auth/signIn'
     | '/auth/signUp'
     | '/_private/'
+    | '/_private/users/$userId'
     | '/_private/wireguard/peers'
     | '/_private/wireguard/servers'
     | '/_private/wireguard/stats'
-    | '/_private/users/$userId'
     | '/_private/users/'
     | '/_private/wireguard/peers/$peerId'
     | '/_private/wireguard/servers/$serverId'
@@ -416,13 +414,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateUsersIndexLazyRouteImport
       parentRoute: typeof PrivateUsersRoute
     }
-    '/_private/users/$userId': {
-      id: '/_private/users/$userId'
-      path: '/$userId'
-      fullPath: '/users/$userId'
-      preLoaderRoute: typeof PrivateUsersUserIdLazyRouteImport
-      parentRoute: typeof PrivateUsersRoute
-    }
     '/_private/wireguard/stats': {
       id: '/_private/wireguard/stats'
       path: '/stats'
@@ -443,6 +434,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/wireguard/peers'
       preLoaderRoute: typeof PrivateWireguardPeersRouteImport
       parentRoute: typeof PrivateWireguardRoute
+    }
+    '/_private/users/$userId': {
+      id: '/_private/users/$userId'
+      path: '/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof PrivateUsersUserIdRouteImport
+      parentRoute: typeof PrivateUsersRoute
     }
     '/_private/wireguard/servers/': {
       id: '/_private/wireguard/servers/'
@@ -476,12 +474,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface PrivateUsersRouteChildren {
-  PrivateUsersUserIdLazyRoute: typeof PrivateUsersUserIdLazyRoute
+  PrivateUsersUserIdRoute: typeof PrivateUsersUserIdRoute
   PrivateUsersIndexLazyRoute: typeof PrivateUsersIndexLazyRoute
 }
 
 const PrivateUsersRouteChildren: PrivateUsersRouteChildren = {
-  PrivateUsersUserIdLazyRoute: PrivateUsersUserIdLazyRoute,
+  PrivateUsersUserIdRoute: PrivateUsersUserIdRoute,
   PrivateUsersIndexLazyRoute: PrivateUsersIndexLazyRoute,
 }
 

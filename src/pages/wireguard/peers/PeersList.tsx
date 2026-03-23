@@ -10,6 +10,7 @@ import {
   Button,
   CanAccess,
   Card,
+  Empty,
   IconButton,
   Modal,
   ModalBody,
@@ -46,10 +47,7 @@ export const PeersList: FC = observer(() => {
           actions={
             <CanAccess permission={EPermissions.WgPeerManage}>
               <Tooltip content="Добавить пир">
-                <IconButton
-                  variant="solid"
-                  onClick={() => setCreateOpen(true)}
-                >
+                <IconButton variant="solid" onClick={() => setCreateOpen(true)}>
                   <Plus size={16} strokeWidth={2.5} />
                 </IconButton>
               </Tooltip>
@@ -57,7 +55,7 @@ export const PeersList: FC = observer(() => {
           }
         />
       }
-      contentClassName="flex flex-col gap-6"
+      contentClassName="gap-3 sm:gap-6"
     >
       {/* Controls */}
       {canViewServers && (
@@ -74,10 +72,7 @@ export const PeersList: FC = observer(() => {
         </div>
       )}
 
-      <Card
-        title="Пиры"
-        extra={<Badge variant="gray">{vm.total} всего</Badge>}
-      >
+      <Card title="Пиры" extra={<Badge variant="gray">{vm.total} всего</Badge>}>
         <Table
           data={vm.data}
           columns={vm.columns}
@@ -85,11 +80,7 @@ export const PeersList: FC = observer(() => {
           refreshing={vm.refreshing}
           getRowId={p => p.data.id}
           onRowClick={vm.handleRowClick}
-          empty={
-            <div className="text-center py-8 text-muted-foreground text-sm">
-              Пиры не найдены
-            </div>
-          }
+          empty={<Empty size="sm" icon="inbox" title="Пиры не найдены" />}
         />
       </Card>
 

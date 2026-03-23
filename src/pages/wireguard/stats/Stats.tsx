@@ -15,7 +15,7 @@ export const Stats: FC = () => {
       header={
         <PageHeader title="Статистика" subtitle="Трафик и скорость WireGuard" />
       }
-      contentClassName="flex flex-col gap-6"
+      contentClassName="gap-3 sm:gap-6"
     >
       {/* Controls */}
       <div className="flex items-center gap-3 flex-wrap">

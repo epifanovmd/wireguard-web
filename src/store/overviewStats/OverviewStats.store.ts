@@ -58,8 +58,6 @@ export class OverviewStatsStore
             tx: t.txBytes,
           })),
         );
-      } else {
-        this._setPoints([], []);
       }
     });
   }

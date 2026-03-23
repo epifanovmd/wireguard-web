@@ -39,10 +39,7 @@ export const ServersList: FC = observer(() => {
           actions={
             <CanAccess permission={EPermissions.WgServerManage}>
               <Tooltip content="Добавить сервер">
-                <IconButton
-                  variant="solid"
-                  onClick={() => setCreateOpen(true)}
-                >
+                <IconButton variant="solid" onClick={() => setCreateOpen(true)}>
                   <Plus size={16} strokeWidth={2.5} />
                 </IconButton>
               </Tooltip>

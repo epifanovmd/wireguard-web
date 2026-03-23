@@ -4,13 +4,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { EPermissions } from "~@api/api-gen/data-contracts";
 import { userColumns } from "~@components/tables/users";
-import { type ColumnDef, IconButton, useConfirm } from "~@components/ui";
+import {
+  AsyncIconButton,
+  type ColumnDef,
+  IconButton,
+  useConfirm,
+} from "~@components/ui";
 import { useNotification } from "~@core/notifications";
 import { PublicUserModel } from "~@models";
-import { usePermissions, useUsersDataStore } from "~@store";
+import { useAuthStore, usePermissions, useUsersDataStore } from "~@store";
 
 export const useUsersListVM = () => {
   const store = useUsersDataStore();
+  const authStore = useAuthStore();
   const navigate = useNavigate();
   const confirm = useConfirm();
   const toast = useNotification();
@@ -57,12 +63,16 @@ export const useUsersListVM = () => {
 
   const handleRowClick = useCallback(
     (user: PublicUserModel) => {
-      navigate({
-        to: "/users/$userId",
-        params: { userId: user.data.userId },
-      });
+      if (user.data.userId === authStore.user?.id) {
+        navigate({ to: "/profile" });
+      } else {
+        navigate({
+          to: "/users/$userId",
+          params: { userId: user.data.userId },
+        });
+      }
     },
-    [navigate],
+    [navigate, authStore.user?.id],
   );
 
   const columns: ColumnDef<PublicUserModel>[] = useMemo(
@@ -78,8 +88,9 @@ export const useUsersListVM = () => {
                   className="flex items-center justify-end gap-1"
                   onClick={e => e.stopPropagation()}
                 >
-                  <IconButton
+                  <AsyncIconButton
                     title="Удалить"
+                    variant={"destructive"}
                     onClick={() =>
                       handleDelete(
                         row.original.data.userId,
@@ -87,8 +98,8 @@ export const useUsersListVM = () => {
                       )
                     }
                   >
-                    <Trash2 size={15} className="text-destructive" />
-                  </IconButton>
+                    <Trash2 size={15} />
+                  </AsyncIconButton>
                 </div>
               ),
             },

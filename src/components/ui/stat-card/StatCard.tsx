@@ -54,7 +54,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         className,
       )}
     >
-      <div className="flex flex-col gap-1 min-w-0 flex-1">
+      <div className="flex flex-col gap-1.5 min-w-0 flex-1">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </p>

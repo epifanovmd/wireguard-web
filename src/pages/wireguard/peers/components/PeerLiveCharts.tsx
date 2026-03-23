@@ -9,8 +9,8 @@ export const PeerLiveCharts: FC = observer(() => {
 
   return (
     <>
-      <PeerSpeedChart points={store.speedPoints} />
-      <PeerTrafficChart points={store.trafficPoints} />
+      <PeerSpeedChart points={store.speedPoints} isLoading={store.isLoading} />
+      <PeerTrafficChart points={store.trafficPoints} isLoading={store.isLoading} />
     </>
   );
 });

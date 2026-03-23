@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { ServerModel } from "~@models";
 
-import { type ColumnDef, Table } from "../../ui";
+import { type ColumnDef, Empty, Table } from "../../ui";
 
 export interface ServersTableProps {
   data: ServerModel[];
@@ -24,10 +24,6 @@ export const ServersTable: FC<ServersTableProps> = ({
     loading={loading}
     getRowId={s => s.data.id}
     onRowClick={onRowClick}
-    empty={
-      <div className="text-center py-8 text-muted-foreground text-sm">
-        No servers configured
-      </div>
-    }
+    empty={<Empty size="sm" icon="database" title="Серверы не настроены" />}
   />
 );

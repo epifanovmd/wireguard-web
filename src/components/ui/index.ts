@@ -192,8 +192,8 @@ export type { SpinnerProps } from "./spinner";
 export { Spinner, spinnerVariants } from "./spinner";
 
 // Empty State
-export type { EmptyProps } from "./empty";
-export { Empty, emptyVariants } from "./empty";
+export type { EmptyProps, PageEmptyProps } from "./empty";
+export { Empty, emptyVariants, PageEmpty } from "./empty";
 
 // Segmented
 export type { SegmentedOption, SegmentedProps } from "./segmented";

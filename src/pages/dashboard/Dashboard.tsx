@@ -11,7 +11,11 @@ import { ServersTable } from "~@components/tables/servers";
 import { serverColumns } from "~@components/tables/servers/serverColumns";
 import { StatCard } from "~@components/ui";
 import { ServerModel } from "~@models";
-import { useOverviewStatsStore, usePermissions, useServersListStore } from "~@store";
+import {
+  useOverviewStatsStore,
+  usePermissions,
+  useServersListStore,
+} from "~@store";
 
 export const Dashboard: FC = observer(() => {
   const serversStore = useServersListStore();
@@ -22,9 +26,6 @@ export const Dashboard: FC = observer(() => {
 
   const canViewStats = hasPermission(EPermissions.WgStatsView);
   const canViewServers = hasPermission(EPermissions.WgServerView);
-
-  // Инициализация только при монтировании.
-  // serversStore и overviewStatsStore — DI-синглтоны, их референсы стабильны.
 
   useEffect(() => {
     if (canViewServers) {
@@ -61,7 +62,7 @@ export const Dashboard: FC = observer(() => {
   return (
     <PageLayout
       header={<PageHeader title="Дашборд" subtitle="Обзор WireGuard VPN" />}
-      contentClassName="flex flex-col gap-6"
+      contentClassName="gap-3 sm:gap-6"
     >
       {/* Stat cards */}
       {canViewStats && (
@@ -102,10 +103,12 @@ export const Dashboard: FC = observer(() => {
           <ServerSpeedChart
             title={"Скорость всех серверов"}
             points={overviewStatsStore.speedPoints}
+            isLoading={overviewStatsStore.isLoading}
           />
           <ServerTrafficChart
             title={"Трафик всех серверов"}
             points={overviewStatsStore.trafficPoints}
+            isLoading={overviewStatsStore.isLoading}
           />
         </>
       )}

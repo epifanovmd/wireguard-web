@@ -21,16 +21,14 @@ export const App = () => {
   }, []);
 
   return (
-    <StrictMode>
-      <ThemeProvider>
-        <TooltipProvider>
-          <ToastProvider>
-            <ModalProvider>
-              <RouterProvider router={router} />
-            </ModalProvider>
-          </ToastProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </StrictMode>
+    <ThemeProvider>
+      <TooltipProvider>
+        <ToastProvider>
+          <ModalProvider>
+            <RouterProvider router={router} />
+          </ModalProvider>
+        </ToastProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   );
 };
