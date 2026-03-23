@@ -91,9 +91,10 @@ function SelectInner<TData = unknown, V extends string = string>(
 
   const { updateCache, getLabel } = useLabelCache<V>();
 
-  React.useEffect(() => {
+  React.useMemo(() => {
     updateCache(options);
-  }, [options, updateCache]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]);
 
   // Normalize value to array for uniform handling
   const selectedValues = React.useMemo<V[]>(

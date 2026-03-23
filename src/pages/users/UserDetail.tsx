@@ -53,14 +53,13 @@ export const UserDetail: FC<UserDetailProps> = observer(
             }
           />
         }
-        contentClassName="gap-3 sm:gap-6"
       >
         {vm.isLoading ? (
           <PageLoader />
         ) : !vm.user ? (
           <PageEmpty icon="question" title="Пользователь не найден" />
         ) : (
-          <div className={"flex gap-6"}>
+          <div className={"flex gap-3 sm:gap-6 flex-wrap xl:flex-nowrap"}>
             {/* Sidebar - user info */}
             <div className="w-full xl:w-64 flex-shrink-0">
               <UserInfoCard
@@ -85,7 +84,7 @@ export const UserDetail: FC<UserDetailProps> = observer(
 
                 {vm.canManage && (
                   <TabsContent value="privileges">
-                    <div className="flex flex-col gap-6 mt-4">
+                    <div className="flex flex-col gap-3 sm:gap-6 mt-3">
                       <Card title="Роль" className="p-5">
                         <Select
                           options={vm.roleOptions}
