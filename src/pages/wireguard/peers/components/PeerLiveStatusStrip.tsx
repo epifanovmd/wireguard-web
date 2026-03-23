@@ -1,11 +1,10 @@
-import { User, UserPlus, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 
 import { WgPeerDto } from "~@api/api-gen/data-contracts";
 import { formatter } from "~@common";
-import { PeerStatus } from "~@components/shared";
-import { Badge, cn } from "~@components/ui";
+import { PeerStatus, PeerUserBadge } from "~@components/shared";
+import { Badge } from "~@components/ui";
 import { PublicUserModel } from "~@models";
 import { usePeerStatsStore } from "~@store/peerStats";
 
@@ -50,40 +49,12 @@ export const PeerLiveStatusStrip: FC<PeerLiveStatusStripProps> = observer(
           </Badge>
         )}
 
-        {peer.userId ? (
-          <Badge
-            variant="purple"
-            className={cn("gap-1 select-none", {
-              "cursor-pointer": canManage,
-            })}
-            onClick={canManage ? onAssign : undefined}
-          >
-            <User size={10} className="flex-shrink-0" />
-            <span>{userModel?.displayName ?? peer.userId}</span>
-            {canManage && (
-              <button
-                className={cn(
-                  "cursor-pointer ml-0.5 rounded-full opacity-60 hover:opacity-100 transition-opacity",
-                  "flex items-center justify-center",
-                )}
-                onClick={e => {
-                  e.stopPropagation();
-                  onRevoke?.();
-                }}
-              >
-                <X size={10} />
-              </button>
-            )}
-          </Badge>
-        ) : (
-          <button
-            className="cursor-pointer inline-flex items-center gap-1 text-xs text-muted-foreground/70 hover:text-primary transition-colors"
-            onClick={onAssign}
-          >
-            <UserPlus size={11} />
-            Назначить
-          </button>
-        )}
+        <PeerUserBadge
+          displayName={userModel?.displayName ?? (peer.userId ? peer.userId : null)}
+          canManage={canManage}
+          onAssign={onAssign}
+          onRevoke={onRevoke}
+        />
 
         <span
           className="text-xs text-muted-foreground"

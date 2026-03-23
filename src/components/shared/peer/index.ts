@@ -6,4 +6,5 @@ export * from "./PeerStatus";
 export * from "./PeerStatusBadge";
 export * from "./PeerStatusLive";
 export * from "./PeerTrafficLive";
+export * from "./PeerUserBadge";
 export * from "./QrCodeModal";
