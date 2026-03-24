@@ -15,7 +15,7 @@ export const PeerSpeedLive: FC<{ row: PeerModel }> = observer(({ row }) => {
   }
 
   return (
-    <div className="flex flex-col gap-0.5 text-xs">
+    <div className="flex flex-col gap-0.5 text-xs whitespace-nowrap">
       <span className="flex items-center gap-1 text-info">
         <ArrowDown size={10} />
         {formatter.speed(stats.rxSpeedBps)}
@@ -36,7 +36,7 @@ export const PeerBytesLive: FC<{ row: PeerModel }> = observer(({ row }) => {
   }
 
   return (
-    <div className="flex flex-col gap-0.5 text-xs">
+    <div className="flex flex-col gap-0.5 text-xs whitespace-nowrap">
       <span className="flex items-center gap-1 text-info">
         <ArrowDown size={10} />
         {formatter.bytes(stats.rxBytes)}
