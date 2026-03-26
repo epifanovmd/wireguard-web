@@ -21,6 +21,7 @@ export const flattenObject = <T extends object>(obj: T): FlattenObject<T> => {
         ? k[0].toLowerCase() + k.slice(1)
         : prefix + k[0].toUpperCase() + k.slice(1);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       v && typeof v === "object" && !Array.isArray(v)
         ? flat(v, key, false)
         : (result[key] = v);
