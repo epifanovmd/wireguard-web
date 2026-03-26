@@ -1,8 +1,8 @@
 import { EPermissions, ERole, UserDto } from "@api/api-gen/data-contracts";
 import { computeEffectivePermissions, isAdminRole } from "@core/permissions";
-import { DataModelBase } from "@store/models";
 import { computed, makeObservable } from "mobx";
 
+import { DataModelBase } from "../DataModelBase";
 import { DateModel } from "../date";
 
 export class UserModel extends DataModelBase<UserDto> {

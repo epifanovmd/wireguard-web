@@ -1,5 +1,6 @@
 import { ERole } from "@api/api-gen/data-contracts";
-import { createEnumModelBase } from "@store/models";
+
+import { createEnumModelBase } from "../EnumModelBase";
 
 const ROLE_MAP: Record<ERole, string> = {
   [ERole.Admin]: "Администратор",

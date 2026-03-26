@@ -1,7 +1,7 @@
 import { WgPeerDto } from "@api/api-gen/data-contracts";
-import { DataModelBase } from "@store/models";
 import { computed, makeObservable } from "mobx";
 
+import { DataModelBase } from "../DataModelBase";
 import { DateModel } from "../date";
 
 export class ClientModel extends DataModelBase<WgPeerDto> {

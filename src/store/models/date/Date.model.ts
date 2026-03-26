@@ -1,7 +1,8 @@
 import { Maybe } from "@di/types";
-import { DataModelBase } from "@store/models";
 import { formatter } from "@utils";
 import { computed, makeObservable } from "mobx";
+
+import { DataModelBase } from "../DataModelBase";
 
 export class DateModel extends DataModelBase<Maybe<string | null>> {
   constructor(value: Maybe<string | null> | (() => Maybe<string | null>)) {
