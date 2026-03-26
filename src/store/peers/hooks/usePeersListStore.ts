@@ -1,4 +1,4 @@
-import { iocHook } from "@common/ioc";
+import { iocHook } from "@di";
 
 import { IPeersListStore } from "../PeersListStore.types";
 

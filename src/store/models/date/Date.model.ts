@@ -1,6 +1,6 @@
-import { formatter } from "@common";
-import { Maybe } from "@common/ioc/types";
-import { DataModelBase } from "@common/store/models";
+import { Maybe } from "@di/types";
+import { DataModelBase } from "@store/models";
+import { formatter } from "@utils";
 import { computed, makeObservable } from "mobx";
 
 export class DateModel extends DataModelBase<Maybe<string | null>> {

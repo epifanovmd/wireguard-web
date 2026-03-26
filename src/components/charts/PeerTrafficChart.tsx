@@ -1,4 +1,4 @@
-import { formatter } from "@common";
+import { formatter } from "@utils";
 import { FC } from "react";
 
 import { WGChart } from "../wgChart";

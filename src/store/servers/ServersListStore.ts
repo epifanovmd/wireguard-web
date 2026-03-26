@@ -3,8 +3,8 @@ import {
   IWgServerCreateRequestDto,
   WgServerDto,
 } from "@api/api-gen/data-contracts";
-import { MutationHolder, PagedHolder } from "@common/store";
 import { ServerModel } from "@models";
+import { MutationHolder, PagedHolder } from "@store";
 import { makeAutoObservable } from "mobx";
 
 import { IServersListStore } from "./ServersListStore.types";

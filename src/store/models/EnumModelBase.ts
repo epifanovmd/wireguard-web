@@ -1,9 +1,9 @@
+import { Maybe } from "@di/types";
+import { getEnumNamesAndValues } from "@utils/enumValues";
+import { LambdaValue } from "@utils/lambdaValue";
+import { stringCapitalize } from "@utils/string";
 import { computed } from "mobx";
 
-import { getEnumNamesAndValues } from "../../helpers/enumValues";
-import { LambdaValue } from "../../helpers/lambdaValue";
-import { stringCapitalize } from "../../helpers/string";
-import { Maybe } from "../../ioc/types";
 import { DataModelBase } from "./DataModelBase";
 
 type TEnumProps<TEnum> = {

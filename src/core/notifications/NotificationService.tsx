@@ -1,4 +1,4 @@
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
 import React from "react";
 import { toast } from "react-hot-toast";
 

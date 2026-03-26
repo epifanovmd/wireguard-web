@@ -1,4 +1,4 @@
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
 import { ObservableMap } from "mobx";
 
 import { WgPeerState } from "../../socket";

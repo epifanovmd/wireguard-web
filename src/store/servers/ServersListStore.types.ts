@@ -2,14 +2,14 @@ import {
   IWgServerCreateRequestDto,
   WgServerDto,
 } from "@api/api-gen/data-contracts";
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
+import { ServerModel } from "@models";
 import {
   IHolderError,
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "@common/store";
-import { ServerModel } from "@models";
+} from "@store";
 
 export const IServersListStore = createServiceDecorator<IServersListStore>();
 

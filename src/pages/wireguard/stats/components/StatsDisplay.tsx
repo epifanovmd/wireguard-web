@@ -1,7 +1,7 @@
-import { formatter } from "@common";
 import { ServerSpeedChart, ServerTrafficChart } from "@components";
 import { Spinner, StatCard } from "@components/ui";
 import { useServerStatsStore } from "@store/serverStats";
+import { formatter } from "@utils";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 

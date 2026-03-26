@@ -1,5 +1,5 @@
 import { EWgServerStatus, WgServerDto } from "@api/api-gen/data-contracts";
-import { createEnumModelBase, DataModelBase } from "@common/store/models";
+import { createEnumModelBase, DataModelBase } from "@store/models";
 import { computed, makeObservable } from "mobx";
 
 import { DateModel } from "../date";

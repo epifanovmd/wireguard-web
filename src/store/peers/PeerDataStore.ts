@@ -4,8 +4,8 @@ import {
   IWgPeerUpdateRequestDto,
   WgPeerDto,
 } from "@api/api-gen/data-contracts";
-import { EntityHolder, MutationHolder } from "@common/store";
 import { PeerModel } from "@models";
+import { EntityHolder, MutationHolder } from "@store";
 import { makeAutoObservable } from "mobx";
 
 import { IPeerDataStore } from "./PeerDataStore.types";

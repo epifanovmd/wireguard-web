@@ -9,8 +9,6 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "@api/api-gen/data-contracts";
-import { EntityHolder } from "@common/store";
-import { createEnumModelBase } from "@common/store/models";
 import { IAuthSessionService } from "@core/auth";
 import {
   canAccess,
@@ -18,6 +16,8 @@ import {
   isAdminRole,
 } from "@core/permissions";
 import { ProfileModel } from "@models";
+import { EntityHolder } from "@store";
+import { createEnumModelBase } from "@store/models";
 import { computed, makeAutoObservable } from "mobx";
 
 import { AuthStatus, IAuthStore } from "./Auth.types";

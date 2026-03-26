@@ -1,7 +1,7 @@
 import { IApiService } from "@api";
 import { WgPeerDto } from "@api/api-gen/data-contracts";
-import { EntityHolder } from "@common/store";
 import { ClientModel } from "@models";
+import { EntityHolder } from "@store";
 import { makeAutoObservable } from "mobx";
 
 import { IClientDataStore } from "./ClientData.types";

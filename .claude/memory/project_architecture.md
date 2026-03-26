@@ -17,17 +17,14 @@ src/
 │   │   ├── data-contracts.ts  # Enums, DTOs, Params types
 │   │   └── http-client.ts  # Abstract HttpClient, ApiResponse, types
 │   └── hooks/useApi.ts
-├── common/                 # Shared infrastructure (NO business logic)
-│   ├── ioc/                # IoC: container, createServiceDecorator, iocHook, disposer, types
-│   ├── helpers/            # typeGuards, lambdaValue, enumValues, string, pluralizeHelper,
-│   │                       # deepKeys, flatten, timeoutManager
-│   ├── slots/              # createSlot, useSlotProps (compound components)
-│   ├── store/              # holders + models
-│   │   ├── holders/        # EntityHolder, PagedHolder, InfiniteHolder, CollectionHolder,
-│   │   │                   # MutationHolder, PollingHolder, CombinedHolder, HolderTypes
-│   │   └── models/         # DataModelBase, createEnumModelBase
-│   ├── hooks/              # usePasskyAuth, mergeRefs, useBoolean, useMergeCallback
-│   └── validations.ts      # Zod schemas
+├── utils/                  # Shared utilities (NO business logic)
+│   ├── typeGuards, lambdaValue, enumValues, string, pluralizeHelper
+│   ├── deepKeys, flatten, timeoutManager, formatter/
+│   └── regex, noop, downloadBlob, pluralize
+├── hooks/                  # Custom hooks (shared + app-specific)
+│   ├── usePasskyAuth, mergeRefs, useBoolean, useMergeCallback
+│   └── usePeerLive, usePeersSelectOptions, useServersSelectOptions, etc.
+├── di/                     # IoC: container, createServiceDecorator, iocHook, disposer, types
 ├── core/                   # Core services
 │   ├── auth/               # AuthTokenStore (localStorage), AuthSessionService (refresh dedup)
 │   ├── permissions/        # hasPermission (wildcard), isAdminRole, canAccess
@@ -40,8 +37,12 @@ src/
 │   ├── events/             # Typed server/client events
 │   └── hooks/              # useSocketStatus
 ├── store/                  # MobX stores (IoC singletons)
+│   ├── holders/            # EntityHolder, PagedHolder, InfiniteHolder, CollectionHolder,
+│   │                       # MutationHolder, PollingHolder, CombinedHolder, HolderTypes
+│   └── models/             # DataModelBase, createEnumModelBase
 ├── models/                 # DataModelBase subclasses (computed wrappers over DTOs)
 ├── components/
+│   ├── slots/              # createSlot, useSlotProps (compound components)
 │   ├── ui/                 # 97+ Radix + Tailwind components
 │   ├── layouts/            # AuthLayout, PageLayout, PageHeader
 │   ├── shared/             # ServerActions, PeerActions, QrCodeModal
@@ -59,10 +60,10 @@ src/
 ## Build (Vite 6)
 
 Plugins: TanStack Router (auto route generation), Tailwind CSS.
-Path aliases: `@api`, `@store`, `@components`, `@models`, `@core`, `@common`, `@socket` (без `~` префикса).
+Path aliases: `@api`, `@store`, `@components`, `@models`, `@core`, `@utils`, `@hooks`, `@di`, `@socket` (без `~` префикса).
 Output: `dist/` (SPA). Target: ES2022.
 
-## IoC (src/common/ioc/)
+## IoC (src/di/)
 
 Internal DI infrastructure (replaced @force-dev/utils). Uses inversify under the hood.
 
@@ -71,7 +72,7 @@ Internal DI infrastructure (replaced @force-dev/utils). Uses inversify under the
 - Constructor injection: `@IService() private svc: IService`
 - React hook: `iocHook(IService)` → `useService()`
 
-**Never import from @force-dev.** All infrastructure is in `@common/`.
+**Never import from @force-dev.** All infrastructure is local (`@utils`, `@hooks`, `@di`, `@store`).
 
 ## Routing (TanStack React Router)
 
@@ -84,7 +85,7 @@ Guards: `beforeLoad()` в route файлах. `_private.tsx` проверяет 
 Stores — IoC singletons: `@IStoreService({ inSingleton: true })`.
 Используют `makeAutoObservable()` для реактивности.
 
-**Data holders** (src/common/store/holders/):
+**Data holders** (src/store/holders/):
 - `EntityHolder<T, TArgs>` — загрузка/refresh одной entity
 - `PagedHolder<T, TArgs>` — серверная пагинация (goToPage/nextPage/prevPage)
 - `InfiniteHolder<T, TArgs>` — бесконечная прокрутка (loadMore)

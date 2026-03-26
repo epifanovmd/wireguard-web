@@ -5,13 +5,13 @@ import {
   IWgServerUpdateRequestDto,
   WgServerDto,
 } from "@api/api-gen/data-contracts";
+import { ServerModel } from "@models";
 import {
   CombinedHolder,
   EntityHolder,
   MutationHolder,
   PollingHolder,
-} from "@common/store";
-import { ServerModel } from "@models";
+} from "@store";
 import { makeAutoObservable } from "mobx";
 
 import { IServerDetailStore } from "./ServerDetailStore.types";

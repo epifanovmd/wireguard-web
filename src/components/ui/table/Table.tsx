@@ -1,4 +1,4 @@
-import { createSlot, useSlotProps } from "@common/slots";
+import { createSlot, useSlotProps } from "@components/slots";
 import {
   type ColumnDef,
   type OnChangeFn,

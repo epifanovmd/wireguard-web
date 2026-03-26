@@ -1,5 +1,5 @@
-import { createServiceDecorator } from "@common/ioc";
-import { EntityHolder } from "@common/store";
+import { createServiceDecorator } from "@di";
+import { EntityHolder } from "@store";
 
 import { WgServerStatsPayload, WgServerStatusPayload } from "../../socket";
 import { StatsChartBase } from "../shared/StatsChartBase";

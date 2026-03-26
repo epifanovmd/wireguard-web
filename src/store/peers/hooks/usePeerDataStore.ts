@@ -1,4 +1,4 @@
-import { iocHook } from "@common/ioc";
+import { iocHook } from "@di";
 
 import { IPeerDataStore } from "../PeerDataStore.types";
 

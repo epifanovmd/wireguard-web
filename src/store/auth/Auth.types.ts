@@ -7,9 +7,9 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "@api/api-gen/data-contracts";
-import { createServiceDecorator } from "@common/ioc";
-import { IEntityHolderResult, IHolderError } from "@common/store";
+import { createServiceDecorator } from "@di";
 import { ProfileModel } from "@models";
+import { IEntityHolderResult, IHolderError } from "@store";
 
 export enum AuthStatus {
   Idle = "idle",

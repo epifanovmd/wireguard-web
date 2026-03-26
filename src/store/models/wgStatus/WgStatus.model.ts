@@ -1,5 +1,5 @@
 import { EWgServerStatus } from "@api/api-gen/data-contracts";
-import { createEnumModelBase } from "@common/store/models";
+import { createEnumModelBase } from "@store/models";
 
 export const WgStatusModel =
   createEnumModelBase<typeof EWgServerStatus>(EWgServerStatus);

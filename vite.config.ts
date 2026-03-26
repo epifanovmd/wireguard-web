@@ -35,9 +35,11 @@ export default defineConfig({
     alias: {
       "@core": path.resolve(projectRootDir, "src/core"),
       "@api": path.resolve(projectRootDir, "src/api"),
-      "@common": path.resolve(projectRootDir, "src/common"),
+      "@utils": path.resolve(projectRootDir, "src/utils"),
+      "@hooks": path.resolve(projectRootDir, "src/hooks"),
+      "@di": path.resolve(projectRootDir, "src/di"),
       "@components": path.resolve(projectRootDir, "src/components"),
-      "@models": path.resolve(projectRootDir, "src/models"),
+      "@models": path.resolve(projectRootDir, "src/store/models"),
       "@socket": path.resolve(projectRootDir, "src/socket"),
       "@store": path.resolve(projectRootDir, "src/store"),
       "@theme": path.resolve(projectRootDir, "src/theme"),

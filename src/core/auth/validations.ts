@@ -1,6 +1,5 @@
+import { isEmail, isPhone } from "@utils";
 import { z } from "zod";
-
-import { isEmail, isPhone } from "./helpers";
 
 export const loginValidation = z
   .string({ message: "Введите email или номер телефона." })

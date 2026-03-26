@@ -1,4 +1,4 @@
-import { passwordValidation } from "@common";
+import { passwordValidation } from "@core/auth/validations";
 import { z } from "zod";
 
 export const resetPasswordValidationSchema = z

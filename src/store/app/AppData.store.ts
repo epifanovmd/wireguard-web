@@ -1,4 +1,4 @@
-import { disposer, InitializeDispose } from "@common/ioc";
+import { disposer, InitializeDispose } from "@di";
 import { makeAutoObservable, reaction } from "mobx";
 
 import { router } from "../../router";

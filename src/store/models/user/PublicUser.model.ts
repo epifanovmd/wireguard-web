@@ -1,5 +1,5 @@
 import { EProfileStatus, PublicUserDto } from "@api/api-gen/data-contracts";
-import { DataModelBase } from "@common/store/models";
+import { DataModelBase } from "@store/models";
 import { computed, makeObservable } from "mobx";
 
 import { DateModel } from "../date";

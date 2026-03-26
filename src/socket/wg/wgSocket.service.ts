@@ -1,4 +1,4 @@
-import { noop } from "@common";
+import { noop } from "@utils";
 
 import {
   WgOverviewStatsPayload,

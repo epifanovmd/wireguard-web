@@ -1,7 +1,6 @@
+import { stringUnCapitalize } from "@utils/string";
 import * as React from "react";
 import { FC, PropsWithChildren, useMemo } from "react";
-
-import { stringUnCapitalize } from "../helpers/string";
 
 type ReactComponent<P = any> = (
   | React.FC<P>

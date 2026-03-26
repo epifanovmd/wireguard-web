@@ -5,14 +5,14 @@ import {
   WgPeerDto,
 } from "@api/api-gen/data-contracts";
 import { ApiResponse } from "@api/api-gen/http-client";
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
+import { PeerModel } from "@models";
 import {
   EntityHolder,
   IHolderError,
   IMutationHolderResult,
   MutationHolder,
-} from "@common/store";
-import { PeerModel } from "@models";
+} from "@store";
 
 export const IPeerDataStore = createServiceDecorator<IPeerDataStore>();
 

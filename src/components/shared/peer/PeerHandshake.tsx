@@ -1,5 +1,5 @@
-import { formatter } from "@common";
 import { PeerModel } from "@models";
+import { formatter } from "@utils";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 

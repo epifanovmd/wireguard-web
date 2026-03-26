@@ -1,4 +1,4 @@
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
 import { makeAutoObservable } from "mobx";
 
 const REFRESH_TOKEN_KEY = "app:refresh_token";

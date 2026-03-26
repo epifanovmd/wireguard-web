@@ -1,5 +1,7 @@
 export * from "./app";
 export * from "./auth";
+export * from "./holders";
+export * from "./models";
 export * from "./overviewStats";
 export * from "./peers";
 export * from "./peersLive";
@@ -7,4 +9,3 @@ export * from "./peerStats";
 export * from "./servers";
 export * from "./serverStats";
 export * from "./users";
-// EXPORT STORE HERE

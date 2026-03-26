@@ -1,7 +1,7 @@
-import { disposer } from "@common/ioc";
 import { ModalProvider, TooltipProvider } from "@components/ui";
 import { ToastProvider } from "@core/notifications";
 import { ThemeProvider } from "@core/theme";
+import { disposer } from "@di";
 import { useAppDataStore } from "@store";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode, useEffect } from "react";

@@ -6,7 +6,8 @@ import {
   WgServerDto,
 } from "@api/api-gen/data-contracts";
 import { ApiResponse } from "@api/api-gen/http-client";
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
+import { ServerModel } from "@models";
 import {
   CombinedHolder,
   EntityHolder,
@@ -14,8 +15,7 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PollingHolder,
-} from "@common/store";
-import { ServerModel } from "@models";
+} from "@store";
 
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();
 

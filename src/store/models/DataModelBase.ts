@@ -1,7 +1,6 @@
+import { LambdaValue, resolveLambdaValue } from "@utils/lambdaValue";
+import { isFunction } from "@utils/typeGuards";
 import { computed, makeObservable, observable } from "mobx";
-
-import { LambdaValue, resolveLambdaValue } from "../../helpers/lambdaValue";
-import { isFunction } from "../../helpers/typeGuards";
 
 export interface IDataModel<TData> {
   readonly data: TData;

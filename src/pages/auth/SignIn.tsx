@@ -1,6 +1,6 @@
-import { usePasskeyAuth } from "@common";
 import { AuthLayout } from "@components/layouts";
 import { AsyncButton, Button, Card, InputFormField } from "@components/ui";
+import { usePasskeyAuth } from "@hooks";
 import { useHotkeys } from "@mantine/hooks";
 import { useAuthStore } from "@store";
 import { Link } from "@tanstack/react-router";

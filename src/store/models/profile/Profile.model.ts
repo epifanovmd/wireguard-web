@@ -1,6 +1,6 @@
 import { ERole, ProfileDto } from "@api/api-gen/data-contracts";
-import { LambdaValue } from "@common/helpers/lambdaValue";
-import { DataModelBase } from "@common/store/models";
+import { DataModelBase } from "@store/models";
+import { LambdaValue } from "@utils/lambdaValue";
 import { computed, makeObservable } from "mobx";
 
 import { DateModel } from "../date";

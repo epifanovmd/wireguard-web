@@ -6,15 +6,15 @@ import {
   UserDto,
 } from "@api/api-gen/data-contracts";
 import { ApiResponse } from "@api/api-gen/http-client";
-import { createServiceDecorator } from "@common/ioc";
+import { createServiceDecorator } from "@di";
+import { PublicUserModel, UserModel } from "@models";
 import {
   EntityHolder,
   IHolderError,
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "@common/store";
-import { PublicUserModel, UserModel } from "@models";
+} from "@store";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();
 
