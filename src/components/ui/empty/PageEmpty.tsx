@@ -15,6 +15,7 @@ const PageEmpty = React.forwardRef<HTMLDivElement, PageEmptyProps>(
     </div>
   ),
 );
+
 PageEmpty.displayName = "PageEmpty";
 
 export { PageEmpty };

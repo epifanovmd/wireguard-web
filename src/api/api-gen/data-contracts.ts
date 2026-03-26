@@ -208,11 +208,11 @@ export interface IUserOptionsDto {
 }
 
 export interface IUserPrivilegesRequestDto {
-  /** Roles to assign to the user (replaces current roles). */
+  /** Роли для назначения пользователю (заменяет текущие роли). */
   roles: ERole[];
   /**
-   * Direct permissions granted to this user on top of role permissions.
-   * Replaces current direct permissions.
+   * Прямые разрешения, выданные этому пользователю дополнительно к разрешениям ролей.
+   * Заменяет текущие прямые разрешения.
    */
   permissions: EPermissions[];
 }
@@ -745,103 +745,7 @@ export interface WgPeerStatsPayload {
   timestamp: string;
 }
 
-export interface GetProfilesParams {
-  /**
-   * Смещение для пагинации
-   * @format double
-   */
-  offset?: number;
-  /**
-   * Лимит количества возвращаемых профилей
-   * @format double
-   */
-  limit?: number;
-}
-
-export interface GetUsersParams {
-  /**
-   * Смещение для пагинации
-   * @format double
-   */
-  offset?: number;
-  /**
-   * Лимит количества возвращаемых пользователей
-   * @format double
-   */
-  limit?: number;
-  /** Поиск по email */
-  query?: string;
-}
-
-export interface GetUserOptionsParams {
-  /** Поиск по email, имени или фамилии */
-  query?: string;
-}
-
 /** Тело запроса с refresh токеном */
 export interface RefreshPayload {
   refreshToken: string;
-}
-
-export interface GetPeersParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
-  query?: string;
-  enabled?: boolean;
-  status?: EWgServerStatus;
-  serverId?: string;
-  userId?: string;
-}
-
-export interface GetPeersOptionsParams {
-  serverId?: string;
-  query?: string;
-}
-
-export interface AssignPeerParams {
-  userId: string;
-  id: string;
-}
-
-export interface GetServersParams {
-  /** @format double */
-  offset?: number;
-  /** @format double */
-  limit?: number;
-  query?: string;
-  status?: EWgServerStatus;
-  enabled?: boolean;
-}
-
-export interface GetServerOptionsParams {
-  query?: string;
-}
-
-export interface GetOverviewStatsParams {
-  /** ISO date string (default: 24h ago) */
-  from?: string;
-  /** ISO date string (default: now) */
-  to?: string;
-}
-
-export interface GetServerStatsParams {
-  /** ISO date string (default: 24h ago) */
-  from?: string;
-  /** ISO date string (default: now) */
-  to?: string;
-  /** Optional peer ID to filter */
-  peerId?: string;
-  /** Server ID */
-  serverId: string;
-}
-
-export interface GetPeerStatsParams {
-  /** ISO date string (default: 24h ago) */
-  from?: string;
-  /** ISO date string (default: now) */
-  to?: string;
-  /** Peer ID */
-  peerId: string;
 }

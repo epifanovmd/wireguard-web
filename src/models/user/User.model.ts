@@ -1,7 +1,7 @@
-import { DataModelBase } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { EPermissions, ERole, UserDto } from "~@api/api-gen/data-contracts";
+import { DataModelBase } from "~@common/store/models";
 import { computeEffectivePermissions, isAdminRole } from "~@core/permissions";
 
 import { DateModel } from "../date";

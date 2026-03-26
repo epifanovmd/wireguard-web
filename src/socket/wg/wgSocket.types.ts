@@ -1,4 +1,4 @@
-import { createServiceDecorator } from "@force-dev/utils";
+import { createServiceDecorator } from "~@common/ioc";
 
 import {
   WgOverviewStatsPayload,

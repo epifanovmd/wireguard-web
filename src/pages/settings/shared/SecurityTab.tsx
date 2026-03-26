@@ -30,6 +30,7 @@ export const SecurityTab: FC = observer(() => {
 
     if (!login) {
       toast.error("Не удалось определить логин (email/телефон)");
+
       return;
     }
 

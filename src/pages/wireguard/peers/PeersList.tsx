@@ -104,6 +104,7 @@ export const PeersList: FC = observer(() => {
               onSubmit={async (data, serverId) => {
                 if (!serverId) {
                   toast.error("Выберите сервер");
+
                   return;
                 }
                 const res = await vm.createPeer(serverId, data);

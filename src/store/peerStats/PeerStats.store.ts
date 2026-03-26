@@ -57,7 +57,7 @@ export class PeerStatsStore extends StatsChartBase implements IPeerStatsStore {
     to?: string,
   ) {
     this._startLoading();
-    const res = await this._apiService.getPeerStats({ peerId, from, to });
+    const res = await this._apiService.getPeerStats(peerId, { from, to });
 
     runInAction(() => {
       if (res.data) {

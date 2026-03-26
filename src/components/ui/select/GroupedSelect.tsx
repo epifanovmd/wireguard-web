@@ -30,6 +30,7 @@ export function GroupedSelect<V extends string = string>(
           <SelectListGroup key={group.group} label={group.group}>
             {group.options.map(opt => {
               const flatIdx = flatOptions.indexOf(opt as SelectOption<V>);
+
               return (
                 <SelectListItem
                   key={opt.value}

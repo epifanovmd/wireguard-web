@@ -10,16 +10,28 @@
  * ---------------------------------------------------------------
  */
 
-import {
-  ApiRequestConfig,
-  ApiResponse,
-  ApiService,
-  CancelablePromise,
-} from "@force-dev/utils";
-import type { AxiosError } from "axios";
+import type { AxiosRequestConfig } from "axios";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export interface ApiRequestConfig<P = any>
+  extends Partial<AxiosRequestConfig<P>> {
+  useQueryRace?: boolean;
+}
+
+/** Minimal response contract — implementations may extend with extra fields. */
+export interface ApiResponse<R, E = unknown> {
+  data?: R;
+  error?: E;
+}
+
+export interface CancelablePromise<T> extends Promise<T> {
+  cancel: (message?: string) => void;
+}
 
 interface AxiosRequestParams<P = any> extends ApiRequestConfig<P> {
-  /** content type of request body */
   type?: EContentType;
 }
 
@@ -35,16 +47,46 @@ export enum EContentType {
   Text = "text/plain",
 }
 
-export class HttpClient<
-  E extends Error | AxiosError<EBody> = AxiosError<unknown>,
-  EBody = unknown,
-> extends ApiService<E, EBody> {
+// ---------------------------------------------------------------------------
+// HttpClient — pure data layer, no hidden logic
+// ---------------------------------------------------------------------------
+
+export abstract class HttpClient<E = unknown> {
+  /** Implemented by ApiService — sends the actual request. */
+  abstract instancePromise<R = any, P = any>(
+    config: ApiRequestConfig<P>,
+    options?: ApiRequestConfig<P>,
+  ): CancelablePromise<ApiResponse<R, E>>;
+
+  /** Called by generated Api methods. Prepares data and delegates to instancePromise. */
+  protected request = <R = any, P = any>({
+    type,
+    data,
+    ...options
+  }: AxiosRequestParams<P>): CancelablePromise<ApiResponse<R, E>> => {
+    if (type === EContentType.FormData && data && typeof data === "object") {
+      data = this.createFormData(data as Record<string, unknown>) as P;
+    }
+
+    if (type === EContentType.Text && data && typeof data !== "string") {
+      data = JSON.stringify(data) as P;
+    }
+
+    return this.instancePromise({
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        ...(type ? { "Content-Type": type } : {}),
+      },
+      data,
+    });
+  };
+
   protected stringifyFormItem(formItem: unknown) {
     if (typeof formItem === "object" && formItem !== null) {
       return JSON.stringify(formItem);
-    } else {
-      return `${formItem}`;
     }
+    return `${formItem}`;
   }
 
   protected createFormData(input: Record<string, unknown>): FormData {
@@ -67,27 +109,4 @@ export class HttpClient<
       return formData;
     }, new FormData());
   }
-
-  protected request = <R = any, P = any>({
-    type,
-    data,
-    ...options
-  }: AxiosRequestParams<P>): CancelablePromise<ApiResponse<R, E, EBody>> => {
-    if (type === EContentType.FormData && data && typeof data === "object") {
-      data = this.createFormData(data as Record<string, unknown>) as P;
-    }
-
-    if (type === EContentType.Text && data && typeof data !== "string") {
-      data = JSON.stringify(data) as P;
-    }
-
-    return this.instancePromise({
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        ...(type ? { "Content-Type": type } : {}),
-      },
-      data,
-    });
-  };
 }

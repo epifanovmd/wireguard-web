@@ -1,7 +1,7 @@
-import { DataModelBase } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { EProfileStatus, PublicUserDto } from "~@api/api-gen/data-contracts";
+import { DataModelBase } from "~@common/store/models";
 
 import { DateModel } from "../date";
 

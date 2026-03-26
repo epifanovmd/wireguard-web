@@ -4,6 +4,7 @@ import { ServerDetail } from "../../../../pages/wireguard/servers/ServerDetail";
 
 const Component = () => {
   const { serverId } = useParams({ from: "/_private/wireguard/servers/$serverId" });
+
   return <ServerDetail serverId={serverId} />;
 };
 

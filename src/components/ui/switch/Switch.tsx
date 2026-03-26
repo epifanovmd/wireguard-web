@@ -21,6 +21,7 @@ const Switch = React.forwardRef<
     <SwitchPrimitives.Thumb className={cn(switchThumbVariants({ size }))} />
   </SwitchPrimitives.Root>
 ));
+
 Switch.displayName = SwitchPrimitives.Root.displayName;
 
 export { Switch };

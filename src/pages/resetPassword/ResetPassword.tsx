@@ -39,6 +39,7 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     setLoading(true);
     setError(null);
     const res = await api.resetPassword({ token, password: data.password });
+
     setLoading(false);
     if (res.error) {
       setError(res.error.message);

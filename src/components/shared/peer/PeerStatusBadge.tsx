@@ -15,6 +15,7 @@ export const PeerStatusBadge: FC<{ status: EWgServerStatus }> = ({
   status,
 }) => {
   const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG[EWgServerStatus.Unknown];
+
   return (
     <Badge variant={cfg.variant} dot>
       {cfg.label}

@@ -21,6 +21,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
     </div>
   ),
 );
+
 CardHeader.displayName = "CardHeader";
 
 export { CardHeader };

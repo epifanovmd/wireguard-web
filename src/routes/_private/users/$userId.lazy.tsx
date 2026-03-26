@@ -10,6 +10,7 @@ import { UserDetail } from "../../../pages/users";
 const Component = () => {
   const navigate = useNavigate();
   const { userId } = useParams({ from: "/_private/users/$userId" });
+
   return (
     <UserDetail userId={userId} onBack={() => navigate({ to: "/users" })} />
   );

@@ -4,7 +4,9 @@ import { ThemeContext, ThemeMode } from "./ThemeContext";
 
 function getInitialTheme(): ThemeMode {
   const saved = localStorage.getItem("theme") as ThemeMode | null;
+
   if (saved === "light" || saved === "dark") return saved;
+
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";

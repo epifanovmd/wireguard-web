@@ -1,5 +1,6 @@
-import { createServiceDecorator, SupportInitialize } from "@force-dev/utils";
 import { Socket as SocketIO } from "socket.io-client";
+
+import { createServiceDecorator, SupportInitialize } from "~@common/ioc";
 
 import {
   SocketClientToServerEvents,

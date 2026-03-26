@@ -38,6 +38,7 @@ const Tag = React.forwardRef<HTMLDivElement, TagProps>(
     );
   },
 );
+
 Tag.displayName = "Tag";
 
 export { Tag };

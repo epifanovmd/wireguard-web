@@ -26,6 +26,7 @@ class Formatter {
     }
 
     const bps = bytes * 8;
+
     if (bps < 1_000) return `${bps.toFixed(0)} bps`;
     if (bps < 1_000_000) return `${(bps / 1_000).toFixed(1)} Kbps`;
     if (bps < 1_000_000_000) return `${(bps / 1_000_000).toFixed(1)} Mbps`;

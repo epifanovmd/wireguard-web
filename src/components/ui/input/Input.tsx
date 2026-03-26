@@ -52,6 +52,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       const event = {
         target: { value: "" },
       } as React.ChangeEvent<HTMLInputElement>;
+
       onChange?.(event);
     };
 
@@ -115,6 +116,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
+
 Input.displayName = "Input";
 
 export { Input };

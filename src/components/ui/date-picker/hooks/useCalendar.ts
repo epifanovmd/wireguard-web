@@ -78,6 +78,7 @@ export const useCalendar = ({
     if (viewMode === "day") return `${MONTHS[currentMonth]} ${currentYear}`;
     if (viewMode === "month") return String(currentYear);
     const startYear = Math.floor(currentYear / 12) * 12;
+
     return `${startYear} — ${startYear + 11}`;
   }, [viewMode, currentMonth, currentYear]);
 

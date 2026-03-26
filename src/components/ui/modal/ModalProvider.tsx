@@ -21,7 +21,9 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 
   const openModal = React.useCallback((options: ModalOptions): string => {
     const id = generateId();
+
     setModals(prev => [...prev, { id, open: true, options }]);
+
     return id;
   }, []);
 

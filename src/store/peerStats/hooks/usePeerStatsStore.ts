@@ -1,4 +1,4 @@
-import { iocHook } from "@force-dev/react";
+import { iocHook } from "~@common/ioc";
 
 import { IPeerStatsStore } from "../PeerStats.types";
 

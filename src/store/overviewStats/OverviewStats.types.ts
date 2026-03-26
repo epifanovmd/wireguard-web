@@ -1,5 +1,4 @@
-import { createServiceDecorator } from "@force-dev/utils";
-
+import { createServiceDecorator } from "~@common/ioc";
 import { EntityHolder } from "~@core/holders";
 
 import { WgOverviewStatsPayload } from "../../socket";

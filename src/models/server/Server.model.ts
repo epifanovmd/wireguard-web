@@ -1,7 +1,7 @@
-import { createEnumModelBase, DataModelBase } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { EWgServerStatus, WgServerDto } from "~@api/api-gen/data-contracts";
+import { createEnumModelBase, DataModelBase } from "~@common/store/models";
 
 import { DateModel } from "../date";
 import { WgStatusModel } from "../wgStatus/WgStatus.model";

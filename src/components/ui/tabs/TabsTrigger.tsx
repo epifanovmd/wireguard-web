@@ -33,6 +33,7 @@ const TabsTrigger = React.forwardRef<
 
     React.useEffect(() => {
       const trigger = triggerRef.current;
+
       if (!trigger) return;
 
       const observer = new MutationObserver(() => {
@@ -70,6 +71,7 @@ const TabsTrigger = React.forwardRef<
     );
   },
 );
+
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
 export { TabsTrigger };

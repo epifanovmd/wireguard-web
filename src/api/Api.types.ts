@@ -1,13 +1,23 @@
-import { createServiceDecorator } from "@force-dev/utils";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
+
+import { createServiceDecorator } from "~@common/ioc";
 
 import { Api } from "./api-gen/Api";
+import { ApiResponse } from "./api-gen/http-client";
 
 export const IApiService = createServiceDecorator<IApiService>();
-export type IApiService = Api<ApiError, ApiError>;
+export type IApiService = Api<ApiError>;
 
 export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError;
+}
+
+/** Extended response with axios-specific details, used inside ApiService. */
+export interface ApiServiceResponse<R> extends ApiResponse<R, ApiError> {
+  status: number;
+  isCanceled?: boolean;
+  axiosError?: AxiosError<ApiError>;
+  axiosResponse?: AxiosResponse<R>;
 }
 
 type ApiErrorBody = {

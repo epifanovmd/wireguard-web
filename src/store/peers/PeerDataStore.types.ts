@@ -1,11 +1,11 @@
-import { ApiResponse, createServiceDecorator } from "@force-dev/utils";
-
 import { ApiError } from "~@api";
 import {
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
+import { ApiResponse } from "~@api/api-gen/http-client";
+import { createServiceDecorator } from "~@common/ioc";
 import {
   EntityHolder,
   IHolderError,

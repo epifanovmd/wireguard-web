@@ -1,5 +1,6 @@
-import { createServiceDecorator } from "@force-dev/utils";
 import axios from "axios";
+
+import { createServiceDecorator } from "~@common/ioc";
 
 import { BASE_URL } from "../env";
 import { IAuthTokenStore } from "./AuthTokenStore";

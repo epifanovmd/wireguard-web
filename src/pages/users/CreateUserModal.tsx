@@ -48,6 +48,7 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
 
       if (res.error) {
         toast.error(res.error.message);
+
         return;
       }
 

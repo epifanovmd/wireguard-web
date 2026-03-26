@@ -1,13 +1,12 @@
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
-
 import eslint from "@eslint/js";
 import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "src/api/api-gen/**"] },
   {
     extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -48,6 +47,9 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unsafe-function-type": "off",
 
       // react-hooks
       "react-hooks/rules-of-hooks": "error",
@@ -57,104 +59,27 @@ export default tseslint.config(
           additionalHooks: "(useMyCustomHook|useMyOtherCustomHook)",
         },
       ],
-      //
-      // // Stylistic
-      // "no-redeclare": "off",
-      // semi: "error",
-      // "array-bracket-newline": ["error", "consistent"],
-      // "array-bracket-spacing": ["error", "never"],
-      // "array-element-newline": ["error", "consistent"],
-      // "object-property-newline": [
-      //   "error",
-      //   { allowAllPropertiesOnSameLine: true },
-      // ],
-      // "block-spacing": "error",
-      // "comma-dangle": [
-      //   "error",
-      //   {
-      //     arrays: "always-multiline",
-      //     objects: "always-multiline",
-      //     imports: "always-multiline",
-      //     exports: "always-multiline",
-      //     functions: "always-multiline",
-      //   },
-      // ],
-      // "comma-spacing": [
-      //   "error",
-      //   {
-      //     before: false,
-      //     after: true,
-      //   },
-      // ],
-      // "eol-last": ["error"],
-      // "func-style": ["error", "declaration", { allowArrowFunctions: true }],
-      // "function-call-argument-newline": ["error", "consistent"],
-      // "jsx-quotes": "error",
-      // "key-spacing": "error",
-      // "keyword-spacing": [
-      //   "error",
-      //   {
-      //     after: true,
-      //     before: true,
-      //   },
-      // ],
-      // "new-parens": "error",
-      // "no-array-constructor": "error",
-      // "no-bitwise": "error",
-      // "no-lonely-if": "error",
-      // "no-multi-assign": "error",
-      // "no-multiple-empty-lines": "error",
-      // "no-plusplus": "error",
-      // "no-trailing-spaces": "error",
-      // "no-unneeded-ternary": "error",
-      // "no-whitespace-before-property": "error",
-      // "object-curly-newline": ["error"],
-      // "object-curly-spacing": ["error", "always"],
-      // "operator-assignment": ["error", "always"],
-      // "operator-linebreak": ["error"],
-      // "padding-line-between-statements": [
-      //   "error",
-      //   {
-      //     blankLine: "always",
-      //     prev: ["const", "let", "var"],
-      //     next: "*",
-      //   },
-      //   {
-      //     blankLine: "always",
-      //     prev: "*",
-      //     next: "return",
-      //   },
-      //   {
-      //     blankLine: "any",
-      //     prev: ["const", "let", "var"],
-      //     next: ["const", "let", "var"],
-      //   },
-      // ],
-      // "quote-props": ["error", "as-needed"],
-      // quotes: ["error"],
-      // "semi-spacing": ["error"],
-      // "semi-style": ["error"],
-      // "sort-vars": ["error"],
-      // "space-before-function-paren": [
-      //   "error",
-      //   {
-      //     anonymous: "never",
-      //     named: "never",
-      //     asyncArrow: "always",
-      //   },
-      // ],
-      // "space-in-parens": ["error"],
-      // "space-unary-ops": ["error"],
-      // "spaced-comment": ["error"],
-      // "switch-colon-spacing": [
-      //   "error",
-      //   {
-      //     after: true,
-      //     before: false,
-      //   },
-      // ],
-      // "template-tag-spacing": ["error", "never"],
-      // "wrap-regex": ["error"],
+
+      // Stylistic
+      "no-redeclare": "off",
+      "padding-line-between-statements": [
+        "error",
+        {
+          blankLine: "always",
+          prev: ["const", "let", "var"],
+          next: "*",
+        },
+        {
+          blankLine: "always",
+          prev: "*",
+          next: "return",
+        },
+        {
+          blankLine: "any",
+          prev: ["const", "let", "var"],
+          next: ["const", "let", "var"],
+        },
+      ],
     },
   },
 );

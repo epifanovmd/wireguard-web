@@ -45,6 +45,7 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
   // Stable refs to avoid stale closures
   const fetchRef = React.useRef(fetchOptions);
   const getOptionRef = React.useRef(getOption);
+
   fetchRef.current = fetchOptions;
   getOptionRef.current = getOption;
 
@@ -58,6 +59,7 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
       setLoading(true);
       try {
         const data = await fetchRef.current(q, signal);
+
         if (!signal.aborted) {
           setAsyncOptions(data.map(item => getOptionRef.current!(item)));
           hasLoadedRef.current = true;
@@ -78,8 +80,10 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
     if (!isAsync || !fetchOnMount) return;
     const ctrl = new AbortController();
     const q = search ? query : "";
+
     lastFetchedQueryRef.current = q;
     doFetch(q, ctrl.signal);
+
     return () => ctrl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally mount-only
@@ -90,8 +94,10 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
     lazyFetchedRef.current = true;
     const ctrl = new AbortController();
     const q = search ? query : "";
+
     lastFetchedQueryRef.current = q;
     doFetch(q, ctrl.signal);
+
     return () => {
       // Reset so StrictMode's cleanup+re-run gets a fresh fetch
       lazyFetchedRef.current = false;
@@ -107,8 +113,10 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
     if (!isAsync || fetchOnMount || !loadOnce || !open || hasLoadedRef.current) return;
     const ctrl = new AbortController();
     const q = search ? query : "";
+
     lastFetchedQueryRef.current = q;
     doFetch(q, ctrl.signal);
+
     return () => ctrl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, isAsync, fetchOnMount, loadOnce]);
@@ -135,13 +143,16 @@ export function useSelectOptions<TData = unknown, V extends string = string>({
   const computedOptions = React.useMemo<SelectOption<V>[]>(() => {
     if (isStaticArray) {
       const arr = optionsProp as SelectOption<V>[];
+
       if (!search || !query) return arr;
       const q = query.toLowerCase();
+
       return arr.filter(o => String(o.label).toLowerCase().includes(q));
     }
     if (isGetterFn) {
       return (optionsProp as (q: string) => SelectOption<V>[])(query);
     }
+
     return [];
   }, [optionsProp, isStaticArray, isGetterFn, search, query]);
 

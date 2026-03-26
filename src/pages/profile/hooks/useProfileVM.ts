@@ -30,6 +30,7 @@ export const useProfileVM = () => {
     resolver: zodResolver(profileSchema),
     defaultValues: {},
   });
+
   useEffect(() => {
     authStore.load().then();
     // eslint-disable-next-line react-hooks/exhaustive-deps

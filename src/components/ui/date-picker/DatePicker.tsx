@@ -47,6 +47,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
   ) => {
     const value = useMemo(() => {
       const value = typeof _value === "string" ? parseISO(_value) : _value;
+
       return isValid(value) ? value : undefined;
     }, [_value]);
 

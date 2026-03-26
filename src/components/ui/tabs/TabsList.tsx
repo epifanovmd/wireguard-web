@@ -34,6 +34,7 @@ const TabsList = React.forwardRef<
     </TabsContext.Provider>
   );
 });
+
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 export { TabsList };

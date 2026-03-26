@@ -32,6 +32,7 @@ export const SelectListItem = React.memo(
     const onSelectRef = React.useRef(onSelect);
     const onFocusRef = React.useRef(onFocus);
     const onBlurRef = React.useRef(onBlur);
+
     onSelectRef.current = onSelect;
     onFocusRef.current = onFocus;
     onBlurRef.current = onBlur;

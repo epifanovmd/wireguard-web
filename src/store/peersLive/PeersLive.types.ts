@@ -1,5 +1,6 @@
-import { createServiceDecorator } from "@force-dev/utils";
 import { ObservableMap } from "mobx";
+
+import { createServiceDecorator } from "~@common/ioc";
 
 import { WgPeerState } from "../../socket";
 

@@ -61,6 +61,7 @@ const Chips = React.forwardRef<HTMLDivElement, ChipsProps>(
     );
   },
 );
+
 Chips.displayName = "Chips";
 
 export { Chips };

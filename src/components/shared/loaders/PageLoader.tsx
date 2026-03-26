@@ -21,6 +21,7 @@ const PageLoader = React.forwardRef<HTMLDivElement, PageLoaderProps>(
     </div>
   ),
 );
+
 PageLoader.displayName = "PageLoader";
 
 export { PageLoader };

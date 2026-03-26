@@ -1,5 +1,3 @@
-import { ApiResponse, createServiceDecorator } from "@force-dev/utils";
-
 import { ApiError } from "~@api";
 import {
   IUserPrivilegesRequestDto,
@@ -7,6 +5,8 @@ import {
   PublicUserDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { ApiResponse } from "~@api/api-gen/http-client";
+import { createServiceDecorator } from "~@common/ioc";
 import {
   EntityHolder,
   IHolderError,

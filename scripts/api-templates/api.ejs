@@ -1,0 +1,26 @@
+<%
+const { utils, route, config, modelTypes } = it;
+const { _, pascalCase, require } = utils;
+const apiClassName = pascalCase(route.moduleName);
+const routes = route.routes;
+const dataContracts = _.map(modelTypes, "name");
+%>
+
+import { HttpClient, RequestParams, EContentType } from "./<%~ config.fileNames.httpClient %>";
+<% if (dataContracts.length) { %>
+import { <%~ dataContracts.join(", ") %> } from "./<%~ config.fileNames.dataContracts %>"
+<% } %>
+
+export class <%= apiClassName %><% if (!config.singleHttpClient) { %><E = unknown> extends HttpClient<E> <% } %> {
+    <% if(config.singleHttpClient) { %>
+        http: HttpClient;
+
+        constructor (http: HttpClient) {
+            this.http = http;
+            }
+            <% } %>
+
+            <% for (const route of routes) { %>
+            <%~ includeFile('./procedure-call.ejs', { ...it, route }) %>
+            <% } %>
+            }

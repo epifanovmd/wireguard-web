@@ -1,5 +1,6 @@
-import { iocHook } from "@force-dev/react";
 import { useEffect, useState } from "react";
+
+import { iocHook } from "~@common/ioc";
 
 import type {
   WgPeerActivePayload,

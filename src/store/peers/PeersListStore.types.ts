@@ -1,9 +1,8 @@
-import { createServiceDecorator } from "@force-dev/utils";
-
 import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "~@api/api-gen/data-contracts";
+import { createServiceDecorator } from "~@common/ioc";
 import {
   IMutationHolderResult,
   MutationHolder,

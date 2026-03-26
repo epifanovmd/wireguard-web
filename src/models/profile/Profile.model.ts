@@ -1,7 +1,8 @@
-import { DataModelBase, LambdaValue } from "@force-dev/utils";
 import { computed, makeObservable } from "mobx";
 
 import { ERole, ProfileDto } from "~@api/api-gen/data-contracts";
+import { LambdaValue } from "~@common/helpers/lambdaValue";
+import { DataModelBase } from "~@common/store/models";
 
 import { DateModel } from "../date";
 

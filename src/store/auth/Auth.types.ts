@@ -1,5 +1,3 @@
-import { createServiceDecorator } from "@force-dev/utils";
-
 import {
   EPermissions,
   ERole,
@@ -9,6 +7,7 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { createServiceDecorator } from "~@common/ioc";
 import { IEntityHolderResult, IHolderError } from "~@core/holders";
 import { ProfileModel } from "~@models";
 

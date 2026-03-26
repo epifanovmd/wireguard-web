@@ -115,6 +115,7 @@ export class SocketTransport implements ISocketTransport {
       event as string,
       handler,
     );
+
     this._socket?.on(event, handler as never);
 
     return () => {
@@ -144,6 +145,7 @@ export class SocketTransport implements ISocketTransport {
 
   onConnect(handler: () => void): () => void {
     const removeFromStore = this._persistentListeners.add("connect", handler);
+
     this._socket?.on("connect", handler);
 
     return () => {
@@ -157,6 +159,7 @@ export class SocketTransport implements ISocketTransport {
       "disconnect",
       handler,
     );
+
     this._socket?.on("disconnect", handler as never);
 
     return () => {
@@ -181,6 +184,7 @@ export class SocketTransport implements ISocketTransport {
 
       if (!accessToken) {
         const err = new Error("[Socket] No access token available");
+
         this._setState({ status: "error", error: err });
         reject(err);
 
@@ -219,6 +223,7 @@ export class SocketTransport implements ISocketTransport {
         this._setState({ status: "error", error: err });
         reject(err);
       };
+
       socket.once("connect", onFirstConnect);
       socket.once("connect_error", onFirstError);
 

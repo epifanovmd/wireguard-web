@@ -26,6 +26,7 @@ export function useKeyboardNav({
   const onSelectRef = React.useRef(onSelect);
   const onCloseRef = React.useRef(onClose);
   const focusedIndexRef = React.useRef(focusedIndex);
+
   onSelectRef.current = onSelect;
   onCloseRef.current = onClose;
   focusedIndexRef.current = focusedIndex;
@@ -64,6 +65,7 @@ export function useKeyboardNav({
     const item = listRef.current.children[focusedIndex] as
       | HTMLElement
       | undefined;
+
     item?.scrollIntoView({ block: "nearest" });
   }, [focusedIndex]);
 

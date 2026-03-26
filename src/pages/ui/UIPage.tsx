@@ -205,6 +205,7 @@ const tableColumns: ColumnDef<Transaction>[] = [
     header: "Status",
     cell: ({ getValue }) => {
       const v = getValue<Transaction["status"]>();
+
       return (
         <Badge size="sm" variant={statusVariant[v]}>
           {v}

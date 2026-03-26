@@ -1,6 +1,7 @@
-import { createServiceDecorator } from "@force-dev/utils";
 import React from "react";
 import { toast } from "react-hot-toast";
+
+import { createServiceDecorator } from "~@common/ioc";
 
 import { CustomToast, ToastVariant } from "./CustomToast";
 

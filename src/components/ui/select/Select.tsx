@@ -121,6 +121,7 @@ function SelectInner<TData = unknown, V extends string = string>(
         const next = cur.includes(optValue)
           ? cur.filter(v => v !== optValue)
           : [...cur, optValue];
+
         (onChange as (v: V[]) => void)?.(next);
         // Multi: don't close on select
       } else {
@@ -145,6 +146,7 @@ function SelectInner<TData = unknown, V extends string = string>(
     (v: V) => {
       if (!multi) return;
       const cur = (rawValue as V[] | undefined) ?? [];
+
       (onChange as (v: V[]) => void)?.(cur.filter(x => x !== v));
     },
     [multi, rawValue, onChange],
@@ -194,6 +196,7 @@ function SelectInner<TData = unknown, V extends string = string>(
             </span>
           );
         }
+
         // Tags (+ search input when enabled)
         return (
           <div className="flex flex-wrap gap-1 flex-1 min-w-0 overflow-hidden items-center py-0.5">

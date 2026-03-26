@@ -1,5 +1,6 @@
-import { iocHook } from "@force-dev/react";
 import { useEffect, useState } from "react";
+
+import { iocHook } from "~@common/ioc";
 
 import { ISocketTransport, SocketTransportState } from "../transport";
 
@@ -27,5 +28,6 @@ export function useSocketStatus(): SocketTransportState {
 /** Lightweight boolean for components that only care about connectivity. */
 export function useIsSocketConnected(): boolean {
   const { status } = useSocketStatus();
+
   return status === "connected";
 }

@@ -1,4 +1,4 @@
-import { createServiceDecorator, SupportInitialize } from "@force-dev/utils";
+import { createServiceDecorator, SupportInitialize } from "~@common/ioc";
 
 export const IAppDataStore = createServiceDecorator<IAppDataStore>();
 

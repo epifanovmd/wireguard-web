@@ -10,21 +10,10 @@
  * ---------------------------------------------------------------
  */
 
-import type { AxiosError } from "axios";
 import {
   ApiResponseDto,
-  AssignPeerParams,
   Base64URLString,
-  GetOverviewStatsParams,
-  GetPeersOptionsParams,
-  GetPeersParams,
-  GetPeerStatsParams,
-  GetProfilesParams,
-  GetServerOptionsParams,
-  GetServersParams,
-  GetServerStatsParams,
-  GetUserOptionsParams,
-  GetUsersParams,
+  EWgServerStatus,
   IGenerateAuthenticationOptionsRequestDto,
   IProfileListDto,
   IProfileUpdateRequestDto,
@@ -69,10 +58,7 @@ import {
 } from "./data-contracts";
 import { EContentType, HttpClient, RequestParams } from "./http-client";
 
-export class Api<
-  E extends Error | AxiosError<EBody> = AxiosError<unknown>,
-  EBody = unknown,
-> extends HttpClient<E, EBody> {
+export class Api<E = unknown> extends HttpClient<E> {
   /**
    * @description Получить профиль текущего пользователя. Этот эндпоинт позволяет получить данные профиля пользователя, который выполнил запрос. Используется для получения информации о текущем пользователе, например, его имени, email, и других данных.
    *
@@ -83,7 +69,7 @@ export class Api<
    * @secure
    */
   getMyProfile = (params: RequestParams = {}) =>
-    this.request<ProfileDto, any>({
+    this.request<ProfileDto>({
       url: `/api/profile/my`,
       method: "GET",
       responseType: "json",
@@ -102,7 +88,7 @@ export class Api<
     data: IProfileUpdateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<ProfileDto, any>({
+    this.request<ProfileDto>({
       url: `/api/profile/my/update`,
       method: "PATCH",
       data: data,
@@ -120,7 +106,7 @@ export class Api<
    * @secure
    */
   deleteMyProfile = (params: RequestParams = {}) =>
-    this.request<Base64URLString, any>({
+    this.request<Base64URLString>({
       url: `/api/profile/my/delete`,
       method: "DELETE",
       responseType: "json",
@@ -135,8 +121,22 @@ export class Api<
    * @request GET:/api/profile/all
    * @secure
    */
-  getProfiles = (query: GetProfilesParams, params: RequestParams = {}) =>
-    this.request<IProfileListDto, any>({
+  getProfiles = (
+    query?: {
+      /**
+       * Смещение для пагинации
+       * @format double
+       */
+      offset?: number;
+      /**
+       * Лимит количества возвращаемых профилей
+       * @format double
+       */
+      limit?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<IProfileListDto>({
       url: `/api/profile/all`,
       method: "GET",
       params: query,
@@ -153,7 +153,7 @@ export class Api<
    * @secure
    */
   getProfileById = (userId: string, params: RequestParams = {}) =>
-    this.request<PublicProfileDto, any>({
+    this.request<PublicProfileDto>({
       url: `/api/profile/${userId}`,
       method: "GET",
       responseType: "json",
@@ -173,7 +173,7 @@ export class Api<
     data: IProfileUpdateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<ProfileDto, any>({
+    this.request<ProfileDto>({
       url: `/api/profile/update/${userId}`,
       method: "PATCH",
       data: data,
@@ -191,7 +191,7 @@ export class Api<
    * @secure
    */
   deleteProfile = (userId: string, params: RequestParams = {}) =>
-    this.request<Base64URLString, any>({
+    this.request<Base64URLString>({
       url: `/api/profile/delete/${userId}`,
       method: "DELETE",
       responseType: "json",
@@ -207,7 +207,7 @@ export class Api<
    * @secure
    */
   getRoles = (params: RequestParams = {}) =>
-    this.request<IRoleDto[], any>({
+    this.request<IRoleDto[]>({
       url: `/api/roles`,
       method: "GET",
       responseType: "json",
@@ -227,7 +227,7 @@ export class Api<
     data: IRolePermissionsRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<IRoleDto, any>({
+    this.request<IRoleDto>({
       url: `/api/roles/${id}/permissions`,
       method: "PATCH",
       data: data,
@@ -245,7 +245,7 @@ export class Api<
    * @secure
    */
   getMyUser = (params: RequestParams = {}) =>
-    this.request<UserDto, any>({
+    this.request<UserDto>({
       url: `/api/user/my`,
       method: "GET",
       responseType: "json",
@@ -261,7 +261,7 @@ export class Api<
    * @secure
    */
   updateMyUser = (data: IUserUpdateRequestDto, params: RequestParams = {}) =>
-    this.request<UserDto, any>({
+    this.request<UserDto>({
       url: `/api/user/my/update`,
       method: "PATCH",
       data: data,
@@ -279,7 +279,7 @@ export class Api<
    * @secure
    */
   deleteMyUser = (params: RequestParams = {}) =>
-    this.request<boolean, any>({
+    this.request<boolean>({
       url: `/api/user/my/delete`,
       method: "DELETE",
       responseType: "json",
@@ -294,8 +294,24 @@ export class Api<
    * @request GET:/api/user/all
    * @secure
    */
-  getUsers = (query: GetUsersParams, params: RequestParams = {}) =>
-    this.request<IUserListDto, any>({
+  getUsers = (
+    query?: {
+      /**
+       * Смещение для пагинации
+       * @format double
+       */
+      offset?: number;
+      /**
+       * Лимит количества возвращаемых пользователей
+       * @format double
+       */
+      limit?: number;
+      /** Поиск по email */
+      query?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<IUserListDto>({
       url: `/api/user/all`,
       method: "GET",
       params: query,
@@ -311,8 +327,14 @@ export class Api<
    * @request GET:/api/user/options
    * @secure
    */
-  getUserOptions = (query: GetUserOptionsParams, params: RequestParams = {}) =>
-    this.request<IUserOptionsDto, any>({
+  getUserOptions = (
+    query?: {
+      /** Поиск по email, имени или фамилии */
+      query?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<IUserOptionsDto>({
       url: `/api/user/options`,
       method: "GET",
       params: query,
@@ -329,7 +351,7 @@ export class Api<
    * @secure
    */
   getUserById = (id: string, params: RequestParams = {}) =>
-    this.request<UserDto, any>({
+    this.request<UserDto>({
       url: `/api/user/${id}`,
       method: "GET",
       responseType: "json",
@@ -349,7 +371,7 @@ export class Api<
     data: IUserPrivilegesRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<UserDto, any>({
+    this.request<UserDto>({
       url: `/api/user/setPrivileges/${id}`,
       method: "PATCH",
       data: data,
@@ -367,7 +389,7 @@ export class Api<
    * @secure
    */
   requestVerifyEmail = (params: RequestParams = {}) =>
-    this.request<boolean, any>({
+    this.request<boolean>({
       url: `/api/user/requestVerifyEmail`,
       method: "POST",
       responseType: "json",
@@ -383,7 +405,7 @@ export class Api<
    * @secure
    */
   verifyEmail = (code: string, params: RequestParams = {}) =>
-    this.request<ApiResponseDto, any>({
+    this.request<ApiResponseDto>({
       url: `/api/user/verifyEmail/${code}`,
       method: "GET",
       responseType: "json",
@@ -403,7 +425,7 @@ export class Api<
     data: IUserUpdateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<UserDto, any>({
+    this.request<UserDto>({
       url: `/api/user/update/${id}`,
       method: "PATCH",
       data: data,
@@ -421,7 +443,7 @@ export class Api<
    * @secure
    */
   changePassword = (data: IUserChangePasswordDto, params: RequestParams = {}) =>
-    this.request<ApiResponseDto, any>({
+    this.request<ApiResponseDto>({
       url: `/api/user/changePassword`,
       method: "POST",
       data: data,
@@ -439,7 +461,7 @@ export class Api<
    * @secure
    */
   deleteUser = (id: string, params: RequestParams = {}) =>
-    this.request<boolean, any>({
+    this.request<boolean>({
       url: `/api/user/delete/${id}`,
       method: "DELETE",
       responseType: "json",
@@ -454,7 +476,7 @@ export class Api<
    * @request POST:/api/auth/sign-up
    */
   signUp = (data: TSignUpRequestDto, params: RequestParams = {}) =>
-    this.request<IUserWithTokensDto, any>({
+    this.request<IUserWithTokensDto>({
       url: `/api/auth/sign-up`,
       method: "POST",
       data: data,
@@ -471,7 +493,7 @@ export class Api<
    * @request POST:/api/auth/sign-in
    */
   signIn = (data: ISignInRequestDto, params: RequestParams = {}) =>
-    this.request<IUserWithTokensDto, any>({
+    this.request<IUserWithTokensDto>({
       url: `/api/auth/sign-in`,
       method: "POST",
       data: data,
@@ -491,7 +513,7 @@ export class Api<
     data: IUserLoginRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<ApiResponseDto, any>({
+    this.request<ApiResponseDto>({
       url: `/api/auth/request-reset-password`,
       method: "POST",
       data: data,
@@ -511,7 +533,7 @@ export class Api<
     data: IUserResetPasswordRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<ApiResponseDto, any>({
+    this.request<ApiResponseDto>({
       url: `/api/auth/reset-password`,
       method: "POST",
       data: data,
@@ -528,7 +550,7 @@ export class Api<
    * @request POST:/api/auth/refresh
    */
   refresh = (data: RefreshPayload, params: RequestParams = {}) =>
-    this.request<ITokensDto, any>({
+    this.request<ITokensDto>({
       url: `/api/auth/refresh`,
       method: "POST",
       data: data,
@@ -546,7 +568,7 @@ export class Api<
    * @secure
    */
   generateRegistrationOptions = (params: RequestParams = {}) =>
-    this.request<PublicKeyCredentialCreationOptionsJSON, any>({
+    this.request<PublicKeyCredentialCreationOptionsJSON>({
       url: `/api/passkeys/generate-registration-options`,
       method: "POST",
       responseType: "json",
@@ -565,7 +587,7 @@ export class Api<
     data: IVerifyRegistrationRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<IVerifyRegistrationResponseDto, any>({
+    this.request<IVerifyRegistrationResponseDto>({
       url: `/api/passkeys/verify-registration`,
       method: "POST",
       data: data,
@@ -585,7 +607,7 @@ export class Api<
     data: IGenerateAuthenticationOptionsRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<PublicKeyCredentialRequestOptionsJSON, any>({
+    this.request<PublicKeyCredentialRequestOptionsJSON>({
       url: `/api/passkeys/generate-authentication-options`,
       method: "POST",
       data: data,
@@ -605,7 +627,7 @@ export class Api<
     data: IVerifyAuthenticationRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<IVerifyAuthenticationResponseDto, any>({
+    this.request<IVerifyAuthenticationResponseDto>({
       url: `/api/passkeys/verify-authentication`,
       method: "POST",
       data: data,
@@ -614,16 +636,29 @@ export class Api<
       ...params,
     });
   /**
-   * @description List all peers. Returns all peers for wg:peer:view (with optional userId filter), own peers for wg:peer:own.
+   * @description Список всех пиров. Возвращает все пиры для wg:peer:view (с опциональным фильтром userId), собственные пиры для wg:peer:own.
    *
    * @tags WireGuard Peers
    * @name GetPeers
-   * @summary Get peers
+   * @summary Получить пиры
    * @request GET:/api/wg/peers
    * @secure
    */
-  getPeers = (query: GetPeersParams, params: RequestParams = {}) =>
-    this.request<IWgPeerListDto, any>({
+  getPeers = (
+    query?: {
+      /** @format double */
+      offset?: number;
+      /** @format double */
+      limit?: number;
+      query?: string;
+      enabled?: boolean;
+      status?: EWgServerStatus;
+      serverId?: string;
+      userId?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgPeerListDto>({
       url: `/api/wg/peers`,
       method: "GET",
       params: query,
@@ -631,19 +666,22 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get peer options for dropdowns. Returns all options for wg:peer:view, own options for wg:peer:own.
+   * @description Получить варианты пиров для выпадающих списков. Возвращает все варианты для wg:peer:view, собственные для wg:peer:own.
    *
    * @tags WireGuard Peers
    * @name GetPeersOptions
-   * @summary Get peer options
+   * @summary Получить варианты пиров
    * @request GET:/api/wg/peers/options
    * @secure
    */
   getPeersOptions = (
-    query: GetPeersOptionsParams,
+    query?: {
+      serverId?: string;
+      query?: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<IWgPeerOptionsDto, any>({
+    this.request<IWgPeerOptionsDto>({
       url: `/api/wg/peers/options`,
       method: "GET",
       params: query,
@@ -651,27 +689,27 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get a peer by ID. Ownership check for wg:peer:own users.
+   * @description Получить пир по ID. Проверка владельца для пользователей с wg:peer:own.
    *
    * @tags WireGuard Peers
    * @name GetPeer
-   * @summary Get peer
+   * @summary Получить пир
    * @request GET:/api/wg/peers/{id}
    * @secure
    */
   getPeer = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Update a peer.
+   * @description Обновить пир.
    *
    * @tags WireGuard Peers
    * @name UpdatePeer
-   * @summary Update peer
+   * @summary Обновить пир
    * @request PATCH:/api/wg/peers/{id}
    * @secure
    */
@@ -680,7 +718,7 @@ export class Api<
     data: IWgPeerUpdateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}`,
       method: "PATCH",
       data: data,
@@ -689,27 +727,27 @@ export class Api<
       ...params,
     });
   /**
-   * @description Delete a peer. Peer is removed from live interface if server is up.
+   * @description Удалить пир. Пир удаляется из активного интерфейса если сервер запущен.
    *
    * @tags WireGuard Peers
    * @name DeletePeer
-   * @summary Delete peer
+   * @summary Удалить пир
    * @request DELETE:/api/wg/peers/{id}
    * @secure
    */
   deletePeer = (id: string, params: RequestParams = {}) =>
-    this.request<boolean, any>({
+    this.request<boolean>({
       url: `/api/wg/peers/${id}`,
       method: "DELETE",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Create a new peer on a server. Keys are auto-generated. Peer is applied to live interface if server is up.
+   * @description Создать новый пир на сервере. Ключи генерируются автоматически. Пир применяется к активному интерфейсу если сервер запущен.
    *
    * @tags WireGuard Peers
    * @name CreatePeer
-   * @summary Create peer
+   * @summary Создать пир
    * @request POST:/api/wg/servers/{serverId}/peers
    * @secure
    */
@@ -718,7 +756,7 @@ export class Api<
     data: IWgPeerCreateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/servers/${serverId}/peers`,
       method: "POST",
       data: data,
@@ -727,51 +765,54 @@ export class Api<
       ...params,
     });
   /**
-   * @description Start a peer (add to live WG interface, status → UP). Requires peer to be enabled and server to be running.
+   * @description Запустить пир (добавить в активный интерфейс WG, статус → UP). Требует чтобы пир был включён и сервер запущен.
    *
    * @tags WireGuard Peers
    * @name StartPeer
-   * @summary Start peer
+   * @summary Запустить пир
    * @request POST:/api/wg/peers/{id}/start
    * @secure
    */
   startPeer = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/start`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Stop a peer (remove from live WG interface, status → DOWN).
+   * @description Остановить пир (удалить из активного интерфейса WG, статус → DOWN).
    *
    * @tags WireGuard Peers
    * @name StopPeer
-   * @summary Stop peer
+   * @summary Остановить пир
    * @request POST:/api/wg/peers/{id}/stop
    * @secure
    */
   stopPeer = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/stop`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Assign a peer to a user.
+   * @description Назначить пир пользователю.
    *
    * @tags WireGuard Peers
    * @name AssignPeer
-   * @summary Assign peer to user
+   * @summary Назначить пир пользователю
    * @request POST:/api/wg/peers/{id}/assign
    * @secure
    */
   assignPeer = (
-    { id, ...query }: AssignPeerParams,
+    id: string,
+    query: {
+      userId: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/assign`,
       method: "POST",
       params: query,
@@ -779,101 +820,109 @@ export class Api<
       ...params,
     });
   /**
-   * @description Revoke peer from its current user.
+   * @description Отозвать пир у текущего пользователя.
    *
    * @tags WireGuard Peers
    * @name RevokePeer
-   * @summary Revoke peer from user
+   * @summary Отозвать пир у пользователя
    * @request POST:/api/wg/peers/{id}/revoke
    * @secure
    */
   revokePeer = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/revoke`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Rotate (regenerate) preshared key for a peer.
+   * @description Ротировать (перегенерировать) предварительно общий ключ для пира.
    *
    * @tags WireGuard Peers
    * @name RotatePresharedKey
-   * @summary Rotate preshared key
+   * @summary Ротировать предварительно общий ключ
    * @request POST:/api/wg/peers/{id}/rotate-psk
    * @secure
    */
   rotatePresharedKey = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/rotate-psk`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Remove preshared key from a peer.
+   * @description Удалить предварительно общий ключ у пира.
    *
    * @tags WireGuard Peers
    * @name RemovePresharedKey
-   * @summary Remove preshared key
+   * @summary Удалить предварительно общий ключ
    * @request DELETE:/api/wg/peers/{id}/psk
    * @secure
    */
   removePresharedKey = (id: string, params: RequestParams = {}) =>
-    this.request<WgPeerDto, any>({
+    this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/psk`,
       method: "DELETE",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Download the WireGuard client .conf file for this peer. wg:peer:view can access any peer; wg:peer:own only their own.
+   * @description Скачать файл конфигурации WireGuard .conf для данного пира. wg:peer:view может обращаться к любому пиру; wg:peer:own только к своим.
    *
    * @tags WireGuard Peers
    * @name GetPeerConfig
-   * @summary Get peer config file
+   * @summary Получить файл конфигурации пира
    * @request GET:/api/wg/peers/{id}/config
    * @secure
    */
   getPeerConfig = (id: string, params: RequestParams = {}) =>
-    this.request<Base64URLString, any>({
+    this.request<Base64URLString>({
       url: `/api/wg/peers/${id}/config`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Get QR code PNG image for the client config. wg:peer:view can access any peer; wg:peer:own only their own. Returns base64-encoded PNG data URL.
+   * @description Получить PNG изображение QR-кода для клиентской конфигурации. wg:peer:view может обращаться к любому пиру; wg:peer:own только к своим. Возвращает base64-кодированный PNG data URL.
    *
    * @tags WireGuard Peers
    * @name GetPeerQrCode
-   * @summary Get peer QR code
+   * @summary Получить QR-код пира
    * @request GET:/api/wg/peers/{id}/qr
    * @secure
    */
   getPeerQrCode = (id: string, params: RequestParams = {}) =>
-    this.request<
-      {
-        dataUrl: string;
-      },
-      any
-    >({
+    this.request<{
+      dataUrl: string;
+    }>({
       url: `/api/wg/peers/${id}/qr`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description List all WireGuard servers with optional filters. Returns all servers for wg:server:view, own servers for wg:server:own.
+   * @description Список всех WireGuard-серверов с опциональными фильтрами. Возвращает все серверы для wg:server:view, собственные серверы для wg:server:own.
    *
    * @tags WireGuard Servers
    * @name GetServers
-   * @summary Get all servers
+   * @summary Получить все серверы
    * @request GET:/api/wg/servers
    * @secure
    */
-  getServers = (query: GetServersParams, params: RequestParams = {}) =>
-    this.request<IWgServerListDto, any>({
+  getServers = (
+    query?: {
+      /** @format double */
+      offset?: number;
+      /** @format double */
+      limit?: number;
+      query?: string;
+      status?: EWgServerStatus;
+      enabled?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<IWgServerListDto>({
       url: `/api/wg/servers`,
       method: "GET",
       params: query,
@@ -881,11 +930,11 @@ export class Api<
       ...params,
     });
   /**
-   * @description Create a new WireGuard server. Keys are generated automatically. The config file is written to the WG config directory.
+   * @description Создать новый WireGuard-сервер. Ключи генерируются автоматически. Конфигурационный файл записывается в директорию конфигов WG.
    *
    * @tags WireGuard Servers
    * @name CreateServer
-   * @summary Create server
+   * @summary Создать сервер
    * @request POST:/api/wg/servers
    * @secure
    */
@@ -893,7 +942,7 @@ export class Api<
     data: IWgServerCreateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers`,
       method: "POST",
       data: data,
@@ -902,19 +951,21 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get server options for dropdowns (id + name only). Returns all options for wg:server:view, own options for wg:server:own.
+   * @description Получить варианты серверов для выпадающих списков (только id + name). Возвращает все варианты для wg:server:view, собственные для wg:server:own.
    *
    * @tags WireGuard Servers
    * @name GetServerOptions
-   * @summary Get server options
+   * @summary Получить варианты серверов
    * @request GET:/api/wg/servers/options
    * @secure
    */
   getServerOptions = (
-    query: GetServerOptionsParams,
+    query?: {
+      query?: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<IWgServerOptionsDto, any>({
+    this.request<IWgServerOptionsDto>({
       url: `/api/wg/servers/options`,
       method: "GET",
       params: query,
@@ -922,27 +973,27 @@ export class Api<
       ...params,
     });
   /**
-   * @description Get a WireGuard server by ID. Ownership check for wg:server:own users.
+   * @description Получить WireGuard-сервер по ID. Проверка владельца для пользователей с wg:server:own.
    *
    * @tags WireGuard Servers
    * @name GetServer
-   * @summary Get server by ID
+   * @summary Получить сервер по ID
    * @request GET:/api/wg/servers/{id}
    * @secure
    */
   getServer = (id: string, params: RequestParams = {}) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers/${id}`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Update a WireGuard server. Config file is rewritten automatically.
+   * @description Обновить WireGuard-сервер. Конфигурационный файл перезаписывается автоматически.
    *
    * @tags WireGuard Servers
    * @name UpdateServer
-   * @summary Update server
+   * @summary Обновить сервер
    * @request PATCH:/api/wg/servers/{id}
    * @secure
    */
@@ -951,7 +1002,7 @@ export class Api<
     data: IWgServerUpdateRequestDto,
     params: RequestParams = {},
   ) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers/${id}`,
       method: "PATCH",
       data: data,
@@ -960,99 +1011,104 @@ export class Api<
       ...params,
     });
   /**
-   * @description Delete a WireGuard server. Stops the interface and removes the config file.
+   * @description Удалить WireGuard-сервер. Останавливает интерфейс и удаляет конфигурационный файл.
    *
    * @tags WireGuard Servers
    * @name DeleteServer
-   * @summary Delete server
+   * @summary Удалить сервер
    * @request DELETE:/api/wg/servers/{id}
    * @secure
    */
   deleteServer = (id: string, params: RequestParams = {}) =>
-    this.request<boolean, any>({
+    this.request<boolean>({
       url: `/api/wg/servers/${id}`,
       method: "DELETE",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Start a WireGuard interface (wg-quick up).
+   * @description Запустить WireGuard-интерфейс (wg-quick up).
    *
    * @tags WireGuard Servers
    * @name StartServer
-   * @summary Start server
+   * @summary Запустить сервер
    * @request POST:/api/wg/servers/{id}/start
    * @secure
    */
   startServer = (id: string, params: RequestParams = {}) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/start`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Stop a WireGuard interface (wg-quick down).
+   * @description Остановить WireGuard-интерфейс (wg-quick down).
    *
    * @tags WireGuard Servers
    * @name StopServer
-   * @summary Stop server
+   * @summary Остановить сервер
    * @request POST:/api/wg/servers/{id}/stop
    * @secure
    */
   stopServer = (id: string, params: RequestParams = {}) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/stop`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Restart a WireGuard interface.
+   * @description Перезапустить WireGuard-интерфейс.
    *
    * @tags WireGuard Servers
    * @name RestartServer
-   * @summary Restart server
+   * @summary Перезапустить сервер
    * @request POST:/api/wg/servers/{id}/restart
    * @secure
    */
   restartServer = (id: string, params: RequestParams = {}) =>
-    this.request<WgServerDto, any>({
+    this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/restart`,
       method: "POST",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Get real-time status of a WireGuard interface. Queries the actual wg interface, not cached DB status.
+   * @description Получить статус WireGuard-интерфейса в реальном времени. Запрашивает реальный wg-интерфейс, а не кэшированный статус из БД.
    *
    * @tags WireGuard Servers
    * @name GetServerStatus
-   * @summary Get live server status
+   * @summary Получить актуальный статус сервера
    * @request GET:/api/wg/servers/{id}/status
    * @secure
    */
   getServerStatus = (id: string, params: RequestParams = {}) =>
-    this.request<IWgServerStatusDto, any>({
+    this.request<IWgServerStatusDto>({
       url: `/api/wg/servers/${id}/status`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Aggregated traffic + speed across all servers and all peers. wg:stats:view — full overview; wg:server:own — own servers only; wg:peer:own — own peers only.
+   * @description Агрегированный трафик + скорость по всем серверам и всем пирам. wg:stats:view — полная сводка; wg:server:own — только свои серверы; wg:peer:own — только свои пиры.
    *
    * @tags WireGuard Statistics
    * @name GetOverviewStats
-   * @summary Overview stats
+   * @summary Сводная статистика
    * @request GET:/api/wg/statistics/overview
    * @secure
    */
   getOverviewStats = (
-    query: GetOverviewStatsParams,
+    query?: {
+      /** Строка ISO даты (по умолчанию: 24ч назад) */
+      from?: string;
+      /** Строка ISO даты (по умолчанию: сейчас) */
+      to?: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<IWgOverviewStatsResponse, any>({
+    this.request<IWgOverviewStatsResponse>({
       url: `/api/wg/statistics/overview`,
       method: "GET",
       params: query,
@@ -1060,19 +1116,27 @@ export class Api<
       ...params,
     });
   /**
-   * @description Aggregated traffic + speed for a specific server (all its peers). Optionally filter by a single peer via peerId query param.
+   * @description Агрегированный трафик + скорость для конкретного сервера (все его пиры). Опционально фильтровать по одному пиру через параметр peerId.
    *
    * @tags WireGuard Statistics
    * @name GetServerStats
-   * @summary Server stats
+   * @summary Статистика сервера
    * @request GET:/api/wg/statistics/servers/{serverId}
    * @secure
    */
   getServerStats = (
-    { serverId, ...query }: GetServerStatsParams,
+    serverId: string,
+    query?: {
+      /** Строка ISO даты (по умолчанию: 24ч назад) */
+      from?: string;
+      /** Строка ISO даты (по умолчанию: сейчас) */
+      to?: string;
+      /** Опциональный ID пира для фильтрации */
+      peerId?: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<IWgOverviewStatsResponse, any>({
+    this.request<IWgOverviewStatsResponse>({
       url: `/api/wg/statistics/servers/${serverId}`,
       method: "GET",
       params: query,
@@ -1080,19 +1144,25 @@ export class Api<
       ...params,
     });
   /**
-   * @description Aggregated traffic + speed for a specific peer. wg:stats:view can view any peer; wg:peer:own only their own.
+   * @description Агрегированный трафик + скорость для конкретного пира. wg:stats:view может просматривать любой пир; wg:peer:own только свои.
    *
    * @tags WireGuard Statistics
    * @name GetPeerStats
-   * @summary Peer stats
+   * @summary Статистика пира
    * @request GET:/api/wg/statistics/peers/{peerId}
    * @secure
    */
   getPeerStats = (
-    { peerId, ...query }: GetPeerStatsParams,
+    peerId: string,
+    query?: {
+      /** Строка ISO даты (по умолчанию: 24ч назад) */
+      from?: string;
+      /** Строка ISO даты (по умолчанию: сейчас) */
+      to?: string;
+    },
     params: RequestParams = {},
   ) =>
-    this.request<IWgOverviewStatsResponse, any>({
+    this.request<IWgOverviewStatsResponse>({
       url: `/api/wg/statistics/peers/${peerId}`,
       method: "GET",
       params: query,
@@ -1100,48 +1170,48 @@ export class Api<
       ...params,
     });
   /**
-   * @description Current real-time stats across all servers — use for initial page load before WebSocket delivers the first wg:stats:overview event.
+   * @description Текущая статистика в реальном времени по всем серверам — используется при начальной загрузке страницы до получения первого события wg:stats:overview через WebSocket.
    *
    * @tags WireGuard Statistics
    * @name GetOverviewCurrent
-   * @summary Current overview stats
+   * @summary Текущая сводная статистика
    * @request GET:/api/wg/statistics/overview/current
    * @secure
    */
   getOverviewCurrent = (params: RequestParams = {}) =>
-    this.request<WgOverviewStatsPayload | null, any>({
+    this.request<WgOverviewStatsPayload | null>({
       url: `/api/wg/statistics/overview/current`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Current real-time stats for a specific server — use for initial page load before WebSocket delivers the first wg:server:stats event.
+   * @description Текущая статистика в реальном времени для конкретного сервера — используется при начальной загрузке страницы до получения первого события wg:server:stats через WebSocket.
    *
    * @tags WireGuard Statistics
    * @name GetServerCurrent
-   * @summary Current server stats
+   * @summary Текущая статистика сервера
    * @request GET:/api/wg/statistics/servers/{serverId}/current
    * @secure
    */
   getServerCurrent = (serverId: string, params: RequestParams = {}) =>
-    this.request<WgServerStatsPayload | null, any>({
+    this.request<WgServerStatsPayload | null>({
       url: `/api/wg/statistics/servers/${serverId}/current`,
       method: "GET",
       responseType: "json",
       ...params,
     });
   /**
-   * @description Current real-time stats for a specific peer — use for initial page load before WebSocket delivers the first wg:peer:stats event.
+   * @description Текущая статистика в реальном времени для конкретного пира — используется при начальной загрузке страницы до получения первого события wg:peer:stats через WebSocket.
    *
    * @tags WireGuard Statistics
    * @name GetPeerCurrent
-   * @summary Current peer stats
+   * @summary Текущая статистика пира
    * @request GET:/api/wg/statistics/peers/{peerId}/current
    * @secure
    */
   getPeerCurrent = (peerId: string, params: RequestParams = {}) =>
-    this.request<WgPeerStatsPayload | null, any>({
+    this.request<WgPeerStatsPayload | null>({
       url: `/api/wg/statistics/peers/${peerId}/current`,
       method: "GET",
       responseType: "json",

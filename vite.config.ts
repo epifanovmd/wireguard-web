@@ -38,7 +38,7 @@ export default defineConfig({
       "~@common": path.resolve(projectRootDir, "src/common"),
       "~@components": path.resolve(projectRootDir, "src/components"),
       "~@models": path.resolve(projectRootDir, "src/models"),
-      "~@service": path.resolve(projectRootDir, "src/service"),
+      "~@socket": path.resolve(projectRootDir, "src/socket"),
       "~@store": path.resolve(projectRootDir, "src/store"),
       "~@theme": path.resolve(projectRootDir, "src/theme"),
     },

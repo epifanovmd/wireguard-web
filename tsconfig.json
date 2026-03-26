@@ -4,31 +4,31 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "types": ["vite/client", "reflect-metadata"],
-    // Custom
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+
+    "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "noImplicitReturns": true,
-    "preserveSymlinks": true,
-    "removeComments": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true,
+    "resolveJsonModule": true,
+
+    "noImplicitReturns": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
+
+    "sourceMap": true,
+    "removeComments": true,
+
     "paths": {
       "~@core": ["./src/core"],
       "~@core/*": ["./src/core/*"],
@@ -40,18 +40,14 @@
       "~@components/*": ["./src/components/*"],
       "~@models": ["./src/models"],
       "~@models/*": ["./src/models/*"],
-      "~@service": ["./src/service"],
-      "~@service/*": ["./src/service/*"],
+      "~@socket": ["./src/socket"],
+      "~@socket/*": ["./src/socket/*"],
       "~@store": ["./src/store"],
       "~@store/*": ["./src/store/*"],
       "~@theme": ["./src/theme"],
-      "~@theme/*": ["./src/theme/*"],
+      "~@theme/*": ["./src/theme/*"]
     }
   },
   "include": ["./src/**/*"],
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist"
-  ]
+  "exclude": ["node_modules", "build", "dist"]
 }

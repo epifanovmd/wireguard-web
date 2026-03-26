@@ -81,7 +81,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async assignPeer(id: string, userId: string) {
-    const res = await this._apiService.assignPeer({ id, userId });
+    const res = await this._apiService.assignPeer(id, { userId });
 
     if (res.data) {
       this.peerHolder.setData(res.data);

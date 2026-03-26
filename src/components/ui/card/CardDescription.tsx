@@ -12,6 +12,7 @@ const CardDescription = React.forwardRef<
     {...props}
   />
 ));
+
 CardDescription.displayName = "CardDescription";
 
 export { CardDescription };

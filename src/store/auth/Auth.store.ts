@@ -1,4 +1,3 @@
-import { createEnumModelBase } from "@force-dev/utils";
 import { computed, makeAutoObservable } from "mobx";
 
 import { IApiService } from "~@api";
@@ -12,6 +11,7 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "~@api/api-gen/data-contracts";
+import { createEnumModelBase } from "~@common/store/models";
 import { IAuthSessionService } from "~@core/auth";
 import { EntityHolder } from "~@core/holders";
 import {

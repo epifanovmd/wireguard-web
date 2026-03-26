@@ -1,5 +1,6 @@
-import { disposer, InitializeDispose } from "@force-dev/utils";
 import { makeAutoObservable, reaction } from "mobx";
+
+import { disposer, InitializeDispose } from "~@common/ioc";
 
 import { router } from "../../router";
 import { ISocketTransport } from "../../socket";

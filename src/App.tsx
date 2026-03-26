@@ -1,7 +1,7 @@
-import { disposer } from "@force-dev/utils";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode, useEffect } from "react";
 
+import { disposer } from "~@common/ioc";
 import { ModalProvider, TooltipProvider } from "~@components/ui";
 import { ToastProvider } from "~@core/notifications";
 import { useAppDataStore } from "~@store";
@@ -14,6 +14,7 @@ export const App = () => {
 
   useEffect(() => {
     const dispose = initialize();
+
     return () => {
       disposer(dispose);
     };

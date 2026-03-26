@@ -1,13 +1,18 @@
-import { generateApiService } from "@force-dev/utils/node";
-import path from "path";
+import * as path from "path";
+import { generateApi } from "swagger-typescript-api";
 
 const projectRootDir = path.resolve(import.meta.dirname);
 
-generateApiService({
+generateApi({
+  url: "https://wireguard.epifanov-dev.ru/api-docs/swagger.json",
   output: path.resolve(projectRootDir, "../src/api/api-gen"),
-  url: "https://wireguard.epifanov-dev.ru/api-docs/swagger.json", // URL вашего Swagger JSON
+  httpClientType: "axios",
+  templates: path.resolve(projectRootDir, "./api-templates"),
+  modular: true,
+  extractRequestBody: true,
+  cleanOutput: false,
 })
   .then(() => {
-    console.log("API успешно сгенерировано");
+    console.log("API generated successfully");
   })
   .catch(e => console.error(e));

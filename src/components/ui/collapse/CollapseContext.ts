@@ -16,6 +16,8 @@ export const CollapseContext = React.createContext<CollapseContextValue | null>(
 
 export const useCollapseContext = (): CollapseContextValue => {
   const ctx = React.useContext(CollapseContext);
+
   if (!ctx) throw new Error("Collapse compound components must be used within <Collapse>");
+
   return ctx;
 };

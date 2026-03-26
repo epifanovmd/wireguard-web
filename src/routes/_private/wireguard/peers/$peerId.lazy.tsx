@@ -6,6 +6,7 @@ import { PeerDetail } from "../../../../pages/wireguard/peers/PeerDetail";
 const Component = () => {
   const navigate = useNavigate();
   const { peerId } = useParams({ from: "/_private/wireguard/peers/$peerId" });
+
   return <PeerDetail peerId={peerId} onBack={() => navigate({ to: "/wireguard/peers" })} />;
 };
 
