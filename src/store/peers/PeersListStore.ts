@@ -3,7 +3,7 @@ import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
 } from "@api/api-gen/data-contracts";
-import { MutationHolder, PagedHolder } from "@core/holders";
+import { MutationHolder, PagedHolder } from "@common/store";
 import { PeerModel } from "@models";
 import { makeAutoObservable } from "mobx";
 

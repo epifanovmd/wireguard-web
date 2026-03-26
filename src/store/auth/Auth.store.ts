@@ -9,9 +9,9 @@ import {
   TSignUpRequestDto,
   UserDto,
 } from "@api/api-gen/data-contracts";
+import { EntityHolder } from "@common/store";
 import { createEnumModelBase } from "@common/store/models";
 import { IAuthSessionService } from "@core/auth";
-import { EntityHolder } from "@core/holders";
 import {
   canAccess,
   computeEffectivePermissions,

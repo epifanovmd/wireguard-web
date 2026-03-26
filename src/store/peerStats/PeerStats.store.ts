@@ -1,6 +1,6 @@
 import { IApiService } from "@api";
 import { formatter } from "@common";
-import { EntityHolder } from "@core/holders";
+import { EntityHolder } from "@common/store";
 import { StatsChartBase } from "@store/shared/StatsChartBase";
 import { subHours } from "date-fns";
 import { computed, makeObservable, runInAction } from "mobx";

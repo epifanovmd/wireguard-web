@@ -13,7 +13,7 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "@core/holders";
+} from "@common/store";
 import { PublicUserModel, UserModel } from "@models";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();

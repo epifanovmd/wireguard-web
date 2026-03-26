@@ -19,17 +19,20 @@ src/
 │   └── hooks/useApi.ts
 ├── common/                 # Shared infrastructure (NO business logic)
 │   ├── ioc/                # IoC: container, createServiceDecorator, iocHook, disposer, types
-│   ├── helpers/            # typeGuards, lambdaValue, enumValues, string, pluralizeHelper
+│   ├── helpers/            # typeGuards, lambdaValue, enumValues, string, pluralizeHelper,
+│   │                       # deepKeys, flatten, timeoutManager
 │   ├── slots/              # createSlot, useSlotProps (compound components)
-│   ├── store/models/       # DataModelBase, createEnumModelBase
-│   ├── hooks/              # usePasskyAuth
+│   ├── store/              # holders + models
+│   │   ├── holders/        # EntityHolder, PagedHolder, InfiniteHolder, CollectionHolder,
+│   │   │                   # MutationHolder, PollingHolder, CombinedHolder, HolderTypes
+│   │   └── models/         # DataModelBase, createEnumModelBase
+│   ├── hooks/              # usePasskyAuth, mergeRefs, useBoolean, useMergeCallback
 │   └── validations.ts      # Zod schemas
 ├── core/                   # Core services
 │   ├── auth/               # AuthTokenStore (localStorage), AuthSessionService (refresh dedup)
-│   ├── holders/            # EntityHolder, PagedHolder, InfiniteHolder, CollectionHolder,
-│   │                       # MutationHolder, PollingHolder, CombinedHolder, HolderTypes
 │   ├── permissions/        # hasPermission (wildcard), isAdminRole, canAccess
 │   ├── notifications/      # NotificationService, ToastProvider
+│   ├── theme/              # ThemeProvider (light/dark), ThemeContext, useTheme
 │   └── env.ts              # BASE_URL, SOCKET_BASE_URL from import.meta.env
 ├── socket/                 # Socket.IO layer
 │   ├── transport/          # SocketTransport (reconnect, EmitQueue, PersistentListeners)
@@ -47,7 +50,6 @@ src/
 ├── pages/                  # Route page components
 ├── routes/                 # TanStack file-based routes
 ├── hooks/                  # Custom hooks
-├── theme/                  # ThemeProvider (light/dark)
 ├── styles/                 # Tailwind + CSS variables
 ├── App.tsx                 # Root: providers + router
 ├── router.tsx              # TanStack config
@@ -57,7 +59,7 @@ src/
 ## Build (Vite 6)
 
 Plugins: TanStack Router (auto route generation), Tailwind CSS.
-Path aliases: `~@api`, `~@store`, `~@components`, `~@models`, `~@core`, `~@common`, `~@socket`, `~@theme`.
+Path aliases: `@api`, `@store`, `@components`, `@models`, `@core`, `@common`, `@socket` (без `~` префикса).
 Output: `dist/` (SPA). Target: ES2022.
 
 ## IoC (src/common/ioc/)
@@ -69,7 +71,7 @@ Internal DI infrastructure (replaced @force-dev/utils). Uses inversify under the
 - Constructor injection: `@IService() private svc: IService`
 - React hook: `iocHook(IService)` → `useService()`
 
-**Never import from @force-dev.** All infrastructure is in `~@common/`.
+**Never import from @force-dev.** All infrastructure is in `@common/`.
 
 ## Routing (TanStack React Router)
 
@@ -82,7 +84,7 @@ Guards: `beforeLoad()` в route файлах. `_private.tsx` проверяет 
 Stores — IoC singletons: `@IStoreService({ inSingleton: true })`.
 Используют `makeAutoObservable()` для реактивности.
 
-**Data holders** (src/core/holders/):
+**Data holders** (src/common/store/holders/):
 - `EntityHolder<T, TArgs>` — загрузка/refresh одной entity
 - `PagedHolder<T, TArgs>` — серверная пагинация (goToPage/nextPage/prevPage)
 - `InfiniteHolder<T, TArgs>` — бесконечная прокрутка (loadMore)
@@ -126,7 +128,7 @@ Events (Client → Server): `wg:subscribe:overview`, `wg:subscribe:server`, `wg:
 ## Theming
 
 CSS variables: `src/styles/light-theme.css`, `src/styles/dark-theme.css`.
-ThemeProvider: localStorage + `prefers-color-scheme`. `.dark` class на `<html>`.
+ThemeProvider (`src/core/theme/`): localStorage + `prefers-color-scheme`. `.dark` class на `<html>`.
 
 ## Environment
 

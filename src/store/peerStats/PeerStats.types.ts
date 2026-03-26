@@ -1,5 +1,5 @@
 import { createServiceDecorator } from "@common/ioc";
-import { EntityHolder } from "@core/holders";
+import { EntityHolder } from "@common/store";
 
 import {
   WgPeerActivePayload,

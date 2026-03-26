@@ -14,7 +14,7 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PollingHolder,
-} from "@core/holders";
+} from "@common/store";
 import { ServerModel } from "@models";
 
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();

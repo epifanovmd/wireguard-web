@@ -7,7 +7,7 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "@core/holders";
+} from "@common/store";
 import { PeerModel } from "@models";
 
 export type PeerListArgs = {

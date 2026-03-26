@@ -5,7 +5,7 @@ import {
   PublicUserDto,
   UserDto,
 } from "@api/api-gen/data-contracts";
-import { EntityHolder, MutationHolder, PagedHolder } from "@core/holders";
+import { EntityHolder, MutationHolder, PagedHolder } from "@common/store";
 import { PublicUserModel, UserModel } from "@models";
 import { makeAutoObservable } from "mobx";
 

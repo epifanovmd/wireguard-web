@@ -8,7 +8,7 @@ import {
   UserDto,
 } from "@api/api-gen/data-contracts";
 import { createServiceDecorator } from "@common/ioc";
-import { IEntityHolderResult, IHolderError } from "@core/holders";
+import { IEntityHolderResult, IHolderError } from "@common/store";
 import { ProfileModel } from "@models";
 
 export enum AuthStatus {

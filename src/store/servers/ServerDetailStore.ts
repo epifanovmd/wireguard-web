@@ -10,7 +10,7 @@ import {
   EntityHolder,
   MutationHolder,
   PollingHolder,
-} from "@core/holders";
+} from "@common/store";
 import { ServerModel } from "@models";
 import { makeAutoObservable } from "mobx";
 

@@ -11,7 +11,7 @@ import {
   IHolderError,
   IMutationHolderResult,
   MutationHolder,
-} from "@core/holders";
+} from "@common/store";
 import { PeerModel } from "@models";
 
 export const IPeerDataStore = createServiceDecorator<IPeerDataStore>();

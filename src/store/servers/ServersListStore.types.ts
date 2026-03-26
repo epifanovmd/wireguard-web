@@ -8,7 +8,7 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "@core/holders";
+} from "@common/store";
 import { ServerModel } from "@models";
 
 export const IServersListStore = createServiceDecorator<IServersListStore>();
