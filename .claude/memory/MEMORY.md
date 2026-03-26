@@ -4,7 +4,7 @@
 - [user_profile.md](user_profile.md) — Профиль пользователя, язык, предпочтения
 
 ## Project — Architecture
-- [project_architecture.md](project_architecture.md) — Vite, routing, state management, API, socket, theming, components, build
+- [project_architecture.md](project_architecture.md) — Full stack: IoC, API layer, holders, socket, auth, permissions, build
 
 ## Project — Auth & Permissions
 - [project_auth.md](project_auth.md) — Auth flow, JWT, token refresh, protected routes, passkeys, permissions

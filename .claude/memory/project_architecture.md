@@ -9,21 +9,35 @@ type: project
 ```
 src/
 ├── api/                    # REST API client
-│   ├── Api.service.ts      # Axios + JWT interceptors
+│   ├── Api.service.ts      # Axios instance, interceptors, instancePromise, QueryRace
+│   ├── Api.types.ts        # ApiError, ApiServiceResponse, IApiService
+│   ├── QueryRace.ts        # Cancels duplicate in-flight requests
 │   ├── api-gen/            # Auto-generated from Swagger (DO NOT EDIT)
-│   │   ├── Api.ts          # Generated API methods
-│   │   └── data-contracts.ts  # Enums, DTOs
-│   └── hooks/
-├── core/                   # Auth session, permissions, notifications
-│   ├── auth/AuthSessionService.ts, AuthTokenStore.ts
-│   ├── holders/            # EntityHolder, MutationHolder, PagedHolder
-│   ├── permissions/        # canAccess(), computeEffectivePermissions()
-│   └── env.ts              # VITE_* config
+│   │   ├── Api.ts          # Generated API methods (extends HttpClient)
+│   │   ├── data-contracts.ts  # Enums, DTOs, Params types
+│   │   └── http-client.ts  # Abstract HttpClient, ApiResponse, types
+│   └── hooks/useApi.ts
+├── common/                 # Shared infrastructure (NO business logic)
+│   ├── ioc/                # IoC: container, createServiceDecorator, iocHook, disposer, types
+│   ├── helpers/            # typeGuards, lambdaValue, enumValues, string, pluralizeHelper
+│   ├── slots/              # createSlot, useSlotProps (compound components)
+│   ├── store/models/       # DataModelBase, createEnumModelBase
+│   ├── hooks/              # usePasskyAuth
+│   └── validations.ts      # Zod schemas
+├── core/                   # Core services
+│   ├── auth/               # AuthTokenStore (localStorage), AuthSessionService (refresh dedup)
+│   ├── holders/            # EntityHolder, PagedHolder, InfiniteHolder, CollectionHolder,
+│   │                       # MutationHolder, PollingHolder, CombinedHolder, HolderTypes
+│   ├── permissions/        # hasPermission (wildcard), isAdminRole, canAccess
+│   ├── notifications/      # NotificationService, ToastProvider
+│   └── env.ts              # BASE_URL, SOCKET_BASE_URL from import.meta.env
 ├── socket/                 # Socket.IO layer
-│   ├── transport/          # socketTransport (reconnect, emit queue, persistent listeners)
-│   └── wg/                 # WG socket service + hooks
+│   ├── transport/          # SocketTransport (reconnect, EmitQueue, PersistentListeners)
+│   ├── wg/                 # WgSocketService + hooks
+│   ├── events/             # Typed server/client events
+│   └── hooks/              # useSocketStatus
 ├── store/                  # MobX stores (IoC singletons)
-├── models/                 # View models (computed wrappers over DTOs)
+├── models/                 # DataModelBase subclasses (computed wrappers over DTOs)
 ├── components/
 │   ├── ui/                 # 97+ Radix + Tailwind components
 │   ├── layouts/            # AuthLayout, PageLayout, PageHeader
@@ -33,7 +47,6 @@ src/
 ├── pages/                  # Route page components
 ├── routes/                 # TanStack file-based routes
 ├── hooks/                  # Custom hooks
-├── common/                 # Helpers (formatters, download, regex)
 ├── theme/                  # ThemeProvider (light/dark)
 ├── styles/                 # Tailwind + CSS variables
 ├── App.tsx                 # Root: providers + router
@@ -44,26 +57,23 @@ src/
 ## Build (Vite 6)
 
 Plugins: TanStack Router (auto route generation), Tailwind CSS.
-Path aliases: `~@api`, `~@store`, `~@components`, `~@models`, `~@core`, `~@service`, `~@theme`.
+Path aliases: `~@api`, `~@store`, `~@components`, `~@models`, `~@core`, `~@common`, `~@socket`, `~@theme`.
 Output: `dist/` (SPA). Target: ES2022.
+
+## IoC (src/common/ioc/)
+
+Internal DI infrastructure (replaced @force-dev/utils). Uses inversify under the hood.
+
+- `createServiceDecorator<IService>()` — creates type + decorator
+- Class: `@IService({ inSingleton: true })`
+- Constructor injection: `@IService() private svc: IService`
+- React hook: `iocHook(IService)` → `useService()`
+
+**Never import from @force-dev.** All infrastructure is in `~@common/`.
 
 ## Routing (TanStack React Router)
 
 File-based из `src/routes/`. `routeTree.gen.ts` генерируется автоматически — **НЕ редактировать**.
-
-```
-/ (public)
-├── /auth/signIn, /auth/signUp, /auth/recovery-password
-├── /reset-password
-_private/ (protected — redirect если !auth.isAuthenticated)
-├── / (dashboard)
-├── /profile, /settings
-├── /users, /users/$userId
-├── /wireguard (permission check: any WG permission)
-│   ├── /servers, /servers/$serverId
-│   ├── /peers, /peers/$peerId
-│   └── /stats
-```
 
 Guards: `beforeLoad()` в route файлах. `_private.tsx` проверяет `auth.isAuthenticated`.
 
@@ -72,47 +82,56 @@ Guards: `beforeLoad()` в route файлах. `_private.tsx` проверяет 
 Stores — IoC singletons: `@IStoreService({ inSingleton: true })`.
 Используют `makeAutoObservable()` для реактивности.
 
-**Data holders** (@force-dev/utils):
-- `EntityHolder<T>` — загрузка/refresh одной entity, error handling
-- `PagedHolder<T>` — пагинация, фильтры, lazy-load
-- `MutationHolder<T>` — оптимистичные updates, loading state
+**Data holders** (src/core/holders/):
+- `EntityHolder<T, TArgs>` — загрузка/refresh одной entity
+- `PagedHolder<T, TArgs>` — серверная пагинация (goToPage/nextPage/prevPage)
+- `InfiniteHolder<T, TArgs>` — бесконечная прокрутка (loadMore)
+- `CollectionHolder<T, TArgs>` — плоский список
+- `MutationHolder<TArgs, TData>` — write операции (execute/run)
+- `PollingHolder<T, TArgs>` — авто-поллинг (startPolling/stopPolling)
+- `CombinedHolder` — агрегирует статусы нескольких holders
 
-## API Layer (Axios)
+## API Layer
 
-`src/api/Api.service.ts` — extends auto-generated `Api` class.
-- Base URL: `VITE_BASE_URL` (из .env)
-- Request interceptor: `Authorization: Bearer {token}`
-- Response interceptor: 401 → refresh + retry, 500 → toast
+`src/api/Api.service.ts` — implements abstract `instancePromise()` from generated HttpClient.
+
+- **http-client.ts** (generated) — abstract HttpClient, `ApiResponse<R, E>` = `{ data?, error? }`
+- **ApiServiceResponse<R>** — extends with `status`, `axiosError`, `axiosResponse`, `isCanceled`
+- Request interceptor: `ensureFreshToken()` + `Authorization: Bearer`
+- Response interceptor: wraps to ApiResponse, 401 → refresh + retry, network/server → toast
+- `QueryRace` — cancels previous request to same endpoint
 
 **`src/api/api-gen/`** — auto-generated from Swagger. **НЕ редактировать.** Regenerate: `yarn generate:api`.
+Templates: `scripts/api-templates/`. Options: `extractRequestParams: true`, `extractRequestBody: true`, `modular: true`.
 
 ## Socket.IO
 
 `src/socket/transport/socketTransport.ts`:
-- Auto-reconnect (exponential backoff 3s–30s)
-- Token sync при каждом refresh
-- Persistent listeners (survive reconnections)
-- Emit queue (queue until connected)
+- Auto-reconnect (3s–30s backoff)
+- Token sync via MobX reaction
+- PersistentListeners (survive reconnections)
+- EmitQueue (buffer until connected)
 - Visibility/online events: reconnect при возврате на вкладку
 
 Events (Server → Client): `wg:server:stats`, `wg:peer:stats`, `wg:stats:overview`, `wg:peer:active`, `wg:server:status`, `wg:peer:status`
 Events (Client → Server): `wg:subscribe:overview`, `wg:subscribe:server`, `wg:subscribe:peer`
+
+## Permissions
+
+`src/core/permissions/` — pure functions:
+- `hasPermission(perms, required)` — wildcard hierarchy ("chat:view" → "chat:*" → "*")
+- `canAccess(roles, perms, required)` — admin bypass OR permission check
+- `computeEffectivePermissions(rolePerms, directPerms)` — union + dedup
 
 ## Theming
 
 CSS variables: `src/styles/light-theme.css`, `src/styles/dark-theme.css`.
 ThemeProvider: localStorage + `prefers-color-scheme`. `.dark` class на `<html>`.
 
-## Component Library
-
-97+ компонентов в `src/components/ui/` на Radix UI + Tailwind.
-Button, Card, Input, Modal, Tabs, Table, Select, Popover, Pagination, Spinner, etc.
-Form fields интегрированы с React Hook Form.
-
 ## Environment
 
 ```
-VITE_BASE_URL          — API endpoint (https://...)
+VITE_BASE_URL          — API endpoint
 VITE_SOCKET_BASE_URL   — WebSocket endpoint
 VITE_APP_NAME          — App title
 ```
