@@ -53,7 +53,7 @@ export const CreateUserModal: FC<CreateUserModalProps> = ({
       }
 
       if (res.data) {
-        await api.setPrivileges(res.data.id, {
+        await api.setPrivileges({ id: res.data.id }, {
           roles: [data.role],
           permissions,
         });

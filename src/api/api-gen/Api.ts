@@ -12,8 +12,32 @@
 
 import {
   ApiResponseDto,
+  AssignPeerParams,
   Base64URLString,
-  EWgServerStatus,
+  CreatePeerParams,
+  DeletePeerParams,
+  DeleteProfileParams,
+  DeleteServerParams,
+  DeleteUserParams,
+  GetOverviewStatsParams,
+  GetPeerConfigParams,
+  GetPeerCurrentParams,
+  GetPeerParams,
+  GetPeerQrCodeParams,
+  GetPeersOptionsParams,
+  GetPeersParams,
+  GetPeerStatsParams,
+  GetProfileByIdParams,
+  GetProfilesParams,
+  GetServerCurrentParams,
+  GetServerOptionsParams,
+  GetServerParams,
+  GetServersParams,
+  GetServerStatsParams,
+  GetServerStatusParams,
+  GetUserByIdParams,
+  GetUserOptionsParams,
+  GetUsersParams,
   IGenerateAuthenticationOptionsRequestDto,
   IProfileListDto,
   IProfileUpdateRequestDto,
@@ -48,8 +72,23 @@ import {
   PublicKeyCredentialRequestOptionsJSON,
   PublicProfileDto,
   RefreshPayload,
+  RemovePresharedKeyParams,
+  RestartServerParams,
+  RevokePeerParams,
+  RotatePresharedKeyParams,
+  SetPrivilegesParams,
+  SetRolePermissionsParams,
+  StartPeerParams,
+  StartServerParams,
+  StopPeerParams,
+  StopServerParams,
   TSignUpRequestDto,
+  UpdatePeerParams,
+  UpdateProfileParams,
+  UpdateServerParams,
+  UpdateUserParams,
   UserDto,
+  VerifyEmailParams,
   WgOverviewStatsPayload,
   WgPeerDto,
   WgPeerStatsPayload,
@@ -121,21 +160,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/profile/all
    * @secure
    */
-  getProfiles = (
-    query?: {
-      /**
-       * Смещение для пагинации
-       * @format double
-       */
-      offset?: number;
-      /**
-       * Лимит количества возвращаемых профилей
-       * @format double
-       */
-      limit?: number;
-    },
-    params: RequestParams = {},
-  ) =>
+  getProfiles = (query: GetProfilesParams, params: RequestParams = {}) =>
     this.request<IProfileListDto>({
       url: `/api/profile/all`,
       method: "GET",
@@ -152,7 +177,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/profile/{userId}
    * @secure
    */
-  getProfileById = (userId: string, params: RequestParams = {}) =>
+  getProfileById = (
+    { userId, ...query }: GetProfileByIdParams,
+    params: RequestParams = {},
+  ) =>
     this.request<PublicProfileDto>({
       url: `/api/profile/${userId}`,
       method: "GET",
@@ -169,7 +197,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   updateProfile = (
-    userId: string,
+    { userId, ...query }: UpdateProfileParams,
     data: IProfileUpdateRequestDto,
     params: RequestParams = {},
   ) =>
@@ -190,7 +218,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request DELETE:/api/profile/delete/{userId}
    * @secure
    */
-  deleteProfile = (userId: string, params: RequestParams = {}) =>
+  deleteProfile = (
+    { userId, ...query }: DeleteProfileParams,
+    params: RequestParams = {},
+  ) =>
     this.request<Base64URLString>({
       url: `/api/profile/delete/${userId}`,
       method: "DELETE",
@@ -223,7 +254,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   setRolePermissions = (
-    id: string,
+    { id, ...query }: SetRolePermissionsParams,
     data: IRolePermissionsRequestDto,
     params: RequestParams = {},
   ) =>
@@ -294,23 +325,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/user/all
    * @secure
    */
-  getUsers = (
-    query?: {
-      /**
-       * Смещение для пагинации
-       * @format double
-       */
-      offset?: number;
-      /**
-       * Лимит количества возвращаемых пользователей
-       * @format double
-       */
-      limit?: number;
-      /** Поиск по email */
-      query?: string;
-    },
-    params: RequestParams = {},
-  ) =>
+  getUsers = (query: GetUsersParams, params: RequestParams = {}) =>
     this.request<IUserListDto>({
       url: `/api/user/all`,
       method: "GET",
@@ -327,13 +342,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/user/options
    * @secure
    */
-  getUserOptions = (
-    query?: {
-      /** Поиск по email, имени или фамилии */
-      query?: string;
-    },
-    params: RequestParams = {},
-  ) =>
+  getUserOptions = (query: GetUserOptionsParams, params: RequestParams = {}) =>
     this.request<IUserOptionsDto>({
       url: `/api/user/options`,
       method: "GET",
@@ -350,7 +359,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/user/{id}
    * @secure
    */
-  getUserById = (id: string, params: RequestParams = {}) =>
+  getUserById = (
+    { id, ...query }: GetUserByIdParams,
+    params: RequestParams = {},
+  ) =>
     this.request<UserDto>({
       url: `/api/user/${id}`,
       method: "GET",
@@ -367,7 +379,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   setPrivileges = (
-    id: string,
+    { id, ...query }: SetPrivilegesParams,
     data: IUserPrivilegesRequestDto,
     params: RequestParams = {},
   ) =>
@@ -404,7 +416,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/user/verifyEmail/{code}
    * @secure
    */
-  verifyEmail = (code: string, params: RequestParams = {}) =>
+  verifyEmail = (
+    { code, ...query }: VerifyEmailParams,
+    params: RequestParams = {},
+  ) =>
     this.request<ApiResponseDto>({
       url: `/api/user/verifyEmail/${code}`,
       method: "GET",
@@ -421,7 +436,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   updateUser = (
-    id: string,
+    { id, ...query }: UpdateUserParams,
     data: IUserUpdateRequestDto,
     params: RequestParams = {},
   ) =>
@@ -460,7 +475,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request DELETE:/api/user/delete/{id}
    * @secure
    */
-  deleteUser = (id: string, params: RequestParams = {}) =>
+  deleteUser = (
+    { id, ...query }: DeleteUserParams,
+    params: RequestParams = {},
+  ) =>
     this.request<boolean>({
       url: `/api/user/delete/${id}`,
       method: "DELETE",
@@ -644,20 +662,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/peers
    * @secure
    */
-  getPeers = (
-    query?: {
-      /** @format double */
-      offset?: number;
-      /** @format double */
-      limit?: number;
-      query?: string;
-      enabled?: boolean;
-      status?: EWgServerStatus;
-      serverId?: string;
-      userId?: string;
-    },
-    params: RequestParams = {},
-  ) =>
+  getPeers = (query: GetPeersParams, params: RequestParams = {}) =>
     this.request<IWgPeerListDto>({
       url: `/api/wg/peers`,
       method: "GET",
@@ -675,10 +680,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   getPeersOptions = (
-    query?: {
-      serverId?: string;
-      query?: string;
-    },
+    query: GetPeersOptionsParams,
     params: RequestParams = {},
   ) =>
     this.request<IWgPeerOptionsDto>({
@@ -697,7 +699,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/peers/{id}
    * @secure
    */
-  getPeer = (id: string, params: RequestParams = {}) =>
+  getPeer = ({ id, ...query }: GetPeerParams, params: RequestParams = {}) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}`,
       method: "GET",
@@ -714,7 +716,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   updatePeer = (
-    id: string,
+    { id, ...query }: UpdatePeerParams,
     data: IWgPeerUpdateRequestDto,
     params: RequestParams = {},
   ) =>
@@ -735,7 +737,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request DELETE:/api/wg/peers/{id}
    * @secure
    */
-  deletePeer = (id: string, params: RequestParams = {}) =>
+  deletePeer = (
+    { id, ...query }: DeletePeerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<boolean>({
       url: `/api/wg/peers/${id}`,
       method: "DELETE",
@@ -752,7 +757,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   createPeer = (
-    serverId: string,
+    { serverId, ...query }: CreatePeerParams,
     data: IWgPeerCreateRequestDto,
     params: RequestParams = {},
   ) =>
@@ -773,7 +778,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/peers/{id}/start
    * @secure
    */
-  startPeer = (id: string, params: RequestParams = {}) =>
+  startPeer = ({ id, ...query }: StartPeerParams, params: RequestParams = {}) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/start`,
       method: "POST",
@@ -789,7 +794,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/peers/{id}/stop
    * @secure
    */
-  stopPeer = (id: string, params: RequestParams = {}) =>
+  stopPeer = ({ id, ...query }: StopPeerParams, params: RequestParams = {}) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/stop`,
       method: "POST",
@@ -806,10 +811,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   assignPeer = (
-    id: string,
-    query: {
-      userId: string;
-    },
+    { id, ...query }: AssignPeerParams,
     params: RequestParams = {},
   ) =>
     this.request<WgPeerDto>({
@@ -828,7 +830,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/peers/{id}/revoke
    * @secure
    */
-  revokePeer = (id: string, params: RequestParams = {}) =>
+  revokePeer = (
+    { id, ...query }: RevokePeerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/revoke`,
       method: "POST",
@@ -844,7 +849,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/peers/{id}/rotate-psk
    * @secure
    */
-  rotatePresharedKey = (id: string, params: RequestParams = {}) =>
+  rotatePresharedKey = (
+    { id, ...query }: RotatePresharedKeyParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/rotate-psk`,
       method: "POST",
@@ -860,7 +868,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request DELETE:/api/wg/peers/{id}/psk
    * @secure
    */
-  removePresharedKey = (id: string, params: RequestParams = {}) =>
+  removePresharedKey = (
+    { id, ...query }: RemovePresharedKeyParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgPeerDto>({
       url: `/api/wg/peers/${id}/psk`,
       method: "DELETE",
@@ -876,7 +887,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/peers/{id}/config
    * @secure
    */
-  getPeerConfig = (id: string, params: RequestParams = {}) =>
+  getPeerConfig = (
+    { id, ...query }: GetPeerConfigParams,
+    params: RequestParams = {},
+  ) =>
     this.request<Base64URLString>({
       url: `/api/wg/peers/${id}/config`,
       method: "GET",
@@ -892,7 +906,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/peers/{id}/qr
    * @secure
    */
-  getPeerQrCode = (id: string, params: RequestParams = {}) =>
+  getPeerQrCode = (
+    { id, ...query }: GetPeerQrCodeParams,
+    params: RequestParams = {},
+  ) =>
     this.request<{
       dataUrl: string;
     }>({
@@ -910,18 +927,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/servers
    * @secure
    */
-  getServers = (
-    query?: {
-      /** @format double */
-      offset?: number;
-      /** @format double */
-      limit?: number;
-      query?: string;
-      status?: EWgServerStatus;
-      enabled?: boolean;
-    },
-    params: RequestParams = {},
-  ) =>
+  getServers = (query: GetServersParams, params: RequestParams = {}) =>
     this.request<IWgServerListDto>({
       url: `/api/wg/servers`,
       method: "GET",
@@ -960,9 +966,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   getServerOptions = (
-    query?: {
-      query?: string;
-    },
+    query: GetServerOptionsParams,
     params: RequestParams = {},
   ) =>
     this.request<IWgServerOptionsDto>({
@@ -981,7 +985,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/servers/{id}
    * @secure
    */
-  getServer = (id: string, params: RequestParams = {}) =>
+  getServer = ({ id, ...query }: GetServerParams, params: RequestParams = {}) =>
     this.request<WgServerDto>({
       url: `/api/wg/servers/${id}`,
       method: "GET",
@@ -998,7 +1002,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   updateServer = (
-    id: string,
+    { id, ...query }: UpdateServerParams,
     data: IWgServerUpdateRequestDto,
     params: RequestParams = {},
   ) =>
@@ -1019,7 +1023,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request DELETE:/api/wg/servers/{id}
    * @secure
    */
-  deleteServer = (id: string, params: RequestParams = {}) =>
+  deleteServer = (
+    { id, ...query }: DeleteServerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<boolean>({
       url: `/api/wg/servers/${id}`,
       method: "DELETE",
@@ -1035,7 +1042,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/servers/{id}/start
    * @secure
    */
-  startServer = (id: string, params: RequestParams = {}) =>
+  startServer = (
+    { id, ...query }: StartServerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/start`,
       method: "POST",
@@ -1051,7 +1061,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/servers/{id}/stop
    * @secure
    */
-  stopServer = (id: string, params: RequestParams = {}) =>
+  stopServer = (
+    { id, ...query }: StopServerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/stop`,
       method: "POST",
@@ -1067,7 +1080,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request POST:/api/wg/servers/{id}/restart
    * @secure
    */
-  restartServer = (id: string, params: RequestParams = {}) =>
+  restartServer = (
+    { id, ...query }: RestartServerParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgServerDto>({
       url: `/api/wg/servers/${id}/restart`,
       method: "POST",
@@ -1083,7 +1099,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/servers/{id}/status
    * @secure
    */
-  getServerStatus = (id: string, params: RequestParams = {}) =>
+  getServerStatus = (
+    { id, ...query }: GetServerStatusParams,
+    params: RequestParams = {},
+  ) =>
     this.request<IWgServerStatusDto>({
       url: `/api/wg/servers/${id}/status`,
       method: "GET",
@@ -1100,12 +1119,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   getOverviewStats = (
-    query?: {
-      /** Строка ISO даты (по умолчанию: 24ч назад) */
-      from?: string;
-      /** Строка ISO даты (по умолчанию: сейчас) */
-      to?: string;
-    },
+    query: GetOverviewStatsParams,
     params: RequestParams = {},
   ) =>
     this.request<IWgOverviewStatsResponse>({
@@ -1125,15 +1139,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   getServerStats = (
-    serverId: string,
-    query?: {
-      /** Строка ISO даты (по умолчанию: 24ч назад) */
-      from?: string;
-      /** Строка ISO даты (по умолчанию: сейчас) */
-      to?: string;
-      /** Опциональный ID пира для фильтрации */
-      peerId?: string;
-    },
+    { serverId, ...query }: GetServerStatsParams,
     params: RequestParams = {},
   ) =>
     this.request<IWgOverviewStatsResponse>({
@@ -1153,13 +1159,7 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @secure
    */
   getPeerStats = (
-    peerId: string,
-    query?: {
-      /** Строка ISO даты (по умолчанию: 24ч назад) */
-      from?: string;
-      /** Строка ISO даты (по умолчанию: сейчас) */
-      to?: string;
-    },
+    { peerId, ...query }: GetPeerStatsParams,
     params: RequestParams = {},
   ) =>
     this.request<IWgOverviewStatsResponse>({
@@ -1194,7 +1194,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/statistics/servers/{serverId}/current
    * @secure
    */
-  getServerCurrent = (serverId: string, params: RequestParams = {}) =>
+  getServerCurrent = (
+    { serverId, ...query }: GetServerCurrentParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgServerStatsPayload | null>({
       url: `/api/wg/statistics/servers/${serverId}/current`,
       method: "GET",
@@ -1210,7 +1213,10 @@ export class Api<E = unknown> extends HttpClient<E> {
    * @request GET:/api/wg/statistics/peers/{peerId}/current
    * @secure
    */
-  getPeerCurrent = (peerId: string, params: RequestParams = {}) =>
+  getPeerCurrent = (
+    { peerId, ...query }: GetPeerCurrentParams,
+    params: RequestParams = {},
+  ) =>
     this.request<WgPeerStatsPayload | null>({
       url: `/api/wg/statistics/peers/${peerId}/current`,
       method: "GET",

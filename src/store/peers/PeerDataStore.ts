@@ -14,7 +14,7 @@ import { IPeerDataStore } from "./PeerDataStore.types";
 @IPeerDataStore({ inSingleton: true })
 export class PeerDataStore implements IPeerDataStore {
   public peerHolder = new EntityHolder<WgPeerDto, string>({
-    onFetch: id => this._apiService.getPeer(id),
+    onFetch: id => this._apiService.getPeer({ id }),
   });
   public qrHolder = new EntityHolder<{ dataUrl: string }>();
   public updatePeerMutation = new MutationHolder<
@@ -41,12 +41,12 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async createPeer(serverId: string, params: IWgPeerCreateRequestDto) {
-    return this._apiService.createPeer(serverId, params);
+    return this._apiService.createPeer({ serverId }, params);
   }
 
   async updatePeer(id: string, params: IWgPeerUpdateRequestDto) {
     return this.updatePeerMutation.execute({ id, params }, async args => {
-      const res = await this._apiService.updatePeer(args.id, args.params);
+      const res = await this._apiService.updatePeer({ id: args.id }, args.params);
 
       if (res.data) {
         this.peerHolder.setData(res.data);
@@ -57,11 +57,11 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async deletePeer(id: string) {
-    return this._apiService.deletePeer(id);
+    return this._apiService.deletePeer({ id });
   }
 
   async startPeer(id: string) {
-    const res = await this._apiService.startPeer(id);
+    const res = await this._apiService.startPeer({ id });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -71,7 +71,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async stopPeer(id: string) {
-    const res = await this._apiService.stopPeer(id);
+    const res = await this._apiService.stopPeer({ id });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -81,7 +81,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async assignPeer(id: string, userId: string) {
-    const res = await this._apiService.assignPeer(id, { userId });
+    const res = await this._apiService.assignPeer({ id, userId });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -91,7 +91,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async revokePeer(id: string) {
-    const res = await this._apiService.revokePeer(id);
+    const res = await this._apiService.revokePeer({ id });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -101,7 +101,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async rotatePsk(id: string) {
-    const res = await this._apiService.rotatePresharedKey(id);
+    const res = await this._apiService.rotatePresharedKey({ id });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -111,7 +111,7 @@ export class PeerDataStore implements IPeerDataStore {
   }
 
   async removePsk(id: string) {
-    const res = await this._apiService.removePresharedKey(id);
+    const res = await this._apiService.removePresharedKey({ id });
 
     if (res.data) {
       this.peerHolder.setData(res.data);
@@ -122,7 +122,7 @@ export class PeerDataStore implements IPeerDataStore {
 
   async loadQrCode(id: string) {
     const res = await this.qrHolder.fromApi(
-      () => this._apiService.getPeerQrCode(id) as any,
+      () => this._apiService.getPeerQrCode({ id }) as any,
     );
 
     return res.data ?? undefined;

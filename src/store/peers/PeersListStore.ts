@@ -59,7 +59,7 @@ export class PeersListStore implements IPeersListStore {
 
   async createPeer(serverId: string, params: IWgPeerCreateRequestDto) {
     return this.createPeerMutation.execute({ serverId, params }, async args => {
-      const res = await this._apiService.createPeer(args.serverId, args.params);
+      const res = await this._apiService.createPeer({ serverId: args.serverId }, args.params);
 
       if (res.data) {
         await this.peersHolder.reload({ refresh: true });

@@ -10,6 +10,7 @@ generateApi({
   templates: path.resolve(projectRootDir, "./api-templates"),
   modular: true,
   extractRequestBody: true,
+  extractRequestParams: true,
   cleanOutput: false,
 })
   .then(() => {

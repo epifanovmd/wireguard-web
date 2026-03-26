@@ -10,7 +10,7 @@ import { IClientDataStore } from "./ClientData.types";
 @IClientDataStore()
 export class ClientDataStore implements IClientDataStore {
   public holder = new EntityHolder<WgPeerDto, string>({
-    onFetch: id => this._apiService.getPeer(id),
+    onFetch: id => this._apiService.getPeer({ id }),
   });
 
   constructor(@IApiService() private _apiService: IApiService) {

@@ -49,7 +49,7 @@ export const useRolePermissionsForm = () => {
     async (role: IRoleDto) => {
       setSavingId(role.id);
       try {
-        await api.setRolePermissions(role.id, {
+        await api.setRolePermissions({ id: role.id }, {
           permissions: editedPerms[role.id] ?? [],
         });
         await loadRoles();

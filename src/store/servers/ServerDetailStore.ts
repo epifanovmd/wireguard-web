@@ -20,10 +20,10 @@ import { IServerDetailStore } from "./ServerDetailStore.types";
 @IServerDetailStore({ inSingleton: true })
 export class ServerDetailStore implements IServerDetailStore {
   public serverHolder = new EntityHolder<WgServerDto, string>({
-    onFetch: id => this._apiService.getServer(id),
+    onFetch: id => this._apiService.getServer({ id }),
   });
   public statusHolder = new PollingHolder<IWgServerStatusDto, string>({
-    onFetch: id => this._apiService.getServerStatus(id),
+    onFetch: id => this._apiService.getServerStatus({ id }),
     interval: 10_000,
   });
   public pageHolder = new CombinedHolder([
@@ -32,14 +32,14 @@ export class ServerDetailStore implements IServerDetailStore {
   ]);
   public serverActionMutation = new MutationHolder<string, WgServerDto>();
   public deleteServerMutation = new MutationHolder<string, boolean>({
-    onMutate: async id => this._apiService.deleteServer(id),
+    onMutate: async id => this._apiService.deleteServer({ id }),
   });
   public updateServerMutation = new MutationHolder<
     { id: string; params: IWgServerUpdateRequestDto },
     WgServerDto
   >({
     onMutate: async args => {
-      const res = await this._apiService.updateServer(args.id, args.params);
+      const res = await this._apiService.updateServer({ id: args.id }, args.params);
 
       if (res.data) {
         this.serverHolder.setData(res.data);
@@ -101,7 +101,7 @@ export class ServerDetailStore implements IServerDetailStore {
 
   async startServer(id: string) {
     return this.serverActionMutation.execute(id, async args => {
-      const res = await this._apiService.startServer(args);
+      const res = await this._apiService.startServer({ id: args });
 
       if (res.data) {
         this.serverHolder.setData(res.data);
@@ -113,7 +113,7 @@ export class ServerDetailStore implements IServerDetailStore {
 
   async stopServer(id: string) {
     return this.serverActionMutation.execute(id, async args => {
-      const res = await this._apiService.stopServer(args);
+      const res = await this._apiService.stopServer({ id: args });
 
       if (res.data) {
         this.serverHolder.setData(res.data);
@@ -125,7 +125,7 @@ export class ServerDetailStore implements IServerDetailStore {
 
   async restartServer(id: string) {
     return this.serverActionMutation.execute(id, async args => {
-      const res = await this._apiService.restartServer(args);
+      const res = await this._apiService.restartServer({ id: args });
 
       if (res.data) {
         this.serverHolder.setData(res.data);

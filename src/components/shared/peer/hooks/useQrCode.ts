@@ -13,7 +13,7 @@ export const useQrCode = (peerId: string | undefined, open: boolean) => {
     let cancelled = false;
 
     setLoading(true);
-    api.getPeerQrCode(peerId).then(res => {
+    api.getPeerQrCode({ id: peerId }).then(res => {
       if (cancelled) return;
       const data = res.data;
 

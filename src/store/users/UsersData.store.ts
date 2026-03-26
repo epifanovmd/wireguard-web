@@ -20,7 +20,7 @@ export class UsersDataStore implements IUsersDataStore {
     onFetch: pagination => this._apiService.getUsers(pagination),
   });
   public userHolder = new EntityHolder<UserDto, string>({
-    onFetch: id => this._apiService.getUserById(id),
+    onFetch: id => this._apiService.getUserById({ id }),
   });
   public setPrivilegesMutation = new MutationHolder<
     { id: string; params: IUserPrivilegesRequestDto },
@@ -63,7 +63,7 @@ export class UsersDataStore implements IUsersDataStore {
   }
 
   async updateUser(id: string, params: IUserUpdateRequestDto) {
-    const res = await this._apiService.updateUser(id, params);
+    const res = await this._apiService.updateUser({ id }, params);
 
     if (res.data) {
       this.userHolder.setData(res.data);
@@ -75,7 +75,7 @@ export class UsersDataStore implements IUsersDataStore {
 
   async setPrivileges(id: string, params: IUserPrivilegesRequestDto) {
     return this.setPrivilegesMutation.execute({ id, params }, async args => {
-      const res = await this._apiService.setPrivileges(args.id, args.params);
+      const res = await this._apiService.setPrivileges({ id: args.id }, args.params);
 
       if (res.data) {
         this.userHolder.setData(res.data);
@@ -87,7 +87,7 @@ export class UsersDataStore implements IUsersDataStore {
 
   async deleteUser(id: string) {
     return this.deleteUserMutation.execute(id, async args => {
-      const res = await this._apiService.deleteUser(args);
+      const res = await this._apiService.deleteUser({ id: args });
 
       if (!res.error) {
         this.listHolder.removeItem(args);

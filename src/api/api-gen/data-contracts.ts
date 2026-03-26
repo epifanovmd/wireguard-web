@@ -745,7 +745,230 @@ export interface WgPeerStatsPayload {
   timestamp: string;
 }
 
+export interface GetProfilesParams {
+  /**
+   * Смещение для пагинации
+   * @format double
+   */
+  offset?: number;
+  /**
+   * Лимит количества возвращаемых профилей
+   * @format double
+   */
+  limit?: number;
+}
+
+export interface GetProfileByIdParams {
+  /** ID пользователя, профиль которого нужно получить */
+  userId: string;
+}
+
+export interface UpdateProfileParams {
+  /** ID пользователя, профиль которого необходимо обновить */
+  userId: string;
+}
+
+export interface DeleteProfileParams {
+  /** ID пользователя, профиль которого необходимо удалить */
+  userId: string;
+}
+
+export interface SetRolePermissionsParams {
+  /** ID роли */
+  id: string;
+}
+
+export interface GetUsersParams {
+  /**
+   * Смещение для пагинации
+   * @format double
+   */
+  offset?: number;
+  /**
+   * Лимит количества возвращаемых пользователей
+   * @format double
+   */
+  limit?: number;
+  /** Поиск по email */
+  query?: string;
+}
+
+export interface GetUserOptionsParams {
+  /** Поиск по email, имени или фамилии */
+  query?: string;
+}
+
+export interface GetUserByIdParams {
+  /** ID пользователя, которого нужно получить */
+  id: string;
+}
+
+export interface SetPrivilegesParams {
+  /** ID пользователя, для которого необходимо установить привилегии */
+  id: string;
+}
+
+export interface VerifyEmailParams {
+  /** Код подтверждения email, полученный пользователем */
+  code: string;
+}
+
+export interface UpdateUserParams {
+  /** ID пользователя, которого необходимо обновить */
+  id: string;
+}
+
+export interface DeleteUserParams {
+  /** ID пользователя, которого необходимо удалить */
+  id: string;
+}
+
 /** Тело запроса с refresh токеном */
 export interface RefreshPayload {
   refreshToken: string;
+}
+
+export interface GetPeersParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  query?: string;
+  enabled?: boolean;
+  status?: EWgServerStatus;
+  serverId?: string;
+  userId?: string;
+}
+
+export interface GetPeersOptionsParams {
+  serverId?: string;
+  query?: string;
+}
+
+export interface GetPeerParams {
+  id: string;
+}
+
+export interface UpdatePeerParams {
+  id: string;
+}
+
+export interface DeletePeerParams {
+  id: string;
+}
+
+export interface CreatePeerParams {
+  serverId: string;
+}
+
+export interface StartPeerParams {
+  id: string;
+}
+
+export interface StopPeerParams {
+  id: string;
+}
+
+export interface AssignPeerParams {
+  userId: string;
+  id: string;
+}
+
+export interface RevokePeerParams {
+  id: string;
+}
+
+export interface RotatePresharedKeyParams {
+  id: string;
+}
+
+export interface RemovePresharedKeyParams {
+  id: string;
+}
+
+export interface GetPeerConfigParams {
+  id: string;
+}
+
+export interface GetPeerQrCodeParams {
+  id: string;
+}
+
+export interface GetServersParams {
+  /** @format double */
+  offset?: number;
+  /** @format double */
+  limit?: number;
+  query?: string;
+  status?: EWgServerStatus;
+  enabled?: boolean;
+}
+
+export interface GetServerOptionsParams {
+  query?: string;
+}
+
+export interface GetServerParams {
+  id: string;
+}
+
+export interface UpdateServerParams {
+  id: string;
+}
+
+export interface DeleteServerParams {
+  id: string;
+}
+
+export interface StartServerParams {
+  id: string;
+}
+
+export interface StopServerParams {
+  id: string;
+}
+
+export interface RestartServerParams {
+  id: string;
+}
+
+export interface GetServerStatusParams {
+  id: string;
+}
+
+export interface GetOverviewStatsParams {
+  /** Строка ISO даты (по умолчанию: 24ч назад) */
+  from?: string;
+  /** Строка ISO даты (по умолчанию: сейчас) */
+  to?: string;
+}
+
+export interface GetServerStatsParams {
+  /** Строка ISO даты (по умолчанию: 24ч назад) */
+  from?: string;
+  /** Строка ISO даты (по умолчанию: сейчас) */
+  to?: string;
+  /** Опциональный ID пира для фильтрации */
+  peerId?: string;
+  /** ID сервера */
+  serverId: string;
+}
+
+export interface GetPeerStatsParams {
+  /** Строка ISO даты (по умолчанию: 24ч назад) */
+  from?: string;
+  /** Строка ISO даты (по умолчанию: сейчас) */
+  to?: string;
+  /** ID пира */
+  peerId: string;
+}
+
+export interface GetServerCurrentParams {
+  /** ID сервера */
+  serverId: string;
+}
+
+export interface GetPeerCurrentParams {
+  /** ID пира */
+  peerId: string;
 }

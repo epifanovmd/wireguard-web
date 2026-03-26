@@ -53,7 +53,8 @@ export class ServerStatsStore
     peerId?: string,
   ) {
     this._startLoading();
-    const res = await this._apiService.getServerStats(serverId, {
+    const res = await this._apiService.getServerStats({
+      serverId,
       peerId,
       from,
       to,

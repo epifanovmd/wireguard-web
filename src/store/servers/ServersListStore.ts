@@ -33,7 +33,7 @@ export class ServersListStore implements IServersListStore {
   });
   public deleteServerMutation = new MutationHolder<string, boolean>({
     onMutate: async id => {
-      const res = await this._apiService.deleteServer(id);
+      const res = await this._apiService.deleteServer({ id });
 
       if (res.data) {
         this.removeServer(id);

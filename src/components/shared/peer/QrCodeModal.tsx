@@ -34,7 +34,7 @@ export const QrCodeModal: FC<QrCodeModalProps> = ({
   const handleDownload = async () => {
     if (!peerId) return;
 
-    const res = await api.getPeerConfig(peerId);
+    const res = await api.getPeerConfig({ id: peerId });
 
     if (res.data) {
       const blob = new Blob([res.data as string], { type: "text/plain" });
