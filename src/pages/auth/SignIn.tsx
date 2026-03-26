@@ -1,13 +1,12 @@
+import { usePasskeyAuth } from "@common";
+import { AuthLayout } from "@components/layouts";
+import { AsyncButton, Button, Card, InputFormField } from "@components/ui";
 import { useHotkeys } from "@mantine/hooks";
+import { useAuthStore } from "@store";
 import { Link } from "@tanstack/react-router";
 import { Fingerprint } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FormProvider } from "react-hook-form";
-
-import { usePasskeyAuth } from "~@common";
-import { AuthLayout } from "~@components/layouts";
-import { AsyncButton, Button, Card, InputFormField } from "~@components/ui";
-import { useAuthStore } from "~@store";
 
 import { useSignInVM } from "./hooks";
 import { TSignInForm } from "./validations";
@@ -73,9 +72,7 @@ export const SignIn = observer(() => {
               <>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-border" />
-                  <span className="text-xs text-muted-foreground">
-                    или
-                  </span>
+                  <span className="text-xs text-muted-foreground">или</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
 

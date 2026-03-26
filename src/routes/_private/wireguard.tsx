@@ -1,7 +1,6 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { IAuthStore } from "@store";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { IAuthStore } from "~@store";
 
 // Все WireGuard-права (хотя бы одно должно быть)
 const WG_PERMISSIONS = [
@@ -20,8 +19,7 @@ export const Route = createFileRoute("/_private/wireguard")({
 
     // Admin bypass или хотя бы одно WG-право
     const hasAny =
-      auth.isAdmin ||
-      WG_PERMISSIONS.some(p => auth.hasPermission(p));
+      auth.isAdmin || WG_PERMISSIONS.some(p => auth.hasPermission(p));
 
     if (!hasAny) {
       throw redirect({ to: "/" });

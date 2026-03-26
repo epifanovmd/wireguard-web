@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
-
 import {
   EPermissions,
   EWgServerStatus,
   IWgServerUpdateRequestDto,
-} from "~@api/api-gen/data-contracts";
-import { useNotification } from "~@core/notifications";
-import { usePermissions, useServerDetailStore } from "~@store";
-import { useServerStatsStore } from "~@store/serverStats";
+} from "@api/api-gen/data-contracts";
+import { useNotification } from "@core/notifications";
+import { usePermissions, useServerDetailStore } from "@store";
+import { useServerStatsStore } from "@store/serverStats";
+import { useCallback, useEffect, useState } from "react";
 
 import { useWgServer } from "../../../../socket";
 import { usePeersListVM } from "../../peers/hooks";

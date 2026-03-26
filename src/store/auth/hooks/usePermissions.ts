@@ -1,6 +1,5 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
 import { useCallback } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
 
 import { useAuthStore } from "./useAuthStore";
 

@@ -1,6 +1,5 @@
+import { ServerModel } from "@models";
 import { FC } from "react";
-
-import { ServerModel } from "~@models";
 
 import { type ColumnDef, Empty, Table } from "../../ui";
 

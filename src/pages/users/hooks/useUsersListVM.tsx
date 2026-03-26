@@ -1,18 +1,17 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Trash2 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { userColumns } from "~@components/tables/users";
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { userColumns } from "@components/tables/users";
 import {
   AsyncIconButton,
   type ColumnDef,
   IconButton,
   useConfirm,
-} from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { PublicUserModel } from "~@models";
-import { useAuthStore, usePermissions, useUsersDataStore } from "~@store";
+} from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { PublicUserModel } from "@models";
+import { useAuthStore, usePermissions, useUsersDataStore } from "@store";
+import { useNavigate } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useUsersListVM = () => {
   const store = useUsersDataStore();

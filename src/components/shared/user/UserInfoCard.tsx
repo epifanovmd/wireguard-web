@@ -1,7 +1,6 @@
+import { ERole } from "@api/api-gen/data-contracts";
+import { Badge, Card } from "@components/ui";
 import { FC, ReactNode } from "react";
-
-import { ERole } from "~@api/api-gen/data-contracts";
-import { Badge, Card } from "~@components/ui";
 
 import { UserAvatar } from "./UserAvatar";
 import { UserRoleBadge } from "./UserRoleBadge";

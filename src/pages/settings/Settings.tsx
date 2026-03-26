@@ -1,10 +1,9 @@
+import { RolePermissionsForm } from "@components/forms";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui";
+import { usePermissions } from "@store";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { RolePermissionsForm } from "~@components/forms";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~@components/ui";
-import { usePermissions } from "~@store";
 
 import { MyPermissions, SecurityTab } from "./shared";
 

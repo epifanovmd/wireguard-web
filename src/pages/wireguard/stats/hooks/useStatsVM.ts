@@ -1,9 +1,11 @@
+import { type DateRange } from "@components/ui";
+import { useServerStatsStore } from "@store";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { type DateRange } from "~@components/ui";
-import { useServerStatsStore } from "~@store";
-
-import { usePeersSelectOptions, useServersSelectOptions } from "../../../../hooks";
+import {
+  usePeersSelectOptions,
+  useServersSelectOptions,
+} from "../../../../hooks";
 import { getPresetRange, type Preset } from "../stats.constants";
 
 export const useStatsVM = () => {

@@ -1,20 +1,20 @@
-import { ApiError } from "~@api";
+import { ApiError } from "@api";
 import {
   IUserPrivilegesRequestDto,
   IUserUpdateRequestDto,
   PublicUserDto,
   UserDto,
-} from "~@api/api-gen/data-contracts";
-import { ApiResponse } from "~@api/api-gen/http-client";
-import { createServiceDecorator } from "~@common/ioc";
+} from "@api/api-gen/data-contracts";
+import { ApiResponse } from "@api/api-gen/http-client";
+import { createServiceDecorator } from "@common/ioc";
 import {
   EntityHolder,
   IHolderError,
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "~@core/holders";
-import { PublicUserModel, UserModel } from "~@models";
+} from "@core/holders";
+import { PublicUserModel, UserModel } from "@models";
 
 export const IUsersDataStore = createServiceDecorator<IUsersDataStore>();
 

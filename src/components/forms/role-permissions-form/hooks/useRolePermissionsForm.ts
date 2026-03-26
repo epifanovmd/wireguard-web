@@ -1,8 +1,7 @@
+import { useApi } from "@api";
+import { EPermissions, ERole, IRoleDto } from "@api/api-gen/data-contracts";
+import { useNotification } from "@core/notifications";
 import { useCallback, useEffect, useState } from "react";
-
-import { useApi } from "~@api";
-import { EPermissions, ERole, IRoleDto } from "~@api/api-gen/data-contracts";
-import { useNotification } from "~@core/notifications";
 
 const ROLE_ORDERS: Record<string, number> = {
   [ERole.Admin]: 0,
@@ -49,9 +48,12 @@ export const useRolePermissionsForm = () => {
     async (role: IRoleDto) => {
       setSavingId(role.id);
       try {
-        await api.setRolePermissions({ id: role.id }, {
-          permissions: editedPerms[role.id] ?? [],
-        });
+        await api.setRolePermissions(
+          { id: role.id },
+          {
+            permissions: editedPerms[role.id] ?? [],
+          },
+        );
         await loadRoles();
         toast.success(`Права роли «${role.name}» сохранены`);
       } catch {

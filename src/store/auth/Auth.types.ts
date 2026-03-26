@@ -6,10 +6,10 @@ import {
   ITokensDto,
   TSignUpRequestDto,
   UserDto,
-} from "~@api/api-gen/data-contracts";
-import { createServiceDecorator } from "~@common/ioc";
-import { IEntityHolderResult, IHolderError } from "~@core/holders";
-import { ProfileModel } from "~@models";
+} from "@api/api-gen/data-contracts";
+import { createServiceDecorator } from "@common/ioc";
+import { IEntityHolderResult, IHolderError } from "@core/holders";
+import { ProfileModel } from "@models";
 
 export enum AuthStatus {
   Idle = "idle",

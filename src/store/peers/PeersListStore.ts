@@ -1,12 +1,11 @@
-import { makeAutoObservable } from "mobx";
-
-import { IApiService } from "~@api";
+import { IApiService } from "@api";
 import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
-} from "~@api/api-gen/data-contracts";
-import { MutationHolder, PagedHolder } from "~@core/holders";
-import { PeerModel } from "~@models";
+} from "@api/api-gen/data-contracts";
+import { MutationHolder, PagedHolder } from "@core/holders";
+import { PeerModel } from "@models";
+import { makeAutoObservable } from "mobx";
 
 import { IPeersListStore, PeerListArgs } from "./PeersListStore.types";
 
@@ -59,7 +58,10 @@ export class PeersListStore implements IPeersListStore {
 
   async createPeer(serverId: string, params: IWgPeerCreateRequestDto) {
     return this.createPeerMutation.execute({ serverId, params }, async args => {
-      const res = await this._apiService.createPeer({ serverId: args.serverId }, args.params);
+      const res = await this._apiService.createPeer(
+        { serverId: args.serverId },
+        args.params,
+      );
 
       if (res.data) {
         await this.peersHolder.reload({ refresh: true });

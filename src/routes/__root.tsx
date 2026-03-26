@@ -1,6 +1,5 @@
+import { IAuthStore } from "@store";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-
-import { IAuthStore } from "~@store";
 
 import { NotFoundPage } from "../pages/not-found/NotFoundPage";
 

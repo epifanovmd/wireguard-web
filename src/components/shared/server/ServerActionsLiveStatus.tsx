@@ -1,8 +1,7 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { ServerModel } from "@models";
+import { usePermissions } from "@store";
 import { observer } from "mobx-react-lite";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { ServerModel } from "~@models";
-import { usePermissions } from "~@store";
 
 import { useWgServer } from "../../../socket";
 import { ServerActions } from "./ServerActions";

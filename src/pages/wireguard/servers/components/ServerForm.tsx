@@ -1,21 +1,20 @@
+import {
+  IWgServerCreateRequestDto,
+  IWgServerUpdateRequestDto,
+  WgServerDto,
+} from "@api/api-gen/data-contracts";
+import {
+  Collapse,
+  InputFormField,
+  SwitchFormField,
+  TextareaFormField,
+} from "@components/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
 import { Terminal } from "lucide-react";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-
-import {
-  IWgServerCreateRequestDto,
-  IWgServerUpdateRequestDto,
-  WgServerDto,
-} from "~@api/api-gen/data-contracts";
-import {
-  Collapse,
-  InputFormField,
-  SwitchFormField,
-  TextareaFormField,
-} from "~@components/ui";
 
 const schema = z.object({
   name: z.string().min(1, "Название обязательно"),

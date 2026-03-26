@@ -1,9 +1,8 @@
+import { useApi } from "@api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-
-import { useApi } from "~@api";
 
 import { Route } from "../../../routes/reset-password";
 import {

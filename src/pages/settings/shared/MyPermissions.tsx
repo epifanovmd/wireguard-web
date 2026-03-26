@@ -1,10 +1,9 @@
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
+import { UserRoleBadge } from "@components/shared";
+import { Badge, Card } from "@components/ui";
+import { useAuthStore, usePermissions } from "@store";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { UserRoleBadge } from "~@components/shared";
-import { Badge, Card } from "~@components/ui";
-import { useAuthStore, usePermissions } from "~@store";
 
 import { PermissionsTable } from "./PermissionsTable";
 

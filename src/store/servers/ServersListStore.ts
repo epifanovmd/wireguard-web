@@ -1,12 +1,11 @@
-import { makeAutoObservable } from "mobx";
-
-import { IApiService } from "~@api";
+import { IApiService } from "@api";
 import {
   IWgServerCreateRequestDto,
   WgServerDto,
-} from "~@api/api-gen/data-contracts";
-import { MutationHolder, PagedHolder } from "~@core/holders";
-import { ServerModel } from "~@models";
+} from "@api/api-gen/data-contracts";
+import { MutationHolder, PagedHolder } from "@core/holders";
+import { ServerModel } from "@models";
+import { makeAutoObservable } from "mobx";
 
 import { IServersListStore } from "./ServersListStore.types";
 

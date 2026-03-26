@@ -1,9 +1,8 @@
+import { AuthLayout } from "@components/layouts";
+import { Button, Card, InputFormField } from "@components/ui";
 import { Check } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FormProvider } from "react-hook-form";
-
-import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui";
 
 import { ForgotPasswordFormData, useForgotPasswordVM } from "./hooks";
 

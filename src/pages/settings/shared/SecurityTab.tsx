@@ -1,9 +1,5 @@
-import { Fingerprint, Trash2 } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { FC } from "react";
-
-import { useApi } from "~@api";
-import { usePasskeyAuth } from "~@common";
+import { useApi } from "@api";
+import { usePasskeyAuth } from "@common";
 import {
   AsyncButton,
   AsyncIconButton,
@@ -11,9 +7,12 @@ import {
   Button,
   Card,
   IconButton,
-} from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { useAuthStore } from "~@store";
+} from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { useAuthStore } from "@store";
+import { Fingerprint, Trash2 } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { FC } from "react";
 
 export const SecurityTab: FC = observer(() => {
   const toast = useNotification();

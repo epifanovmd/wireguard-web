@@ -1,6 +1,5 @@
+import { loginValidation, passwordValidation } from "@common";
 import { z } from "zod";
-
-import { loginValidation, passwordValidation } from "~@common";
 
 export const recoveryPasswordValidationSchema = z.object({
   login: loginValidation,

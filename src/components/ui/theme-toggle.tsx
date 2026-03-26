@@ -1,8 +1,7 @@
+import { useTheme } from "@core/theme";
 import { Moon, Sun } from "lucide-react";
 import * as React from "react";
 import { memo } from "react";
-
-import { useTheme } from "~@theme";
 
 import { Button, ButtonProps } from "./button";
 

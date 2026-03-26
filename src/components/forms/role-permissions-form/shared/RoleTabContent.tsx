@@ -1,7 +1,6 @@
+import { EPermissions, ERole, IRoleDto } from "@api/api-gen/data-contracts";
+import { AsyncButton, Button } from "@components/ui";
 import { memo } from "react";
-
-import { EPermissions, ERole, IRoleDto } from "~@api/api-gen/data-contracts";
-import { AsyncButton, Button } from "~@components/ui";
 
 import { PermissionsEditor } from "../../permissions-editor";
 import { AdminRoleNotice } from "./AdminRoleNotice";

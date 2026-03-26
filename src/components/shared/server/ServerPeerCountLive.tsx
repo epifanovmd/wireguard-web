@@ -1,6 +1,5 @@
+import { ServerModel } from "@models";
 import { FC } from "react";
-
-import { ServerModel } from "~@models";
 
 import { useWgServer } from "../../../socket";
 
@@ -13,7 +12,9 @@ export const ServerPeerCountLive: FC<{ row: ServerModel }> = ({ row }) => {
 
   return (
     <span className="text-xs">
-      <span className="font-medium text-foreground">{stats.activePeerCount}</span>
+      <span className="font-medium text-foreground">
+        {stats.activePeerCount}
+      </span>
       <span className="text-muted-foreground"> / {stats.peerCount}</span>
     </span>
   );

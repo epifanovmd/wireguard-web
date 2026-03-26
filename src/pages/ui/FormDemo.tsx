@@ -1,9 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, UserPlus } from "lucide-react";
-import * as React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
   Button,
   CheckboxFormField,
@@ -14,7 +8,12 @@ import {
   ModalContent,
   SelectFormField,
   SwitchFormField,
-} from "~@components/ui";
+} from "@components/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2, UserPlus } from "lucide-react";
+import * as React from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 

@@ -1,17 +1,16 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
 import {
   EPermissions,
   EWgServerStatus,
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
-} from "~@api/api-gen/data-contracts";
-import { PeerActions } from "~@components/shared";
-import { peerColumns } from "~@components/tables/peers";
-import { useNotification } from "~@core/notifications";
-import { PeerModel } from "~@models";
-import { usePeerDataStore, usePeersListStore, usePermissions } from "~@store";
+} from "@api/api-gen/data-contracts";
+import { PeerActions } from "@components/shared";
+import { peerColumns } from "@components/tables/peers";
+import { useNotification } from "@core/notifications";
+import { PeerModel } from "@models";
+import { usePeerDataStore, usePeersListStore, usePermissions } from "@store";
+import { useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { type ColumnDef, useConfirm } from "../../../../components/ui";
 

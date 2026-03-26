@@ -1,8 +1,7 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { usePermissions } from "@store";
 import { observer } from "mobx-react-lite";
 import { FC, ReactNode } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { usePermissions } from "~@store";
 
 interface CanAccessProps {
   /** Право, которое нужно проверить */

@@ -1,11 +1,7 @@
+import { ServerModel } from "@models";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ServerModel } from "~@models";
-
-import {
-  ServerPeerCountLive,
-  ServerStatusLive,
-} from "../../shared/server";
+import { ServerPeerCountLive, ServerStatusLive } from "../../shared/server";
 
 export const serverColumns: ColumnDef<ServerModel>[] = [
   {

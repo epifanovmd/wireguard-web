@@ -1,6 +1,5 @@
+import { EWgServerStatus } from "@api/api-gen/data-contracts";
 import { FC } from "react";
-
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 
 import { Badge } from "../../ui";
 import { ServerStatusBadge } from "./ServerStatusBadge";

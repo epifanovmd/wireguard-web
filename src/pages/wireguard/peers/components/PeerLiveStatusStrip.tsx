@@ -1,12 +1,11 @@
+import { WgPeerDto } from "@api/api-gen/data-contracts";
+import { formatter } from "@common";
+import { PeerStatus, PeerUserBadge } from "@components/shared";
+import { Badge } from "@components/ui";
+import { PublicUserModel } from "@models";
+import { usePeerStatsStore } from "@store/peerStats";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { WgPeerDto } from "~@api/api-gen/data-contracts";
-import { formatter } from "~@common";
-import { PeerStatus, PeerUserBadge } from "~@components/shared";
-import { Badge } from "~@components/ui";
-import { PublicUserModel } from "~@models";
-import { usePeerStatsStore } from "~@store/peerStats";
 
 interface PeerLiveStatusStripProps {
   peer: WgPeerDto;
@@ -50,7 +49,9 @@ export const PeerLiveStatusStrip: FC<PeerLiveStatusStripProps> = observer(
         )}
 
         <PeerUserBadge
-          displayName={userModel?.displayName ?? (peer.userId ? peer.userId : null)}
+          displayName={
+            userModel?.displayName ?? (peer.userId ? peer.userId : null)
+          }
           canManage={canManage}
           onAssign={onAssign}
           onRevoke={onRevoke}

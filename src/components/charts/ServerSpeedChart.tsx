@@ -1,6 +1,5 @@
+import { formatter } from "@common";
 import { FC } from "react";
-
-import { formatter } from "~@common";
 
 import { WGChart } from "../wgChart";
 import { ChartProps } from "./types";

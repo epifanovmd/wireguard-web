@@ -1,5 +1,5 @@
-import { IChartPoint } from "~@components/wgChart";
-import { EntityHolder } from "~@core/holders";
+import { IChartPoint } from "@components/wgChart";
+import { EntityHolder } from "@core/holders";
 
 export interface IChartPoints {
   speed: IChartPoint[];

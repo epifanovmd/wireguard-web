@@ -1,7 +1,6 @@
+import { useApi } from "@api";
+import { IWgPeerOptionDto, WgPeerDto } from "@api/api-gen/data-contracts";
 import { useCallback } from "react";
-
-import { useApi } from "~@api";
-import { IWgPeerOptionDto, WgPeerDto } from "~@api/api-gen/data-contracts";
 
 export const usePeersSelectOptions = (serverId?: string) => {
   const api = useApi();

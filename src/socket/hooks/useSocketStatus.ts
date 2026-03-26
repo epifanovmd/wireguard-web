@@ -1,6 +1,5 @@
+import { iocHook } from "@common/ioc";
 import { useEffect, useState } from "react";
-
-import { iocHook } from "~@common/ioc";
 
 import { ISocketTransport, SocketTransportState } from "../transport";
 

@@ -1,10 +1,6 @@
-import { Plus } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { FC, useState } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { QrCodeModal } from "~@components/shared";
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { QrCodeModal } from "@components/shared";
 import {
   Badge,
   Button,
@@ -22,9 +18,12 @@ import {
   Select,
   Table,
   Tooltip,
-} from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { usePermissions } from "~@store";
+} from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { usePermissions } from "@store";
+import { Plus } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { FC, useState } from "react";
 
 import { useServersSelectOptions } from "../../../hooks";
 import { PeerForm } from "./components/PeerForm";

@@ -1,14 +1,11 @@
-import { observer } from "mobx-react-lite";
-import { FC, useState } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { PageHeader, PageLayout } from "~@components/layouts";
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "@components/layouts";
 import {
   PeerActions,
   PeerConfigurationCard,
   QrCodeModal,
-} from "~@components/shared";
-import { PageLoader } from "~@components/shared/loaders";
+} from "@components/shared";
+import { PageLoader } from "@components/shared/loaders";
 import {
   Button,
   Modal,
@@ -24,8 +21,10 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "~@components/ui";
-import { usePermissions } from "~@store";
+} from "@components/ui";
+import { usePermissions } from "@store";
+import { observer } from "mobx-react-lite";
+import { FC, useState } from "react";
 
 import { useUsersSelectOptions } from "../../../hooks";
 import { PeerForm } from "./components/PeerForm";

@@ -1,10 +1,9 @@
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
+import { InputFormField, SelectFormField } from "@components/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHotkeys } from "@mantine/hooks";
 import { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { InputFormField, SelectFormField } from "~@components/ui";
 
 import { useRolesSelectOptions } from "../../../hooks/useRolesSelectOptions";
 import { PermissionsEditor } from "../permissions-editor";

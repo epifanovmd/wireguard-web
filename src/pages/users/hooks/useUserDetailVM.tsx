@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { AsyncButton, type ColumnDef, useConfirm } from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { PeerModel } from "~@models";
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
+import { AsyncButton, type ColumnDef, useConfirm } from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { PeerModel } from "@models";
 import {
   usePeerDataStore,
   usePeersListStore,
   usePermissions,
   useUsersDataStore,
-} from "~@store";
+} from "@store";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { peerColumns as basePeerColumns } from "../../../components/tables/peers";
 import { useRolesSelectOptions } from "../../../hooks";

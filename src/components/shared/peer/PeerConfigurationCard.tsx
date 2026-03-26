@@ -1,6 +1,5 @@
+import { PeerModel } from "@models";
 import { memo } from "react";
-
-import { PeerModel } from "~@models";
 
 import { AsyncButton, Card, CardProps, CopyableText } from "../../ui";
 

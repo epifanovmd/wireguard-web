@@ -1,7 +1,6 @@
+import { PeerModel } from "@models";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { PeerModel } from "~@models";
 
 import { usePeerLive } from "../../../hooks/usePeerLive";
 import { PeerStatus } from "./PeerStatus";

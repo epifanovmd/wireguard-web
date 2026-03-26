@@ -1,7 +1,6 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { IAuthStore } from "@store";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { IAuthStore } from "~@store";
 
 export const Route = createFileRoute("/_private/users")({
   beforeLoad: () => {

@@ -1,7 +1,13 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
 import { type LinkProps } from "@tanstack/react-router";
-import { BarChart3, Grid2x2, type LucideIcon, Server, Users, Zap } from "lucide-react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
+import {
+  BarChart3,
+  Grid2x2,
+  type LucideIcon,
+  Server,
+  Users,
+  Zap,
+} from "lucide-react";
 
 export interface NavItem {
   to: LinkProps["to"];

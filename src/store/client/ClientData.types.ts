@@ -1,7 +1,7 @@
-import { WgPeerDto } from "~@api/api-gen/data-contracts";
-import { createServiceDecorator } from "~@common/ioc";
-import { EntityHolder } from "~@core/holders";
-import { ClientModel } from "~@models";
+import { WgPeerDto } from "@api/api-gen/data-contracts";
+import { createServiceDecorator } from "@common/ioc";
+import { EntityHolder } from "@core/holders";
+import { ClientModel } from "@models";
 
 export const IClientDataStore = createServiceDecorator<IClientDataStore>();
 

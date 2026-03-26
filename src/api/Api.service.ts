@@ -1,3 +1,6 @@
+import { IAuthSessionService } from "@core/auth";
+import { BASE_URL } from "@core/env";
+import { INotificationService } from "@core/notifications";
 import axios, {
   AxiosHeaders,
   AxiosResponse,
@@ -5,10 +8,6 @@ import axios, {
   CancelTokenSource,
   isAxiosError,
 } from "axios";
-
-import { IAuthSessionService } from "~@core/auth";
-import { BASE_URL } from "~@core/env";
-import { INotificationService } from "~@core/notifications";
 
 import { ApiError, ApiServiceResponse, IApiService } from "./Api.types";
 import { Api } from "./api-gen/Api";
@@ -20,7 +19,7 @@ import {
 import { QueryRace } from "./QueryRace";
 
 export { BASE_URL };
-export { SOCKET_BASE_URL } from "~@core/env";
+export { SOCKET_BASE_URL } from "@core/env";
 
 const DEFAULT_HEADERS = new AxiosHeaders({
   Accept: "application/json",

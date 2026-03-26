@@ -1,6 +1,5 @@
+import { useAuthStore, usePermissions } from "@store";
 import { useState } from "react";
-
-import { useAuthStore, usePermissions } from "~@store";
 
 import { NAV_GROUPS } from "../constants";
 

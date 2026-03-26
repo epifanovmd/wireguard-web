@@ -1,9 +1,8 @@
+import { formatter } from "@common";
+import { StatCard } from "@components/ui";
+import { usePeerStatsStore } from "@store/peerStats";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { formatter } from "~@common";
-import { StatCard } from "~@components/ui";
-import { usePeerStatsStore } from "~@store/peerStats";
 
 export const PeerLiveStatCards: FC = observer(() => {
   const store = usePeerStatsStore();

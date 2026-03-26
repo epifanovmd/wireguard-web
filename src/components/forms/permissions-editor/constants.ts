@@ -1,4 +1,4 @@
-import { EPermissions } from "~@api/api-gen/data-contracts";
+import { EPermissions } from "@api/api-gen/data-contracts";
 
 import { PermissionGroup } from "./types";
 

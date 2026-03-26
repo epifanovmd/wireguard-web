@@ -1,6 +1,5 @@
+import { useApi } from "@api";
 import { useEffect, useState } from "react";
-
-import { useApi } from "~@api";
 
 export const useQrCode = (peerId: string | undefined, open: boolean) => {
   const api = useApi();

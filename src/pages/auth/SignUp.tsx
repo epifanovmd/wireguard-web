@@ -1,10 +1,9 @@
+import { AuthLayout } from "@components/layouts";
+import { Button, Card, InputFormField } from "@components/ui";
 import { useHotkeys } from "@mantine/hooks";
+import { useAuthStore } from "@store";
 import { observer } from "mobx-react-lite";
 import { FormProvider } from "react-hook-form";
-
-import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui";
-import { useAuthStore } from "~@store";
 
 import { useSignUpVM } from "./hooks";
 import { TSignUpForm } from "./validations";
@@ -19,9 +18,7 @@ export const SignUp = observer(() => {
     <AuthLayout>
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-foreground">
-            Создать аккаунт
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Создать аккаунт</h2>
         </div>
         <FormProvider {...form}>
           <div className="flex flex-col gap-4">

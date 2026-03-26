@@ -1,8 +1,7 @@
+import { EWgServerStatus } from "@api/api-gen/data-contracts";
 import { type VariantProps } from "class-variance-authority";
 import { Pencil, Power, QrCode, Trash2 } from "lucide-react";
 import { FC } from "react";
-
-import { EWgServerStatus } from "~@api/api-gen/data-contracts";
 
 import { AsyncIconButton, iconButtonVariants } from "../../ui";
 

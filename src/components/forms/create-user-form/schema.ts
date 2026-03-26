@@ -1,6 +1,5 @@
+import { ERole } from "@api/api-gen/data-contracts";
 import { z } from "zod";
-
-import { ERole } from "~@api/api-gen/data-contracts";
 
 export const createUserSchema = z
   .object({

@@ -1,12 +1,11 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { UsersTable } from "@components/tables/users";
+import { Badge, Card, IconButton, Input, Tooltip } from "@components/ui";
+import { usePermissions } from "@store";
 import { Plus, Search } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { UsersTable } from "~@components/tables/users";
-import { Badge, Card, IconButton, Input, Tooltip } from "~@components/ui";
-import { usePermissions } from "~@store";
 
 import { CreateUserModal } from "./CreateUserModal";
 import { useUsersListVM } from "./hooks";

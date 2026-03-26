@@ -1,6 +1,5 @@
+import { ButtonLink } from "@components/ui";
 import { FC } from "react";
-
-import { ButtonLink } from "~@components/ui";
 
 import { NAV_ICON_SIZE, NavGroup } from "../constants";
 

@@ -1,7 +1,6 @@
+import { WgPeerDto } from "@api/api-gen/data-contracts";
+import { DataModelBase } from "@common/store/models";
 import { computed, makeObservable } from "mobx";
-
-import { WgPeerDto } from "~@api/api-gen/data-contracts";
-import { DataModelBase } from "~@common/store/models";
 
 import { DateModel } from "../date";
 

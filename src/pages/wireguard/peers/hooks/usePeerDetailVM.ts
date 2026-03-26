@@ -1,14 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-
 import {
   EPermissions,
   EWgServerStatus,
   IWgPeerUpdateRequestDto,
-} from "~@api/api-gen/data-contracts";
-import { useConfirm } from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { usePeerDataStore, usePermissions } from "~@store";
-import { usePeerStatsStore } from "~@store/peerStats";
+} from "@api/api-gen/data-contracts";
+import { useConfirm } from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { usePeerDataStore, usePermissions } from "@store";
+import { usePeerStatsStore } from "@store/peerStats";
+import { useCallback, useEffect, useState } from "react";
 
 export const usePeerDetailVM = (peerId: string, onBack: () => void) => {
   const peerStore = usePeerDataStore();

@@ -1,6 +1,5 @@
+import { PublicUserModel } from "@models";
 import { ColumnDef } from "@tanstack/react-table";
-
-import { PublicUserModel } from "~@models";
 
 import { UserAvatar } from "../../shared";
 

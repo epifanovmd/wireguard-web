@@ -1,11 +1,9 @@
+import { createServiceDecorator } from "@common/ioc";
 import { ObservableMap } from "mobx";
-
-import { createServiceDecorator } from "~@common/ioc";
 
 import { WgPeerState } from "../../socket";
 
-export const IWgPeersLiveStore =
-  createServiceDecorator<IWgPeersLiveStore>();
+export const IWgPeersLiveStore = createServiceDecorator<IWgPeersLiveStore>();
 
 export interface IWgPeersLiveStore {
   peers: ObservableMap<string, WgPeerState>;

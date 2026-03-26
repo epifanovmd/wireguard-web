@@ -1,4 +1,4 @@
-import { iocHook } from "~@common/ioc";
+import { iocHook } from "@common/ioc";
 
 import { IServerStatsStore } from "../ServerStats.types";
 

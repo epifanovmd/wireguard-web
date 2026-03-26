@@ -1,18 +1,17 @@
+import { useApi } from "@api";
+import {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from "@api/api-gen/data-contracts";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
   startRegistration,
 } from "@simplewebauthn/browser";
 import { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
+import { useAuthStore } from "@store";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-
-import { useApi } from "~@api";
-import {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from "~@api/api-gen/data-contracts";
-import { useAuthStore } from "~@store";
 
 const PROFILE_ID_KEY = "app:profileId";
 

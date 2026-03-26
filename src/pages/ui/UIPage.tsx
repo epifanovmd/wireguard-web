@@ -1,25 +1,4 @@
 import {
-  Bell,
-  Calendar,
-  Download,
-  Edit,
-  Grid,
-  Heart,
-  Home,
-  Info,
-  List,
-  Mail,
-  Power,
-  Search,
-  Settings,
-  Star,
-  Trash2,
-  User,
-  X,
-} from "lucide-react";
-import { useState } from "react";
-
-import {
   Badge,
   Button,
   Card,
@@ -67,7 +46,27 @@ import {
   TooltipContent,
   TooltipTrigger,
   useModal,
-} from "~@components/ui";
+} from "@components/ui";
+import {
+  Bell,
+  Calendar,
+  Download,
+  Edit,
+  Grid,
+  Heart,
+  Home,
+  Info,
+  List,
+  Mail,
+  Power,
+  Search,
+  Settings,
+  Star,
+  Trash2,
+  User,
+  X,
+} from "lucide-react";
+import { useState } from "react";
 
 import { FormDemo } from "./FormDemo";
 

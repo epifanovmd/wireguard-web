@@ -1,23 +1,22 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHotkeys } from "@mantine/hooks";
-import { formatISO, parseISO } from "date-fns";
-import { FC } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
   IWgPeerCreateRequestDto,
   IWgPeerUpdateRequestDto,
   IWgServerOptionDto,
   WgPeerDto,
-} from "~@api/api-gen/data-contracts";
+} from "@api/api-gen/data-contracts";
 import {
   DatePickerFormField,
   InputFormField,
   SelectFormField,
   SwitchFormField,
   TextareaFormField,
-} from "~@components/ui";
+} from "@components/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHotkeys } from "@mantine/hooks";
+import { formatISO, parseISO } from "date-fns";
+import { FC } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { useServersSelectOptions } from "../../../../hooks";
 

@@ -1,6 +1,5 @@
+import { WgServerDto } from "@api/api-gen/data-contracts";
 import { memo } from "react";
-
-import { WgServerDto } from "~@api/api-gen/data-contracts";
 
 import { Card, CardProps, CopyableText } from "../../ui";
 
@@ -25,17 +24,13 @@ export const ServerConfigurationCard = memo<IServerConfigurationCardProps>(
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-xs text-muted-foreground">{k}</dt>
-              <dd className="font-medium text-foreground mt-0.5">
-                {v}
-              </dd>
+              <dd className="font-medium text-foreground mt-0.5">{v}</dd>
             </div>
           ))}
         </dl>
         {server?.publicKey && (
           <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-1">
-              Публичный ключ
-            </p>
+            <p className="text-xs text-muted-foreground mb-1">Публичный ключ</p>
             <CopyableText
               className="text-muted-foreground"
               text={server.publicKey}

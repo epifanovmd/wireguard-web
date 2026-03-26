@@ -1,9 +1,8 @@
+import { ERole } from "@api/api-gen/data-contracts";
+import { ROLE_BADGE_VARIANT } from "@components/shared/user/constants";
+import { Badge, Card, Spinner, Tabs } from "@components/ui";
+import { RoleModel } from "@models";
 import { FC, memo } from "react";
-
-import { ERole } from "~@api/api-gen/data-contracts";
-import { ROLE_BADGE_VARIANT } from "~@components/shared/user/constants";
-import { Badge, Card, Spinner, Tabs } from "~@components/ui";
-import { RoleModel } from "~@models";
 
 import { useRolePermissionsForm } from "./hooks";
 import { RoleTabContent } from "./shared";

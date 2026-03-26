@@ -3,9 +3,13 @@ import {
   WgOverviewStatsPayload,
   WgPeerStatsPayload,
   WgServerStatsPayload,
-} from "~@api/api-gen/data-contracts";
+} from "@api/api-gen/data-contracts";
 
-export type { WgOverviewStatsPayload, WgPeerStatsPayload, WgServerStatsPayload };
+export type {
+  WgOverviewStatsPayload,
+  WgPeerStatsPayload,
+  WgServerStatsPayload,
+};
 
 export interface WgServerStatusPayload {
   serverId: string;

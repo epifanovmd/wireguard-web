@@ -1,7 +1,6 @@
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { Checkbox } from "@components/ui";
 import { FC } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { Checkbox } from "~@components/ui";
 
 import { PermissionSourceBadge } from "../../../shared";
 import { PermissionGroup } from "../types";

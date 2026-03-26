@@ -1,7 +1,6 @@
+import { PageHeader, PageLayout } from "@components/layouts";
+import { Button, DateRangePicker, Segmented, Select } from "@components/ui";
 import { FC } from "react";
-
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { Button, DateRangePicker, Segmented, Select } from "~@components/ui";
 
 import { StatsDisplay } from "./components/StatsDisplay";
 import { useStatsVM } from "./hooks/useStatsVM";

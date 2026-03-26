@@ -1,7 +1,6 @@
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
+import { hasPermission } from "@core/permissions";
 import { useCallback } from "react";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { hasPermission } from "~@core/permissions";
 
 import { PermissionItem } from "../types";
 

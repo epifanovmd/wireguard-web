@@ -1,6 +1,5 @@
+import { Checkbox } from "@components/ui";
 import { memo, ReactNode } from "react";
-
-import { Checkbox } from "~@components/ui";
 
 interface PermissionWildcardCheckboxRowProps {
   label: ReactNode;

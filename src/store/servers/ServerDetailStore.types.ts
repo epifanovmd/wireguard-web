@@ -1,12 +1,12 @@
-import { ApiError } from "~@api";
+import { ApiError } from "@api";
 import {
   IWgServerCreateRequestDto,
   IWgServerStatusDto,
   IWgServerUpdateRequestDto,
   WgServerDto,
-} from "~@api/api-gen/data-contracts";
-import { ApiResponse } from "~@api/api-gen/http-client";
-import { createServiceDecorator } from "~@common/ioc";
+} from "@api/api-gen/data-contracts";
+import { ApiResponse } from "@api/api-gen/http-client";
+import { createServiceDecorator } from "@common/ioc";
 import {
   CombinedHolder,
   EntityHolder,
@@ -14,8 +14,8 @@ import {
   IMutationHolderResult,
   MutationHolder,
   PollingHolder,
-} from "~@core/holders";
-import { ServerModel } from "~@models";
+} from "@core/holders";
+import { ServerModel } from "@models";
 
 export const IServerDetailStore = createServiceDecorator<IServerDetailStore>();
 

@@ -1,16 +1,15 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo } from "react";
-
 import {
   IWgServerCreateRequestDto,
   IWgServerUpdateRequestDto,
-} from "~@api/api-gen/data-contracts";
-import { ServerActionsLiveStatus } from "~@components/shared";
-import { serverColumns } from "~@components/tables/servers";
-import { type ColumnDef, useConfirm } from "~@components/ui";
-import { useNotification } from "~@core/notifications";
-import { ServerModel } from "~@models";
-import { useServerDetailStore, useServersListStore } from "~@store";
+} from "@api/api-gen/data-contracts";
+import { ServerActionsLiveStatus } from "@components/shared";
+import { serverColumns } from "@components/tables/servers";
+import { type ColumnDef, useConfirm } from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { ServerModel } from "@models";
+import { useServerDetailStore, useServersListStore } from "@store";
+import { useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo } from "react";
 
 export const useServersListVM = () => {
   const listStore = useServersListStore();

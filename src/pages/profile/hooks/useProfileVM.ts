@@ -1,12 +1,11 @@
+import { useApi } from "@api";
+import { useNotification } from "@core/notifications";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@store";
 import { parseISO } from "date-fns";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { useApi } from "~@api";
-import { useNotification } from "~@core/notifications";
-import { useAuthStore } from "~@store";
 
 export const profileSchema = z.object({
   firstName: z.string().optional(),

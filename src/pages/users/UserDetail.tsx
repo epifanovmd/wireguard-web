@@ -1,12 +1,8 @@
-import { Trash2 } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { FC } from "react";
-
-import { ERole } from "~@api/api-gen/data-contracts";
-import { PermissionsEditor } from "~@components/forms";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { UserInfoCard } from "~@components/shared";
-import { PageLoader } from "~@components/shared/loaders";
+import { ERole } from "@api/api-gen/data-contracts";
+import { PermissionsEditor } from "@components/forms";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { UserInfoCard } from "@components/shared";
+import { PageLoader } from "@components/shared/loaders";
 import {
   AsyncIconButton,
   Button,
@@ -20,7 +16,10 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "~@components/ui";
+} from "@components/ui";
+import { Trash2 } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { FC } from "react";
 
 import { useUserDetailVM } from "./hooks";
 

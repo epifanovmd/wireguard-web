@@ -1,11 +1,10 @@
+import { useApi } from "@api/hooks";
+import { AuthLayout } from "@components/layouts";
+import { Button, Card, InputFormField } from "@components/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { useApi } from "~@api/hooks";
-import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui";
 
 const schema = z
   .object({
@@ -52,9 +51,7 @@ export const ResetPassword: FC<ResetPasswordProps> = ({ token, onSuccess }) => {
     <AuthLayout>
       <Card>
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-foreground">
-            Сброс пароля
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Сброс пароля</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Введите новый пароль
           </p>

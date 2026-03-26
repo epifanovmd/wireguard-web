@@ -1,8 +1,7 @@
+import { formatter } from "@common";
+import { PeerModel } from "@models";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { formatter } from "~@common";
-import { PeerModel } from "~@models";
 
 import { usePeerLive } from "../../../hooks/usePeerLive";
 

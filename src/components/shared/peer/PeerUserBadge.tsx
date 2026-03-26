@@ -1,7 +1,6 @@
+import { badgeVariants, cn } from "@components/ui";
 import { User, UserPlus, X } from "lucide-react";
 import { FC } from "react";
-
-import { badgeVariants, cn } from "~@components/ui";
 
 interface PeerUserBadgeProps {
   displayName?: string | null;

@@ -1,12 +1,11 @@
+import { useApi } from "@api/hooks";
+import { AuthLayout } from "@components/layouts";
+import { Button, Card, InputFormField } from "@components/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { useApi } from "~@api/hooks";
-import { AuthLayout } from "~@components/layouts";
-import { Button, Card, InputFormField } from "~@components/ui";
 
 const schema = z.object({
   login: z.string().min(1, "Email или телефон обязателен"),

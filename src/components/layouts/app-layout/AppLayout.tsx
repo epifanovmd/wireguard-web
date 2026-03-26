@@ -1,6 +1,5 @@
+import { useAuthStore } from "@store";
 import { FC, ReactNode } from "react";
-
-import { useAuthStore } from "~@store";
 
 import { Sidebar } from "../sidebar";
 

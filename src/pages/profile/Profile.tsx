@@ -1,16 +1,15 @@
-import { observer } from "mobx-react-lite";
-import { FC } from "react";
-import { FormProvider } from "react-hook-form";
-
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { UserInfoCard } from "~@components/shared";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { UserInfoCard } from "@components/shared";
 import {
   AsyncButton,
   Button,
   Card,
   DatePickerFormField,
   InputFormField,
-} from "~@components/ui";
+} from "@components/ui";
+import { observer } from "mobx-react-lite";
+import { FC } from "react";
+import { FormProvider } from "react-hook-form";
 
 import { ProfileFormData, useProfileVM } from "./hooks/useProfileVM";
 

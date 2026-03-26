@@ -1,14 +1,14 @@
 import {
   IWgPeerCreateRequestDto,
   WgPeerDto,
-} from "~@api/api-gen/data-contracts";
-import { createServiceDecorator } from "~@common/ioc";
+} from "@api/api-gen/data-contracts";
+import { createServiceDecorator } from "@common/ioc";
 import {
   IMutationHolderResult,
   MutationHolder,
   PagedHolder,
-} from "~@core/holders";
-import { PeerModel } from "~@models";
+} from "@core/holders";
+import { PeerModel } from "@models";
 
 export type PeerListArgs = {
   serverId?: string;

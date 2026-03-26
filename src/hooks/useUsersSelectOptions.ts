@@ -1,7 +1,6 @@
+import { useApi } from "@api";
+import { IUserOptionDto } from "@api/api-gen/data-contracts";
 import { useCallback } from "react";
-
-import { useApi } from "~@api";
-import { IUserOptionDto } from "~@api/api-gen/data-contracts";
 
 export const useUsersSelectOptions = () => {
   const api = useApi();

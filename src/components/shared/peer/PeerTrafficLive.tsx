@@ -1,9 +1,8 @@
+import { formatter } from "@common";
+import { PeerModel } from "@models";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { formatter } from "~@common";
-import { PeerModel } from "~@models";
 
 import { usePeerLive } from "../../../hooks/usePeerLive";
 

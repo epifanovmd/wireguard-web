@@ -1,6 +1,5 @@
+import { PeerModel } from "@models";
 import { ColumnDef } from "@tanstack/react-table";
-
-import { PeerModel } from "~@models";
 
 import {
   PeerActiveBadge,

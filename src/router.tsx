@@ -1,6 +1,5 @@
+import { Spinner } from "@components/ui";
 import { createRouter } from "@tanstack/react-router";
-
-import { Spinner } from "~@components/ui";
 
 import { RouterErrorFallback } from "./RouterErrorFallback";
 import { routeTree } from "./routeTree.gen";

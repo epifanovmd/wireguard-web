@@ -1,8 +1,7 @@
+import { AppLogoLink } from "@components/layouts/app-logo-link";
+import { Button, cn } from "@components/ui";
 import { X } from "lucide-react";
 import { FC } from "react";
-
-import { AppLogoLink } from "~@components/layouts/app-logo-link";
-import { Button, cn } from "~@components/ui";
 
 interface SidebarLogoProps {
   onClose?: () => void;

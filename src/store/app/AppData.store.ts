@@ -1,6 +1,5 @@
+import { disposer, InitializeDispose } from "@common/ioc";
 import { makeAutoObservable, reaction } from "mobx";
-
-import { disposer, InitializeDispose } from "~@common/ioc";
 
 import { router } from "../../router";
 import { ISocketTransport } from "../../socket";

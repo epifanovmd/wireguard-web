@@ -1,9 +1,8 @@
+import { Button, cn } from "@components/ui";
 import { Menu } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
-
-import { Button, cn } from "~@components/ui";
 
 import { AppLogoLink } from "../app-logo-link";
 import { useSidebarVM } from "./hooks";

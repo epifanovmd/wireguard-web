@@ -1,6 +1,5 @@
+import { createServiceDecorator } from "@common/ioc";
 import type { AxiosError, AxiosResponse } from "axios";
-
-import { createServiceDecorator } from "~@common/ioc";
 
 import { Api } from "./api-gen/Api";
 import { ApiResponse } from "./api-gen/http-client";

@@ -1,8 +1,7 @@
+import { Button } from "@components/ui";
 import { Link, useRouter } from "@tanstack/react-router";
 import { BarChart3, Grid2x2, MoveLeft, Server, Users, Zap } from "lucide-react";
 import { FC } from "react";
-
-import { Button } from "~@components/ui";
 
 const QUICK_LINKS = [
   { to: "/", label: "Дашборд", icon: Grid2x2 },
@@ -17,7 +16,6 @@ export const NotFoundPage: FC = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-8 p-8 text-center">
-
       {/* 404 */}
       <div className="relative select-none">
         <p className="text-[10rem] font-black leading-none tracking-tighter text-muted/40 sm:text-[14rem]">

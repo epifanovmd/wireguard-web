@@ -1,21 +1,20 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Download, Server, Upload, Zap } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { FC, useCallback, useEffect } from "react";
-
-import { EPermissions, EWgServerStatus } from "~@api/api-gen/data-contracts";
-import { formatter } from "~@common";
-import { ServerSpeedChart, ServerTrafficChart } from "~@components";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { ServersTable } from "~@components/tables/servers";
-import { serverColumns } from "~@components/tables/servers/serverColumns";
-import { StatCard } from "~@components/ui";
-import { ServerModel } from "~@models";
+import { EPermissions, EWgServerStatus } from "@api/api-gen/data-contracts";
+import { formatter } from "@common";
+import { ServerSpeedChart, ServerTrafficChart } from "@components";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { ServersTable } from "@components/tables/servers";
+import { serverColumns } from "@components/tables/servers/serverColumns";
+import { StatCard } from "@components/ui";
+import { ServerModel } from "@models";
 import {
   useOverviewStatsStore,
   usePermissions,
   useServersListStore,
-} from "~@store";
+} from "@store";
+import { useNavigate } from "@tanstack/react-router";
+import { Download, Server, Upload, Zap } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { FC, useCallback, useEffect } from "react";
 
 export const Dashboard: FC = observer(() => {
   const serversStore = useServersListStore();

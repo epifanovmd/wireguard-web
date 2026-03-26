@@ -1,10 +1,9 @@
+import { isEmail, isPhone } from "@common";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@store";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-
-import { isEmail, isPhone } from "~@common";
-import { useAuthStore } from "~@store";
 
 import { signUpFormValidationSchema, TSignUpForm } from "../validations";
 

@@ -1,8 +1,7 @@
+import { formatter } from "@common";
+import { Maybe } from "@common/ioc/types";
+import { DataModelBase } from "@common/store/models";
 import { computed, makeObservable } from "mobx";
-
-import { formatter } from "~@common";
-import { Maybe } from "~@common/ioc/types";
-import { DataModelBase } from "~@common/store/models";
 
 export class DateModel extends DataModelBase<Maybe<string | null>> {
   constructor(value: Maybe<string | null> | (() => Maybe<string | null>)) {

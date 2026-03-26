@@ -1,4 +1,4 @@
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
 
 /**
  * Проверяет наличие права с поддержкой wildcard-иерархии.

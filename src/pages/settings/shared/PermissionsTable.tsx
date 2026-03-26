@@ -1,12 +1,11 @@
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
+import { PERMISSION_GROUPS } from "@components/forms/permissions-editor/constants";
+import { PermissionSourceBadge, UserRoleBadge } from "@components/shared";
+import { Badge, Card } from "@components/ui";
+import { usePermissions } from "@store";
 import { Check, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
-import { PERMISSION_GROUPS } from "~@components/forms/permissions-editor/constants";
-import { PermissionSourceBadge, UserRoleBadge } from "~@components/shared";
-import { Badge, Card } from "~@components/ui";
-import { usePermissions } from "~@store";
 
 interface Props {
   rolePermissions: EPermissions[];

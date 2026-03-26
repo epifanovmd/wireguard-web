@@ -1,6 +1,5 @@
+import { EPermissions, ERole } from "@api/api-gen/data-contracts";
 import { FC, memo } from "react";
-
-import { EPermissions, ERole } from "~@api/api-gen/data-contracts";
 
 import {
   PermissionSourceBadge,

@@ -1,4 +1,4 @@
-import { createServiceDecorator, SupportInitialize } from "~@common/ioc";
+import { createServiceDecorator, SupportInitialize } from "@common/ioc";
 
 export const IAppDataStore = createServiceDecorator<IAppDataStore>();
 

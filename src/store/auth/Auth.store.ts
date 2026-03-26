@@ -1,6 +1,4 @@
-import { computed, makeAutoObservable } from "mobx";
-
-import { IApiService } from "~@api";
+import { IApiService } from "@api";
 import {
   EPermissions,
   ERole,
@@ -10,16 +8,17 @@ import {
   IUserWithTokensDto,
   TSignUpRequestDto,
   UserDto,
-} from "~@api/api-gen/data-contracts";
-import { createEnumModelBase } from "~@common/store/models";
-import { IAuthSessionService } from "~@core/auth";
-import { EntityHolder } from "~@core/holders";
+} from "@api/api-gen/data-contracts";
+import { createEnumModelBase } from "@common/store/models";
+import { IAuthSessionService } from "@core/auth";
+import { EntityHolder } from "@core/holders";
 import {
   canAccess,
   computeEffectivePermissions,
   isAdminRole,
-} from "~@core/permissions";
-import { ProfileModel } from "~@models";
+} from "@core/permissions";
+import { ProfileModel } from "@models";
+import { computed, makeAutoObservable } from "mobx";
 
 import { AuthStatus, IAuthStore } from "./Auth.types";
 

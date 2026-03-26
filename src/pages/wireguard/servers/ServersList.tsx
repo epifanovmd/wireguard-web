@@ -1,10 +1,6 @@
-import { Plus } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { FC, useState } from "react";
-
-import { EPermissions } from "~@api/api-gen/data-contracts";
-import { PageHeader, PageLayout } from "~@components/layouts";
-import { ServersTable } from "~@components/tables/servers";
+import { EPermissions } from "@api/api-gen/data-contracts";
+import { PageHeader, PageLayout } from "@components/layouts";
+import { ServersTable } from "@components/tables/servers";
 import {
   Badge,
   Button,
@@ -19,8 +15,11 @@ import {
   ModalOverlay,
   ModalTitle,
   Tooltip,
-} from "~@components/ui";
-import { useNotification } from "~@core/notifications";
+} from "@components/ui";
+import { useNotification } from "@core/notifications";
+import { Plus } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { FC, useState } from "react";
 
 import { ServerForm } from "./components/ServerForm";
 import { useServersListVM } from "./hooks";

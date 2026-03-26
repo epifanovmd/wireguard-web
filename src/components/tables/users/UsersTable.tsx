@@ -1,6 +1,5 @@
+import { PublicUserModel } from "@models";
 import { FC } from "react";
-
-import { PublicUserModel } from "~@models";
 
 import { type ColumnDef, Empty, Table } from "../../ui";
 

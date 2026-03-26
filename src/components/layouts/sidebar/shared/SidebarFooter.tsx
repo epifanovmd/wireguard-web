@@ -1,7 +1,6 @@
+import { Button, ButtonLink, cn, ThemeToggle } from "@components/ui";
 import { LogOut, Settings } from "lucide-react";
 import { FC } from "react";
-
-import { Button, ButtonLink, cn, ThemeToggle } from "~@components/ui";
 
 const ICON_SIZE = 15;
 

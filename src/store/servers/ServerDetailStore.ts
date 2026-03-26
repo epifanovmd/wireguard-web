@@ -1,19 +1,18 @@
-import { makeAutoObservable } from "mobx";
-
-import { IApiService } from "~@api";
+import { IApiService } from "@api";
 import {
   IWgServerCreateRequestDto,
   IWgServerStatusDto,
   IWgServerUpdateRequestDto,
   WgServerDto,
-} from "~@api/api-gen/data-contracts";
+} from "@api/api-gen/data-contracts";
 import {
   CombinedHolder,
   EntityHolder,
   MutationHolder,
   PollingHolder,
-} from "~@core/holders";
-import { ServerModel } from "~@models";
+} from "@core/holders";
+import { ServerModel } from "@models";
+import { makeAutoObservable } from "mobx";
 
 import { IServerDetailStore } from "./ServerDetailStore.types";
 
@@ -39,7 +38,10 @@ export class ServerDetailStore implements IServerDetailStore {
     WgServerDto
   >({
     onMutate: async args => {
-      const res = await this._apiService.updateServer({ id: args.id }, args.params);
+      const res = await this._apiService.updateServer(
+        { id: args.id },
+        args.params,
+      );
 
       if (res.data) {
         this.serverHolder.setData(res.data);

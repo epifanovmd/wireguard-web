@@ -1,14 +1,13 @@
-import { makeAutoObservable } from "mobx";
-
-import { IApiService } from "~@api";
+import { IApiService } from "@api";
 import {
   IUserPrivilegesRequestDto,
   IUserUpdateRequestDto,
   PublicUserDto,
   UserDto,
-} from "~@api/api-gen/data-contracts";
-import { EntityHolder, MutationHolder, PagedHolder } from "~@core/holders";
-import { PublicUserModel, UserModel } from "~@models";
+} from "@api/api-gen/data-contracts";
+import { EntityHolder, MutationHolder, PagedHolder } from "@core/holders";
+import { PublicUserModel, UserModel } from "@models";
+import { makeAutoObservable } from "mobx";
 
 import { IUsersDataStore } from "./UsersData.types";
 
@@ -75,7 +74,10 @@ export class UsersDataStore implements IUsersDataStore {
 
   async setPrivileges(id: string, params: IUserPrivilegesRequestDto) {
     return this.setPrivilegesMutation.execute({ id, params }, async args => {
-      const res = await this._apiService.setPrivileges({ id: args.id }, args.params);
+      const res = await this._apiService.setPrivileges(
+        { id: args.id },
+        args.params,
+      );
 
       if (res.data) {
         this.userHolder.setData(res.data);

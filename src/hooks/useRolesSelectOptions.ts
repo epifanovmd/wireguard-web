@@ -1,8 +1,7 @@
+import { useApi } from "@api";
+import { EPermissions, ERole, IRoleDto } from "@api/api-gen/data-contracts";
+import { RoleModel } from "@models";
 import { useCallback, useEffect, useState } from "react";
-
-import { useApi } from "~@api";
-import { EPermissions, ERole, IRoleDto } from "~@api/api-gen/data-contracts";
-import { RoleModel } from "~@models";
 
 export const useRolesSelectOptions = () => {
   const api = useApi();

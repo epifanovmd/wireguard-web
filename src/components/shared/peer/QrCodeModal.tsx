@@ -1,6 +1,4 @@
-import { FC, useEffect, useState } from "react";
-
-import { useApi } from "~@api/hooks";
+import { useApi } from "@api/hooks";
 import {
   Button,
   Modal,
@@ -11,7 +9,8 @@ import {
   ModalOverlay,
   ModalTitle,
   Spinner,
-} from "~@components/ui";
+} from "@components/ui";
+import { FC, useEffect, useState } from "react";
 
 import { useQrCode } from "./hooks";
 
