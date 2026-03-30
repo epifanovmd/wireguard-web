@@ -1,6 +1,8 @@
 import { createServiceDecorator } from "@di";
 import { makeAutoObservable } from "mobx";
 
+import { IStorageService } from "../platform";
+
 const REFRESH_TOKEN_KEY = "app:refresh_token";
 
 export const IAuthTokenStore = createServiceDecorator<IAuthTokenStore>();
@@ -20,7 +22,7 @@ export class AuthTokenStore implements IAuthTokenStore {
   public accessToken = "";
   public refreshToken = "";
 
-  constructor() {
+  constructor(@IStorageService() private _storage: IStorageService) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
@@ -40,14 +42,14 @@ export class AuthTokenStore implements IAuthTokenStore {
     this.refreshToken = refreshToken;
 
     if (refreshToken) {
-      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+      this._storage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     } else {
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      this._storage.removeItem(REFRESH_TOKEN_KEY);
     }
   }
 
   restoreRefreshToken(): string | null {
-    const token = localStorage.getItem(REFRESH_TOKEN_KEY);
+    const token = this._storage.getItem(REFRESH_TOKEN_KEY);
 
     if (token) {
       this.refreshToken = token;
@@ -59,6 +61,6 @@ export class AuthTokenStore implements IAuthTokenStore {
   clear(): void {
     this.accessToken = "";
     this.refreshToken = "";
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    this._storage.removeItem(REFRESH_TOKEN_KEY);
   }
 }
