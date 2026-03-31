@@ -3,9 +3,9 @@ import { cva } from "class-variance-authority";
 export const tabsMotionVariants = cva("absolute z-0", {
   variants: {
     variant: {
-      default: "inset-0 bg-background shadow-sm rounded-md",
+      default: "inset-1 bg-background shadow-sm rounded-md",
       underline:
-        "-inset-1 border-b-2 border-primary top-auto h-0.5 rounded-none",
+        "bottom-0 border-b-2 border-primary top-auto h-0.5 rounded-none",
     },
   },
   defaultVariants: {
